@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> User
-	<small>Manage User</small>
+<h1 class="page-title"> Profile
+	<small>Edit Profile</small>
 </h1>
 <div class="page-bar">
 	<ul class="page-breadcrumb">
@@ -11,17 +11,9 @@
 			<a href="{{ url('/') }}">Home</a>
 			<i class="fa fa-angle-right"></i>
 		</li>
-		<li>			
-			<a href="{{ url('user') }}">User Management</a>
-			<i class="fa fa-angle-right"></i>
-		</li>
 		<li>
 			<span>
-				@if (empty($data))
-					Add New User
-				@else
-					Update User
-				@endif
+				My Profile
 			</span>
 		</li>
 	</ul>                        
@@ -36,29 +28,18 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-group font-green"></i>
+					<i class="fa fa-user font-green"></i>
 					<span class="caption-subject font-green sbold uppercase">
-						@if (empty($data))
-							ADD NEW USER
-						@else
-							UPDATE USER
-						@endif
+						MY PROFILE
 					</span>
 				</div>
 
-				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md green" href="{{ url('user') }}">
-                		<i class="fa fa-chevron-left"></i> Back
-                	</a>
-				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_user" class="form-horizontal" action="{{ url('user', @$data->id) }}" method="POST">	        	
+	        	<form id="form_user" class="form-horizontal" action="{{ url('profile') }}" method="POST">	        	
 			        {{ csrf_field() }}
-			        @if (!empty($data))
-			          {{ method_field('PATCH') }}
-			        @endif
+
 			        <div class="form-body">
                     	<div class="alert alert-danger display-hide">
                         	<button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
@@ -75,7 +56,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Input Username" />
+				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Input Username" disabled />
 				            </div>
 				          </div>
 				        </div>
@@ -85,7 +66,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="email" name="email" class="form-control" value="{{ @$data->email }}" placeholder="Input Email" />
+				            	<input type="text" id="email" name="email" class="form-control" value="{{ @$data->email }}" placeholder="Input Email" disabled />
 				            </div>
 				          </div>
 				        </div>
@@ -96,11 +77,14 @@
 
 				          <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="role" id="role" required>
-                                	<option value="SPV" {{ (@$data->role == 'SPV') ? "selected" : "" }}>SPV</option>
-                                	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
-                                	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="ADMIN" {{ (@$data->role == 'ADMIN') ? "selected" : "" }}>ADMIN</option>                                	
+                                <select class="select2select" name="role" id="role" required disabled>
+                                	<option value="spv" {{ (@$data->role == 'spv') ? "selected" : "" }}>SPV</option>
+                                	<option value="dm" {{ (@$data->role == 'dm') ? "selected" : "" }}>DM</option>
+                                	<option value="rsm" {{ (@$data->role == 'rsm') ? "selected" : "" }}>RSM</option>
+                                	<option value="admin" {{ (@$data->role == 'admin') ? "selected" : "" }}>ADMIN</option>
+                                	@if(Auth::user()->role == 'masteradmin')
+                                	<option value="MASTERADMIN" {{ (@$data->role == 'masteradmin') ? "selected" : "" }}>MASTERADMIN</option>
+                                	@endif
                                 </select>
                                	
                                 <span class="input-group-addon display-hide">
@@ -146,12 +130,12 @@
 				        </div>		 
 
 				        <div class="caption padding-caption">
-                        	<span class="caption-subject font-dark bold uppercase">Password</span>
+                        	<span class="caption-subject font-dark bold uppercase">Change Password</span>
                         	<hr>
                         </div>
 
 				        <div class="form-group">
-				          <label class="col-sm-2 control-label">Password</label>
+				          <label class="col-sm-2 control-label">New Password</label>
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
@@ -191,7 +175,7 @@
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
 	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
-    <script src="{{ asset('js/handler/user-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/user-profile-handler.js') }}" type="text/javascript"></script>
     <!-- END PAGE VALIDATION SCRIPTS -->
     
     <script>
