@@ -75,9 +75,16 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:3|confirmed',
             'role' => 'required|string',
+            'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
        	$request['password'] = bcrypt($request['password']);
+
+       	// Upload file process
+        ($request->photo_file != null) ? 
+            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+
+        if($request->photo_file != null) $request['photo'] = $photo_url;
 
         $user = User::create($request->all());
         
@@ -121,10 +128,18 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users'. ($id ? ",id,$id" : ''),
             'role' => 'required|string',
+            'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
         $user = User::find($id);
 
+        // Upload file process
+        ($request->photo_file != null) ? 
+            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+
+        if($request->photo_file != null) $request['photo'] = $photo_url;
+
+        // Check if password empty
         if($request['password']){
 
         	$request['password'] = bcrypt($request['password']);
@@ -132,11 +147,24 @@ class UserController extends Controller
 
         }else{
 
-        	$user->update([
-        			'name' => $request['name'],
-        			'email' => $request['email'],
-        			'role' => $request['role']
-        		]);
+        	if($photo_url != ""){
+
+        		$user->update([
+	        			'name' => $request['name'],
+	        			'email' => $request['email'],
+	        			'role' => $request['role'],    
+	        			'photo' => $request['photo']
+	        		]);
+
+        	}else{
+
+	        	$user->update([
+	        			'name' => $request['name'],
+	        			'email' => $request['email'],
+	        			'role' => $request['role'],        			
+	        		]);
+
+        	}
 
         }
 

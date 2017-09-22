@@ -21,6 +21,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('user/edit/{id}', 'UserController@edit');
     Route::patch('user/{id}', 'UserController@update');
     Route::delete('user/{id}', 'UserController@destroy');
+
+    /** Profile **/
+    Route::get('profile', 'ProfileController@index');
+    Route::post('profile', 'ProfileController@update');
         
 });
 

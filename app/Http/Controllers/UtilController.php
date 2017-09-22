@@ -9,9 +9,12 @@ class UtilController extends Controller
 {
     //
     public function existEmail(Request $request){    	    	
-    	$userCount = User::where('email', $request->email)->count();
+    	$user = User::where('email', $request->email);
 
-    	if($userCount > 0){
+    	if($user->count() > 0){
+    		if($user->first()->email == $request->email){
+    			return "true";
+    		}
     		return "false";
     	}
 

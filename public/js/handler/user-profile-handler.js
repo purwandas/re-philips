@@ -12,92 +12,24 @@ var FormValidation = function () {
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
-            var val_rules = {
-                                name: {
-                                    minlength: 2,
-                                    required: true,
-                                },
-                                email:{
-                                    required: true,
-                                    email: true,
-                                    remote: {
-                                        type: "POST",
-                                        global: false,
-                                        async: false,
-                                        url: "../util/existemail",
-                                        data: {
-                                          email: function() {
-                                            return $( "#email" ).val();
-                                          }
-                                        }
-                                    }
-                                },
-                                password:{
-                                    minlength : 5,
-                                    required: true
-                                },
-                                password_confirmation:{
-                                    minlength : 5,
-                                    required: true,
-                                    equalTo : "#password"
-                                },
-                                role:{
-                                    required: true,
-                                }
-                            };
-
-
-            if(!(typeof($('input[name=_method]').val()) === 'undefined')){
-                
-                var val_rules = {
-                                    name: {
-                                        minlength: 2,
-                                        required: true,
-                                    },
-                                    email:{
-                                        required: true,
-                                        email: true,
-                                        remote: {
-                                                    type: "POST",
-                                                    global: false,
-                                                    async: false,
-                                                    url: "../../util/existemail",
-                                                    data: {
-                                                      email: function() {
-                                                        return $( "#email" ).val();
-                                                      }
-                                                    }
-                                                }
-                                    },
-                                    password:{
-                                        minlength : 5
-                                    },
-                                    password_confirmation:{
-                                        minlength : 5,
-                                        equalTo : "#password"
-                                    },
-                                    role:{
-                                        required: true,
-                                    }
-                                };
-
-            }
-
-
-
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
-                rules: val_rules,
-                messages:{
-                    role:{
-                        required: "Please select a Role!",
+                rules: {
+
+                    password:{
+                        minlength : 5,
                     },
-                    email:{
-                        remote: "Email already exist, choose another one.",
-                    }
+                    password_confirmation:{
+                        minlength : 5,
+                        equalTo : "#password"
+                    },
+
+                },
+                messages:{
+
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit              
@@ -241,22 +173,11 @@ var FormValidation = function () {
                         dataType: 'json',                        
                         processData: false,
                         contentType: false,
-                        success: function (data) {
-                            
-                            var titleMsg;
-                            var textMsg;
-
-                            if(data.method == "PATCH"){
-                                titleMsg = "Update!";
-                                textMsg = 'Data has been updated!';
-                            }else{
-                                titleMsg = "Insert!";
-                                textMsg = 'Data has been created!';
-                            }
+                        success: function (data) {                            
 
                             swal({
-                                    title: titleMsg,
-                                    text: textMsg,
+                                    title: "Updated!",
+                                    text: "Your profile has been updated",
                                     type: 'success'
                                 },
                                 function(){
@@ -386,15 +307,4 @@ var FormValidation = function () {
 jQuery(document).ready(function() {
     FormValidation.init();
     ImageHandler();
-});
-
-/*
- * Select2 validation
- *
- */ 
-
-$(document.body).on("change",".select2select",function(){
-
-    select2Change($(this), $('#form_user'));
-    
 });

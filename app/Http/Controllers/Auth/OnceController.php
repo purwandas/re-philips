@@ -17,7 +17,7 @@ class OnceController extends Controller
     		User::create([
     			'name' => 'REM',
             	'email' => 'rem@gmail.com',            
-            	'password' => bcrypt('admin'),
+            	'password' => bcrypt('master'),
                 'role' => 'masteradmin',
     		]);
     	}

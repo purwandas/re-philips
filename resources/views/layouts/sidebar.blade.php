@@ -23,7 +23,7 @@
                         @if(Auth::user()->role == 'masteradmin')
                         <li class="nav-item start active open">
                             <a href="{{ url('user') }}" class="nav-link nav-toggle">
-                                <i class="fa fa-user"></i>
+                                <i class="fa fa-group"></i>
                                 <span class="title">User</span>
                                 @if(Request::is('user*'))
                                     <span class="selected"></span>                 
@@ -31,6 +31,15 @@
                             </a>                            
                         </li>                        
                         @endif
+                        <li class="nav-item start active open">
+                            <a href="{{ url('profile') }}" class="nav-link nav-toggle">
+                                <i class="fa fa-user"></i>
+                                <span class="title">My Profile</span>
+                                @if(Request::is('profile*'))
+                                    <span class="selected"></span>                 
+                                @endif                                
+                            </a>                            
+                        </li> 
                     </ul>
                     <!-- END SIDEBAR MENU -->
                 </div>
