@@ -5,86 +5,24 @@
 
 var FormValidation = function () {
 
-    // User Master Validation
-    var userValidation = function() {
+    // Master Validation
+    var accountTypeValidation = function() {
 
-            var form = $('#form_user');
+            var form = $('#form_accounttype');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
-            var rules = {};
-
-            // Rules if add new
-            rules['name']  = { minlength: 2, required: true };
-            rules['email'] = { 
-                                required: true,
-                                email: true,
-                                remote: {
-                                    type: "POST",
-                                    global: false,
-                                    async: false,
-                                    url: "../util/existemail",
-                                    data: {
-                                      email: function() {
-                                        return $( "#email" ).val();
-                                      }
-                                    }
-                                }
-                             };
-            rules['password']  = { minlength: 5, required: true };
-            rules['password_confirmation']  = { minlength: 5, required: true, equalTo : "#password" };
-            rules['role']  = { required: true };
-
-
-            // Rules if update
-            if(!(typeof($('input[name=_method]').val()) === 'undefined')){
-                
-                rules['email'] = { 
-                                    required: true,
-                                    email: true,
-                                    remote: {
-                                        type: "POST",
-                                        global: false,
-                                        async: false,
-                                        url: "../../util/existemail",
-                                        data: {
-                                          email: function() {
-                                            return $( "#email" ).val();
-                                          }
-                                        }
-                                    }
-                                 };
-                rules['password']  = { minlength: 5 };
-                rules['password_confirmation']  = { minlength: 5, equalTo : "#password" };
-
-            }
-
-            if(!($('#dmContent').hasClass('display-hide'))){
-                rules['area'] = { required: true }
-            }
-
-            if(!($('#rsmContent').hasClass('display-hide'))){
-                rules['region'] = { required: true }
-            }
 
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
-                rules: rules,
-                messages:{
-                    role:{
-                        required: "Please select a Role!",
+                rules: {
+                    name: {
+                        minlength: 2,
+                        required: true,
                     },
-                    email:{
-                        remote: "Email already exist, choose another one.",
-                    },
-                    area:{
-                        required: "Please select an Area!"
-                    },
-                    region:{
-                        required: "Please select a Region!"
-                    }
+
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit              
@@ -193,7 +131,7 @@ var FormValidation = function () {
 
                             var spanIcon = $(span).children('i');
                             spanIcon.removeClass('fa-warning').addClass("fa-check");
-                            spanIcon.removeClass('font-red').addClass("font-green");                            
+                            spanIcon.removeClass('font-red').addClass("font-green");                          
                         }
                     }
 
@@ -217,8 +155,10 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
+                    // form[0].submit(); // submit the form
+
                     // Using FormData to append file type to form input
-                    var formData = new FormData($(form)[0]);
+                    var formData = new FormData($(form)[0]);                    
 
                     $.ajax({
                         url: form.action,
@@ -228,10 +168,7 @@ var FormValidation = function () {
                         dataType: 'json',                        
                         processData: false,
                         contentType: false,
-                        success: function (data) {
-
-                            // console.log(data);
-                            // return;
+                        success: function (data) {                            
                             
                             var titleMsg;
                             var textMsg;
@@ -250,8 +187,13 @@ var FormValidation = function () {
                                     type: 'success'
                                 },
                                 function(){
-                                    window.location.href = data.url;
+                                    // window.location.href = data.url;
                                     // console.log(data);
+
+                                    $('#accountTypeTable').DataTable().search('').draw();
+                                    $('#accountTypeTable').DataTable().ajax.reload();
+
+                                    $('#accounttype').modal('hide');                                    
                                 }
                             )
                             // console.log(data.method);
@@ -273,7 +215,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            userValidation();
+            accountTypeValidation();
 
         }
 
@@ -282,109 +224,21 @@ var FormValidation = function () {
 }();
 
 /*
- * Image upload handler
- *
- */
-
- var ImageHandler = function () {
-
-    //File input change (to check upload just image [jpg, jpeg, png, gif, svg] & Max size 2048)
-    $("input:file").change(function (e){                
-        // error.appendTo();
-        // $(this).attr()
-        // alert($(this).parent('.input-group').children('.error_message'));
-        // $(this).parent('.input-group').children('.error_message')[0].innerHTML += "tes";
-        // alert($(this).parent('.input-group').children('.error_message')[0].innerHTML);
-
-        var form = $('#form_user');
-        var errorAlert = $('.alert-danger', form);
-        var successAlert = $('.alert-success', form);
-        var filename = $(this).val();          
-        var extension = filename.replace(/^.*\./, '');
-        var error_container = $(this).parent('.input-group').children('.file_error_message');
-        var error_message = '';
-
-        if (extension == filename) {
-            extension = '';
-        } else {                 
-            extension = extension.toLowerCase();
-        }
-
-        switch (extension) {
-            case '':
-                $(this).closest('.form-group').removeClass("has-error");
-                $(this).closest('.form-group').removeClass("has-success");
-                break;
-            case 'jpg': case 'jpeg': case 'png': case 'gif': case 'svg':
-
-                if(typeof $(this)[0].files[0] !== 'undefined'){
-                    if(($(this)[0].files[0].size/1024) > 2048){
-                        $(this).closest('.form-group').removeClass("has-success").addClass("has-error");
-                        error_message = "Max file size reached!";
-                        break;
-                    }
-                }
-
-                $(this).closest('.form-group').removeClass("has-error").addClass("has-success");                        
-                break;
-
-            default:
-                $(this).closest('.form-group').removeClass("has-success").addClass("has-error");
-                error_message = "Please select an image type file like above!";
-                break;
-        }
-
-        if(error_message != ''){
-            error_container.removeAttr('style');
-            error_container[0].setAttribute("style","color: #e73d4a;");
-            error_container[0].innerHTML = "";
-            error_container[0].innerHTML = error_message;
-        }else{
-            error_container[0].setAttribute("style","display: none;");
-        }
-
-        // Check if all requirement valid and show success text
-        if(errorAlert.is(":visible") || successAlert.is(":visible")){
-            var errors = 0;
-            form.each(function(){
-                if($(this).find('.form-group').hasClass('has-error')){
-                    errors += 1;
-                } 
-            });
-
-            if(errors == 0){ 
-                successAlert.show();
-                errorAlert.hide();
-            }else{
-                successAlert.hide();
-                errorAlert.show();
-            }
-        }
-
-        // $(this).closest('.form-group').addClass("has-success");
-    });
-
-
- };
-
-
-/*
  * Set up module
  *
  */ 
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function() {    
     FormValidation.init();
-    ImageHandler();
 });
 
-/*
- * Select2 validation
- *
- */ 
+// Reset Validation
+function resetValidation(){
+    $('#form_accounttype').each(function(){
+        $(this).find('.form-group').removeClass('has-error').removeClass('has-success');            
+        $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
+    });
 
-$(document.body).on("change",".select2select",function(){
-
-    select2Change($(this), $('#form_user'));
-    
-});
+    $('.alert-danger', $('#form_accounttype')).hide();
+    $('.alert-success', $('#form_accounttype')).hide();
+}

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\RsmRegion;
+use App\DmArea;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -87,6 +89,16 @@ class UserController extends Controller
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
         $user = User::create($request->all());
+
+        // If DM
+        if($request->area){
+            $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+        }
+
+        // If RSM
+        if($request->region){
+            $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+        }
         
         return response()->json(['url' => url('user')]);
     }
@@ -165,6 +177,19 @@ class UserController extends Controller
 	        		]);
 
         	}
+
+        }
+
+        // If DM
+        if($request->area){
+            $dmArea = DmArea::where('user_id', $user->id)->first();
+            $dmArea->update(['area_id' => $request->area]);
+        }
+
+        // If RSM
+        if($request->region){
+            $rsmRegion = RsmRegion::where('user_id', $user->id)->first();
+            $rsmRegion->update(['region_id' => $request->region]);
 
         }
 

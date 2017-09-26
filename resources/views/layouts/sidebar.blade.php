@@ -20,7 +20,51 @@
                                 @endif
                             </a>
                         </li>
-                        @if(Auth::user()->role == 'masteradmin')
+                        @if(Auth::user()->role == 'Master')
+                        <li class="nav-item start active open">
+                            <a class="nav-link nav-toggle">
+                                <i class="icon-map"></i>
+                                <span class="title">Master Area</span>
+                                @if(Request::is('area') || Request::is('areaapp'))
+                                    <span class="selected"></span>                 
+                                @endif
+                                <span class="arrow open"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item start {{ Request::is('area') ? 'open' : '' }}">
+                                    <a href="{{ url('area') }}" class="nav-link ">                        
+                                        <span class="title">Area</span>
+                                    </a>                                    
+                                </li>
+                                <li class="nav-item start {{ Request::is('areaapp') ? 'open' : '' }}">
+                                    <a href="{{ url('areaapp') }}" class="nav-link ">
+                                        <span class="title">Area RE Apps</span>                                        
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item start active open">
+                            <a class="nav-link nav-toggle">
+                                <i class="fa fa-share-alt"></i>
+                                <span class="title">Master Account</span>
+                                @if(Request::is('accounttype') || Request::is('account'))
+                                    <span class="selected"></span>                 
+                                @endif
+                                <span class="arrow open"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item start {{ Request::is('accounttype') ? 'open' : '' }}">
+                                    <a href="{{ url('accounttype') }}" class="nav-link ">                        
+                                        <span class="title">Account Type</span>
+                                    </a>                                    
+                                </li>
+                                <li class="nav-item start {{ Request::is('account') ? 'open' : '' }}">
+                                    <a href="{{ url('account') }}" class="nav-link ">
+                                        <span class="title">Account</span>                                        
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="nav-item start active open">
                             <a href="{{ url('user') }}" class="nav-link nav-toggle">
                                 <i class="fa fa-group"></i>
