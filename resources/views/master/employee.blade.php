@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> User
-	<small>Manage User</small>
+<h1 class="page-title"> Employee
+	<small>Manage Employee</small>
 </h1>
 <div class="page-bar">
 	<ul class="page-breadcrumb">
@@ -12,7 +12,7 @@
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
-			<span>User Management</span>
+			<span>Employee Management</span>
 		</li>
 	</ul>                        
 </div>
@@ -26,8 +26,8 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-user font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">USER</span>
+					<i class="fa fa-group font-green"></i>
+					<span class="caption-subject font-green sbold uppercase">EMPLOYEE</span>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
@@ -36,7 +36,7 @@
                 	<div class="row">
                     	<div class="col-md-6">
                         	<div class="btn-group">
-                             	<a class="btn green" href="{{ url('user/create') }}"><i
+                             	<a class="btn green" href="{{ url('employee/create') }}"><i
 									class="fa fa-plus"></i> Add New </a>
                                 
                             </div>
@@ -44,13 +44,15 @@
                     </div>
                 </div>
 
-	        	<table class="table table-striped table-hover table-bordered" id="userTable" style="white-space: nowrap;">
+	        	<table class="table table-striped table-hover table-bordered" id="employeeTable" style="white-space: nowrap;">
                 	<thead>
                     	<tr>
                     		<th> No. </th>
-                            <th> Username </th>
+                            <th> NIK </th>
+                            <th> Name </th>
                             <th> Email </th>
                         	<th> Role </th>
+                            <th> Status </th>
                             <th> Options </th>                             
                         </tr>
                     </thead>
@@ -76,31 +78,33 @@
         });
 
         // Set data for Data Table '#athletesTable'
-        var table = $('#userTable').dataTable({
+        var table = $('#employeeTable').dataTable({
 	        "processing": true,
 	        "serverSide": true,	          
 	        "ajax": {
-                url: "{{ route('datatable.user') }}",
+                url: "{{ route('datatable.employee') }}",
                 type: 'POST',
             },
 	        "rowId": "id",
 	        "columns": [
 	            {data: 'id', name: 'id'},                
+                {data: 'nik', name: 'nik'},
 	            {data: 'name', name: 'name'},
                 {data: 'email', name: 'email'},
                 {data: 'role', name: 'role'},
+                {data: 'status', name: 'status'},
 	            {data: 'action', name: 'action', searchable: false, sortable: false},                
 	        ],
 	        "columnDefs": [
         		{"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [6]},
       		],
             "order": [ [0, 'desc'] ],            
     	});
 
 
     	// Delete data with sweet alert
-        $('#userTable').on('click', 'tr td button.deleteButton', function () {
+        $('#employeeTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
             	swal({
@@ -126,7 +130,7 @@
                         $.ajax({
 
                             type: "DELETE",
-                            url:  'user/' + id,
+                            url:  'employee/' + id,
                             success: function (data) {
                                 console.log(data);
 

@@ -24,7 +24,7 @@
                         <li class="nav-item start active open">
                             <a class="nav-link nav-toggle">
                                 <i class="icon-map"></i>
-                                <span class="title">Master Area</span>
+                                <span class="title">Area</span>
                                 @if(Request::is('area') || Request::is('areaapp'))
                                     <span class="selected"></span>                 
                                 @endif
@@ -46,7 +46,7 @@
                         <li class="nav-item start active open">
                             <a class="nav-link nav-toggle">
                                 <i class="fa fa-share-alt"></i>
-                                <span class="title">Master Account</span>
+                                <span class="title">Account</span>
                                 @if(Request::is('accounttype') || Request::is('account'))
                                     <span class="selected"></span>                 
                                 @endif
@@ -66,8 +66,26 @@
                             </ul>
                         </li>
                         <li class="nav-item start active open">
-                            <a href="{{ url('user') }}" class="nav-link nav-toggle">
+                            <a href="{{ url('employee') }}" class="nav-link nav-toggle">
                                 <i class="fa fa-group"></i>
+                                <span class="title">Employee</span>
+                                @if(Request::is('employee*'))
+                                    <span class="selected"></span>                 
+                                @endif                                
+                            </a>                            
+                        </li> 
+                        <li class="nav-item start active open">
+                            <a href="{{ url('store') }}" class="nav-link nav-toggle">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span class="title">Store</span>
+                                @if(Request::is('store*'))
+                                    <span class="selected"></span>                 
+                                @endif                                
+                            </a>                            
+                        </li> 
+                        <li class="nav-item start active open">
+                            <a href="{{ url('user') }}" class="nav-link nav-toggle">
+                                <i class="fa fa-user"></i>
                                 <span class="title">User</span>
                                 @if(Request::is('user*'))
                                     <span class="selected"></span>                 
@@ -77,7 +95,7 @@
                         @endif
                         <li class="nav-item start active open">
                             <a href="{{ url('profile') }}" class="nav-link nav-toggle">
-                                <i class="fa fa-user"></i>
+                                <i class="fa fa-cog"></i>
                                 <span class="title">My Profile</span>
                                 @if(Request::is('profile*'))
                                     <span class="selected"></span>                 

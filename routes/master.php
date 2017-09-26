@@ -57,6 +57,22 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('account/{id}', 'Master\AccountController@update');
         Route::delete('account/{id}', 'Master\AccountController@destroy');
 
+        /** Store **/
+        Route::get('store', 'Master\StoreController@index'); 
+        Route::get('store/create', 'Master\StoreController@create');       
+        Route::post('store', 'Master\StoreController@store');
+        Route::get('store/edit/{id}', 'Master\StoreController@edit');
+        Route::patch('store/{id}', 'Master\StoreController@update');
+        Route::delete('store/{id}', 'Master\StoreController@destroy');
+
+        /** Employee **/
+        Route::get('employee', 'Master\EmployeeController@index');
+        Route::get('employee/create', 'Master\EmployeeController@create');
+        Route::post('employee', 'Master\EmployeeController@store');
+        Route::get('employee/edit/{id}', 'Master\EmployeeController@edit');
+        Route::patch('employee/{id}', 'Master\EmployeeController@update');
+        Route::delete('employee/{id}', 'Master\EmployeeController@destroy');
+
     });
         
 });

@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/areaapp', ['as'=> 'datatable.areaapp','uses'=>'Master\AreaAppController@masterDataTable']);
     Route::post('datatable/accounttype', ['as'=> 'datatable.accounttype','uses'=>'Master\AccountTypeController@masterDataTable']);
     Route::post('datatable/account', ['as'=> 'datatable.account','uses'=>'Master\AccountController@masterDataTable']);
+    Route::post('datatable/employee', ['as'=> 'datatable.employee','uses'=>'Master\EmployeeController@masterDataTable']);
 
     /**
      * Data with filter (select2, list)
@@ -41,7 +42,8 @@ Route::group(['middleware' => ['auth']], function () {
      * Util
      */
 
-    Route::post('util/existemail', ['as'=> 'util.existemail','uses'=>'UtilController@existEmail']);
+    Route::post('util/existemailuser', ['uses'=>'UtilController@existEmailUser']);    
+    Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
     
 });
 
