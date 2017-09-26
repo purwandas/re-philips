@@ -100,7 +100,7 @@
                                 	<option value="SPV" {{ (@$data->role == 'SPV') ? "selected" : "" }}>SPV</option>
                                 	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
                                 	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="ADMIN" {{ (@$data->role == 'ADMIN') ? "selected" : "" }}>ADMIN</option>                                	
+                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>Admin</option>                                	
                                 </select>
                                	
                                 <span class="input-group-addon display-hide">
@@ -110,15 +110,67 @@
               				</div>
 				            
 				          </div>
-				        </div>				        
+				        </div>	
 
-				        <!-- View for old image * PHOTO * -->
-				        @if (!empty($data))
-				        	<div class="caption padding-caption">
-	                        	<span class="caption-subject font-dark bold uppercase">PHOTO</span>
+				        <!-- BEGIN DM DETAILS -->				       
+				        <div id="dmContent" class="display-hide">
+					        <div class="caption padding-caption">
+	                        	<span class="caption-subject font-dark bold uppercase">DM AREA</span>
 	                        	<hr>
 	                        </div>
 
+	                        <div class="form-group">
+	                          <label class="col-sm-2 control-label">Area</label>
+	                          <div class="col-sm-9">
+
+	                          <div class="input-group" style="width: 100%;">
+	     
+	                                <select class="select2select" name="area" id="area"></select>
+	                                
+	                                <span class="input-group-addon display-hide">
+	                                    <i class="fa"></i>
+	                                </span>
+
+	                            </div>
+	                            
+	                          </div>
+	                        </div>
+	                    </div>
+                        <!-- END DM DETAILS -->
+
+                        <!-- BEGIN RSM DETAILS -->				       
+				        <div id="rsmContent" class="display-hide">
+					        <div class="caption padding-caption">
+	                        	<span class="caption-subject font-dark bold uppercase">RSM REGION</span>
+	                        	<hr>
+	                        </div>
+
+	                        <div class="form-group">
+	                          <label class="col-sm-2 control-label">Region</label>
+	                          <div class="col-sm-9">
+
+	                          <div class="input-group" style="width: 100%;">
+	     
+	                                <select class="select2select" name="region" id="region"></select>
+	                                
+	                                <span class="input-group-addon display-hide">
+	                                    <i class="fa"></i>
+	                                </span>
+
+	                            </div>
+	                            
+	                          </div>
+	                        </div>
+	                    </div>
+                        <!-- END RSM DETAILS -->
+
+				        <div class="caption padding-caption">
+                        	<span class="caption-subject font-dark bold uppercase">PHOTO</span>
+                        	<hr>
+                        </div>		        
+
+				        <!-- View for old image * PHOTO * -->
+				        @if (!empty($data))				        	
 				        	<div class="form-group">
 				          		<label class="col-sm-2 control-label">Photo</label>
 				         		<div class="col-sm-9">				          	
@@ -202,13 +254,74 @@
 	            }
 	        });
 
+	    	$('#area').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));   
 
-	       $('#role').select2({
-                        width: '100%',
-                        placeholder: 'Role'
-                    })      	     
+	        $('#region').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));	   
+
+	       	$('#role').select2({
+                width: '100%',
+                placeholder: 'Role'
+            })
+
+            setForm($('#role').val());
 
 		});
+
+		// Reset dm and rsm
+		function resetForm(){
+			$('#area').removeAttr('required');
+			select2Reset($('#area'));
+			$('#region').removeAttr('required');
+			select2Reset($('#region'));
+
+			$('#dmContent').addClass('display-hide');
+			$('#rsmContent').addClass('display-hide');
+		}
+
+		// Set and init dm and rsm
+		function setForm(role){
+
+			resetForm();
+
+			if(role == 'DM'){
+				$('#area').attr('required', 'required');
+				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				$('#dmContent').removeClass('display-hide');
+			}
+
+			if(role == 'RSM'){
+				$('#region').attr('required', 'required');
+				setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
+				$('#rsmContent').removeClass('display-hide');
+			}
+		}
+
+		/*
+		 * Select2 change
+		 *
+		 */ 
+
+		$(document.body).on("change","#role",function(){
+
+		    setForm($('#role').val());
+		    
+		});	      
 
 	</script>
 @endsection

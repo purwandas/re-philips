@@ -1,12 +1,12 @@
-<!-- BEGIN MATCH ENTRY MODAL POPUP -->
-<div id="schedule-detail" class="modal container fade" tabindex="false" data-width="850" role="dialog">
+<!-- BEGIN MODAL POPUP -->
+<div id="area" class="modal container fade" tabindex="false" data-width="760" role="dialog">
     <div class="modal-header" style="margin-top: 30px;margin-left: 30px;margin-right: 30px;">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><b> ADD SCHEDULE DETAIL</b></h4>
+        <h4 class="modal-title"><b><span id="title">ADD NEW</span> AREA</b></h4>
     </div>
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
         
-        <form id="form_schedule_details" class="form-horizontal" action="{{ url('scheduledetails') }}" method="POST">                
+        <form id="form_area" class="form-horizontal" action="{{ url('area') }}" method="POST">                
                     {{ csrf_field() }}
                     @if (!empty($data))
                       {{ method_field('PATCH') }}
@@ -19,29 +19,22 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-2 control-label">Schedule</label>
-                          <div class="col-sm-9">
-
-                          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="schedule_id" id="detailsSchedule" required></select>
-                                
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
-
+                          <label class="col-sm-3 control-label">Name</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Input Area Name" data-tooltip="true" />
                             </div>
-                            
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <label class="col-sm-2 control-label">Match Entry</label>
-                          <div class="col-sm-9">
+                          <label class="col-sm-3 control-label">Region</label>
+                          <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="matchentry_id[]" id="detailsMatchEntry" multiple="multiple" required></select>
+                                <select class="select2select" name="region_id" id="region" required></select>
                                 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -50,10 +43,10 @@
                             </div>
                             
                           </div>
-                        </div>                                                                               
+                        </div>                                                      
 
                         <div class="form-group" style="padding-top: 15pt;">
-                          <div class="col-sm-9 col-sm-offset-2">
+                          <div class="col-sm-8 col-sm-offset-3">
                             <button type="submit" class="btn btn-primary green">Save</button>
                           </div>
                         </div>
@@ -67,4 +60,4 @@
         <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
     </div>
 </div>
-<!-- END MATCH ENTRY MODAL POPUP -->
+<!-- END MODAL POPUP -->

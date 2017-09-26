@@ -12,9 +12,9 @@ class UtilController extends Controller
     	$user = User::where('email', $request->email);
 
     	if($user->count() > 0){
-    		if($user->first()->email == $request->email){
-    			return "true";
-    		}
+    		// if($user->first()->email == $request->email){
+    		// 	return "true";
+    		// }
     		return "false";
     	}
 
