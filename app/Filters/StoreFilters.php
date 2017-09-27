@@ -9,10 +9,16 @@ class StoreFilters extends QueryFilters
 {
 
     /**
-     * Ordering data by name
+     * Ordering data by store name
      */
-    public function name($value) {
-        return (!$this->requestAllData($value)) ? $this->builder->where('name', 'like', '%'.$value.'%') : null;
+    public function storeName($value) {
+        if(!$this->requestAllData($value)){
+        	$this->builder->where(function ($query) use ($value){
+                return $query->where('store_name_1', 'like', '%'.$value.'%')->orWhere('store_name_2', 'like', '%'.$value.'%');
+            });
+        }
+
+        return null;
     } 
 
 }

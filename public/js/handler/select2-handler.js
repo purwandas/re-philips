@@ -24,7 +24,7 @@ function filterData (search, term) {
     (term == "" || term == null) ? term = "all" : term = term;
 
     var results = {};
-    if ($.isEmptyObject(this.filters)) {
+    if ($.isEmptyObject(filters)) {
 
         // Check search term is array or string
         if(!$.isArray(search)){
@@ -44,8 +44,8 @@ function filterData (search, term) {
         return results;
     }
 
-    for (var filter in this.filters) {
-        results[filter] = this.filters[filter];        
+    for (var filter in filters) {
+        results[filter] = filters[filter];        
     }
 
     // Check search term is array or string
@@ -57,8 +57,8 @@ function filterData (search, term) {
         });
     }
 
-    // console.log('results');
-    // console.log(results);
+    console.log('results');
+    console.log(results);
 
     return results;
 }

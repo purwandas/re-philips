@@ -9,7 +9,7 @@ use App\Filters\QueryFilters;
 
 class Store extends Model
 {
-    use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +17,7 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-        'store_name_1', 'store_name_2', 'longitude', 'latitude', 'channel', 'account_id', 'areaapp_id', 'user_id'
+        'store_id', 'store_name_1', 'store_name_2', 'longitude', 'latitude', 'channel', 'account_id', 'areaapp_id', 'employee_id'
     ];
 
     /* Metode tambahan untuk model Branch Sport. */
@@ -26,6 +26,21 @@ class Store extends Model
      * Relation Method(s).
      *
      */
+
+    public function account()
+    {
+        return $this->belongsTo('App\Account', 'account_id');
+    }
+
+    public function areaapp()
+    {
+        return $this->belongsTo('App\AreaApp', 'areaapp_id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo('App\Employee', 'employee_id');
+    }
 
     /**
      * Filtering Branch Sport Berdasarakan Request User

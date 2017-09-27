@@ -11,8 +11,7 @@ use DB;
 use App\Store;
 
 class StoreController extends Controller
-{
-    use UploadTrait;
+{    
     use StringTrait;
     /**
      * Display a listing of the resource.
@@ -34,8 +33,8 @@ class StoreController extends Controller
         $data = Store::where('stores.deleted_at', null)
         			->join('accounts', 'stores.account_id', '=', 'accounts.id')
                     ->join('area_apps', 'stores.areaapp_id', '=', 'area_apps.id')
-                    // ->join('users', 'stores.user_id', '=', 'users.id')
-                    ->select('stores.*', 'accounts.name as account_name', 'area_apps.name as areaapp_name', 'users.name as spv_name')->get();
+                    ->join('employees', 'stores.employee_id', '=', 'employees.id')
+                    ->select('stores.*', 'accounts.name as account_name', 'area_apps.name as areaapp_name', 'employees.name as spv_name')->get();
 
         return $this->makeTable($data);
     }
@@ -89,7 +88,7 @@ class StoreController extends Controller
             'channel' => 'required',
             'account_id' => 'required',
             'areaapp_id' => 'required',
-            'user_id' => 'required'
+            'employee_id' => 'required'
         ]);
 
         $store = Store::create($request->all());
@@ -138,7 +137,7 @@ class StoreController extends Controller
             'channel' => 'required',
             'account_id' => 'required',
             'areaapp_id' => 'required',
-            'user_id' => 'required'
+            'employee_id' => 'required'
         ]);
 
         $store = Store::find($id)->update($request->all());
