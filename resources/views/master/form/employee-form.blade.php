@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> User
-	<small>Manage User</small>
+<h1 class="page-title"> Employee
+	<small>Manage Employee</small>
 </h1>
 <div class="page-bar">
 	<ul class="page-breadcrumb">
@@ -12,15 +12,15 @@
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>			
-			<a href="{{ url('user') }}">User Management</a>
+			<a href="{{ url('employee') }}">Employee Management</a>
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
 			<span>
 				@if (empty($data))
-					Add New User
+					Add New Employee
 				@else
-					Update User
+					Update Employee
 				@endif
 			</span>
 		</li>
@@ -39,22 +39,22 @@
 					<i class="fa fa-group font-green"></i>
 					<span class="caption-subject font-green sbold uppercase">
 						@if (empty($data))
-							ADD NEW USER
+							ADD NEW EMPLOYEE
 						@else
-							UPDATE USER
+							UPDATE EMPLOYEE
 						@endif
 					</span>
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md green" href="{{ url('user') }}">
+                	<a class="btn btn-md green" href="{{ url('employee') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_user" class="form-horizontal" action="{{ url('user', @$data->id) }}" method="POST">	        	
+	        	<form id="form_employee" class="form-horizontal" action="{{ url('employee', @$data->id) }}" method="POST">	        	
 			        {{ csrf_field() }}
 			        @if (!empty($data))
 			          {{ method_field('PATCH') }}
@@ -71,11 +71,21 @@
                         </div>
 
 				        <div class="form-group">
-				          <label class="col-sm-2 control-label">Username</label>
+				          <label class="col-sm-2 control-label">NIK</label>
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Input Username" />
+				            	<input type="text" id="nik" name="nik" class="form-control" value="{{ @$data->nik }}" placeholder="Input NIK" />
+				            </div>
+				          </div>
+				        </div>
+
+				         <div class="form-group">
+				          <label class="col-sm-2 control-label">Name</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Input Employee Name" />
 				            </div>
 				          </div>
 				        </div>
@@ -98,9 +108,30 @@
      
                                 <select class="select2select" name="role" id="role" required>
                                 	<!-- <option value="SPV" {{ (@$data->role == 'SPV') ? "selected" : "" }}>SPV</option> -->
-                                	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
-                                	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>Admin</option>                                	
+                                	<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
+                                	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? "selected" : "" }}>Promoter Additional</option>
+                                	<option value="Promoter Event" {{ (@$data->role == 'Promoter Event') ? "selected" : "" }}>Promoter Event</option>
+                                	<option value="Demonstrator MCC" {{ (@$data->role == 'Demonstrator MCC') ? "selected" : "" }}>Demonstrator MCC</option>
+                                	<option value="Demonstrator DA" {{ (@$data->role == 'Demonstrator DA') ? "selected" : "" }}>Demonstrator DA</option>
+                                	<option value="Driver" {{ (@$data->role == 'Driver') ? "selected" : "" }}>Driver</option>
+                                	<option value="Helper" {{ (@$data->role == 'Helper') ? "selected" : "" }}>Helper</option>
+                                	<option value="ACT" {{ (@$data->role == 'ACT') ? "selected" : "" }}>ACT</option>
+                                	<option value="PPE" {{ (@$data->role == 'PPE') ? "selected" : "" }}>PPE</option>
+                                	<option value="BDT" {{ (@$data->role == 'BDT') ? "selected" : "" }}>BDT</option>
+                                	<option value="Salesman Explorer" {{ (@$data->role == 'Salesman Explorer') ? "selected" : "" }}>Salesman Explorer</option>
+                                	<option value="PCE" {{ (@$data->role == 'PCE') ? "selected" : "" }}>PCE</option>
+                                	<option value="RE Executive" {{ (@$data->role == 'RE Executive') ? "selected" : "" }}>RE Executive</option>
+                                	<option value="RE Support" {{ (@$data->role == 'RE Support') ? "selected" : "" }}>RE Support</option>
+                                	<option value="Supervisor" {{ (@$data->role == 'Supervisor') ? "selected" : "" }}>Supervisor</option>
+                                	<option value="Trainer" {{ (@$data->role == 'Trainer') ? "selected" : "" }}>Trainer</option>
+                                	<option value="Head Trainer" {{ (@$data->role == 'Head Trainer') ? "selected" : "" }}>Head Trainer</option>
+                                	<option value="SMD" {{ (@$data->role == 'SMD') ? "selected" : "" }}>SMD</option>
+                                	<option value="SMD Coordinator" {{ (@$data->role == 'SMD Coordinator') ? "selected" : "" }}>SMD Coordinator</option>
+                                	<option value="HIC" {{ (@$data->role == 'HIC') ? "selected" : "" }}>HIC</option>
+                                	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
+                                	<option value="Supervisor Hybrid" {{ (@$data->role == 'Supervisor Hybrid') ? "selected" : "" }}>Supervisor Hybrid</option>
+                                	<option value="SMD Additional" {{ (@$data->role == 'SMD Additional') ? "selected" : "" }}>SMD Additional</option>
+                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option>                                	                           
                                 </select>
                                	
                                 <span class="input-group-addon display-hide">
@@ -110,59 +141,28 @@
               				</div>
 				            
 				          </div>
-				        </div>	
+				        </div>
 
-				        <!-- BEGIN DM DETAILS -->				       
-				        <div id="dmContent" class="display-hide">
-					        <div class="caption padding-caption">
-	                        	<span class="caption-subject font-dark bold uppercase">DM AREA</span>
-	                        	<hr>
-	                        </div>
-
-	                        <div class="form-group">
-	                          <label class="col-sm-2 control-label">Area</label>
-	                          <div class="col-sm-9">
-
-	                          <div class="input-group" style="width: 100%;">
-	     
-	                                <select class="select2select" name="area" id="area"></select>
-	                                
-	                                <span class="input-group-addon display-hide">
-	                                    <i class="fa"></i>
-	                                </span>
-
+				        <div id="statusContent" class="display-hide">
+					        <div class="form-group">
+	                            <label class="control-label col-md-2">Status                               
+	                            </label>
+	                            <div class="col-md-9">
+	                                <div class="mt-radio-list" data-error-container="#form_employee_status_error">
+	                                    <label class="mt-radio">
+	                                        <input type="radio" name="status" value="stay" {{ (@$data->status == 'stay') ? "checked" : "" }}> Stay
+	                                        <span></span>
+	                                    </label>
+	                                    <label class="mt-radio">
+	                                        <input type="radio" name="status" value="mobile" {{ (@$data->status == 'mobile') ? "checked" : "" }}> Mobile
+	                                        <span></span>
+	                                    </label>
+	                                </div>
+	                                <div id="form_employee_status_error"> </div>
 	                            </div>
-	                            
-	                          </div>
 	                        </div>
 	                    </div>
-                        <!-- END DM DETAILS -->
-
-                        <!-- BEGIN RSM DETAILS -->				       
-				        <div id="rsmContent" class="display-hide">
-					        <div class="caption padding-caption">
-	                        	<span class="caption-subject font-dark bold uppercase">RSM REGION</span>
-	                        	<hr>
-	                        </div>
-
-	                        <div class="form-group">
-	                          <label class="col-sm-2 control-label">Region</label>
-	                          <div class="col-sm-9">
-
-	                          <div class="input-group" style="width: 100%;">
-	     
-	                                <select class="select2select" name="region" id="region"></select>
-	                                
-	                                <span class="input-group-addon display-hide">
-	                                    <i class="fa"></i>
-	                                </span>
-
-	                            </div>
-	                            
-	                          </div>
-	                        </div>
-	                    </div>
-                        <!-- END RSM DETAILS -->
+				        
 
 				        <div class="caption padding-caption">
                         	<span class="caption-subject font-dark bold uppercase">PHOTO</span>
@@ -220,8 +220,8 @@
 				            	<input type="password" id="password-confirm" name="password_confirmation" class="form-control" placeholder="Confirm Password" />
 				            </div>
 				          </div>
-				        </div>  
-		        
+				        </div>       				        			        		  
+				        
 				        <div class="form-group" style="padding-top: 15pt;">
 				          <div class="col-sm-9 col-sm-offset-2">
 				            <button type="submit" class="btn btn-primary green">Save</button>
@@ -238,83 +238,60 @@
 </div>
 @endsection
 
-@section('additional-scripts')		
+@section('additional-scripts')
+	<script>
+		var employeeId = "{{ collect(request()->segments())->last() }}";
+		var isPromoter = 0;
+	</script>
+	
 	<!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->	
 	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
-    <script src="{{ asset('js/handler/user-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/employee-handler.js') }}" type="text/javascript"></script>
     <!-- END PAGE VALIDATION SCRIPTS -->
 
-    <script>
-
-    	var userId = "{{ collect(request()->segments())->last() }}";
-
+    <script> 	
 		$(document).ready(function () {
 			$.ajaxSetup({
 	        	headers: {
 	            	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 	            }
-	        });
-
-	    	$('#area').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {            
-	            return filterData('name', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.name}
-	                })
-	            }
-	        }));   
-
-	        $('#region').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {            
-	            return filterData('name', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.name}
-	                })
-	            }
-	        }));	   
+	        });   
 
 	       	$('#role').select2({
                 width: '100%',
                 placeholder: 'Role'
-            })
+            })    
 
-            setForm($('#role').val());
+            setForm($('#role').val());        
 
 		});
 
 		// Reset dm and rsm
 		function resetForm(){
-			$('#area').removeAttr('required');			
-			select2Reset($('#area'));
-			$('#region').removeAttr('required');
-			select2Reset($('#region'));		
 
-			$('#dmContent').children('.form-group').removeClass('has-error');
-			$('#rsmContent').children('.form-group').removeClass('has-error');
+			$('#statusContent').each(function(){
+	            $(this).find('input').removeAttr('required');
+	        });
 
-			$('#dmContent').addClass('display-hide');
-			$('#rsmContent').addClass('display-hide');
+			$('#statusContent').children('.form-group').removeClass('has-error');
+			$('#statusContent').addClass('display-hide');
 		}
 
 		// Set and init dm and rsm
 		function setForm(role){
 
-			resetForm();
+			checkPromoter();
 
-			if(role == 'DM'){
-				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
-				$('#dmContent').removeClass('display-hide');
-			}
+			resetForm();			
 
-			if(role == 'RSM'){
-				$('#region').attr('required', 'required');
-				setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
-				$('#rsmContent').removeClass('display-hide');
+			if(isPromoter == 1){
+				$('#statusContent').removeClass('display-hide');
+
+				$('#statusContent').each(function(){
+	                $(this).find('input').attr('required', 'required');
+	            });
 			}
 		}
 
@@ -324,10 +301,21 @@
 		 */ 
 
 		$(document.body).on("change","#role",function(){
-
+							
 		    setForm($('#role').val());
 		    
-		});	      
+		});	 
 
-	</script>	
+		// Check role promoter
+		function checkPromoter(){
+			isPromoter = 0;
+			var role = $('#role').val();
+
+			if(role == 'Promoter' || role == 'Promoter Additional' || role == 'Promoter Event' || role == 'Demonstrator MCC' || role == 'Demonstrator DA' || role == 'ACT'  || role == 'PPE' || role == 'BDT' || role == 'Salesman Explorer' || role == 'SMD' || role == 'SMD Coordinator' || role == 'HIC' || role == 'HIE' || role == 'SMD Additional' || role == 'ASC'){
+				isPromoter = 1;
+			}
+		}
+
+	</script>
+	
 @endsection

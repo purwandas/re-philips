@@ -6,28 +6,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-
-class Store extends Model
+class Employee extends Model
 {
-    use Notifiable;
+    use SoftDeletes;
+
+    //
+    protected $fillable = [
+        'nik', 'name', 'email', 'status', 'role', 'password', 'photo'
+    ];
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $fillable = [
-        'store_name_1', 'store_name_2', 'longitude', 'latitude', 'channel', 'account_id', 'areaapp_id', 'user_id'
-    ];
-
-    /* Metode tambahan untuk model Branch Sport. */
+    protected $dates = ['deleted_at'];
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password'
+    ];
+
+	/* Metode tambahan untuk model Branch Sport. */
+
+	/**
      * Relation Method(s).
      *
      */
 
-    /**
+	/**
      * Filtering Branch Sport Berdasarakan Request User
      * @param $query
      * @param QueryFilters $filters

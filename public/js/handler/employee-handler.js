@@ -5,16 +5,17 @@
 
 var FormValidation = function () {
 
-    // User Master Validation
-    var userValidation = function() {            
+    // Employee Master Validation
+    var employeeValidation = function() {
 
-            var form = $('#form_user');
+            var form = $('#form_employee');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
             var rules = {};
 
             // Rules if add new
-            rules['name']  = { minlength: 2, required: true };
+            rules['nik']  = { digits: true, required: true };
+            rules['name']  = { minlength: 2, required: true };            
             rules['email'] = { 
                                 required: true,
                                 email: true,
@@ -22,7 +23,7 @@ var FormValidation = function () {
                                     type: "POST",
                                     global: false,
                                     async: false,
-                                    url: "../util/existemailuser",
+                                    url: "../util/existemailemployee",
                                     data: {
                                       email: function() {
                                         return $( "#email" ).val();
@@ -32,9 +33,8 @@ var FormValidation = function () {
                              };
             rules['password']  = { minlength: 5, required: true };
             rules['password_confirmation']  = { minlength: 5, required: true, equalTo : "#password" };
-            rules['role']  = { required: true };
-
-
+            rules['role']  = { required: true };            
+            
             // Rules if update
             if(!(typeof($('input[name=_method]').val()) === 'undefined')){
                 
@@ -45,7 +45,7 @@ var FormValidation = function () {
                                         type: "POST",
                                         global: false,
                                         async: false,
-                                        url: "../../util/existemailuser",
+                                        url: "../../util/existemailemployee",
                                         data: {
                                           email: function() {
                                             return $( "#email" ).val();
@@ -53,8 +53,8 @@ var FormValidation = function () {
                                           method: function() {
                                             return 'PATCH';
                                           },
-                                          userId: function(){
-                                            return userId;
+                                          employeeId: function(){
+                                            return employeeId;
                                           }
                                         }
                                     }
@@ -62,15 +62,7 @@ var FormValidation = function () {
                 rules['password']  = { minlength: 5 };
                 rules['password_confirmation']  = { minlength: 5, equalTo : "#password" };
 
-            }
-
-            // if(!($('#dmContent').hasClass('display-hide'))){
-            //     rules['area'] = { required: true }
-            // }
-
-            // if(!($('#rsmContent').hasClass('display-hide'))){
-            //     rules['region'] = { required: true }
-            // }
+            }            
 
             form.validate({
                 errorElement: 'span', //default input error message container
@@ -85,12 +77,9 @@ var FormValidation = function () {
                     email:{
                         remote: "Email already exist, choose another one.",
                     },
-                    area:{
-                        required: "Please select an Area!"
+                    status:{
+                        required: "Please select a Status!"
                     },
-                    region:{
-                        required: "Please select a Region!"
-                    }
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit              
@@ -223,6 +212,8 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
+                    // return;
+
                     // Using FormData to append file type to form input
                     var formData = new FormData($(form)[0]);
 
@@ -279,7 +270,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            userValidation();
+            employeeValidation();
 
         }
 
@@ -302,7 +293,7 @@ var FormValidation = function () {
         // $(this).parent('.input-group').children('.error_message')[0].innerHTML += "tes";
         // alert($(this).parent('.input-group').children('.error_message')[0].innerHTML);
 
-        var form = $('#form_user');
+        var form = $('#form_employee');
         var errorAlert = $('.alert-danger', form);
         var successAlert = $('.alert-success', form);
         var filename = $(this).val();          
@@ -391,6 +382,6 @@ jQuery(document).ready(function() {
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($(this), $('#form_user'));
+    select2Change($(this), $('#form_employee'));
     
 });

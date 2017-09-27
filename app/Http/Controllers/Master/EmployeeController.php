@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Master;
 
-use App\User;
-use App\RsmRegion;
-use App\DmArea;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
-use Auth;
+use App\Employee;
+use App\Filters\EmployeeFilters;
 
-class UserController extends Controller
+class EmployeeController extends Controller
 {
     use UploadTrait;
     use StringTrait;
@@ -23,7 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('master.user');
+        return view('master.employee');
     }
 
      /**
@@ -33,9 +31,16 @@ class UserController extends Controller
      */
     public function masterDataTable(){
 
-        $data = User::where('id', '<>', Auth::user()->id);
+        $data = Employee::all();
 
         return $this->makeTable($data);
+    }
+
+    // Data for select2 with Filters
+    public function getDataWithFilters(EmployeeFilters $filters){        
+        $data = Employee::filter($filters)->get();
+
+        return $data;
     }
 
     // Datatable template
@@ -45,7 +50,7 @@ class UserController extends Controller
                 ->addColumn('action', function ($item) {
 
                     return 
-                    "<a href='".url('user/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    "<a href='".url('employee/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
@@ -61,7 +66,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('master.form.user-form');
+        return view('master.form.employee-form');
     }
 
     /**
@@ -73,34 +78,25 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+        	'nik' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:employees',
             'password' => 'required|string|min:3|confirmed',
-            'role' => 'required|string',
+            'role' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+            ]);        
 
-       	$request['password'] = bcrypt($request['password']);
+       	$request['password'] = bcrypt($request['password']);        
 
        	// Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->imageUpload($request->photo_file, "employee/".$this->getRandomPath()) : $photo_url = "";        
 
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
-        $user = User::create($request->all());
-
-        // If DM
-        if($request->area){
-            $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
-        }
-
-        // If RSM
-        if($request->region){
-            $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
-        }
+        $employee = Employee::create($request->all());
         
-        return response()->json(['url' => url('user')]);
+        return response()->json(['url' => url('/employee')]);
     }
 
     /**
@@ -122,9 +118,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $data = User::where('id', $id)->first();
+        $data = Employee::where('id', $id)->first();
 
-        return view('master.form.user-form', compact('data'));
+        return view('master.form.employee-form', compact('data'));
     }
 
     /**
@@ -137,76 +133,50 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
+            'nik' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users'. ($id ? ",id,$id" : ''),
-            'role' => 'required|string',
+            'email' => 'required|string|email|max:255|unique:employees'. ($id ? ",id,$id" : ''),
+            'role' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-        $user = User::find($id);
+        $employee = Employee::find($id);
 
         // Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->imageUpload($request->photo_file, "employee/".$this->getRandomPath()) : $photo_url = "";        
 
         if($request->photo_file != null) $request['photo'] = $photo_url;
+
+       $requestNew = new Request;
 
         // Check if password empty
         if($request['password']){
 
-        	$request['password'] = bcrypt($request['password']);
-        	$user->update($request->all());
-
-        }else{
-
-        	if($photo_url != ""){
-
-        		$user->update([
-	        			'name' => $request['name'],
-	        			'email' => $request['email'],
-	        			'role' => $request['role'],    
-	        			'photo' => $request['photo']
-	        		]);
-
-        	}else{
-
-	        	$user->update([
-	        			'name' => $request['name'],
-	        			'email' => $request['email'],
-	        			'role' => $request['role'],        			
-	        		]);
-
-        	}
+        	$requestNew['password'] = bcrypt($request['password']);
 
         }
 
-        // If DM
-        if($request->area){
-            $dmArea = DmArea::where('user_id', $user->id);
+        if($photo_url != ""){
 
-            if($dmArea->count() > 0){
-                $dmArea->first()->update(['area_id' => $request->area]);    
-            }else{
-                DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
-            }
-            
-        }
+    		$requestNew['photo'] = $request['photo'];
 
-        // If RSM
-        if($request->region){
-            $rsmRegion = RsmRegion::where('user_id', $user->id);
-        
-            if($rsmRegion->count() > 0){
-                $rsmRegion->first()->update(['region_id' => $request->region]);
-            }else{
-                RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
-            }
+    	}
 
-        }
+    	if($request['status']){
+    		$requestNew['status'] = $request['status'];
+    	}
+
+    	$requestNew['nik'] = $request['nik'];
+    	$requestNew['name'] = $request['name'];
+    	$requestNew['email'] = $request['email'];
+    	$requestNew['role'] = $request['role'];
+
+    	$employee->update($requestNew->all());
 
         return response()->json(
             [
-                'url' => url('user'),
+                'url' => url('/employee'),
                 'method' => $request->_method
             ]);
     }
@@ -219,9 +189,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::destroy($id);
+        $employee = Employee::destroy($id);
 
         return response()->json($id);
     }
 }
-
