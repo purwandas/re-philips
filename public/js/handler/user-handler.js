@@ -64,13 +64,13 @@ var FormValidation = function () {
 
             }
 
-            if(!($('#dmContent').hasClass('display-hide'))){
-                rules['area'] = { required: true }
-            }
+            // if(!($('#dmContent').hasClass('display-hide'))){
+            //     rules['area'] = { required: true }
+            // }
 
-            if(!($('#rsmContent').hasClass('display-hide'))){
-                rules['region'] = { required: true }
-            }
+            // if(!($('#rsmContent').hasClass('display-hide'))){
+            //     rules['region'] = { required: true }
+            // }
 
             form.validate({
                 errorElement: 'span', //default input error message container

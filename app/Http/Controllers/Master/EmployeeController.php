@@ -84,9 +84,9 @@ class EmployeeController extends Controller
             'password' => 'required|string|min:3|confirmed',
             'role' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+            ]);        
 
-       	$request['password'] = bcrypt($request['password']);
+       	$request['password'] = bcrypt($request['password']);        
 
        	// Upload file process
         ($request->photo_file != null) ? 

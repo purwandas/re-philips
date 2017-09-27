@@ -293,6 +293,9 @@
 			$('#region').removeAttr('required');
 			select2Reset($('#region'));		
 
+			$('#dmContent').children('.form-group').removeClass('has-error');
+			$('#rsmContent').children('.form-group').removeClass('has-error');
+
 			$('#dmContent').addClass('display-hide');
 			$('#rsmContent').addClass('display-hide');
 		}

@@ -182,14 +182,25 @@ class UserController extends Controller
 
         // If DM
         if($request->area){
-            $dmArea = DmArea::where('user_id', $user->id)->first();
-            $dmArea->update(['area_id' => $request->area]);
+            $dmArea = DmArea::where('user_id', $user->id);
+
+            if($dmArea->count() > 0){
+                $dmArea->first()->update(['area_id' => $request->area]);    
+            }else{
+                DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            }
+            
         }
 
         // If RSM
         if($request->region){
-            $rsmRegion = RsmRegion::where('user_id', $user->id)->first();
-            $rsmRegion->update(['region_id' => $request->region]);
+            $rsmRegion = RsmRegion::where('user_id', $user->id);
+        
+            if($rsmRegion->count() > 0){
+                $rsmRegion->first()->update(['region_id' => $request->region]);
+            }else{
+                RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+            }
 
         }
 

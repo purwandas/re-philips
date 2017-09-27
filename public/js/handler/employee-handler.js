@@ -64,17 +64,6 @@ var FormValidation = function () {
 
             }            
 
-            // If role is promoter group
-            if(!($('#statusContent').hasClass('display-hide'))){                
-                rules['status'] = { required: true }
-                // console.log(rules);
-            }else{
-                rules['status'] = {}
-                // console.log(rules);
-            }
-
-            console.log(rules);
-
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
@@ -223,7 +212,7 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
-                    return;
+                    // return;
 
                     // Using FormData to append file type to form input
                     var formData = new FormData($(form)[0]);

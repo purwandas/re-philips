@@ -238,7 +238,19 @@
 </div>
 @endsection
 
-@section('additional-scripts')		
+@section('additional-scripts')
+	<script>
+		var employeeId = "{{ collect(request()->segments())->last() }}";
+		var isPromoter = 0;
+	</script>
+	
+	<!-- BEGIN SELECT2 SCRIPTS -->
+    <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
+    <!-- END SELECT2 SCRIPTS -->	
+	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
+    <script src="{{ asset('js/handler/employee-handler.js') }}" type="text/javascript"></script>
+    <!-- END PAGE VALIDATION SCRIPTS -->
+
     <script> 	
 		$(document).ready(function () {
 			$.ajaxSetup({
@@ -250,16 +262,21 @@
 	       	$('#role').select2({
                 width: '100%',
                 placeholder: 'Role'
-            })
+            })    
 
-            setForm($('#role').val());
+            setForm($('#role').val());        
 
 		});
 
 		// Reset dm and rsm
 		function resetForm(){
-			$('#statusContent').addClass('display-hide');
+
+			$('#statusContent').each(function(){
+	            $(this).find('input').removeAttr('required');
+	        });
+
 			$('#statusContent').children('.form-group').removeClass('has-error');
+			$('#statusContent').addClass('display-hide');
 		}
 
 		// Set and init dm and rsm
@@ -271,6 +288,10 @@
 
 			if(isPromoter == 1){
 				$('#statusContent').removeClass('display-hide');
+
+				$('#statusContent').each(function(){
+	                $(this).find('input').attr('required', 'required');
+	            });
 			}
 		}
 
@@ -293,15 +314,8 @@
 			if(role == 'Promoter' || role == 'Promoter Additional' || role == 'Promoter Event' || role == 'Demonstrator MCC' || role == 'Demonstrator DA' || role == 'ACT'  || role == 'PPE' || role == 'BDT' || role == 'Salesman Explorer' || role == 'SMD' || role == 'SMD Coordinator' || role == 'HIC' || role == 'HIE' || role == 'SMD Additional' || role == 'ASC'){
 				isPromoter = 1;
 			}
-		}     
+		}
 
 	</script>
-
-	<!-- BEGIN SELECT2 SCRIPTS -->
-    <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
-    <!-- END SELECT2 SCRIPTS -->	
-	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
-    <script src="{{ asset('js/handler/employee-handler.js') }}" type="text/javascript"></script>
-    <!-- END PAGE VALIDATION SCRIPTS -->
 	
 @endsection

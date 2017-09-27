@@ -12,7 +12,7 @@ class Employee extends Model
 
     //
     protected $fillable = [
-        'nik', 'name', 'email', 'status', 'role', 'photo'
+        'nik', 'name', 'email', 'status', 'role', 'password', 'photo'
     ];
 
     /**
