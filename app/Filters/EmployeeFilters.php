@@ -15,4 +15,9 @@ class EmployeeFilters extends QueryFilters
         return (!$this->requestAllData($value)) ? $this->builder->where('name', 'like', '%'.$value.'%') : null;
     } 
 
+    /* Ordering data by role */
+    public function role($value){
+    	return $this->builder->where('role', $value);
+    }
+
 }

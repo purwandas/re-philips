@@ -21,6 +21,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/accounttype', ['as'=> 'datatable.accounttype','uses'=>'Master\AccountTypeController@masterDataTable']);
     Route::post('datatable/account', ['as'=> 'datatable.account','uses'=>'Master\AccountController@masterDataTable']);
     Route::post('datatable/employee', ['as'=> 'datatable.employee','uses'=>'Master\EmployeeController@masterDataTable']);
+    Route::post('datatable/store', ['as'=> 'datatable.store','uses'=>'Master\StoreController@masterDataTable']);
 
     /**
      * Data with filter (select2, list)
@@ -29,6 +30,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('data/region', ['as'=> 'data.region','uses'=>'Master\RegionController@getDataWithFilters']);
 	Route::post('data/area', ['as'=> 'data.area','uses'=>'Master\AreaController@getDataWithFilters']);
     Route::post('data/accounttype', ['as'=> 'data.accounttype','uses'=>'Master\AccountTypeController@getDataWithFilters']);
+    Route::post('data/account', ['as'=> 'data.account','uses'=>'Master\AccountController@getDataWithFilters']);
+    Route::post('data/areaapp', ['as'=> 'data.areaapp','uses'=>'Master\AreaAppController@getDataWithFilters']);
+    Route::post('data/employee', ['as'=> 'data.employee','uses'=>'Master\EmployeeController@getDataWithFilters']);
 
     /**
      * Relation
@@ -37,6 +41,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('relation/areaareaapps', ['as'=> 'relation.areaareaapps','uses'=>'RelationController@areaAreaAppsRelation']);
     Route::post('relation/areadm', ['as'=> 'relation.areadm','uses'=>'RelationController@areaDmRelation']);
     Route::post('relation/accounttypeaccount', ['as'=> 'relation.accounttypeaccount','uses'=>'RelationController@accountTypeAccountRelation']);
+    Route::post('relation/storeaccount', ['as'=> 'relation.storeaccount','uses'=>'RelationController@storeAccountRelation']);
+    Route::post('relation/areaapp', ['as'=> 'relation.areaapp','uses'=>'RelationController@storeAreaAppRelation']);
+    Route::post('relation/storespv', ['as'=> 'relation.storespv','uses'=>'RelationController@storeSpvRelation']);
 
     /**
      * Util

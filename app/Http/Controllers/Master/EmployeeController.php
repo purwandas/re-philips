@@ -37,7 +37,9 @@ class EmployeeController extends Controller
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(EmployeeFilters $filters){        
+    public function getDataWithFilters(EmployeeFilters $filters){ 
+        // dd($filters->name);
+
         $data = Employee::filter($filters)->get();
 
         return $data;

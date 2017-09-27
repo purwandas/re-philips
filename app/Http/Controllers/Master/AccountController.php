@@ -39,7 +39,7 @@ class AccountController extends Controller
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(AreaAppFilters $filters){        
+    public function getDataWithFilters(AccountFilters $filters){        
         $data = Account::filter($filters)->get();
 
         return $data;
