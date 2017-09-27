@@ -219,7 +219,20 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::destroy($id);
+        /* Deleting related to user */
+        // DM AREA 
+        $dmArea = DmArea::where('user_id', $id);
+        if($dmArea->count() > 0){
+            $dmArea->delete();
+        }
+
+        // RSM REGION 
+        $rsmRegion = RsmRegion::where('user_id', $id);
+        if($rsmRegion->count() > 0){
+            $rsmRegion->delete();
+        }
+
+        $user = User::destroy($id);        
 
         return response()->json($id);
     }

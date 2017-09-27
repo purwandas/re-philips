@@ -28,14 +28,16 @@ class OnceController extends Controller
     }
 
     public function createRegion(){
-        if(Auth::user()->role == 'Master'){
-            $region = DB::table('regions')->count();
+        if(Auth::user()){
+            if(Auth::user()->role == 'Master'){
+                $region = DB::table('regions')->count();
 
-            if($region == 0){
-                Region::create(['name'=>'East']);
-                Region::create(['name'=>'Jabodetabek']);
-                Region::create(['name'=>'Java']);
-                Region::create(['name'=>'Sumatra']);
+                if($region == 0){
+                    Region::create(['name'=>'East']);
+                    Region::create(['name'=>'Jabodetabek']);
+                    Region::create(['name'=>'Java']);
+                    Region::create(['name'=>'Sumatra']);
+                }
             }
         }
 

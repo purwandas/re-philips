@@ -20,7 +20,6 @@ class CreateRsmRegionTable extends Migration
             $table->integer('region_id')->unsigned();
             $table->foreign('region_id')->references('id')->on('regions');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
