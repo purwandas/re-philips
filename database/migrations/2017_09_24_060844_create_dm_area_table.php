@@ -20,7 +20,6 @@ class CreateDmAreaTable extends Migration
             $table->integer('area_id')->unsigned();
             $table->foreign('area_id')->references('id')->on('areas');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
