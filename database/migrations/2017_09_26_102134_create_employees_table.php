@@ -22,8 +22,7 @@ class CreateEmployeesTable extends Migration
             $table->enum('role', ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'Driver', 'Helper', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'PCE', 'RE Executive', 'RE Support', 'Supervisor', 'Trainer', 'Head Trainer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'Supervisor Hybrid', 'SMD Additional', 'ASC']);
             $table->enum('status', ['stay', 'mobile'])->nullable();
             $table->text('photo')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+            $table->timestamps();            
         });
     }
 

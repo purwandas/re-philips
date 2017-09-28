@@ -97,6 +97,15 @@
                             </ul>
                         </li>
                         <li class="nav-item start active open">
+                            <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
+                                <i class="fa fa-user"></i>
+                                <span class="title">Group Competitor</span>
+                                @if(Request::is('groupcompetitor*'))
+                                    <span class="selected"></span>                 
+                                @endif                                
+                            </a>                            
+                        </li>  
+                        <li class="nav-item start active open">
                             <a href="{{ url('user') }}" class="nav-link nav-toggle">
                                 <i class="fa fa-user"></i>
                                 <span class="title">User</span>
