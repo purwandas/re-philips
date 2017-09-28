@@ -42,5 +42,5 @@ Route::match(['get', 'post'], 'password/email', function(){
 /* Method untuk daftar admin ketika aplikasi first run */
 Route::get('createadmin', 'Auth\OnceController@createAdmin');
 
-/* Method untuk generate region */
-Route::get('createregion', 'Auth\OnceController@createRegion');
+/* Method untuk generate master */
+Route::get('createmaster', 'Auth\OnceController@createMaster');

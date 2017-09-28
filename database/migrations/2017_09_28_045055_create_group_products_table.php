@@ -15,7 +15,9 @@ class CreateGroupProductsTable extends Migration
     {
         Schema::create('group_products', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -11,7 +11,7 @@ class GroupProduct extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'longitude', 'latitude'
+        'name'
     ];
 
     /**
