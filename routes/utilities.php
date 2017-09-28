@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/account', ['as'=> 'data.account','uses'=>'Master\AccountController@getDataWithFilters']);
     Route::post('data/areaapp', ['as'=> 'data.areaapp','uses'=>'Master\AreaAppController@getDataWithFilters']);
     Route::post('data/employee', ['as'=> 'data.employee','uses'=>'Master\EmployeeController@getDataWithFilters']);
+    Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
 
     /**
      * Relation
@@ -51,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('util/existemailuser', ['uses'=>'UtilController@existEmailUser']);    
     Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
+    Route::get('util/empstore/{id}', ['uses'=>'UtilController@getStoreForEmployee']);
     
 });
 

@@ -38,6 +38,11 @@ class Employee extends Model
      *
      */
 
+    public function employeeStores()
+    {
+        return $this->hasMany('App\EmployeeStore', 'employee_id');
+    }
+
 	/**
      * Filtering Branch Sport Berdasarakan Request User
      * @param $query

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Store;
 use App\Employee;
+use App\EmployeeStore;
 
 class UtilController extends Controller
 {
@@ -42,5 +44,14 @@ class UtilController extends Controller
         }
 
         return "true";
+    }
+
+    public function getStoreForEmployee($employeeId){        
+        // $empStore = EmployeeStore::where('employee_id', $employeeId);
+        $empStore = EmployeeStore::where('employee_id', $employeeId);        
+        $empStoreIds = $empStore->pluck('store_id');
+        $store = Store::whereIn('id', $empStoreIds)->get();        
+
+        return response()->json($store);
     }
 }
