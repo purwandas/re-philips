@@ -73,16 +73,29 @@
                                     <span class="selected"></span>                 
                                 @endif                                
                             </a>                            
-                        </li> 
+                        </li>
                         <li class="nav-item start active open">
-                            <a href="{{ url('store') }}" class="nav-link nav-toggle">
+                            <a class="nav-link nav-toggle">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span class="title">Store</span>
-                                @if(Request::is('store*'))
+                                @if(Request::is('store*') || Request::is('place*'))
                                     <span class="selected"></span>                 
-                                @endif                                
-                            </a>                            
-                        </li> 
+                                @endif
+                                <span class="arrow open"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item start {{ Request::is('store*') ? 'open' : '' }}">
+                                    <a href="{{ url('store') }}" class="nav-link ">                        
+                                        <span class="title">Store</span>
+                                    </a>                                    
+                                </li>
+                                <li class="nav-item start {{ Request::is('place*') ? 'open' : '' }}">
+                                    <a href="{{ url('place') }}" class="nav-link ">
+                                        <span class="title">Other Places</span>                                        
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="nav-item start active open">
                             <a href="{{ url('user') }}" class="nav-link nav-toggle">
                                 <i class="fa fa-user"></i>

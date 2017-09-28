@@ -73,6 +73,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('employee/{id}', 'Master\EmployeeController@update');
         Route::delete('employee/{id}', 'Master\EmployeeController@destroy');
 
+        /** Place **/
+        Route::get('place', 'Master\PlaceController@index');        
+        Route::post('place', 'Master\PlaceController@store');
+        Route::get('place/edit/{id}', 'Master\PlaceController@edit');
+        Route::patch('place/{id}', 'Master\PlaceController@update');
+        Route::delete('place/{id}', 'Master\PlaceController@destroy');
+
     });
         
 });
