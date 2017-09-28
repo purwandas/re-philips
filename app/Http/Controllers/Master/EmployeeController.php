@@ -8,6 +8,7 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Employee;
+use App\EmployeeStore;
 use App\Filters\EmployeeFilters;
 
 class EmployeeController extends Controller
@@ -38,8 +39,6 @@ class EmployeeController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(EmployeeFilters $filters){ 
-        // dd($filters->name);
-
         $data = Employee::filter($filters)->get();
 
         return $data;
@@ -97,6 +96,24 @@ class EmployeeController extends Controller
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
         $employee = Employee::create($request->all());
+
+        /* Employee One Store */
+        if($request['store_id']){
+            EmployeeStore::create([
+                'employee_id' => $employee->id,
+                'store_id' => $request['store_id'],
+            ]);
+        }
+
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            foreach ($request['store_ids'] as $storeId) {
+                EmployeeStore::create([
+                    'employee_id' => $employee->id,
+                    'store_id' => $storeId,
+                ]);
+            }
+        }
         
         return response()->json(['url' => url('/employee')]);
     }
@@ -144,6 +161,12 @@ class EmployeeController extends Controller
 
         $employee = Employee::find($id);
 
+        /* Delete if any relation exist in employee store */
+        $empStore = EmployeeStore::where('employee_id', $employee->id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
+
         // Upload file process
         ($request->photo_file != null) ? 
             $photo_url = $this->imageUpload($request->photo_file, "employee/".$this->getRandomPath()) : $photo_url = "";        
@@ -174,7 +197,25 @@ class EmployeeController extends Controller
     	$requestNew['email'] = $request['email'];
     	$requestNew['role'] = $request['role'];
 
-    	$employee->update($requestNew->all());
+    	$employee->update($requestNew->all());        
+
+        /* Employee One Store */
+        if($request['store_id']){
+            EmployeeStore::create([
+                'employee_id' => $employee->id,
+                'store_id' => $request['store_id'],
+            ]);
+        }
+
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            foreach ($request['store_ids'] as $storeId) {
+                EmployeeStore::create([
+                    'employee_id' => $employee->id,
+                    'store_id' => $storeId,
+                ]);
+            }
+        }
 
         return response()->json(
             [
@@ -191,6 +232,13 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
+        /* Deleting related to user */
+        // Employee Store
+        $empStore = EmployeeStore::where('employee_id', $id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
+
         $employee = Employee::destroy($id);
 
         return response()->json($id);

@@ -79,7 +79,7 @@ var FormValidation = function () {
                     },
                     status:{
                         required: "Please select a Status!"
-                    },
+                    }
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit              
@@ -212,7 +212,15 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
-                    // return;
+                    var storesLength = 0;
+                    if($('#stores').val() != null){
+                        storesLength = $('#stores').val().length;
+                    }
+
+                    if(storesLength == 1){
+                        swal("Warning", "Mobile employee must have at least 2 stores.", "warning");
+                        return;
+                    }
 
                     // Using FormData to append file type to form input
                     var formData = new FormData($(form)[0]);

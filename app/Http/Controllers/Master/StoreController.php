@@ -41,7 +41,7 @@ class StoreController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(StoreFilters $filters){        
-        $data = Store::filter($filters)->get();
+        $data = Store::filter($filters)->get();        
 
         return $data;
     }

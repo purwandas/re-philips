@@ -162,6 +162,52 @@
 	                            </div>
 	                        </div>
 	                    </div>
+
+
+	                    <div id="storeContent" class="display-hide">
+		                    <div class="caption padding-caption">
+	                        	<span class="caption-subject font-dark bold uppercase">STORE</span>
+	                        	<hr>
+	                        </div>
+
+	                        <div id="oneStoreContent" class="display-hide">
+		                        <div class="form-group">
+		                          <label class="col-sm-2 control-label">Employee's Store</label>
+		                          <div class="col-sm-9">
+
+		                          <div class="input-group" style="width: 100%;">
+		     
+		                                <select class="select2select" name="store_id" id="store"></select>
+		                                
+		                                <span class="input-group-addon display-hide">
+		                                    <i class="fa"></i>
+		                                </span>
+
+		                            </div>
+		                            
+		                          </div>
+		                        </div>
+	                        </div>
+
+	                        <div id="multipleStoreContent" class="display-hide">
+		                        <div class="form-group">
+		                          <label class="col-sm-2 control-label">Employee's Store</label>
+		                          <div class="col-sm-9">
+
+		                          <div class="input-group" style="width: 100%;">
+		     
+		                                <select class="select2select" name="store_ids[]" id="stores" multiple="multiple"></select>
+		                                
+		                                <span class="input-group-addon display-hide">
+		                                    <i class="fa"></i>
+		                                </span>
+
+		                            </div>
+		                            
+		                          </div>
+		                        </div>
+	                        </div>
+	                    </div>
 				        
 
 				        <div class="caption padding-caption">
@@ -259,6 +305,26 @@
 	            }
 	        });   
 
+	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	            return filterData('store', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                })
+	            }
+	        }));
+
+	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	            return filterData('store', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                })
+	            }
+	        }));
+
 	       	$('#role').select2({
                 width: '100%',
                 placeholder: 'Role'
@@ -268,7 +334,7 @@
 
 		});
 
-		// Reset dm and rsm
+		// Reset status
 		function resetForm(){
 
 			$('#statusContent').each(function(){
@@ -277,14 +343,14 @@
 
 			$('#statusContent').children('.form-group').removeClass('has-error');
 			$('#statusContent').addClass('display-hide');
-		}
+		}	
 
-		// Set and init dm and rsm
+		// Set and init employee status
 		function setForm(role){
 
 			checkPromoter();
-
-			resetForm();			
+			resetForm();
+			resetStore();						
 
 			if(isPromoter == 1){
 				$('#statusContent').removeClass('display-hide');
@@ -292,7 +358,73 @@
 				$('#statusContent').each(function(){
 	                $(this).find('input').attr('required', 'required');
 	            });
+
+	            //Set Store
+			    var status = $('input[type=radio][name=status]:checked').val();
+
+			    if(!(typeof(status) === 'undefined')){
+			    	setStore(status);
+		    	}
 			}
+		}
+
+		// Reset store
+		function resetStore(){
+
+			$('#store').removeAttr('required');
+			$('#stores').removeAttr('required');
+
+			$('#storeContent').children('.form-group').removeClass('has-error');
+			$('#storeContent').addClass('display-hide');
+			$('#oneStoreContent').addClass('display-hide');
+			$('#multipleStoreContent').addClass('display-hide');
+
+			// Reset selection
+			if($('input[name=_method]').val() != "PATCH"){
+				select2Reset($('#store'));
+				select2Reset($('#stores'));
+			}
+
+			if($('input[name=_method]').val() == "PATCH"){
+				updateStore();
+			}
+		}
+
+		function updateStore(){
+			var oldStatus = "{{ @$data->status }}";
+			var getDataUrl = "{{ url('util/empstore/') }}";
+			var status = $('input[type=radio][name=status]:checked').val();
+
+			$.get(getDataUrl + '/' + employeeId, function (data) {
+                    var element = $("#store");
+                    if(status == 'mobile'){
+                    	element = $("#stores");
+                    }
+
+                    select2Reset($('#store'));
+                    select2Reset($('#stores'));
+
+                    if(oldStatus == status){                    	
+	                    $.each(data, function() {
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+						});
+                	}
+
+        	})
+		}
+
+		// Set and init store select2
+		function setStore(value){			
+
+			$('#storeContent').removeClass('display-hide');				
+
+			if(value == 'stay'){			
+				$('#oneStoreContent').removeClass('display-hide');
+	            $('#store').attr('required', 'required');
+			}else if(value == 'mobile'){	
+				$('#multipleStoreContent').removeClass('display-hide');			
+	            $('#stores').attr('required', 'required');
+			}			
 		}
 
 		/*
@@ -300,9 +432,9 @@
 		 *
 		 */ 
 
-		$(document.body).on("change","#role",function(){
+		$(document.body).on("change","#role",function(){			
 							
-		    setForm($('#role').val());
+		    setForm($('#role').val());		
 		    
 		});	 
 
@@ -315,6 +447,14 @@
 				isPromoter = 1;
 			}
 		}
+
+		// On Change status
+		$(document).ready(function() {
+		    $('input[type=radio][name=status]').change(function() {
+		        resetStore();
+		        setStore(this.value);
+		    });
+		});
 
 	</script>
 	
