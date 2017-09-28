@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
-use App\Filters\AreaFilters;
+use App\Filters\GroupCompetitorFilters;
 use App\Traits\StringTrait;
 use DB;
-use App\Area;
+use App\GroupCompetitor;
 
-class AreaController extends Controller
+class GroupCompetitorController extends Controller
 {
-    //
     use StringTrait;
 
     /**
@@ -22,7 +21,7 @@ class AreaController extends Controller
      */
     public function index()
     {
-        return view('master.area');
+        return view('master.groupcompetitor');
     }
 
     /**
@@ -32,16 +31,16 @@ class AreaController extends Controller
      */
     public function masterDataTable(){
 
-        $data = Area::where('areas.deleted_at', null)
-                    ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->select('areas.*', 'regions.name as region_name')->get();
+        $data = GroupCompetitor::where('group_competitors.deleted_at', null)
+        			->join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
+                    ->select('group_competitors.*', 'group_products.name as groupproduct_name')->get();
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(AreaFilters $filters){        
-        $data = Area::filter($filters)->get();
+    public function getDataWithFilters(GroupCompetitorFilters $filters){        
+        $data = GroupCompetitor::filter($filters)->get();
 
         return $data;
     }
@@ -53,7 +52,7 @@ class AreaController extends Controller
            		->addColumn('action', function ($item) {
 
                    return 
-                    "<a href='#area' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-area'><i class='fa fa-pencil'></i></a>
+                    "<a href='#groupcompetitor' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-groupcompetitor'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
@@ -84,12 +83,13 @@ class AreaController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'region_id' => 'required',
+            'kategori' => 'string|max:255',
+            'groupproduct_id' => 'required'
             ]);
 
-       	$area = Area::create($request->all());
+       	$groupcompetitor = GroupCompetitor::create($request->all());
         
-        return response()->json(['url' => url('/area')]);
+        return response()->json(['url' => url('/groupcompetitor')]);
     }
 
     /**
@@ -111,9 +111,8 @@ class AreaController extends Controller
      */
     public function edit($id)
     {
-        $data = Area::with('region')->where('id', $id)->first();
+        $data = GroupCompetitor::with('groupProduct')->where('id', $id)->first();
 
-        // return view('master.form.area-form', compact('data'));
         return response()->json($data);
     }
 
@@ -128,13 +127,14 @@ class AreaController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'region_id' => 'required',
+            'kategori' => 'string|max:255',
+            'groupproduct_id' => 'required'
             ]);
 
-        $area = Area::find($id)->update($request->all());
+        $groupcompetitor = GroupCompetitor::find($id)->update($request->all());
 
         return response()->json(
-            ['url' => url('/area'), 'method' => $request->_method]);  
+            ['url' => url('/groupcompetitor'), 'method' => $request->_method]);  
     }
 
     /**
@@ -145,7 +145,7 @@ class AreaController extends Controller
      */
     public function destroy($id)
     {
-        $area = Area::destroy($id);
+        $groupcompetitor = GroupCompetitor::destroy($id);
 
         return response()->json($id);
     }

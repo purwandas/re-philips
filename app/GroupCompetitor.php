@@ -6,36 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class Employee extends Model
+class GroupCompetitor extends Model
 {
+    use SoftDeletes;
 
-    //
     protected $fillable = [
-        'nik', 'name', 'email', 'status', 'role', 'password', 'photo'
+        'name', 'kategori', 'groupproduct_id'
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $hidden = [
-        'password'
-    ];
+    protected $dates = ['deleted_at'];
 
-	/* Metode tambahan untuk model Branch Sport. */
+    /* Metode tambahan untuk model. */
 
-	/**
+    /**
      * Relation Method(s).
      *
      */
 
-    public function employeeStores()
+    public function groupProduct()
     {
-        return $this->hasMany('App\EmployeeStore', 'employee_id');
+        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
     }
 
-	/**
+    /**
      * Filtering Branch Sport Berdasarakan Request User
      * @param $query
      * @param QueryFilters $filters

@@ -80,6 +80,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('place/{id}', 'Master\PlaceController@update');
         Route::delete('place/{id}', 'Master\PlaceController@destroy');
 
+        /** Group Competitor **/
+        Route::get('groupcompetitor', 'Master\GroupCompetitorController@index');        
+        Route::post('groupcompetitor', 'Master\GroupCompetitorController@store');
+        Route::get('groupcompetitor/edit/{id}', 'Master\GroupCompetitorController@edit');
+        Route::patch('groupcompetitor/{id}', 'Master\GroupCompetitorController@update');
+        Route::delete('groupcompetitor/{id}', 'Master\GroupCompetitorController@destroy');
+
     });
         
 });

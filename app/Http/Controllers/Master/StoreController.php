@@ -9,6 +9,7 @@ use App\Filters\StoreFilters;
 use App\Traits\StringTrait;
 use DB;
 use App\Store;
+use App\EmployeeStore;
 
 class StoreController extends Controller
 {    
@@ -154,6 +155,13 @@ class StoreController extends Controller
      */
     public function destroy($id)
     {
+        /* Deleting related to user */
+        // Employee Store
+        $empStore = EmployeeStore::where('store_id', $id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
+
         $store = Store::destroy($id);
 
         return response()->json($id);

@@ -111,6 +111,8 @@
         $('#storeTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
+                
+
                 swal({
                     title: "Are you sure?",
                     text: "You will not be able to recover data!",

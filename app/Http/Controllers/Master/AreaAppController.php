@@ -84,7 +84,7 @@ class AreaAppController extends Controller
     	// return $request->all();
 
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'area_id' => 'required',
             ]);
 
@@ -127,7 +127,7 @@ class AreaAppController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'area_id' => 'required',
             ]);
 

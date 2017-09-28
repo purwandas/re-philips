@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/employee', ['as'=> 'datatable.employee','uses'=>'Master\EmployeeController@masterDataTable']);
     Route::post('datatable/store', ['as'=> 'datatable.store','uses'=>'Master\StoreController@masterDataTable']);
     Route::post('datatable/place', ['as'=> 'datatable.place','uses'=>'Master\PlaceController@masterDataTable']);
+    Route::post('datatable/groupcompetitor', ['as'=> 'datatable.groupcompetitor','uses'=>'Master\GroupCompetitorController@masterDataTable']);
 
     /**
      * Data with filter (select2, list)
@@ -35,6 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/areaapp', ['as'=> 'data.areaapp','uses'=>'Master\AreaAppController@getDataWithFilters']);
     Route::post('data/employee', ['as'=> 'data.employee','uses'=>'Master\EmployeeController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
+    Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
 
     /**
      * Relation
