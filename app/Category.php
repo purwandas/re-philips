@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class GroupProduct extends Model
+class Category extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'name'
+        'name', 'group_id'
     ];
 
     /**
@@ -28,14 +28,9 @@ class GroupProduct extends Model
      *
      */
 
-    public function groups()
+    public function group()
     {
-        return $this->hasMany('App\Group', 'groupproduct_id');
-    }
-
-    public function groupCompetitors()
-    {
-        return $this->hasMany('App\GroupCompetitor', 'groupproduct_id');
+        return $this->belongsTo('App\Group', 'group_id');
     }
 
     /**

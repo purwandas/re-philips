@@ -9,23 +9,19 @@ use App\DmArea;
 use App\Account;
 use App\Store;
 use App\Employee;
+use App\Category;
+use App\Product;
 
 class RelationController extends Controller
 {
     //
-    public function areaAreaAppsRelation(Request $request){
+    public function areaAppsAreaRelation(Request $request){
     	$countAreaApps = AreaApp::where('area_id', $request->areaId)->count();
 
         return response()->json($countAreaApps);
     }
 
-    public function areaDmRelation(Request $request){
-    	$countDm = DmArea::where('area_id', $request->areaId)->count();
-
-        return response()->json($countDm);
-    }
-
-    public function accountTypeAccountRelation(Request $request){
+    public function accountAccountTypeRelation(Request $request){
     	$countAccount = Account::where('accounttype_id', $request->accountTypeId)->count();
 
         return response()->json($countAccount);
@@ -56,6 +52,18 @@ class RelationController extends Controller
         }
 
         return response()->json($countStore);
+    }
+
+    public function categoryGroupRelation(Request $request){
+        $countCategory = Category::where('group_id', $request->groupId)->count();
+
+        return response()->json($countCategory);
+    }
+
+    public function productCategoryRelation(Request $request){
+        $countProduct = Product::where('category_id', $request->categoryId)->count();
+
+        return response()->json($countProduct);
     }
     
 }

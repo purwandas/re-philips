@@ -87,6 +87,28 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('groupcompetitor/{id}', 'Master\GroupCompetitorController@update');
         Route::delete('groupcompetitor/{id}', 'Master\GroupCompetitorController@destroy');
 
+        /** Group **/
+        Route::get('group', 'Master\GroupController@index');        
+        Route::post('group', 'Master\GroupController@store');
+        Route::get('group/edit/{id}', 'Master\GroupController@edit');
+        Route::patch('group/{id}', 'Master\GroupController@update');
+        Route::delete('group/{id}', 'Master\GroupController@destroy');
+
+        /** Category **/
+        Route::get('category', 'Master\CategoryController@index');        
+        Route::post('category', 'Master\CategoryController@store');
+        Route::get('category/edit/{id}', 'Master\CategoryController@edit');
+        Route::patch('category/{id}', 'Master\CategoryController@update');
+        Route::delete('category/{id}', 'Master\CategoryController@destroy');
+
+        /** Product **/
+        Route::get('product', 'Master\ProductController@index');        
+        Route::post('product', 'Master\ProductController@store');
+        Route::get('product/edit/{id}', 'Master\ProductController@edit');
+        Route::patch('product/{id}', 'Master\ProductController@update');
+        Route::delete('product/{id}', 'Master\ProductController@destroy');
+
+
     });
         
 });

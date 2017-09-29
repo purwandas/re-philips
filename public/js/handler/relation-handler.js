@@ -1,8 +1,13 @@
 // Check all relation
-function areaAreaAppsRelation(areaId) {
+/*
+ * CHILD -> PARENT (PARENT ID)
+ *
+ */
+
+function areaAppsAreaRelation(areaId) {
     return JSON.parse($.ajax({
         type: 'POST',
-        url: 'relation/areaareaapps',
+        url: 'relation/areaaappsarea',
         dataType: 'json',
         data: { areaId: areaId },
         global: false,
@@ -13,24 +18,10 @@ function areaAreaAppsRelation(areaId) {
     }).responseText);
 }
 
-function areaDmRelation(areaId) {
+function accountAccountTypeRelation(accountTypeId) {
     return JSON.parse($.ajax({
         type: 'POST',
-        url: 'relation/areadm',
-        dataType: 'json',
-        data: { areaId: areaId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function accountTypeAccountRelation(accountTypeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/accounttypeaccount',
+        url: 'relation/accountaccounttype',
         dataType: 'json',
         data: { accountTypeId: accountTypeId },
         global: false,
@@ -75,6 +66,34 @@ function storeSpvRelation(employeeId) {
         url: 'relation/storespv',
         dataType: 'json',
         data: { employeeId: employeeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function categoryGroupRelation(groupId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/categorygroup',
+        dataType: 'json',
+        data: { groupId: groupId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productCategoryRelation(categoryId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productcategory',
+        dataType: 'json',
+        data: { categoryId: categoryId },
         global: false,
         async: false,
         success: function (data) {

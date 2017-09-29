@@ -97,6 +97,33 @@
                             </ul>
                         </li>
                         <li class="nav-item start active open">
+                            <a class="nav-link nav-toggle">
+                                <i class="fa fa-share-alt"></i>
+                                <span class="title">Product</span>
+                                @if(Request::is('group') || Request::is('category*') || Request::is('product*'))
+                                    <span class="selected"></span>                 
+                                @endif
+                                <span class="arrow open"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item start {{ Request::is('group') ? 'open' : '' }}">
+                                    <a href="{{ url('group') }}" class="nav-link ">                        
+                                        <span class="title">Product Group</span>
+                                    </a>                                    
+                                </li>
+                                <li class="nav-item start {{ Request::is('category*') ? 'open' : '' }}">
+                                    <a href="{{ url('category') }}" class="nav-link ">                        
+                                        <span class="title">Product Category</span>
+                                    </a>                                    
+                                </li>
+                                <li class="nav-item start {{ Request::is('product*') ? 'open' : '' }}">
+                                    <a href="{{ url('product') }}" class="nav-link ">
+                                        <span class="title">Product</span>                                        
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item start active open">
                             <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
                                 <i class="fa fa-user"></i>
                                 <span class="title">Group Competitor</span>

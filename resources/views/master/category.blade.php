@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> Account Type
-    <small>Manage Account Type</small>
+<h1 class="page-title"> Category
+    <small>Manage Category</small>
 </h1>
 <div class="page-bar">
     <ul class="page-breadcrumb">
@@ -12,7 +12,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>Account Type Management</span>
+            <span>Category Management</span>
         </li>
     </ul>                        
 </div>
@@ -26,8 +26,8 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-share-alt font-green"></i>
-                    <span class="caption-subject font-green sbold uppercase">ACCOUNT TYPE</span>
+                    <i class="fa fa-map-o font-green"></i>
+                    <span class="caption-subject font-green sbold uppercase">CATEGORY</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
@@ -39,19 +39,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="btn-group">
-                                    <a id="add-accounttype" class="btn green" data-toggle="modal" href="#accounttype"><i
-                                        class="fa fa-plus"></i> Add Account Type </a>
+                                    <a id="add-category" class="btn green" data-toggle="modal" href="#category"><i
+                                        class="fa fa-plus"></i> Add Category </a>
 
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <table class="table table-striped table-hover table-bordered" id="accountTypeTable" style="white-space: nowrap;">
+                    <table class="table table-striped table-hover table-bordered" id="categoryTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
                                 <th> No. </th>                            
-                                <th> Account Type Name </th>
+                                <th> Category Name </th> 
+                                <th> Group </th>                           
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -59,7 +60,7 @@
 
                 </div>
 
-                @include('partial.modal.account-type-modal')
+                @include('partial.modal.category-modal')
 
                 <!-- END MAIN CONTENT -->
             </div>
@@ -71,17 +72,19 @@
 
 @section('additional-scripts')
 
+<!-- BEGIN SELECT2 SCRIPTS -->
+<script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
+<!-- END SELECT2 SCRIPTS -->
 <!-- BEGIN RELATION SCRIPTS -->
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
-<script src="{{ asset('js/handler/account-type-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/handler/category-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
-
     /*
-     * AREA
+     *
      *
      */
     $(document).ready(function () {                
@@ -93,32 +96,33 @@
         });
 
         // Set data for Data Table
-        var table = $('#accountTypeTable').dataTable({
+        var table = $('#categoryTable').dataTable({
             "processing": true,
             "serverSide": true,           
             "ajax": {
-                url: "{{ route('datatable.accounttype') }}",
+                url: "{{ route('datatable.category') }}",
                 type: 'POST',
             },
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
-                {data: 'name', name: 'name'},
+                {data: 'name', name: 'name'},        
+                {data: 'group_name', name: 'group_name'},                       
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [2]},
+                {"className": "dt-center", "targets": [3]},
             ],
             "order": [ [0, 'desc'] ],
         });
 
 
         // Delete data with sweet alert
-        $('#accountTypeTable').on('click', 'tr td button.deleteButton', function () {
+        $('#categoryTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
-                if(accountAccountTypeRelation(id) > 0){
+                if(productCategoryRelation(id) > 0){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
                 }
@@ -146,7 +150,7 @@
                         $.ajax({
 
                             type: "DELETE",
-                            url:  'accounttype/' + id,
+                            url:  'category/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
                             },
@@ -162,21 +166,25 @@
                 });
         });
 
+
+        initSelect2();
+
     });
 
     // Init add form
-    $(document).on("click", "#add-accounttype", function () {       
+    $(document).on("click", "#add-category", function () {       
         
         resetValidation();
 
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
-        $('#name').val('');
+        $('#name').val('');        
+        select2Reset($("#group"));
 
         // Set action url form for add
-        var postDataUrl = "{{ url('accounttype') }}";    
-        $("#form_accounttype").attr("action", postDataUrl);
+        var postDataUrl = "{{ url('category') }}";    
+        $("#form_category").attr("action", postDataUrl);
 
         // Delete Patch Method if Exist
         if($('input[name=_method]').length){
@@ -187,32 +195,53 @@
 
 
     // For editing data
-    $(document).on("click", ".edit-accounttype", function () {
+    $(document).on("click", ".edit-category", function () {
 
         resetValidation();       
         
         var modalTitle = document.getElementById('title');
-        modalTitle.innerHTML = "EDIT ";
+        modalTitle.innerHTML = "EDIT";
 
         var id = $(this).data('id');
-        var getDataUrl = "{{ url('accounttype/edit/') }}";
-        var postDataUrl = "{{ url('accounttype') }}"+"/"+id;        
+        var getDataUrl = "{{ url('category/edit/') }}";
+        var postDataUrl = "{{ url('category') }}"+"/"+id;        
 
         // Set action url form for update        
-        $("#form_accounttype").attr("action", postDataUrl);
+        $("#form_category").attr("action", postDataUrl);
 
         // Set Patch Method
         if(!$('input[name=_method]').length){
-            $("#form_accounttype").append("<input type='hidden' name='_method' value='PATCH'>");
+            $("#form_category").append("<input type='hidden' name='_method' value='PATCH'>");
         }
 
         $.get(getDataUrl + '/' + id, function (data) {
 
                     $('#name').val(data.name);
+                    setSelect2IfPatchModal($("#group"), data.group_id, data.group.name);
 
         })
 
     });
+
+    function initSelect2(){
+
+        /*
+         * Select 2 init
+         *
+         */
+
+        $('#group').select2(setOptions('{{ route("data.group") }}', 'Group', function (params) {            
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {                                
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+
+    }
+
 
 </script>
 @endsection

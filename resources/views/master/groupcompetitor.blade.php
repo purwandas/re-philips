@@ -214,8 +214,6 @@
 
         $.get(getDataUrl + '/' + id, function (data) {
 
-                    console.log(data);
-
                     $('#name').val(data.name);
                     if(data.kategori != null){
                         $('#kategori').val(data.kategori);

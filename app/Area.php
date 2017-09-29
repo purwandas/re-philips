@@ -40,7 +40,7 @@ class Area extends Model
     }
 
 	/**
-     * Filtering Branch Sport Berdasarakan Request User
+     * Filtering Berdasarakan Request User
      * @param $query
      * @param QueryFilters $filters
      * @return \Illuminate\Database\Eloquent\Builder
