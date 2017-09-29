@@ -1,12 +1,12 @@
 <!-- BEGIN MODAL POPUP -->
-<div id="groupcompetitor" class="modal container fade" tabindex="false" data-width="760" role="dialog">
+<div id="group" class="modal container fade" tabindex="false" data-width="760" role="dialog">
     <div class="modal-header" style="margin-top: 30px;margin-left: 30px;margin-right: 30px;">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><b><span id="title">ADD NEW</span> AREA</b></h4>
+        <h4 class="modal-title"><b><span id="title">ADD NEW</span> GROUP</b></h4>
     </div>
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
         
-        <form id="form_groupcompetitor" class="form-horizontal" action="{{ url('groupcompetitor') }}" method="POST">                
+        <form id="form_group" class="form-horizontal" action="{{ url('group') }}" method="POST">                
                     {{ csrf_field() }}
                     @if (!empty($data))
                       {{ method_field('PATCH') }}
@@ -23,7 +23,7 @@
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="name" name="name" class="form-control" placeholder="Input Group Competitor Name" data-tooltip="true" />
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Input Group Name" data-tooltip="true" />
                             </div>
                           </div>
                         </div>
@@ -43,29 +43,7 @@
                             </div>
                             
                           </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="col-sm-3 control-label">Category</label>
-                          <div class="col-sm-8">
-
-                          <div class="input-group" style="width: 100%;">
-             
-                                        <select class="select2select" name="kategori" id="kategori">
-                                          <!-- <option value="SPV" {{ (@$data->role == 'SPV') ? "selected" : "" }}>SPV</option> -->
-                                          <option value="Male Grooming" {{ (@$data->role == 'Male Grooming') ? "selected" : "" }}>Male Grooming</option>
-                                          <option value="Beauty" {{ (@$data->role == 'Beauty') ? "selected" : "" }}>Beauty</option>
-
-                                        </select>
-                                        
-                                        <span class="input-group-addon display-hide">
-                                          <i class="fa"></i>
-                                        </span>
-
-                              </div>
-                            
-                          </div>
-                        </div>                                                   
+                        </div>                                                 
 
                         <div class="form-group" style="padding-top: 15pt;">
                           <div class="col-sm-8 col-sm-offset-3">
@@ -75,7 +53,6 @@
 
                     </div>
                 </form>
-
 
     </div>
     <div class="modal-footer" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">

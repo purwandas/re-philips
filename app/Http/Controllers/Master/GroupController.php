@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
-use App\Filters\AreaFilters;
+use App\Filters\GroupFilters;
 use App\Traits\StringTrait;
 use DB;
-use App\Area;
-use App\DmArea;
+use App\Group;
 
-class AreaController extends Controller
+class GroupController extends Controller
 {
-    //
     use StringTrait;
 
     /**
@@ -23,7 +21,7 @@ class AreaController extends Controller
      */
     public function index()
     {
-        return view('master.area');
+        return view('master.group');
     }
 
     /**
@@ -33,16 +31,16 @@ class AreaController extends Controller
      */
     public function masterDataTable(){
 
-        $data = Area::where('areas.deleted_at', null)
-                    ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->select('areas.*', 'regions.name as region_name')->get();
+        $data = Group::where('groups.deleted_at', null)
+        			->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                    ->select('groups.*', 'group_products.name as groupproduct_name')->get();
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(AreaFilters $filters){        
-        $data = Area::filter($filters)->get();
+    public function getDataWithFilters(GroupFilters $filters){        
+        $data = Group::filter($filters)->get();
 
         return $data;
     }
@@ -54,7 +52,7 @@ class AreaController extends Controller
            		->addColumn('action', function ($item) {
 
                    return 
-                    "<a href='#area' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-area'><i class='fa fa-pencil'></i></a>
+                    "<a href='#group' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-group'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
@@ -85,12 +83,12 @@ class AreaController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'region_id' => 'required',
+            'groupproduct_id' => 'required'
             ]);
 
-       	$area = Area::create($request->all());
+       	$group = Group::create($request->all());
         
-        return response()->json(['url' => url('/area')]);
+        return response()->json(['url' => url('/group')]);
     }
 
     /**
@@ -112,9 +110,8 @@ class AreaController extends Controller
      */
     public function edit($id)
     {
-        $data = Area::with('region')->where('id', $id)->first();
+        $data = Group::with('groupProduct')->where('id', $id)->first();
 
-        // return view('master.form.area-form', compact('data'));
         return response()->json($data);
     }
 
@@ -129,13 +126,13 @@ class AreaController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'region_id' => 'required',
+            'groupproduct_id' => 'required'
             ]);
 
-        $area = Area::find($id)->update($request->all());
+        $group = Group::find($id)->update($request->all());
 
         return response()->json(
-            ['url' => url('/area'), 'method' => $request->_method]);  
+            ['url' => url('/group'), 'method' => $request->_method]);  
     }
 
     /**
@@ -146,14 +143,7 @@ class AreaController extends Controller
      */
     public function destroy($id)
     {
-        /* Deleting related to area */
-        // DM AREA 
-        $dmArea = DmArea::where('area_id', $id);
-        if($dmArea->count() > 0){
-            $dmArea->delete();
-        }
-
-        $area = Area::destroy($id);
+        $group = Group::destroy($id);
 
         return response()->json($id);
     }
