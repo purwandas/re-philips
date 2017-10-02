@@ -14,14 +14,15 @@ var FormValidation = function () {
             var rules = {};
 
             // Rules if add new
+            rules['nik']  = { digits: true };
             rules['name']  = { minlength: 2, required: true };
             rules['email'] = { 
                                 required: true,
-                                email: true,
+                                validate_email: true,
                                 remote: {
                                     type: "POST",
-                                    global: false,
-                                    async: false,
+                                    // global: false, 
+                                    // async: false,
                                     url: "../util/existemailuser",
                                     data: {
                                       email: function() {
@@ -40,11 +41,11 @@ var FormValidation = function () {
                 
                 rules['email'] = { 
                                     required: true,
-                                    email: true,
+                                    validate_email: true,
                                     remote: {
                                         type: "POST",
-                                        global: false,
-                                        async: false,
+                                        // global: false, // --> penyebab error masih update padahal required
+                                        // async: false,
                                         url: "../../util/existemailuser",
                                         data: {
                                           email: function() {
@@ -223,6 +224,16 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
+                    // Check if employee is mobile and just select one store
+                    if($('#stores').val() != null){
+                        var storesLength = $('#stores').val().length;
+
+                        if(storesLength == 1){
+                            swal("Warning", "Mobile employee must have at least 2 stores.", "warning");
+                            return;
+                        }
+                    }
+
                     // Using FormData to append file type to form input
                     var formData = new FormData($(form)[0]);
 
@@ -394,3 +405,18 @@ $(document.body).on("change",".select2select",function(){
     select2Change($(this), $('#form_user'));
     
 });
+
+/*
+ * Add custom email validation
+ *
+ */ 
+
+jQuery.validator.addMethod("validate_email",function(value, element) {
+
+    if(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( value )){
+     return true;
+    }
+    else{
+     return false;
+    }    
+},"Please enter a valid Email.");

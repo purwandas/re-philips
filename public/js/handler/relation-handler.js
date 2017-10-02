@@ -60,12 +60,12 @@ function storeAreaAppRelation(areaAppId) {
     }).responseText);
 }
 
-function storeSpvRelation(employeeId) {
+function storeSpvRelation(userId) {
     return JSON.parse($.ajax({
         type: 'POST',
         url: 'relation/storespv',
         dataType: 'json',
-        data: { employeeId: employeeId },
+        data: { userId: userId },
         global: false,
         async: false,
         success: function (data) {

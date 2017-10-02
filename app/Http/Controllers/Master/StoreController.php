@@ -33,9 +33,12 @@ class StoreController extends Controller
 
         $data = Store::where('stores.deleted_at', null)
         			->join('accounts', 'stores.account_id', '=', 'accounts.id')
+                    ->join('account_types', 'accounts.accounttype_id', '=', 'account_types.id')
                     ->join('area_apps', 'stores.areaapp_id', '=', 'area_apps.id')
-                    ->join('employees', 'stores.employee_id', '=', 'employees.id')
-                    ->select('stores.*', 'accounts.name as account_name', 'area_apps.name as areaapp_name', 'employees.name as spv_name')->get();
+                    ->join('areas', 'area_apps.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'stores.user_id', '=', 'users.id')
+                    ->select('stores.*', 'accounts.name as account_name', 'account_types.name as accounttype_name', 'area_apps.name as areaapp_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
 
         return $this->makeTable($data);
     }
@@ -89,7 +92,7 @@ class StoreController extends Controller
             'channel' => 'required',
             'account_id' => 'required',
             'areaapp_id' => 'required',
-            'employee_id' => 'required'
+            'user_id' => 'required'
         ]);
 
         $store = Store::create($request->all());
@@ -138,7 +141,7 @@ class StoreController extends Controller
             'channel' => 'required',
             'account_id' => 'required',
             'areaapp_id' => 'required',
-            'employee_id' => 'required'
+            'user_id' => 'required'
         ]);
 
         $store = Store::find($id)->update($request->all());
@@ -167,3 +170,4 @@ class StoreController extends Controller
         return response()->json($id);
     }
 }
+

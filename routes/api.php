@@ -15,21 +15,16 @@ use Illuminate\Http\Request;
 
 /* No Authentication Route */
 
-Route::get('athletes', 'Api\AthleteControllers@index');
-Route::get('countries', 'Api\CountriesController@index');
-Route::get('branch_sports', 'Api\BranchSportController@index');
-Route::get('tour', 'Api\TourController@index');
-Route::post('nearby_competition', 'Api\BranchSportController@nearby_competition');
-Route::post('nearby_tour', 'Api\TourController@nearby_competition');
+Route::get('tes', 'Api\AuthController@tes');
 
 /* JWT Authentication */
 
-Route::post('auth/login', 'Api\AuthController@authenticate');
+Route::post('login', 'Api\AuthController@login');
 
 /* End point module(s) */
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 	  
-	Route::get('/getUser', 'Api\AuthController@getAuthenticatedUser');
+	Route::get('/user', 'Api\AuthController@getUser');
 
 });

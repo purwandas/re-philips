@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/accounttype', ['as'=> 'data.accounttype','uses'=>'Master\AccountTypeController@getDataWithFilters']);
     Route::post('data/account', ['as'=> 'data.account','uses'=>'Master\AccountController@getDataWithFilters']);
     Route::post('data/areaapp', ['as'=> 'data.areaapp','uses'=>'Master\AreaAppController@getDataWithFilters']);
-    Route::post('data/employee', ['as'=> 'data.employee','uses'=>'Master\EmployeeController@getDataWithFilters']);
+    Route::post('data/employee', ['as'=> 'data.employee','uses'=>'UserController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);

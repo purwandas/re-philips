@@ -8,9 +8,9 @@ use App\AreaApp;
 use App\DmArea;
 use App\Account;
 use App\Store;
-use App\Employee;
 use App\Category;
 use App\Product;
+use App\User;
 
 class RelationController extends Controller
 {
@@ -41,13 +41,13 @@ class RelationController extends Controller
 
     public function storeSpvRelation(Request $request){
 
-        $employee = Employee::find($request->employeeId);
+        $user = User::find($request->userId);
 
         $countStore = 0;
 
-        if($employee->role == 'Supervisor'){
+        if($user->role == 'Supervisor'){
 
-            $countStore = Store::where('employee_id', $request->employeeId)->count();
+            $countStore = Store::where('user_id', $request->userId)->count();
 
         }
 

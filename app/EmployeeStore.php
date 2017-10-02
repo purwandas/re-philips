@@ -9,7 +9,7 @@ class EmployeeStore extends Model
 {
     //
     protected $fillable = [
-        'employee_id', 'store_id', 
+        'user_id', 'store_id', 
     ];
 
 	/* Metode tambahan untuk model Branch Sport. */
@@ -19,9 +19,9 @@ class EmployeeStore extends Model
      *
      */
 
-	public function employee()
+	public function user()
     {
-        return $this->belongsTo('App\Employee', 'employee_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
     public function store()

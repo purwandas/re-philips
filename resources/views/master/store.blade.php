@@ -51,9 +51,12 @@
                             <th> Store ID </th>
                             <th> Store Name 1 </th>
                             <th> Store Name 2 </th>
+                            <th> Region </th>
+                            <th> Area </th>
                             <th> Area RE Apps </th>
                             <th> Channel </th>
                             <th> Account </th>                            
+                            <th> Account Type</th>                            
                             <th> Supervisor </th>
                             <th> Options </th>                        
                         </tr>
@@ -93,9 +96,12 @@
                 {data: 'store_id', name: 'store_id'},
                 {data: 'store_name_1', name: 'store_name_1'},
                 {data: 'store_name_2', name: 'store_name_2'},
+                {data: 'region_name', name: 'region_name'},
+                {data: 'area_name', name: 'area_name'},
                 {data: 'areaapp_name', name: 'areaapp_name'},
                 {data: 'channel', name: 'channel'},
                 {data: 'account_name', name: 'account_name'},
+                {data: 'accounttype_name', name: 'accounttype_name'},
                 {data: 'spv_name', name: 'spv_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ],

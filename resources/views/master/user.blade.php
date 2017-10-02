@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> User
-	<small>Manage User</small>
+<h1 class="page-title"> Employee
+	<small>Manage Employee</small>
 </h1>
 <div class="page-bar">
 	<ul class="page-breadcrumb">
@@ -12,7 +12,7 @@
 			<i class="fa fa-angle-right"></i>
 		</li>
 		<li>
-			<span>User Management</span>
+			<span>Employee Management</span>
 		</li>
 	</ul>                        
 </div>
@@ -27,7 +27,7 @@
 			<div class="portlet-title">
 				<div class="caption">
 					<i class="fa fa-user font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">USER</span>
+					<span class="caption-subject font-green sbold uppercase">EMPLOYEE</span>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
@@ -37,7 +37,7 @@
                     	<div class="col-md-6">
                         	<div class="btn-group">
                              	<a class="btn green" href="{{ url('user/create') }}"><i
-									class="fa fa-plus"></i> Add User </a>
+									class="fa fa-plus"></i> Add Employee </a>
                                 
                             </div>
                     	</div>
@@ -48,9 +48,10 @@
                 	<thead>
                     	<tr>
                     		<th> No. </th>
-                            <th> Username </th>
-                            <th> Email </th>
+                            <th> NIK </th>
+                            <th> Name </th>
                         	<th> Role </th>
+                            <th> Status </th>
                             <th> Options </th>                             
                         </tr>
                     </thead>
@@ -65,6 +66,10 @@
 @endsection
 
 @section('additional-scripts')
+
+<!-- BEGIN PAGE VALIDATION SCRIPTS -->
+    <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
+    <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
 	$(document).ready(function () {    	
@@ -85,15 +90,16 @@
             },
 	        "rowId": "id",
 	        "columns": [
-	            {data: 'id', name: 'id'},                
+	            {data: 'id', name: 'id'}, 
+                {data: 'nik', name: 'nik'},               
 	            {data: 'name', name: 'name'},
-                {data: 'email', name: 'email'},
                 {data: 'role', name: 'role'},
+                {data: 'status', name: 'status'},
 	            {data: 'action', name: 'action', searchable: false, sortable: false},                
 	        ],
 	        "columnDefs": [
         		{"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [5]},
       		],
             "order": [ [0, 'desc'] ],            
     	});
@@ -102,6 +108,11 @@
     	// Delete data with sweet alert
         $('#userTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
+
+                if(storeSpvRelation(id) > 0){
+                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                    return;
+                }
 
             	swal({
 					title: "Are you sure?",
