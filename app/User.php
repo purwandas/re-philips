@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'photo'
+        'nik', 'name', 'email', 'password', 'role', 'status', 'photo'
     ];
 
     /**
@@ -43,6 +43,11 @@ class User extends Authenticatable
     public function dmArea()
     {
         return $this->hasOne('App\DmArea', 'user_id');
+    }
+
+    public function employeeStores()
+    {
+        return $this->hasMany('App\EmployeeStore', 'user_id');
     }
 
     /**

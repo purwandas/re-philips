@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\User;
 use App\RsmRegion;
 use App\DmArea;
+use App\EmployeeStore;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use Auth;
+use App\Filters\UserFilters;
 
 class UserController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -38,6 +41,13 @@ class UserController extends Controller
         return $this->makeTable($data);
     }
 
+    // Data for select2 with Filters
+    public function getDataWithFilters(UserFilters $filters){ 
+        $data = User::filter($filters)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 
@@ -51,7 +61,6 @@ class UserController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
-
     }
 
     /**
@@ -80,21 +89,38 @@ class UserController extends Controller
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-       	$request['password'] = bcrypt($request['password']);
+        $request['password'] = bcrypt($request['password']);
 
-       	// Upload file process
+        // Upload file process
         ($request->photo_file != null) ? 
             $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
-
+        
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
         $user = User::create($request->all());
+
+        /* Employee One Store */
+        if($request['store_id']){
+            EmployeeStore::create([
+                'user_id' => $user->id,
+                'store_id' => $request['store_id'],
+            ]);
+        }
+
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            foreach ($request['store_ids'] as $storeId) {
+                EmployeeStore::create([
+                    'user_id' => $user->id,
+                    'store_id' => $storeId,
+                ]);
+            }
+        }
 
         // If DM
         if($request->area){
             $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
         }
-
         // If RSM
         if($request->region){
             $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
@@ -145,45 +171,85 @@ class UserController extends Controller
 
         $user = User::find($id);
 
+        /* Delete if any relation exist in employee store */
+        $empStore = EmployeeStore::where('user_id', $user->id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
+
+        // DM AREA 
+        $dmArea = DmArea::where('user_id', $user->id);
+        if($dmArea->count() > 0){
+            $dmArea->delete();
+        }
+
+        // RSM REGION 
+        $rsmRegion = RsmRegion::where('user_id', $user->id);
+        if($rsmRegion->count() > 0){
+            $rsmRegion->delete();
+        }
+        /* ================================================= */
+
         // Upload file process
         ($request->photo_file != null) ? 
             $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
-
+        
         if($request->photo_file != null) $request['photo'] = $photo_url;
+
+        // Create new request
+        $requestNew = new Request;
 
         // Check if password empty
         if($request['password']){
 
-        	$request['password'] = bcrypt($request['password']);
-        	$user->update($request->all());
-
-        }else{
-
-        	if($photo_url != ""){
-
-        		$user->update([
-	        			'name' => $request['name'],
-	        			'email' => $request['email'],
-	        			'role' => $request['role'],    
-	        			'photo' => $request['photo']
-	        		]);
-
-        	}else{
-
-	        	$user->update([
-	        			'name' => $request['name'],
-	        			'email' => $request['email'],
-	        			'role' => $request['role'],        			
-	        		]);
-
-        	}
+            $requestNew['password'] = bcrypt($request['password']);
 
         }
+
+        if($photo_url != ""){
+
+            $requestNew['photo'] = $request['photo'];
+
+        }
+
+        $requestNew['name'] = $request['name'];
+        $requestNew['email'] = $request['email'];
+        $requestNew['role'] = $request['role'];
+
+        $requestNew['status'] = null;
+        $requestNew['nik'] = null;
+
+        if($request['status']){
+            $requestNew['status'] = $request['status'];
+        }
+
+        if($request['nik']){
+            $requestNew['nik'] = $request['nik'];
+        }
+
+        $user->update($requestNew->all()); 
+
+        /* Employee One Store */
+        if($request['store_id']){
+            EmployeeStore::create([
+                'user_id' => $user->id,
+                'store_id' => $request['store_id'],
+            ]);
+        }
+
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            foreach ($request['store_ids'] as $storeId) {
+                EmployeeStore::create([
+                    'user_id' => $user->id,
+                    'store_id' => $storeId,
+                ]);
+            }
+        } 
 
         // If DM
         if($request->area){
             $dmArea = DmArea::where('user_id', $user->id);
-
             if($dmArea->count() > 0){
                 $dmArea->first()->update(['area_id' => $request->area]);    
             }else{
@@ -191,7 +257,6 @@ class UserController extends Controller
             }
             
         }
-
         // If RSM
         if($request->region){
             $rsmRegion = RsmRegion::where('user_id', $user->id);
@@ -201,16 +266,13 @@ class UserController extends Controller
             }else{
                 RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
             }
-
         }
-
         return response()->json(
             [
                 'url' => url('user'),
                 'method' => $request->_method
             ]);
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -232,9 +294,8 @@ class UserController extends Controller
             $rsmRegion->delete();
         }
 
-        $user = User::destroy($id);        
+        $user = User::destroy($id); 
 
         return response()->json($id);
     }
 }
-

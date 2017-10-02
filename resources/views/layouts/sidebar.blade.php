@@ -10,7 +10,7 @@
                     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
                     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
                     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-                    <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+                    <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="false" data-slide-speed="200">
                         <li class="nav-item start active open">
                             <a href="{{ url('/') }}" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
@@ -135,7 +135,7 @@
                         <li class="nav-item start active open">
                             <a href="{{ url('user') }}" class="nav-link nav-toggle">
                                 <i class="fa fa-user"></i>
-                                <span class="title">User</span>
+                                <span class="title">Employee</span>
                                 @if(Request::is('user*'))
                                     <span class="selected"></span>                 
                                 @endif                                

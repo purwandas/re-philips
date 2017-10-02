@@ -25,8 +25,8 @@ class CreateStoresTable extends Migration
             $table->foreign('account_id')->references('id')->on('accounts');
             $table->integer('areaapp_id')->unsigned();
             $table->foreign('areaapp_id')->references('id')->on('area_apps');
-            $table->integer('employee_id')->unsigned();
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });

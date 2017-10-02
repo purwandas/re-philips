@@ -34,7 +34,7 @@ var FormValidation = function () {
                     areaapp_id:{
                         required: true,
                     },
-                    employee_id:{
+                    user_id:{
                         required: true,
                     }
 
@@ -49,7 +49,7 @@ var FormValidation = function () {
                     areaapp_id:{
                         required: "Please select an Area RE Apps!"
                     },
-                    employee_id:{
+                    user_id:{
                         required: "Please select Supervisor!"
                     },
                 },

@@ -17,7 +17,7 @@ Route::group(['middleware' => ['auth']], function () {
          * Master Module(s)
          */
 
-        /** User **/
+        /** User (Include Employee) **/
         Route::get('user', 'UserController@index');
         Route::get('user/create', 'UserController@create');
         Route::post('user', 'UserController@store');
@@ -66,12 +66,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('store/{id}', 'Master\StoreController@destroy');
 
         /** Employee **/
+        /*
         Route::get('employee', 'Master\EmployeeController@index');
         Route::get('employee/create', 'Master\EmployeeController@create');
         Route::post('employee', 'Master\EmployeeController@store');
         Route::get('employee/edit/{id}', 'Master\EmployeeController@edit');
         Route::patch('employee/{id}', 'Master\EmployeeController@update');
         Route::delete('employee/{id}', 'Master\EmployeeController@destroy');
+        */
 
         /** Place **/
         Route::get('place', 'Master\PlaceController@index');        

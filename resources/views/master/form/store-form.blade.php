@@ -46,7 +46,7 @@
 					</span>
 				</div>
 
-				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
+				<div id="backButton" class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
                 	<a class="btn btn-md green" href="{{ url('store') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
@@ -196,7 +196,7 @@
 
                           <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="employee_id" id="employee" required></select>
+                                <select class="select2select" name="user_id" id="user" required></select>
                                 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -260,7 +260,7 @@
 	            }
 	        }));
 
-	        $('#employee').select2(setOptions('{{ route("data.employee") }}', 'Supervisor', function (params) {            
+	        $('#user').select2(setOptions('{{ route("data.employee") }}', 'Supervisor', function (params) {            
 	        	filters = {};
 	        	filters['role'] = 'Supervisor';
 	            return filterData('name', params.term);
@@ -277,13 +277,25 @@
                 placeholder: 'Channel'
             })
 
-            // Set select2 => 'country' if method PATCH
+            // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#account"), "{{ @$data->account_id }}", "{{ @$data->account->name }}");	
 	       setSelect2IfPatch($("#areaapp"), "{{ @$data->areaapp_id }}", "{{ @$data->areaapp->name }}");
 	       setSelect2IfPatch($("#employee"), "{{ @$data->employee_id }}", "{{ @$data->employee->name }}");
+
+	       // $('#account').val('1').trigger('change');
+	       // $("#account").select2("val", "1");
+	       // $("#account").val('1').change();
+	       
+	       // $("#account").select2("trigger", "select", {
+	       //      data: { id: 1, text: 'Central' }
+	       //  });
+
+	       // $("#account").next().removeClass('select2-container--focus');
 
 
 		});    
 
 	</script>	
+
+	
 @endsection
