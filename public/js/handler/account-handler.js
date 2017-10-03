@@ -28,7 +28,7 @@ var FormValidation = function () {
 
                 },
                 messages:{
-                    accounttype:{
+                    accounttype_id:{
                         required: "Please select an Account Type!"
                     }
                 },
