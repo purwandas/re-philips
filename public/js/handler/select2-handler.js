@@ -81,6 +81,8 @@ function setSelect2IfPatch(element, id, text){
         // Remove focus from selection
         element.next().removeClass('select2-container--focus');
 
+        window.scrollTo(0, 0);
+        $('html, body').animate({scrollTop:0}, 'slow');
     }
 
 }
