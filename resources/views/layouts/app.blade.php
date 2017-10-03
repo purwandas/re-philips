@@ -220,4 +220,12 @@
     @yield('additional-scripts')
 
 </body>
+
+<style type="text/css">
+    .tooltip {
+        position: fixed;
+        z-index: 10151 !important;
+    }
+</style>
+
 </html>
