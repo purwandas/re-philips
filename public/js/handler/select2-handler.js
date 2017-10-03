@@ -82,7 +82,7 @@ function setSelect2IfPatch(element, id, text){
         element.next().removeClass('select2-container--focus');
 
         window.scrollTo(0, 0);
-        $('html, body').animate({scrollTop:0}, 'slow');
+        $('html, body').scrollTop();
     }
 
 }
