@@ -28,7 +28,7 @@ var FormValidation = function () {
 
                 },
                 messages:{
-                    region:{
+                    region_id:{
                         required: "Please select a Region!"
                     }
                 },
