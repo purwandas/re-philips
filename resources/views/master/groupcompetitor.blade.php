@@ -1,21 +1,24 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> Group Competitor
-    <small>Manage Group Competitor</small>
-</h1>
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="icon-home"></i>
-            <a href="{{ url('/') }}">Home</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>Group Competitor Management</span>
-        </li>
-    </ul>                        
+<div class="page-head">
+    <!-- BEGIN PAGE TITLE -->
+    <div class="page-title">
+        <h1>Group Competitor
+            <small>manage group competitor</small>
+        </h1>
+    </div>
+    <!-- END PAGE TITLE -->
 </div>
+<ul class="page-breadcrumb breadcrumb">
+    <li>
+        <a href="{{ url('/') }}">Home</a>
+        <i class="fa fa-circle"></i>
+    </li>
+    <li>
+        <span class="active">Group Competitor Management</span>
+    </li>
+</ul>
 @endsection
 
 @section('content')

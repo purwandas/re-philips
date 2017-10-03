@@ -1,31 +1,34 @@
 @extends('layouts.app')
 
 @section('header')
-<h1 class="page-title"> Store
-	<small>Manage Store</small>
-</h1>
-<div class="page-bar">
-	<ul class="page-breadcrumb">
-		<li>
-			<i class="icon-home"></i>
-			<a href="{{ url('/') }}">Home</a>
-			<i class="fa fa-angle-right"></i>
-		</li>
-		<li>			
-			<a href="{{ url('store') }}">Store Management</a>
-			<i class="fa fa-angle-right"></i>
-		</li>
-		<li>
-			<span>
-				@if (empty($data))
-					Add New Store
-				@else
-					Update Store
-				@endif
-			</span>
-		</li>
-	</ul>                        
+<div class="page-head">
+    <!-- BEGIN PAGE TITLE -->
+    <div class="page-title">
+        <h1>Store
+            <small>manage store</small>
+        </h1>
+    </div>
+    <!-- END PAGE TITLE -->
 </div>
+<ul class="page-breadcrumb breadcrumb">
+    <li>
+        <a href="{{ url('/') }}">Home</a>
+        <i class="fa fa-circle"></i>
+    </li>
+    <li>
+        <a href="{{ url('store') }}">Store Management</a>
+        <i class="fa fa-circle"></i>
+    </li>
+    <li>
+		<span>
+			@if (empty($data))
+				Add New Store
+			@else
+				Update Store
+			@endif
+		</span>
+	</li>
+</ul>
 @endsection
 
 @section('content')
@@ -280,17 +283,7 @@
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#account"), "{{ @$data->account_id }}", "{{ @$data->account->name }}");	
 	       setSelect2IfPatch($("#areaapp"), "{{ @$data->areaapp_id }}", "{{ @$data->areaapp->name }}");
-	       setSelect2IfPatch($("#employee"), "{{ @$data->employee_id }}", "{{ @$data->employee->name }}");
-
-	       // $('#account').val('1').trigger('change');
-	       // $("#account").select2("val", "1");
-	       // $("#account").val('1').change();
-	       
-	       // $("#account").select2("trigger", "select", {
-	       //      data: { id: 1, text: 'Central' }
-	       //  });
-
-	       // $("#account").next().removeClass('select2-container--focus');
+	       setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
 
 
 		});    
