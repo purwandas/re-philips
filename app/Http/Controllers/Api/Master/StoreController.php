@@ -13,7 +13,7 @@ class StoreController extends Controller
 {
     public function all()
     {
-    	$data = Store::select('id', 'store_name_1')->get();
+    	$data = Store::select('id', 'store_name_1 as name')->get();
     	
     	return response()->json(compact('data'));
     }
