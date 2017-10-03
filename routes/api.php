@@ -27,4 +27,15 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	  
 	Route::get('/user', 'Api\AuthController@getUser');
 
+	/**
+     * Master Module(s)
+     */
+
+	Route::get('/group/{param}', 'Api\Master\GroupController@all');
+	Route::get('/product/{param}', 'Api\Master\ProductController@all');
+	Route::get('/store', 'Api\Master\StoreController@all');
+	Route::get('/competitor/{param}', 'Api\Master\GroupCompetitorController@all');
+	Route::get('/competitor/{param}/{param2}', 'Api\Master\GroupCompetitorController@allCategory');
+	
+
 });

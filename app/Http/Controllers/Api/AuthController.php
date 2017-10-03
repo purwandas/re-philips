@@ -6,25 +6,43 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Auth;
+use App\EmployeeStore;
+use App\Store;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
 	{
+
+
 		// grab credentials from the request
-		$credentials = $request->only('email', 'password');
+		$credentials = $request->only('nik', 'password');
+
+		// If NIK is null
+		if($request->nik == null){
+			return response()->json(['message' => 'invalid_credentials'], 401);
+		}
 
 		try {			
 			if (! $token = JWTAuth::attempt($credentials)) {
-				return response()->json(['error' => 'invalid_credentials'], 401);
+				return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 200);
 			}
+
 		} catch (JWTException $e) {
 			// something went wrong whilst attempting to encode the token
-			return response()->json(['error' => 'could_not_create_token'], 500);
+			return response()->json(['status' => 'false', 'message' => 'could_not_create_token'], 500);			
 		}
 
+		// Get user data
+		$user = Auth::user();
+
+		// Get stores from user if linked
+		$storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+		$store = Store::whereIn('id', $storeIds)->get();
+
 		// all good so return the token
-		return response()->json(compact('token'));
+		return response()->json(['status' => 'true', 'token' => $token, 'role' => $user->role, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){
