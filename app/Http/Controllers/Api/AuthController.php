@@ -14,8 +14,6 @@ class AuthController extends Controller
 {
     public function login(Request $request)
 	{
-
-
 		// grab credentials from the request
 		$credentials = $request->only('nik', 'password');
 
@@ -26,7 +24,7 @@ class AuthController extends Controller
 
 		try {			
 			if (! $token = JWTAuth::attempt($credentials)) {
-				return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 200);
+				return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 401);
 			}
 
 		} catch (JWTException $e) {
