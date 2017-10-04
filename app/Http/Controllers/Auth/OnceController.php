@@ -11,6 +11,7 @@ use App\GroupProduct;
 use App\Group;
 use App\Account;
 use App\AccountType;
+use App\GroupCompetitor;
 use Auth;
 
 class OnceController extends Controller
