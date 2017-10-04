@@ -91,7 +91,7 @@ class UserController extends Controller
 
         $request['password'] = bcrypt($request['password']);
 
-        dd(public_path());        
+        // dd(public_path());        
 
         // Upload file process
         ($request->photo_file != null) ? 
