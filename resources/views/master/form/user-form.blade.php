@@ -345,6 +345,9 @@
 
 @section('additional-scripts')		
 	<!-- BEGIN SELECT2 SCRIPTS -->
+    <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
+    <!-- END SELECT2 SCRIPTS -->
+	<!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->	
 	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
