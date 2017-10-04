@@ -38,6 +38,7 @@ class SalesController extends Controller
                 $transaction = SellIn::create([
                             'user_id' => $user->id,
                             'store_id' => $content['id'],
+                            'week' => Carbon::now()->weekOfMonth,
                             'date' => Carbon::now()
                             ]);
 
@@ -47,6 +48,7 @@ class SalesController extends Controller
                 $transaction = SellOut::create([
                             'user_id' => $user->id,
                             'store_id' => $content['id'],
+                            'week' => Carbon::now()->weekOfMonth,
                             'date' => Carbon::now()
                             ]);
 
@@ -56,6 +58,7 @@ class SalesController extends Controller
                 $transaction = RetDistributor::create([
                             'user_id' => $user->id,
                             'store_id' => $content['id'],
+                            'week' => Carbon::now()->weekOfMonth,
                             'date' => Carbon::now()
                             ]);
                 
@@ -65,6 +68,7 @@ class SalesController extends Controller
                 $transaction = RetConsument::create([
                             'user_id' => $user->id,
                             'store_id' => $content['id'],
+                            'week' => Carbon::now()->weekOfMonth,
                             'date' => Carbon::now()
                             ]);
                 
@@ -74,6 +78,7 @@ class SalesController extends Controller
                 $transaction = FreeProduct::create([
                             'user_id' => $user->id,
                             'store_id' => $content['id'],
+                            'week' => Carbon::now()->weekOfMonth,
                             'date' => Carbon::now()
                             ]);
                 
@@ -83,6 +88,7 @@ class SalesController extends Controller
                 $transaction = Tbat::create([
                             'user_id' => $user->id,
                             'store_id' => $content['id'],
+                            'week' => Carbon::now()->weekOfMonth,
                             'date' => Carbon::now()
                             ]);
                 

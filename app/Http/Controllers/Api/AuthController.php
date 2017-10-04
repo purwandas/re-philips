@@ -9,6 +9,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\EmployeeStore;
 use App\Store;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,7 @@ class AuthController extends Controller
 
 		// If NIK is null
 		if($request->nik == null){
-			return response()->json(['message' => 'invalid_credentials'], 401);
+			return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 401);
 		}
 
 		try {			
@@ -57,6 +58,9 @@ class AuthController extends Controller
 	public function getUser()
 	{
 		
+		// $week = Carbon::now()->weekOfMonth;
+		// return response()->json(compact('week'));
+
 		try {
 
 			// if (! $user = JWTAuth::toUser(JWTAuth::getToken())) {
