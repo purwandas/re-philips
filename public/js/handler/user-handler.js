@@ -224,15 +224,20 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
-                    if(storeSpvChangeRelation(userId, $('#role').val()) > 0){
-                        swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                        return;
-                    }
+                    // If Update
+                    if(!(typeof($('input[name=_method]').val()) === 'undefined')){
 
-                    if(salesEmployeeChangeRelation(userId, $('#role').val()) > 0){
-                        swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                        return;
-                    }                    
+                        if(storeSpvChangeRelation(userId, $('#role').val()) > 0){
+                            swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                            return;
+                        }
+
+                        if(salesEmployeeChangeRelation(userId, $('#role').val()) > 0){
+                            swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                            return;
+                        }  
+
+                    }                  
 
                     // Check if employee is mobile and just select one store
                     if($('#stores').val() != null){
