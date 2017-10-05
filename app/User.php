@@ -50,6 +50,10 @@ class User extends Authenticatable
         return $this->hasMany('App\EmployeeStore', 'user_id');
     }
 
+    public function store(){
+        return $this->hasMany('App\Store', 'user_id');   
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query

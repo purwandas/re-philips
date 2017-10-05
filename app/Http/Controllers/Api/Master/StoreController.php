@@ -15,6 +15,6 @@ class StoreController extends Controller
     {
     	$data = Store::select('id', 'store_name_1 as name')->get();
     	
-    	return response()->json(compact('data'));
+    	return response()->json($data);
     }
 }

@@ -11,7 +11,7 @@ class SellIn extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'store_id', 'date'
+        'user_id', 'store_id', 'week', 'date'
     ];
 
     /**

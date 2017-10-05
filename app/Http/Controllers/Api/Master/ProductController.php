@@ -20,6 +20,6 @@ class ProductController extends Controller
     				   ->select('products.id', 'products.model' , 'products.name', 'categories.name as category', 'groups.name as group', 'group_products.name as group_product')
     				   ->get();
 
-    	return response()->json(compact('data'));
+    	return response()->json($data);
     }
 }

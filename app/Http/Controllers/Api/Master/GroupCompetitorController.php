@@ -18,7 +18,7 @@ class GroupCompetitorController extends Controller
     				->select('group_competitors.id', 'group_competitors.name')
     				->get();
 
-    	return response()->json(compact('data'));
+    	return response()->json($data);
     }
 
     public function allCategory($param, $param2)
@@ -34,6 +34,6 @@ class GroupCompetitorController extends Controller
     				->select('group_competitors.id', 'group_competitors.name')
     				->get();
 
-    	return response()->json(compact('data'));
+    	return response()->json($data);
     }
 }
