@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Store;
+use App\AreaApp;
 use App\EmployeeStore;
 
 class UtilController extends Controller
@@ -52,5 +53,20 @@ class UtilController extends Controller
         $store = Store::whereIn('id', $empStoreIds)->get();        
 
         return response()->json($store);
+    }
+
+    public function getAreaApp($id){
+        $data = AreaApp::find($id);
+        return response()->json($data);
+    }
+
+    public function getStore($id){
+        $data = Store::find($id);
+        return response()->json($data);
+    }
+
+    public function getUser($id){
+        $data = User::find($id);
+        return response()->json($data);
     }
 }

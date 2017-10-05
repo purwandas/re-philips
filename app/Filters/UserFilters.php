@@ -20,4 +20,9 @@ class UserFilters extends QueryFilters
     	return $this->builder->where('role', $value);
     }
 
+    /* Ordering data by role group */
+    public function roleGroup($value){
+        return $this->builder->whereIn('role', $value);
+    }
+
 }

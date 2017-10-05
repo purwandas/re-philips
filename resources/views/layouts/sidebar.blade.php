@@ -19,6 +19,8 @@
                 </a>                
             </li>
 
+            @if(Auth::user()->role == 'Master')
+
             <li class="heading">
                 <h3 class="uppercase">MASTER DATA</h3>
             </li>
@@ -115,7 +117,16 @@
                     <i class="fa fa-user"></i>
                     <span class="title">Group Competitor</span>                    
                 </a>
-            </li>            
+            </li> 
+            <li class="nav-item {{ Request::is('news*') ? 'active open' : '' }}">
+                <a href="{{ url('news') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-user"></i>
+                    <span class="title">News</span>                    
+                </a>
+            </li> 
+
+            @endif
+
             <li class="heading">
                 <h3 class="uppercase">SETTINGS</h3>
             </li>
