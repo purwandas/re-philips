@@ -76,6 +76,10 @@
 
 @section('additional-scripts')
 
+<!-- BEGIN PAGE VALIDATION SCRIPTS -->
+<script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
+<!-- END PAGE VALIDATION SCRIPTS -->
+
 <script>
     $(document).ready(function () {     
 
@@ -120,7 +124,10 @@
         $('#storeTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
-                
+                if(newsStoreRelation(id) > 0){
+                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                    return;
+                }
 
                 swal({
                     title: "Are you sure?",

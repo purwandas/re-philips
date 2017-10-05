@@ -53,6 +53,9 @@
         <link href="{{ asset('assets/global/plugins/select2/css/select2-bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/layouts/layout4/css/custom.css') }}" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->    
+        <link href="{{ asset('assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css') }}" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL PLUGINS -->
         <link rel="shortcut icon" href="favicon.ico" /> 
     </head>
 
@@ -215,6 +218,11 @@
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="{{ asset('assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}" type="text/javascript"></script>
+        <!-- END PAGE LEVEL SCRIPTS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script src="{{ asset('assets/global/plugins/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js') }}" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         
     @yield('additional-scripts')
