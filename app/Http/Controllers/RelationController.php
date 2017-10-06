@@ -20,6 +20,7 @@ use App\Tbat;
 use App\News;
 use App\PosmActivityDetail;
 use App\PosmActivity;
+use App\ProductKnowledge;
 
 class RelationController extends Controller
 {
@@ -305,6 +306,63 @@ class RelationController extends Controller
         $countNews = News::where('user_id', $request->userId)->count();
 
         return response()->json($countNews);
+    }
+
+    public function productKnowledgeEmployeeRelation(Request $request){
+
+        $productKnowledge = ProductKnowledge::where('target_type', 'Promoter')->get();
+
+        $countProductKnowledge = 0;
+
+        foreach ($productKnowledge as $data) {
+
+            $array = explode(', ', $data->target_detail);
+            if(in_array($request->employeeId, $array)){
+                $countProductKnowledge += 1;
+            }
+
+        }
+
+        return response()->json($countProductKnowledge);
+
+    }
+
+    public function productKnowledgeStoreRelation(Request $request){
+
+        $productKnowledge = ProductKnowledge::where('target_type', 'Store')->get();
+
+        $countProductKnowledge = 0;
+
+        foreach ($productKnowledge as $data) {
+
+            $array = explode(', ', $data->target_detail);
+            if(in_array($request->storeId, $array)){
+                $countProductKnowledge += 1;
+            }
+
+        }
+
+        return response()->json($countProductKnowledge);
+
+    }
+
+    public function productKnowledgeAreaRelation(Request $request){
+
+        $productKnowledge = ProductKnowledge::where('target_type', 'Area')->get();
+
+        $countProductKnowledge = 0;
+
+        foreach ($productKnowledge as $data) {
+
+            $array = explode(', ', $data->target_detail);
+            if(in_array($request->areaId, $array)){
+                $countProductKnowledge += 1;
+            }
+
+        }
+
+        return response()->json($countProductKnowledge);
+
     }
     
 }

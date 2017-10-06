@@ -125,6 +125,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('posm/{id}', 'Master\PosmController@update');
         Route::delete('posm/{id}', 'Master\PosmController@destroy');
 
+        /** Product Knowledge **/
+        Route::get('product-knowledge', 'Master\ProductKnowledgeController@index');
+        Route::get('product-knowledge/create', 'Master\ProductKnowledgeController@create');
+        Route::post('product-knowledge', 'Master\ProductKnowledgeController@store');
+        Route::get('product-knowledge/edit/{id}', 'Master\ProductKnowledgeController@edit');
+        Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
+        Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
+
 
     });
         

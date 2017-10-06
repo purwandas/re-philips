@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>News
-            <small>manage news</small>
+        <h1>Product Knowledge
+            <small>manage product knowledge</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,15 +16,15 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <a href="{{ url('news') }}">News Management</a>
+        <a href="{{ url('product-knowledge') }}">Product Knowledge Management</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>
 		<span>
 			@if (empty($data))
-				Add More News
+				Add More Product Knowledge
 			@else
-				Update News
+				Update Product Knowledge
 			@endif
 		</span>
 	</li>
@@ -42,22 +42,22 @@
 					<i class="fa fa-group font-green"></i>
 					<span class="caption-subject font-green sbold uppercase">
 						@if (empty($data))
-							ADD MORE NEWS
+							ADD MORE PRODUCT KNOWLEDGE
 						@else
-							UPDATE NEWS
+							UPDATE PRODUCT KNOWLEDGE
 						@endif
 					</span>
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md green" href="{{ url('news') }}">
+                	<a class="btn btn-md green" href="{{ url('product-knowledge') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_news" class="form-horizontal" action="{{ url('news', @$data->id) }}" method="POST">	        	
+	        	<form id="form_product_knowledge" class="form-horizontal" action="{{ url('product-knowledge', @$data->id) }}" method="POST">
 			        {{ csrf_field() }}
 			        @if (!empty($data))
 			          {{ method_field('PATCH') }}
@@ -67,7 +67,7 @@
                         	<button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                         <div class="alert alert-success display-hide">
                         	<button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        
+
                         <div class="caption padding-caption">
                         	<span class="caption-subject font-dark bold uppercase">DETAILS</span>
                         	<hr>
@@ -93,30 +93,36 @@
 				          </div>
 				        </div>
 
+                        <!-- View for old file * PDF * -->
+				        @if (!empty($data))
+			          		<div class="form-group">
+				          		<label class="col-sm-2 control-label">File PDF</label>
+				         		<div class="col-sm-9">
+									@if (@$data->file != "")
+										<a target="_blank" href="{{ @$data->file }}" class="btn btn-sm btn-danger"><i class='fa fa-file-pdf-o'></i> &nbsp; Download PDF</a>
+									@else
+										<label class="btn btn-sm btn-primary">No File Uploaded</label>
+									@endif
+					    		</div>
+				        	</div>
+			        	@endif
+
 				        <div class="form-group">
-				        <label class="control-label col-md-2">Content
-                                                </label>
-                                                <div class="col-md-9">
-                                                    <textarea class="form-control" id="content" name="content" rows="6" data-error-container="#ckeditor_error"></textarea>
-                                                    <div id="ckeditor_error"> </div>
-                                                </div>  
+				          <label class="col-sm-2 control-label">{{ (!empty($data)) ? 'New ' : ' ' }}File PDF</label>
+				          <div class="col-sm-9">
+				          	<div class="input-group" style="width: 100%;">
+					          	<input type="file" accept=".pdf" class="form-control" id="upload_file" name="upload_file" {{ (empty($data)) ? 'required="required"' : '' }}>
+					          	<p style="font-size: 10pt;" class="help-block"> (Type of file: pdf - Max size : 2 MB) </p>
+					          	<div class="file_error_message" style="display: none;"></div>
+					      	</div>
+				          </div>
 				        </div>
 
-				        <!-- <div class="form-group">
-				        	<label class="control-label col-md-2">WYSIHTML5 Editor
-                                                    <span class="required"> * </span>
-                                                </label>
-                                                <div class="col-md-9">
-                                                    <textarea class="wysihtml5 form-control" rows="6" name="content" data-error-container="#editor1_error"></textarea>
-                                                    <div id="editor1_error"> </div>
-                                                </div> -->
-				        <!-- </div> -->
-
 				        <div class="form-group">
-                            <label class="control-label col-md-2">Target                               
+                            <label class="control-label col-md-2">Target
                             </label>
                             <div class="col-md-9">
-                                <div class="mt-radio-inline" data-error-container="#form_news_target_error">
+                                <div class="mt-radio-inline" data-error-container="#form_product_knowledge_target_error">
                                     <label class="mt-radio">
                                         <input type="radio" name="target_type" value="All" checked="checked" {{ (@$data->target_type == '1') ? "checked" : "" }}> All
                                         <span></span>
@@ -134,7 +140,7 @@
                                         <span></span>
                                     </label>
                                 </div>
-                                <div id="form_news_target_error"> </div>
+                                <div id="form_product_knowledge_target_error"> </div>
                             </div>
                         </div>
 
@@ -149,15 +155,15 @@
 	                          <div class="col-sm-9">
 
 	                          <div class="input-group" style="width: 100%;">
-	     
+
 	                                <select class="select2select" name="area[]" id="area" multiple="multiple"></select>
-	                                
+
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
 	                                </span>
 
 	                            </div>
-	                            
+
 	                          </div>
 	                        </div>
 
@@ -166,37 +172,37 @@
 	                          <div class="col-sm-9">
 
 	                          <div class="input-group" style="width: 100%;">
-	     
+
 	                                <select class="select2select" name="store[]" id="store" multiple="multiple"></select>
-	                                
+
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
 	                                </span>
 
 	                            </div>
-	                            
+
 	                          </div>
-	                        </div>	                        
+	                        </div>
 
 	                        <div class="form-group" id="promoterGroup">
 	                          <label class="col-sm-2 control-label">Promoter</label>
 	                          <div class="col-sm-9">
 
 	                          <div class="input-group" style="width: 100%;">
-	     
+
 	                                <select class="select2select" name="employee[]" id="employee" multiple="multiple"></select>
-	                                
+
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
 	                                </span>
 
 	                            </div>
-	                            
+
 	                          </div>
 	                        </div>
 
 	                    </div>
-				             				        			        		  				      
+
 				        <div class="form-group" style="padding-top: 15pt;">
 				          <div class="col-sm-9 col-sm-offset-2">
 				            <button type="submit" class="btn btn-primary green">Save</button>
@@ -216,46 +222,46 @@
 @section('additional-scripts')
 	<!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
-    <!-- END SELECT2 SCRIPTS -->	
+    <!-- END SELECT2 SCRIPTS -->
 	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
-    <script src="{{ asset('js/handler/news-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/product-knowledge-handler.js') }}" type="text/javascript"></script>
     <!-- END PAGE VALIDATION SCRIPTS -->
 
-    <script> 	
+    <script>
 		$(document).ready(function () {
 			$.ajaxSetup({
 	        	headers: {
 	            	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 	            }
-	        });   
+	        });
 
-	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
-	                results: $.map(data, function (obj) {                                
+	                results: $.map(data, function (obj) {
 	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
-	        })); 
+	        }));
 
-	        $('#area').select2(setOptions('{{ route("data.areaapp") }}', 'Area', function (params) {            
+	        $('#area').select2(setOptions('{{ route("data.areaapp") }}', 'Area', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
-	                results: $.map(data, function (obj) {                                
+	                results: $.map(data, function (obj) {
 	                    return {id: obj.id, text: obj.name}
 	                })
 	            }
-	        })); 
+	        }));
 
-	        $('#employee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {            
+	        $('#employee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
 	        	filters = {};
 	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
-	                results: $.map(data, function (obj) {                                
+	                results: $.map(data, function (obj) {
 	                    return {id: obj.id, text: obj.nik + " - " + obj.name}
 	                })
 	            }
@@ -278,12 +284,12 @@
 			$('#storeGroup').addClass('display-hide');
 			$('#promoterGroup').addClass('display-hide');
 
-			$('#store').removeAttr('required');			
+			$('#store').removeAttr('required');
 			select2Reset($('#store'));
 			$('#area').removeAttr('required');
 			select2Reset($('#area'));
 			$('#employee').removeAttr('required');
-			select2Reset($('#employee'));			
+			select2Reset($('#employee'));
 
 		}
 
@@ -293,13 +299,13 @@
 			var target_type = "{{ @$data->target_type }}";
 			var target = "{{ @$data->target_detail }}";
 			var data = target.split(", ");
-			
+
 			select2Reset($('#area'));
 			select2Reset($('#store'));
 			select2Reset($('#employee'));
 
 			if(value == 'Area'){
-				
+
 				$('#area').attr('required', 'required');
 
 				if(value == target_type){
@@ -355,18 +361,18 @@
 				$('#promoterGroup').removeClass('display-hide');
 				$('#targetContent').removeClass('display-hide');
 
-			}			
-			
+			}
+
 		}
 
 		// On Change target
 		$(document).ready(function() {
 		    $('input[type=radio][name=target_type]').change(function() {
 		        resetForm();
-				setForm(this.value);		        
+				setForm(this.value);
 		    });
 		});
 
 	</script>
-	
+
 @endsection

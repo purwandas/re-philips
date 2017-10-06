@@ -6,12 +6,12 @@
 var FormValidation = function () {
 
     // Master Validation
-    var newsValidation = function() {
+    var productKnowledgeValidation = function() {
 
-            var form = $('#form_news');
+            var form = $('#form_product_knowledge');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
-             
+
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
@@ -32,7 +32,7 @@ var FormValidation = function () {
 
                 },
 
-                invalidHandler: function (event, validator) { //display error alert on form submit              
+                invalidHandler: function (event, validator) { //display error alert on form submit
                     successAlert.hide();
                     errorAlert.show();
                     App.scrollTo(errorAlert, -200);
@@ -44,7 +44,7 @@ var FormValidation = function () {
 
                         // For icon group
                         var icon = element.parent('.input-icon').children('i');
-                        icon.removeClass('fa-check').addClass("fa-warning");  
+                        icon.removeClass('fa-check').addClass("fa-warning");
                         icon.attr("data-original-title", error.text()).tooltip({'container': 'body'});
 
                     } else if (element.parent(".input-group").size() > 0){
@@ -66,11 +66,11 @@ var FormValidation = function () {
 
                         }
 
-                    } else if (element.attr("data-error-container")) { 
+                    } else if (element.attr("data-error-container")) {
 
                         error.appendTo(element.attr("data-error-container"));
 
-                    } else if (element.parents('.mt-radio-list') || element.parents('.mt-checkbox-list')) {                        
+                    } else if (element.parents('.mt-radio-list') || element.parents('.mt-checkbox-list')) {
                         if (element.parents('.mt-radio-list')[0]) {
                             error.appendTo(element.parents('.mt-radio-list')[0]);
                         }
@@ -98,10 +98,10 @@ var FormValidation = function () {
                         form.each(function(){
                             if($(this).find('.form-group').hasClass('has-error')){
                                 errors += 1;
-                            } 
+                            }
                         });
 
-                        if(errors > 0){ 
+                        if(errors > 0){
                             successAlert.hide();
                             errorAlert.show();
                         }
@@ -110,12 +110,12 @@ var FormValidation = function () {
                 },
 
                 highlight: function (element) { // hightlight error inputs
-                    // set error class to the control group   
-                    $(element).closest('.form-group').removeClass("has-success").addClass('has-error');                   
+                    // set error class to the control group
+                    $(element).closest('.form-group').removeClass("has-success").addClass('has-error');
                 },
 
                 unhighlight: function (element) { // revert the change done by hightlight
-                
+
                 },
 
                 success: function (label, element) {
@@ -138,7 +138,7 @@ var FormValidation = function () {
 
                             var spanIcon = $(span).children('i');
                             spanIcon.removeClass('fa-warning').addClass("fa-check");
-                            spanIcon.removeClass('font-red').addClass("font-green");                            
+                            spanIcon.removeClass('font-red').addClass("font-green");
                         }
                     }
 
@@ -148,10 +148,10 @@ var FormValidation = function () {
                         form.each(function(){
                             if($(this).find('.form-group').hasClass('has-error')){
                                 errors += 1;
-                            } 
+                            }
                         });
 
-                        if(errors == 0){ 
+                        if(errors == 0){
                             successAlert.show();
                             errorAlert.hide();
                         }
@@ -169,14 +169,14 @@ var FormValidation = function () {
                         type: form.method,
                         // data: $(form).serialize(),
                         data: formData,
-                        dataType: 'json',                        
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
                         success: function (data) {
 
                             // console.log(data);
                             // return;
-                            
+
                             var titleMsg;
                             var textMsg;
 
@@ -217,7 +217,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            newsValidation();
+            productKnowledgeValidation();
 
         }
 
@@ -233,24 +233,24 @@ var FormValidation = function () {
  var ImageHandler = function () {
 
     //File input change (to check upload just image [jpg, jpeg, png, gif, svg] & Max size 2048)
-    $("input:file").change(function (e){                
+    $("input:file").change(function (e){
         // error.appendTo();
         // $(this).attr()
         // alert($(this).parent('.input-group').children('.error_message'));
         // $(this).parent('.input-group').children('.error_message')[0].innerHTML += "tes";
         // alert($(this).parent('.input-group').children('.error_message')[0].innerHTML);
 
-        var form = $('#form_news');
+        var form = $('#form_product_knowledge');
         var errorAlert = $('.alert-danger', form);
         var successAlert = $('.alert-success', form);
-        var filename = $(this).val();          
+        var filename = $(this).val();
         var extension = filename.replace(/^.*\./, '');
         var error_container = $(this).parent('.input-group').children('.file_error_message');
         var error_message = '';
 
         if (extension == filename) {
             extension = '';
-        } else {                 
+        } else {
             extension = extension.toLowerCase();
         }
 
@@ -269,7 +269,7 @@ var FormValidation = function () {
                     }
                 }
 
-                $(this).closest('.form-group').removeClass("has-error").addClass("has-success");                        
+                $(this).closest('.form-group').removeClass("has-error").addClass("has-success");
                 break;
 
             default:
@@ -293,10 +293,10 @@ var FormValidation = function () {
             form.each(function(){
                 if($(this).find('.form-group').hasClass('has-error')){
                     errors += 1;
-                } 
+                }
             });
 
-            if(errors == 0){ 
+            if(errors == 0){
                 successAlert.show();
                 errorAlert.hide();
             }else{
@@ -311,24 +311,104 @@ var FormValidation = function () {
 
  };
 
+ /*
+ * PDF handler
+ *
+ */
+
+ var PdfHandler = function () {
+
+    //File input change (to check upload just image [jpg, jpeg, png, gif, svg] & Max size 2048)
+    $("input:file").change(function (e){
+
+        var form = $('#form_product_knowledge');
+        var errorAlert = $('.alert-danger', form);
+        var successAlert = $('.alert-success', form);
+        var filename = $(this).val();
+        var extension = filename.replace(/^.*\./, '');
+        var error_container = $(this).parent('.input-group').children('.file_error_message');
+        var error_message = '';
+
+        if (extension == filename) {
+            extension = '';
+        } else {
+            extension = extension.toLowerCase();
+        }
+
+        switch (extension) {
+            case '':
+                $(this).closest('.form-group').removeClass("has-error");
+                $(this).closest('.form-group').removeClass("has-success");
+                break;
+            case 'pdf':
+
+                if(typeof $(this)[0].files[0] !== 'undefined'){
+                    if(($(this)[0].files[0].size/1024) > 2048){
+                        $(this).closest('.form-group').removeClass("has-success").addClass("has-error");
+                        error_message = "Max file size reached!";
+                        break;
+                    }
+                }
+
+                $(this).closest('.form-group').removeClass("has-error").addClass("has-success");
+                break;
+
+            default:
+                $(this).closest('.form-group').removeClass("has-success").addClass("has-error");
+                error_message = "Please select PDF file!";
+                break;
+        }
+
+        if(error_message != ''){
+            error_container.removeAttr('style');
+            error_container[0].setAttribute("style","color: #e73d4a;");
+            error_container[0].innerHTML = "";
+            error_container[0].innerHTML = error_message;
+        }else{
+            error_container[0].setAttribute("style","display: none;");
+        }
+
+        // Check if all requirement valid and show success text
+        if(errorAlert.is(":visible") || successAlert.is(":visible")){
+            var errors = 0;
+            form.each(function(){
+                if($(this).find('.form-group').hasClass('has-error')){
+                    errors += 1;
+                }
+            });
+
+            if(errors == 0){
+                successAlert.show();
+                errorAlert.hide();
+            }else{
+                successAlert.hide();
+                errorAlert.show();
+            }
+        }
+
+    });
+
+
+ };
+
 
 /*
  * Set up module
  *
- */ 
+ */
 
 jQuery(document).ready(function() {
     FormValidation.init();
-    ImageHandler();
+    PdfHandler();
 });
 
 /*
  * Select2 validation
  *
- */ 
+ */
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($(this), $('#form_news'));
-    
+    select2Change($(this), $('#form_product_knowledge'));
+
 });

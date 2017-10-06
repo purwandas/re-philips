@@ -15,6 +15,7 @@ use Auth;
 use App\Filters\UserFilters;
 use File;
 use App\NewsRead;
+use App\ProductKnowledgeRead;
 
 class UserController extends Controller
 {
@@ -317,6 +318,12 @@ class UserController extends Controller
         $newsRead = NewsRead::where('user_id', $id);
         if($newsRead->count() > 0){
             $newsRead->delete();
+        }
+
+        // Product Knowledge Reads
+        $productKnowledge = ProductKnowledgeRead::where('user_id', $id);
+        if($productKnowledge->count() > 0){
+            $productKnowledge->delete();
         }
 
         $user = User::find($id);
