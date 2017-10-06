@@ -42,7 +42,7 @@ class SOHController extends Controller
     			]);
     		}
     	} 
-    	catch (\Exceptions $e)
+    	catch (\Exception $e)
     	{
     		// Delete Inserted data
     		if (isset($transaction)) {
