@@ -19,4 +19,19 @@ trait UploadTrait {
         return asset('image').'/'.$imageFolder.'/'.$image_new;
     }
 
+    /**
+     * Trait for File Upload
+     *
+     * @param $image, $imageFolder
+     * @return string
+     */
+    public function fileUpload($file, $fileFolder)
+    {
+        $file_new = time().'.'.$file->getClientOriginalExtension();
+        $file->move(public_path('file/'.$fileFolder), $file_new);
+
+        // Back result url asset + filename (For insert/update data in model)
+        return asset('file').'/'.$fileFolder.'/'.$file_new;
+    }
+
 }

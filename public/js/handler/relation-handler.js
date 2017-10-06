@@ -228,6 +228,49 @@ function newsAdminRelation(userId) {
     }).responseText);
 }
 
+function productKnowledgeEmployeeRelation(employeeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgeemployee',
+        dataType: 'json',
+        data: { employeeId: employeeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productKnowledgeStoreRelation(storeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgestore',
+        dataType: 'json',
+        data: { storeId: storeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productKnowledgeAreaRelation(areaId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgearea',
+        dataType: 'json',
+        data: { areaId: areaId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+
 // Check role relation
 function storeSpvChangeRelation(spvId, role) {    
     return JSON.parse($.ajax({

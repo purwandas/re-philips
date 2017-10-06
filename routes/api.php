@@ -50,6 +50,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/news', 'Api\Master\NewsController@get');
     Route::get('/news/{param}', 'Api\Master\NewsController@read');
+    Route::get('/product-knowledge', 'Api\Master\ProductKnowledgeController@get');
+    Route::get('/product-knowledge/{param}', 'Api\Master\ProductKnowledgeController@read');
 
 
 });

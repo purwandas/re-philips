@@ -130,7 +130,13 @@
                     <i class="fa fa-user"></i>
                     <span class="title">News</span>                    
                 </a>
-            </li> 
+            </li>
+            <li class="nav-item {{ Request::is('product-knowledge*') ? 'active open' : '' }}">
+                <a href="{{ url('product-knowledge') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-user"></i>
+                    <span class="title">Product Knowledge</span>
+                </a>
+            </li>
 
             @endif
 

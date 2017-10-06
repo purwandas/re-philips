@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Employee
-            <small>manage employee</small>
+        <h1>Product Knowledge
+            <small>manage product knowledge</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Employee Management</span>
+        <span class="active">Product Knowledge Management</span>
     </li>
 </ul>
 @endsection
@@ -29,33 +29,37 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-user font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">EMPLOYEE</span>
+					<i class="fa fa-group font-green"></i>
+					<span class="caption-subject font-green sbold uppercase">PRODUCT KNOWLEDGE</span>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
-	        	<!-- MAIN CONTENT -->            
+	        	<!-- MAIN CONTENT -->
 	        	<div class="table-toolbar">
                 	<div class="row">
                     	<div class="col-md-6">
                         	<div class="btn-group">
-                             	<a class="btn green" href="{{ url('user/create') }}"><i
-									class="fa fa-plus"></i> Add Employee </a>
-                                
+                             	<a class="btn green" href="{{ url('product-knowledge/create') }}"><i
+									class="fa fa-plus"></i> Add New </a>
+
                             </div>
                     	</div>
                     </div>
                 </div>
 
-	        	<table class="table table-striped table-hover table-bordered" id="userTable" style="white-space: nowrap;">
+	        	<table class="table table-striped table-hover table-bordered" id="productKnowledgeTable" style="white-space: nowrap;">
                 	<thead>
                     	<tr>
                     		<th> No. </th>
-                            <th> NIK </th>
-                            <th> Name </th>
-                        	<th> Role </th>
-                            <th> Status </th>
-                            <th> Options </th>                             
+                            <th> Date & Time</th>
+                            <th> Admin </th>
+                            <th> Sender </th>
+                        	<th> Subject </th>
+                            <th> File </th>
+                            <th> Target </th>
+                            <th> Target Details </th>
+                            <th> Total Read </th>
+                            <th> Options </th>
                         </tr>
                     </thead>
 				</table>
@@ -70,12 +74,12 @@
 
 @section('additional-scripts')
 
-<!-- BEGIN PAGE VALIDATION SCRIPTS -->
+<!-- BEGIN RELATION SCRIPTS -->
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
-<!-- END PAGE VALIDATION SCRIPTS -->
+<!-- END RELATION SCRIPTS -->
 
 <script>
-	$(document).ready(function () {    	
+	$(document).ready(function () {
 
 		$.ajaxSetup({
         	headers: {
@@ -84,63 +88,37 @@
         });
 
         // Set data for Data Table '#athletesTable'
-        var table = $('#userTable').dataTable({
+        var table = $('#productKnowledgeTable').dataTable({
 	        "processing": true,
-	        "serverSide": true,	          
+	        "serverSide": true,
 	        "ajax": {
-                url: "{{ route('datatable.user') }}",
+                url: "{{ route('datatable.productknowledge') }}",
                 type: 'POST',
             },
 	        "rowId": "id",
 	        "columns": [
-	            {data: 'id', name: 'id'}, 
-                {data: 'nik', name: 'nik'},               
-	            {data: 'name', name: 'name'},
-                {data: 'role', name: 'role'},
-                {data: 'status', name: 'status'},
-	            {data: 'action', name: 'action', searchable: false, sortable: false},                
+	            {data: 'id', name: 'id'},
+                {data: 'date', name: 'date'},
+                {data: 'user_name', name: 'user_name'},
+	            {data: 'from', name: 'from'},
+                {data: 'subject', name: 'subject'},
+                {data: 'file', name: 'file'},
+                {data: 'target_type', name: 'target_type'},
+                {data: 'target_detail', name: 'target_detail'},
+                {data: 'total_read', name: 'total_read'},
+	            {data: 'action', name: 'action', searchable: false, sortable: false},
 	        ],
 	        "columnDefs": [
         		{"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [5]},
+                {"className": "dt-center", "targets": [7]},
       		],
-            "order": [ [0, 'desc'] ],            
+            "order": [ [0, 'desc'] ],
     	});
 
 
     	// Delete data with sweet alert
-        $('#userTable').on('click', 'tr td button.deleteButton', function () {
+        $('#productKnowledgeTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
-
-                if(storeSpvRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
-
-                if(salesEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }                
-
-                if(newsEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
-
-                if(posmActivityEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
-
-                if(newsAdminRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
-
-                if(productKnowledgeEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
 
             	swal({
 					title: "Are you sure?",
@@ -165,17 +143,17 @@
                         $.ajax({
 
                             type: "DELETE",
-                            url:  'user/' + id,
+                            url:  'product-knowledge/' + id,
                             success: function (data) {
                                 console.log(data);
 
                                 $("#"+id).remove();
-                                // $('#sportsTable').DataTable().ajax.reload();
+
                             },
                             error: function (data) {
                                 console.log('Error:', data);
                             }
-                        });                        
+                        });
 
                         swal("Deleted!", "Data has been deleted.", "success");
                     } else {
