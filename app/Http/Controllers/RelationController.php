@@ -17,6 +17,7 @@ use App\RetDistributor;
 use App\RetConsument;
 use App\FreeProduct;
 use App\Tbat;
+use App\News;
 
 class RelationController extends Controller
 {
@@ -178,6 +179,63 @@ class RelationController extends Controller
         }
 
         return response()->json($countSales);
+    }
+
+    public function newsEmployeeRelation(Request $request){
+
+        $news = News::where('target_type', 'Promoter')->get();
+
+        $countNews = 0;
+
+        foreach ($news as $data) {
+
+            $array = explode(', ', $data->target_detail);
+            if(in_array($request->employeeId, $array)){
+                $countNews += 1;
+            }
+
+        }
+
+        return response()->json($countNews);
+
+    }
+
+    public function newsStoreRelation(Request $request){
+
+        $news = News::where('target_type', 'Store')->get();
+
+        $countNews = 0;
+
+        foreach ($news as $data) {
+
+            $array = explode(', ', $data->target_detail);
+            if(in_array($request->storeId, $array)){
+                $countNews += 1;
+            }
+
+        }
+
+        return response()->json($countNews);
+
+    }
+
+    public function newsAreaRelation(Request $request){
+
+        $news = News::where('target_type', 'Area')->get();
+
+        $countNews = 0;
+
+        foreach ($news as $data) {
+
+            $array = explode(', ', $data->target_detail);
+            if(in_array($request->areaId, $array)){
+                $countNews += 1;
+            }
+
+        }
+
+        return response()->json($countNews);
+
     }
     
 }
