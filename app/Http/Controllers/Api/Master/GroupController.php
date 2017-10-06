@@ -17,6 +17,6 @@ class GroupController extends Controller
     				->select('groups.id', 'groups.name')
     				->get();
 
-    	return response()->json(compact('data'));
+    	return response()->json($data);
     }
 }

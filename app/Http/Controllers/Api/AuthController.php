@@ -9,24 +9,23 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\EmployeeStore;
 use App\Store;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
 	{
-
-
 		// grab credentials from the request
 		$credentials = $request->only('nik', 'password');
 
 		// If NIK is null
 		if($request->nik == null){
-			return response()->json(['message' => 'invalid_credentials'], 401);
+			return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 401);
 		}
 
 		try {			
 			if (! $token = JWTAuth::attempt($credentials)) {
-				return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 200);
+				return response()->json(['status' => 'false', 'message' => 'invalid_credentials'], 401);
 			}
 
 		} catch (JWTException $e) {
@@ -59,6 +58,9 @@ class AuthController extends Controller
 	public function getUser()
 	{
 		
+		// $week = Carbon::now()->weekOfMonth;
+		// return response()->json(compact('week'));
+
 		try {
 
 			// if (! $user = JWTAuth::toUser(JWTAuth::getToken())) {

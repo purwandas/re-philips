@@ -91,6 +91,8 @@ class UserController extends Controller
 
         $request['password'] = bcrypt($request['password']);
 
+        // dd(public_path());        
+
         // Upload file process
         ($request->photo_file != null) ? 
             $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        

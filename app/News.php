@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class SellIn extends Model
+class News extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'store_id', 'week', 'date'
+        'user_id', 'from', 'date', 'subject', 'total_read', 'content', 'target_type', 'target_detail'
     ];
 
     /**
@@ -27,16 +27,6 @@ class SellIn extends Model
      * Relation Method(s).
      *
      */
-
-    public function sellInDetails()
-    {
-        return $this->hasMany('App\SellInDetail', 'sellin_id');
-    }
-
-    public function store()
-    {
-        return $this->belongsTo('App\Store', 'store_id');
-    }
 
     public function user()
     {

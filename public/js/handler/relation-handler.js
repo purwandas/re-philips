@@ -74,6 +74,20 @@ function storeSpvRelation(userId) {
     }).responseText);
 }
 
+function salesEmployeeRelation(userId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/salesemployee',
+        dataType: 'json',
+        data: { userId: userId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
 function categoryGroupRelation(groupId) {
     return JSON.parse($.ajax({
         type: 'POST',
@@ -94,6 +108,83 @@ function productCategoryRelation(categoryId) {
         url: 'relation/productcategory',
         dataType: 'json',
         data: { categoryId: categoryId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function newsEmployeeRelation(employeeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/newsemployee',
+        dataType: 'json',
+        data: { employeeId: employeeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function newsStoreRelation(storeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/newsstore',
+        dataType: 'json',
+        data: { storeId: storeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function newsAreaRelation(areaId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/newsarea',
+        dataType: 'json',
+        data: { areaId: areaId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+// Check role relation
+function storeSpvChangeRelation(spvId, role) {    
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: '../../relation/storespvchange',
+        dataType: 'json',
+        data: { 
+            spvId: spvId,
+            role: role
+        },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function salesEmployeeChangeRelation(employeeId, role) {    
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: '../../relation/salesemployeechange',
+        dataType: 'json',
+        data: { 
+            employeeId: employeeId,
+            role: role
+        },
         global: false,
         async: false,
         success: function (data) {

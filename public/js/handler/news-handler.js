@@ -5,93 +5,31 @@
 
 var FormValidation = function () {
 
-    // User Master Validation
-    var userValidation = function() {            
+    // Master Validation
+    var newsValidation = function() {
 
-            var form = $('#form_user');
+            var form = $('#form_news');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
-            var rules = {};
-
-            // Rules if add new
-            rules['nik']  = { digits: true };
-            rules['name']  = { minlength: 2, required: true };
-            rules['email'] = { 
-                                required: true,
-                                validate_email: true,
-                                remote: {
-                                    type: "POST",
-                                    // global: false, 
-                                    // async: false,
-                                    url: "../util/existemailuser",
-                                    data: {
-                                      email: function() {
-                                        return $( "#email" ).val();
-                                      }
-                                    }
-                                }
-                             };
-            rules['password']  = { minlength: 5, required: true };
-            rules['password_confirmation']  = { minlength: 5, required: true, equalTo : "#password" };
-            rules['role']  = { required: true };
-
-
-            // Rules if update
-            if(!(typeof($('input[name=_method]').val()) === 'undefined')){
-                
-                rules['email'] = { 
-                                    required: true,
-                                    validate_email: true,
-                                    remote: {
-                                        type: "POST",
-                                        // global: false, // --> penyebab error masih update padahal required
-                                        // async: false,
-                                        url: "../../util/existemailuser",
-                                        data: {
-                                          email: function() {
-                                            return $( "#email" ).val();
-                                          },
-                                          method: function() {
-                                            return 'PATCH';
-                                          },
-                                          userId: function(){
-                                            return userId;
-                                          }
-                                        }
-                                    }
-                                 };
-                rules['password']  = { minlength: 5 };
-                rules['password_confirmation']  = { minlength: 5, equalTo : "#password" };
-
-            }
-
-            // if(!($('#dmContent').hasClass('display-hide'))){
-            //     rules['area'] = { required: true }
-            // }
-
-            // if(!($('#rsmContent').hasClass('display-hide'))){
-            //     rules['region'] = { required: true }
-            // }
-
+             
             form.validate({
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
-                rules: rules,
+                rules: {
+                    from: {
+                        minlength: 2,
+                        required: true,
+                    },
+                    subject:{
+                        minlength: 2,
+                        required: true,
+                    },
+
+                },
                 messages:{
-                    role:{
-                        required: "Please select a Role!",
-                    },
-                    email:{
-                        remote: "Email already exist, choose another one.",
-                    },
-                    area:{
-                        required: "Please select an Area!"
-                    },
-                    region:{
-                        required: "Please select a Region!"
-                    }
+
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit              
@@ -219,35 +157,9 @@ var FormValidation = function () {
                         }
                     }
 
-
                 },
 
                 submitHandler: function (form) {
-
-                    // If Update
-                    if(!(typeof($('input[name=_method]').val()) === 'undefined')){
-
-                        if(storeSpvChangeRelation(userId, $('#role').val()) > 0){
-                            swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                            return;
-                        }
-
-                        if(salesEmployeeChangeRelation(userId, $('#role').val()) > 0){
-                            swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                            return;
-                        }  
-
-                    }                  
-
-                    // Check if employee is mobile and just select one store
-                    if($('#stores').val() != null){
-                        var storesLength = $('#stores').val().length;
-
-                        if(storesLength == 1){
-                            swal("Warning", "Mobile employee must have at least 2 stores.", "warning");
-                            return;
-                        }
-                    }
 
                     // Using FormData to append file type to form input
                     var formData = new FormData($(form)[0]);
@@ -305,7 +217,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            userValidation();
+            newsValidation();
 
         }
 
@@ -328,7 +240,7 @@ var FormValidation = function () {
         // $(this).parent('.input-group').children('.error_message')[0].innerHTML += "tes";
         // alert($(this).parent('.input-group').children('.error_message')[0].innerHTML);
 
-        var form = $('#form_user');
+        var form = $('#form_employee');
         var errorAlert = $('.alert-danger', form);
         var successAlert = $('.alert-success', form);
         var filename = $(this).val();          
@@ -417,21 +329,6 @@ jQuery(document).ready(function() {
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($(this), $('#form_user'));
+    select2Change($(this), $('#form_news'));
     
 });
-
-/*
- * Add custom email validation
- *
- */ 
-
-jQuery.validator.addMethod("validate_email",function(value, element) {
-
-    if(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( value )){
-     return true;
-    }
-    else{
-     return false;
-    }    
-},"Please enter a valid Email.");

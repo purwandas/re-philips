@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/group', ['as'=> 'datatable.group','uses'=>'Master\GroupController@masterDataTable']);
     Route::post('datatable/category', ['as'=> 'datatable.category','uses'=>'Master\CategoryController@masterDataTable']);
     Route::post('datatable/product', ['as'=> 'datatable.product','uses'=>'Master\ProductController@masterDataTable']);
+    Route::post('datatable/news', ['as'=> 'datatable.news','uses'=>'Master\NewsController@masterDataTable']);
 
     /**
      * Data with filter (select2, list)
@@ -51,9 +52,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('relation/accountaccounttype', ['as'=> 'relation.accountaccounttype','uses'=>'RelationController@accountAccountTypeRelation']);
     Route::post('relation/storeaccount', ['as'=> 'relation.storeaccount','uses'=>'RelationController@storeAccountRelation']);
     Route::post('relation/areaapp', ['as'=> 'relation.areaapp','uses'=>'RelationController@storeAreaAppRelation']);
-    Route::post('relation/storespv', ['as'=> 'relation.storespv','uses'=>'RelationController@storeSpvRelation']);    
+    Route::post('relation/storespv', ['as'=> 'relation.storespv','uses'=>'RelationController@storeSpvRelation']);
+    Route::post('relation/salesemployee', ['as'=> 'relation.salesemployee','uses'=>'RelationController@salesEmployeeRelation']);        
     Route::post('relation/categorygroup', ['as'=> 'relation.categorygroup','uses'=>'RelationController@categoryGroupRelation']);
     Route::post('relation/productcategory', ['as'=> 'relation.productcategory','uses'=>'RelationController@productCategoryRelation']);
+    Route::post('relation/storespvchange', ['as'=> 'relation.storespvchange','uses'=>'RelationController@storeSpvChangeRelation']);
+    Route::post('relation/salesemployeechange', ['as'=> 'relation.salesemployeechange','uses'=>'RelationController@salesEmployeeChangeRelation']);
+    Route::post('relation/newsemployee', ['as'=> 'relation.newsemployee','uses'=>'RelationController@newsEmployeeRelation']);
+    Route::post('relation/newsstore', ['as'=> 'relation.newsstore','uses'=>'RelationController@newsStoreRelation']);
+    Route::post('relation/newsarea', ['as'=> 'relation.newsarea','uses'=>'RelationController@newsAreaRelation']);
 
     /**
      * Util
@@ -62,6 +69,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/existemailuser', ['uses'=>'UtilController@existEmailUser']);    
     Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
     Route::get('util/empstore/{id}', ['uses'=>'UtilController@getStoreForEmployee']);
+    Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
+    Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
+    Route::get('util/user/{id}', ['uses'=>'UtilController@getUser']);
     
 });
 

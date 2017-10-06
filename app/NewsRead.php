@@ -6,36 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class SellIn extends Model
+class NewsRead extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
-        'user_id', 'store_id', 'week', 'date'
+        'news_id', 'user_id'
     ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['deleted_at'];
-
-    /* Metode tambahan untuk model. */
 
     /**
      * Relation Method(s).
      *
      */
 
-    public function sellInDetails()
+    public function news()
     {
-        return $this->hasMany('App\SellInDetail', 'sellin_id');
-    }
-
-    public function store()
-    {
-        return $this->belongsTo('App\Store', 'store_id');
+        return $this->belongsTo('App\News', 'news_id');
     }
 
     public function user()

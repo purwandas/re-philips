@@ -110,6 +110,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('product/{id}', 'Master\ProductController@update');
         Route::delete('product/{id}', 'Master\ProductController@destroy');
 
+        /** News **/
+        Route::get('news', 'Master\NewsController@index');
+        Route::get('news/create', 'Master\NewsController@create');
+        Route::post('news', 'Master\NewsController@store');
+        Route::get('news/edit/{id}', 'Master\NewsController@edit');
+        Route::patch('news/{id}', 'Master\NewsController@update');
+        Route::delete('news/{id}', 'Master\NewsController@destroy');
+
 
     });
         
