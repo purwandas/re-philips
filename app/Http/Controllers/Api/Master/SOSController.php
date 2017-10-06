@@ -38,6 +38,15 @@ class SOSController extends Controller
 	        }
 
        } catch (\Exception $e) {
+            // Delete Inserted data
+            if (isset($transaction)) {
+                // Delete Detail first
+                $details= SosDetail::where('sos_id',$transaction->id);
+                $details->forceDelete();
+
+                // Delete Header then
+                Sos::find($transaction->id)->forceDelete();
+            }
            return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi']);
        }
     	

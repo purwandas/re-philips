@@ -44,6 +44,15 @@ class SOHController extends Controller
     	} 
     	catch (\Exceptions $e)
     	{
+    		// Delete Inserted data
+    		if (isset($transaction)) {
+    			// Delete Detail first
+    			$details= SohDetail::where('soh_id',$transaction->id);
+    			$details->forceDelete();
+
+    			// Delete Header then
+    			Soh::find($transaction->id)->forceDelete();
+    		}
     		return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi']);
     	}
 
