@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
-use App\Soh;
-use App\SohDetail;
+use App\SOH;
+use App\SOHDetail;
 
 class SOHController extends Controller
 {
