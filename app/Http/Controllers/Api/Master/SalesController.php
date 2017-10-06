@@ -28,6 +28,7 @@ class SalesController extends Controller
     {   
         try {
 
+            // Decode buat inputan raw body
             $content = json_decode($request->getContent(), true);
             $user = JWTAuth::parseToken()->authenticate();   
 
@@ -157,7 +158,55 @@ class SalesController extends Controller
             }
 
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi']);
+
+            /* Delete data that have been inserted before */
+            if(isset($transaction)){
+                if($param == 1){
+                    /* Delete Details */
+                    $details = SellInDetail::where('sellin_id', $transaction->id);
+                    $details->forceDelete();
+
+                    /* Delete Header */
+                    SellIn::find($transaction->id)->forceDelete();
+                }else if($param == 2){
+                    /* Delete Details */
+                    $details = SellOutDetail::where('sellout_id', $transaction->id);
+                    $details->forceDelete();
+
+                    /* Delete Header */
+                    SellOut::find($transaction->id)->forceDelete();
+                }else if($param == 3){
+                    /* Delete Details */
+                    $details = RetDistributorDetail::where('retdistributor_id', $transaction->id);
+                    $details->forceDelete();
+
+                    /* Delete Header */
+                    RetDistributor::find($transaction->id)->forceDelete();
+                }else if($param == 4){
+                    /* Delete Details */
+                    $details = RetConsumentDetail::where('retconsument_id', $transaction->id);
+                    $details->forceDelete();
+
+                    /* Delete Header */
+                    RetConsument::find($transaction->id)->forceDelete();
+                }else if($param == 5){
+                    /* Delete Details */
+                    $details = FreeProductDetail::where('freeproduct_id', $transaction->id);
+                    $details->forceDelete();
+
+                    /* Delete Header */
+                    FreeProduct::find($transaction->id)->forceDelete();
+                }else if($param == 6){
+                    /* Delete Details */
+                    $details = TbatDetail::where('tbat_id', $transaction->id);
+                    $details->forceDelete();
+
+                    /* Delete Header */
+                    Tbat::find($transaction->id)->forceDelete();
+                }
+            }
+
+            return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
         }
     	
     	return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);

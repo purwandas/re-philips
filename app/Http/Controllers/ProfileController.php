@@ -7,6 +7,7 @@ use App\User;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use Auth;
+use File;
 
 class ProfileController extends Controller
 {
@@ -38,6 +39,14 @@ class ProfileController extends Controller
             ]);
 
         $user = User::find(Auth::user()->id);
+
+        if($user->photo != "") {
+            /* Delete Image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+        }
 
         // Upload file process
         ($request->photo_file != null) ? 

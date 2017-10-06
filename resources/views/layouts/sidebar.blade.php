@@ -112,11 +112,18 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('groupcompetitor') ? 'active open' : '' }}">
-                <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
+            <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
+                <a href="{{ url('posm') }}" class="nav-link nav-toggle">
                     <i class="fa fa-user"></i>
-                    <span class="title">Group Competitor</span>                    
+                    <span class="title">POS Material</span>
                 </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('groupcompetitor') ? 'active open' : '' }}">
+            <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
+                <i class="fa fa-user"></i>
+                <span class="title">Group Competitor</span>
+            </a>
             </li> 
             <li class="nav-item {{ Request::is('news*') ? 'active open' : '' }}">
                 <a href="{{ url('news') }}" class="nav-link nav-toggle">

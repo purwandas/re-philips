@@ -13,6 +13,8 @@ use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use Auth;
 use App\Filters\UserFilters;
+use File;
+use App\NewsRead;
 
 class UserController extends Controller
 {
@@ -120,11 +122,11 @@ class UserController extends Controller
         }
 
         // If DM
-        if($request->area){
+        if(isset($request->area)){
             $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
         }
         // If RSM
-        if($request->region){
+        if(isset($request->region)){
             $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
         }
         
@@ -172,6 +174,14 @@ class UserController extends Controller
             ]);
 
         $user = User::find($id);
+
+        /* Delete Image */
+        if($user->photo != "") {
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+        }
 
         /* Delete if any relation exist in employee store */
         $empStore = EmployeeStore::where('user_id', $user->id);
@@ -284,6 +294,13 @@ class UserController extends Controller
     public function destroy($id)
     {
         /* Deleting related to user */
+
+        /* Delete if any relation exist in employee store */
+        $empStore = EmployeeStore::where('user_id', $id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
+
         // DM AREA 
         $dmArea = DmArea::where('user_id', $id);
         if($dmArea->count() > 0){
@@ -296,7 +313,23 @@ class UserController extends Controller
             $rsmRegion->delete();
         }
 
-        $user = User::destroy($id); 
+        // News Reads
+        $newsRead = NewsRead::where('user_id', $id);
+        if($newsRead->count() > 0){
+            $newsRead->delete();
+        }
+
+        $user = User::find($id);
+
+        if($user->photo != "") {
+            /* Delete Image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+        }
+
+        $user->destroy($id);
 
         return response()->json($id);
     }

@@ -15,7 +15,7 @@ class UtilController extends Controller
     	$user = User::where('email', $request->email);
 
     	if($user->count() > 0){
-            if($request->method == 'PATCH'){
+            if($request->form_method == 'PATCH'){
 
                 $oldUser = User::find($request->userId);
 
@@ -32,7 +32,7 @@ class UtilController extends Controller
         $employee = Employee::where('email', $request->email);
 
         if($employee->count() > 0){
-            if($request->method == 'PATCH'){
+            if($request->form_method == 'PATCH'){
 
                 $oldEmployee = Employee::find($request->employeeId);
 
