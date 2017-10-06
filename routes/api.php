@@ -43,6 +43,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 	Route::post('/sales/{param}', 'Api\Master\SalesController@store');
 	Route::post('/posm', 'Api\Master\PosmController@store');
+	Route::post('/soh', 'Api\Master\SOHController@store');
+	Route::post('/sos', 'Api\Master\SOSController@store');
 
 	/**
      * Other(s)
@@ -50,8 +52,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/news', 'Api\Master\NewsController@get');
     Route::get('/news/{param}', 'Api\Master\NewsController@read');
+
     Route::get('/product-knowledge', 'Api\Master\ProductKnowledgeController@get');
     Route::get('/product-knowledge/{param}', 'Api\Master\ProductKnowledgeController@read');
-
 
 });
