@@ -118,6 +118,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('news/{id}', 'Master\NewsController@update');
         Route::delete('news/{id}', 'Master\NewsController@destroy');
 
+        /** POS Material **/
+        Route::get('posm', 'Master\PosmController@index');
+        Route::post('posm', 'Master\PosmController@store');
+        Route::get('posm/edit/{id}', 'Master\PosmController@edit');
+        Route::patch('posm/{id}', 'Master\PosmController@update');
+        Route::delete('posm/{id}', 'Master\PosmController@destroy');
+
 
     });
         

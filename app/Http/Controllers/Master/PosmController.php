@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
-use App\Traits\UploadTrait;
+use App\Filters\GroupFilters;
 use App\Traits\StringTrait;
-use App\Place;
-use App\Filters\PlaceFilters;
+use DB;
+use App\Posm;
 
-class PlaceController extends Controller
+class PosmController extends Controller
 {
     use StringTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -20,24 +21,26 @@ class PlaceController extends Controller
      */
     public function index()
     {
-        return view('master.place');
+        return view('master.posm');
     }
 
-     /**
+    /**
      * Data for DataTables
      *
      * @return \Illuminate\Http\Response
      */
     public function masterDataTable(){
 
-        $data = Place::all();
+        $data = Posm::where('posms.deleted_at', null)
+            ->join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+            ->select('posms.*', 'group_products.name as groupproduct_name')->get();
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(PlaceFilters $filters){        
-        $data = Place::filter($filters)->get();
+    public function getDataWithFilters(GroupFilters $filters){
+        $data = Posm::filter($filters)->get();
 
         return $data;
     }
@@ -46,15 +49,15 @@ class PlaceController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
-                ->addColumn('action', function ($item) {
+            ->addColumn('action', function ($item) {
 
-                   return 
-                    "<a href='#place' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-place'><i class='fa fa-pencil'></i></a>
+                return
+                    "<a href='#posm' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-posm'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
-                    
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+
+            })
+            ->rawColumns(['action'])
+            ->make(true);
 
     }
 
@@ -76,15 +79,16 @@ class PlaceController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'longitude' => 'number',
-            'latitude' => 'number',
-            ]);
+            'groupproduct_id' => 'required'
+        ]);
 
-       	$place = Place::create($request->all());
-        
-        return response()->json(['url' => url('/place')]);
+        $posm = Posm::create($request->all());
+
+        return response()->json(['url' => url('/posm')]);
     }
 
     /**
@@ -106,7 +110,7 @@ class PlaceController extends Controller
      */
     public function edit($id)
     {
-        $data = Place::find($id);
+        $data = Posm::with('groupProduct')->where('id', $id)->first();
 
         return response()->json($data);
     }
@@ -122,17 +126,13 @@ class PlaceController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'longitude' => 'number',
-            'latitude' => 'number',
-            ]);
+            'groupproduct_id' => 'required'
+        ]);
 
-        $place = Place::find($id)->update($request->all());
+        $posm = Posm::find($id)->update($request->all());
 
         return response()->json(
-            [
-                'url' => url('/place'),
-                'method' => $request->_method
-            ]);
+            ['url' => url('/posm'), 'method' => $request->_method]);
     }
 
     /**
@@ -143,7 +143,7 @@ class PlaceController extends Controller
      */
     public function destroy($id)
     {
-        $place = Place::destroy($id);
+        $posm = Posm::destroy($id);
 
         return response()->json($id);
     }

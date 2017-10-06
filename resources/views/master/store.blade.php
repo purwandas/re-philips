@@ -129,6 +129,16 @@
                     return;
                 }
 
+                if(salesStoreRelation(id) > 0){
+                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                    return;
+                }
+
+                if(posmActivityStoreRelation(id) > 0){
+                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                    return;
+                }
+
                 swal({
                     title: "Are you sure?",
                     text: "You will not be able to recover data!",

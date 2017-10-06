@@ -88,6 +88,20 @@ function salesEmployeeRelation(userId) {
     }).responseText);
 }
 
+function salesStoreRelation(storeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/salesstore',
+        dataType: 'json',
+        data: { storeId: storeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
 function categoryGroupRelation(groupId) {
     return JSON.parse($.ajax({
         type: 'POST',
@@ -150,6 +164,62 @@ function newsAreaRelation(areaId) {
         url: 'relation/newsarea',
         dataType: 'json',
         data: { areaId: areaId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function posmActivityDetailPosmRelation(posmId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/posmactivitydetailposm',
+        dataType: 'json',
+        data: { posmId: posmId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function posmActivityEmployeeRelation(employeeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/posmactivityemployee',
+        dataType: 'json',
+        data: { employeeId: employeeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function posmActivityStoreRelation(storeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/posmactivitystore',
+        dataType: 'json',
+        data: { storeId: storeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function newsAdminRelation(userId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/newsadmin',
+        dataType: 'json',
+        data: { userId: userId },
         global: false,
         async: false,
         success: function (data) {

@@ -51,7 +51,7 @@ var FormValidation = function () {
                                           email: function() {
                                             return $( "#email" ).val();
                                           },
-                                          method: function() {
+                                          form_method: function() {
                                             return 'PATCH';
                                           },
                                           userId: function(){
@@ -232,10 +232,10 @@ var FormValidation = function () {
                             return;
                         }
 
-                        if(salesEmployeeChangeRelation(userId, $('#role').val()) > 0){
-                            swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                            return;
-                        }  
+                        // if(salesEmployeeChangeRelation(userId, $('#role').val()) > 0){
+                        //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                        //     return;
+                        // }
 
                     }                  
 
