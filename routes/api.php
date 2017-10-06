@@ -42,7 +42,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
 
 	Route::post('/sales/{param}', 'Api\Master\SalesController@store');
-
+	Route::post('/soh', 'Api\Master\SOHController@store');
+	Route::post('/sos', 'Api\Master\SOSController@store');
 	
 
 });
