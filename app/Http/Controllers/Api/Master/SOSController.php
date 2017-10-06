@@ -15,7 +15,7 @@ class SOSController extends Controller
 {
     public function store(Request $request)
     {   
-        try {
+       try {
 
             $content = json_decode($request->getContent(), true);
             $user = JWTAuth::parseToken()->authenticate();   
@@ -37,9 +37,9 @@ class SOSController extends Controller
                 ]);
 	        }
 
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi ('.$e.')']);
-        }
+       } catch (\Exception $e) {
+           return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi']);
+       }
     	
     	return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
 

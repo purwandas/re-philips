@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
-use App\SOH;
-use App\SOHDetail;
+use App\Soh;
+use App\SohDetail;
 
 class SOHController extends Controller
 {
@@ -25,7 +25,7 @@ class SOHController extends Controller
     		$user = JWTAuth::parseToken()->authenticate();
 
     		//Transaction Header SOH
-    		$transaction = SOH::create
+    		$transaction = Soh::create
     		([
     			'user_id'	=>$user->id,
     			'store_id'	=>$content['id'],
@@ -33,8 +33,8 @@ class SOHController extends Controller
     		]);
 
     		// Transaction Details
-    		foreach ($$content['data'] as $data) {
-    			SOHDetail::create
+    		foreach ($content['data'] as $data) {
+    			SohDetail::create
     			([
     				'soh_id'	=> $transaction->id,
     				'product_id'	=> $data['product_id'],
