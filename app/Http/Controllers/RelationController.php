@@ -18,6 +18,8 @@ use App\RetConsument;
 use App\FreeProduct;
 use App\Tbat;
 use App\News;
+use App\PosmActivityDetail;
+use App\PosmActivity;
 
 class RelationController extends Controller
 {
@@ -181,6 +183,49 @@ class RelationController extends Controller
         return response()->json($countSales);
     }
 
+    public function salesStoreRelation(Request $request){
+
+        $countSales = 0;
+
+        // COUNT IN SELL IN
+        $sellInCount = SellIn::where('store_id', $request->storeId)->count();
+        if($sellInCount > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN SELL OUT
+        $sellOutCount = SellOut::where('store_id', $request->storeId)->count();
+        if($sellOutCount > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN RET DISTRIBUTOR
+        $retDistributorCount = RetDistributor::where('store_id', $request->storeId)->count();
+        if($retDistributorCount > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN RET CONSUMENT
+        $retConsumentCount = RetConsument::where('store_id', $request->storeId)->count();
+        if($retConsumentCount > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN FREE PRODUCT
+        $freeProductCount = FreeProduct::where('store_id', $request->storeId)->count();
+        if($freeProductCount > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN TBAT
+        $tbatCount = Tbat::where('store_id', $request->storeId)->count();
+        if($tbatCount > 0){
+            $countSales += 1;
+        }
+
+        return response()->json($countSales);
+    }
+
     public function newsEmployeeRelation(Request $request){
 
         $news = News::where('target_type', 'Promoter')->get();
@@ -236,6 +281,30 @@ class RelationController extends Controller
 
         return response()->json($countNews);
 
+    }
+
+    public function posmActivityDetailPosmRelation(Request $request){
+        $countPosm = PosmActivityDetail::where('posm_id', $request->posmId)->count();
+
+        return response()->json($countPosm);
+    }
+
+    public function posmActivityEmployeeRelation(Request $request){
+        $countPosmActivity = PosmActivity::where('user_id', $request->employeeId)->count();
+
+        return response()->json($countPosmActivity);
+    }
+
+    public function posmActivityStoreRelation(Request $request){
+        $countPosmActivity = PosmActivity::where('store_id', $request->storeId)->count();
+
+        return response()->json($countPosmActivity);
+    }
+
+    public function newsAdminRelation(Request $request){
+        $countNews = News::where('user_id', $request->userId)->count();
+
+        return response()->json($countNews);
     }
     
 }
