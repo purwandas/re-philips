@@ -100,6 +100,10 @@ class NewsController extends Controller
                     return $result;
                     
                 })
+                ->editColumn('total_read', function ($item) {
+                    return
+                    "<a class='open-read-who-modal' data-target='#read-who-modal' data-toggle='modal' data-total-read='".$item->total_read."' data-url='util/newsread' data-title='Who`s read this news' data-id='".$item->id."'> ".$item->total_read." </a>";
+                })
                 ->addColumn('action', function ($item) {
 
                     return 
@@ -107,7 +111,7 @@ class NewsController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['total_read', 'action'])
                 ->make(true);
 
     }
