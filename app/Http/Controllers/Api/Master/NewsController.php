@@ -99,15 +99,13 @@ class NewsController extends Controller
 
     public function read($param)
     {
-//        return response()->json(['status' => true, 'message' => 'News Readed']);
-
     	$user = JWTAuth::parseToken()->authenticate();
-
-        $news = News::find($param);
-        $news->update([ 'total_read' => $news->total_read+1 ]);
 
         $newsRead = NewsRead::where('news_id', $param)->where('user_id', $user->id)->count();
         if($newsRead == 0){
+            $news = News::find($param);
+            $news->update([ 'total_read' => $news->total_read+1 ]);
+
             NewsRead::create([
                 'news_id' => $param,
                 'user_id' => $user->id
