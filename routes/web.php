@@ -15,7 +15,7 @@ Route::get('/', function () {
 });
 
 Route::get('/path', function () {
-    return storage_path();
+    return public_path();
 });
 
 Route::group(['middleware' => ['auth']], function () {

@@ -111,6 +111,10 @@ class ProductKnowledgeController extends Controller
                     }
 
                 })
+                ->editColumn('total_read', function ($item) {
+                    return
+                    "<a class='open-read-who-modal' data-target='#read-who-modal' data-toggle='modal' data-total-read='".$item->total_read."' data-url='util/productread' data-title='Who`s read this Product Knowledge' data-id='".$item->id."'> ".$item->total_read." </a>";
+                })
                 ->addColumn('action', function ($item) {
 
                     return
@@ -118,7 +122,7 @@ class ProductKnowledgeController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 })
-                ->rawColumns(['file', 'action'])
+                ->rawColumns(['file', 'total_read', 'action'])
                 ->make(true);
 
     }

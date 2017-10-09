@@ -85,6 +85,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
     Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
     Route::get('util/user/{id}', ['uses'=>'UtilController@getUser']);
+    Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);
+    Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     
 });
 

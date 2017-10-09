@@ -68,6 +68,9 @@
 			</div>
 		</div>
 		<!-- END EXAMPLE TABLE PORTLET-->
+
+        @include('partial.util.read-who-modal')
+
 	</div>
 </div>
 @endsection
@@ -77,6 +80,9 @@
 <!-- BEGIN RELATION SCRIPTS -->
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
 <!-- END RELATION SCRIPTS -->
+<!-- BEGIN TEXT MODAL SCRIPTS -->
+<script src="{{ asset('js/text-modal/popup.js') }}" type="text/javascript"></script>
+<!-- END TEXT MODAL SCRIPTS -->
 
 <script>
 	$(document).ready(function () {    	
@@ -110,7 +116,9 @@
 	        ],
 	        "columnDefs": [
         		{"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [7]},
+                {"className": "dt-center", "targets": [6]},
+                {"className": "dt-center", "targets": [8]},
+                {"className": "dt-center", "targets": [9]},
       		],
             "order": [ [0, 'desc'] ],            
     	});
