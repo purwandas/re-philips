@@ -30,7 +30,7 @@ class Sos extends Model
 
     public function sosDetails()
     {
-        return $this->hasMany('App\SOSDetail', 'sos_id');
+        return $this->hasMany('App\SosDetail', 'sos_id');
     }
 
     public function store()

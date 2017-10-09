@@ -33,6 +33,44 @@ class Product extends Model
         return $this->belongsTo('App\Category', 'category_id');
     }
 
+    // Transactions
+
+    public function sellInDetails(){
+        return $this->hasMany('App\SellInDetail', 'product_id');
+    }
+
+    public function sellOutDetails(){
+        return $this->hasMany('App\SellOutDetail', 'product_id');
+    }
+
+    public function retDistributorDetails(){
+        return $this->hasMany('App\RetDitributorDetail', 'product_id');
+    }
+
+    public function retConsumentDetails(){
+        return $this->hasMany('App\RetConsumentDetail', 'product_id');
+    }
+
+    public function freeProductDetails(){
+        return $this->hasMany('App\FreeProductDetail', 'product_id');
+    }
+
+    public function tbatDetails(){
+        return $this->hasMany('App\TbatDetail', 'product_id');
+    }
+
+    public function sohDetails(){
+        return $this->hasMany('App\SOHDetail', 'product_id');
+    }
+
+    public function sosDetails(){
+        return $this->hasMany('App\SosDetail', 'product_id');
+    }
+
+    public function promoDetails(){
+        return $this->hasMany('App\PromoActivityDetail', 'product_id');
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query

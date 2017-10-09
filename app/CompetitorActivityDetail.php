@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class SosDetail extends Model
+class CompetitorActivityDetail extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'sos_id', 'product_id', 'quantity'
+        'competitoractivity_id', 'groupcompetitor_id'
     ];
 
     /**
@@ -28,14 +28,14 @@ class SosDetail extends Model
      *
      */
 
-    public function sos()
+    public function competitorActivity()
     {
-        return $this->belongsTo('App\Sos', 'sos_id');
+        return $this->belongsTo('App\CompetitorActivity', 'competitoractivity_id');
     }
 
-    public function product()
+    public function groupCompetitor()
     {
-        return $this->belongsTo('App\Product', 'product_id');
+        return $this->belongsTo('App\GroupCompetitor', 'groupcompetitor_id');
     }
 
     /**

@@ -33,13 +33,14 @@ class PosmController extends Controller
 
             /* Check if image not match with other input count number */
             if(count($request->photo) != $dataLength){
-                return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+                return response()->json(['status' => false, 'message' => 'Photo tidak boleh ada yang kosong'], 500);
             }
 
             /* Create POSM Activity */
             $transaction = PosmActivity::create([
                                     'user_id' => $user->id,
                                     'store_id' => $request->store_id,
+                                    'week' => Carbon::now()->weekOfMonth,
                                     'date' => Carbon::now(),
                                 ]);
 
