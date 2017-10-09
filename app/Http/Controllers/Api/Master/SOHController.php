@@ -54,7 +54,7 @@ class SOHController extends Controller
     			// Delete Header then
     			Soh::find($transaction->id)->forceDelete();
     		}
-    		return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'.$e]);
+    		return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi']);
     	}
 
     	return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
