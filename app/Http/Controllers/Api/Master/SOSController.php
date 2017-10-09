@@ -24,6 +24,7 @@ class SOSController extends Controller
             $transaction = Sos::create([
 	            'user_id' => $user->id,
 	            'store_id' => $content['id'],
+                'week' => Carbon::now()->weekOfMonth,
 	            'date' => Carbon::now()
             ]);
 

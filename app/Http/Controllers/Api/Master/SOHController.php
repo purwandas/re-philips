@@ -29,6 +29,7 @@ class SOHController extends Controller
     		([
     			'user_id'	=>$user->id,
     			'store_id'	=>$content['id'],
+                'week' => Carbon::now()->weekOfMonth,
     			'date'		=>Carbon::now()
     		]);
 
@@ -53,9 +54,9 @@ class SOHController extends Controller
     			// Delete Header then
     			Soh::find($transaction->id)->forceDelete();
     		}
-    		return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi']);
+    		return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'.$e]);
     	}
 
-    	return response()->json(['status' => true, 'id_idtransaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
+    	return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
     }
 }
