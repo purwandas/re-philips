@@ -101,11 +101,11 @@ class ProductKnowledgeController extends Controller
     {
     	$user = JWTAuth::parseToken()->authenticate();
 
-        $productKnowledge = ProductKnowledge::find($param);
-        $productKnowledge->update([ 'total_read' => $productKnowledge->total_read+1 ]);
-
         $productKnowledgeRead = ProductKnowledgeRead::where('productknowledge_id', $param)->where('user_id', $user->id)->count();
         if($productKnowledgeRead == 0){
+            $productKnowledge = ProductKnowledge::find($param);
+            $productKnowledge->update([ 'total_read' => $productKnowledge->total_read+1 ]);
+
             ProductKnowledgeRead::create([
                 'productknowledge_id' => $param,
                 'user_id' => $user->id
