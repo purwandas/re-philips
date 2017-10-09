@@ -14,6 +14,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/path', function () {
+    return storage_path();
+});
+
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'DashboardController@index');
 });
