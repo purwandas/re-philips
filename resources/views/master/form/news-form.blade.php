@@ -97,7 +97,7 @@
 				        <label class="control-label col-md-2">Content
                                                 </label>
                                                 <div class="col-md-9">
-                                                    <textarea class="form-control" id="content" name="content" rows="6" data-error-container="#ckeditor_error"></textarea>
+                                                    <textarea class="form-control" id="content" name="content" rows="6" data-error-container="#ckeditor_error" required="required">{{ @$data->content  }}</textarea>
                                                     <div id="ckeditor_error"> </div>
                                                 </div>  
 				        </div>
@@ -252,7 +252,7 @@
 	        $('#employee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {            
 	        	filters = {};
 	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
-	            return filterData('name', params.term);
+	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
