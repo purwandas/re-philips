@@ -120,7 +120,7 @@
                 if(salesEmployeeRelation(id) > 0){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
-                }                
+                }
 
                 if(newsEmployeeRelation(id) > 0){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
@@ -138,6 +138,11 @@
                 }
 
                 if(productKnowledgeEmployeeRelation(id) > 0){
+                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                    return;
+                }
+
+                if(productKnowledgeAdminRelation(id) > 0){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
                 }

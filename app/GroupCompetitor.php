@@ -33,6 +33,11 @@ class GroupCompetitor extends Model
         return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
     }
 
+    public function competitorActivityDetails()
+    {
+        return $this->hasMany('App\CompetitorActivityDetail', 'groupcompetitor_id');
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query

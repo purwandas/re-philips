@@ -321,9 +321,9 @@ class UserController extends Controller
         }
 
         // Product Knowledge Reads
-        $productKnowledge = ProductKnowledgeRead::where('user_id', $id);
-        if($productKnowledge->count() > 0){
-            $productKnowledge->delete();
+        $productKnowledgeRead = ProductKnowledgeRead::where('user_id', $id);
+        if($productKnowledgeRead->count() > 0){
+            $productKnowledgeRead->delete();
         }
 
         $user = User::find($id);

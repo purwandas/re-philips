@@ -15,7 +15,7 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
-	Route::get('/', 'DashboardController@index');	
+    Route::get('/', 'DashboardController@index');
 });
 
 /* Route for Authentication (Login) */

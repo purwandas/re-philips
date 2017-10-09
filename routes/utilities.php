@@ -71,6 +71,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('relation/productknowledgeemployee', ['as'=> 'relation.productknowledgeemployee','uses'=>'RelationController@productKnowledgeEmployeeRelation']);
     Route::post('relation/productknowledgestore', ['as'=> 'relation.productknowledgestore','uses'=>'RelationController@productKnowledgeStoreRelation']);
     Route::post('relation/productknowledgearea', ['as'=> 'relation.productknowledgearea','uses'=>'RelationController@productKnowledgeAreaRelation']);
+    Route::post('relation/productknowledgeadmin', ['as'=> 'relation.productknowledgeadmin','uses'=>'RelationController@productKnowledgeAdminRelation']);
+    Route::post('relation/competitoractivitygroup', ['as'=> 'relation.competitoractivitygroup','uses'=>'RelationController@competitorActivityGroupRelation']);
+    Route::post('relation/salesproduction', ['as'=> 'relation.salesproduction','uses'=>'RelationController@salesProductRelation']);
 
     /**
      * Util

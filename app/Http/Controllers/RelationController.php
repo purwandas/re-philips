@@ -2,6 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\CompetitorActivity;
+use App\CompetitorActivityDetail;
+use App\FreeProductDetail;
+use App\PromoActivity;
+use App\PromoActivityDetail;
+use App\RetConsumentDetail;
+use App\RetDistributorDetail;
+use App\SellOutDetail;
+use App\SellInDetail;
+use App\TbatDetail;
 use Illuminate\Http\Request;
 use App\Area;
 use App\AreaApp;
@@ -181,6 +191,18 @@ class RelationController extends Controller
             $countSales += 1;
         }
 
+        // COUNT IN COMPETITOR ACTIVITY
+        $competitorActivity = CompetitorActivity::where('user_id', $request->userId)->count();
+        if($competitorActivity > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN PROMO ACTIVITY
+        $promoActivity = PromoActivity::where('user_id', $request->userId)->count();
+        if($promoActivity > 0){
+            $countSales += 1;
+        }
+
         return response()->json($countSales);
     }
 
@@ -221,6 +243,18 @@ class RelationController extends Controller
         // COUNT IN TBAT
         $tbatCount = Tbat::where('store_id', $request->storeId)->count();
         if($tbatCount > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN COMPETITOR ACTIVITY
+        $competitorActivity = CompetitorActivity::where('store_id', $request->storeId)->count();
+        if($competitorActivity > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN PROMO ACTIVITY
+        $promoActivity = PromoActivity::where('store_id', $request->storeId)->count();
+        if($promoActivity > 0){
             $countSales += 1;
         }
 
@@ -363,6 +397,68 @@ class RelationController extends Controller
 
         return response()->json($countProductKnowledge);
 
+    }
+
+    public function productKnowledgeAdminRelation(Request $request){
+        $countProductKnowledge = ProductKnowledge::where('user_id', $request->userId)->count();
+
+        return response()->json($countProductKnowledge);
+    }
+
+    public function competitorActivityGroupRelation(Request $request){
+        $countActivity = CompetitorActivityDetail::where('groupcompetitor_id', $request->groupCompetitorId)->count();
+
+        return response()->json($countActivity);
+    }
+
+
+    public function salesProductRelation(Request $request){
+
+        $countSalesDetails = 0;
+
+        // COUNT IN SELL IN
+        $sellInCount = SellInDetail::where('product_id', $request->productId)->count();
+        if($sellInCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        // COUNT IN SELL OUT
+        $sellOutCount = SellOutDetail::where('product_id', $request->productId)->count();
+        if($sellOutCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        // COUNT IN RET DISTRIBUTOR
+        $retDistributorCount = RetDistributorDetail::where('product_id', $request->productId)->count();
+        if($retDistributorCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        // COUNT IN RET CONSUMENT
+        $retConsumentCount = RetConsumentDetail::where('product_id', $request->productId)->count();
+        if($retConsumentCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        // COUNT IN FREE PRODUCT
+        $freeProductCount = FreeProductDetail::where('product_id', $request->productId)->count();
+        if($freeProductCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        // COUNT IN TBAT
+        $tbatCount = TbatDetail::where('product_id', $request->productId)->count();
+        if($tbatCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        // COUNT IN PROMO ACTIVITY
+        $promoActivityCount = PromoActivityDetail::where('product_id', $request->productId)->count();
+        if($promoActivityCount > 0){
+            $countSalesDetails += 1;
+        }
+
+        return response()->json($countSalesDetails);
     }
     
 }
