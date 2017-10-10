@@ -35,7 +35,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $upload_path = '/image/tes';
-        $request->file('photo_file')->move($upload_path, 'TES.png');
+//        $request->file('photo_file')->move($upload_path, 'TES.png');
         dd($request->file('photo_file'));
 
         $this->validate($request, [
