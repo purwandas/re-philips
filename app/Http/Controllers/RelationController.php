@@ -179,6 +179,18 @@ class RelationController extends Controller
             return true;
         }
 
+        // COUNT IN COMPETITOR ACTIVITY
+        $competitorActivity = CompetitorActivity::where('user_id', $request->userId)->count();
+        if($competitorActivity > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN PROMO ACTIVITY
+        $promoActivity = PromoActivity::where('user_id', $request->userId)->count();
+        if($promoActivity > 0){
+            $countSales += 1;
+        }
+
         return response()->json(false);
     }
 
