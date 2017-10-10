@@ -36,6 +36,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/store', 'Api\Master\StoreController@all');
 	Route::get('/competitor/{param}', 'Api\Master\GroupCompetitorController@all');
 	Route::get('/competitor/{param}/{param2}', 'Api\Master\GroupCompetitorController@allCategory');
+	Route::get('/posm/{param}', 'Api\Master\PosmController@all');
 
 	/**
      * Transaction Module(s)
