@@ -38,7 +38,7 @@
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_user" class="form-horizontal" action="{{ url('profile') }}" method="POST">	        	
+	        	<form id="form_user" class="form-horizontal" action="{{ url('profile') }}" method="POST" enctype="multipart/form-data">
 			        {{ csrf_field() }}
 
 			        <div class="form-body">
@@ -79,12 +79,11 @@
 				          <div class="input-group" style="width: 100%;">
      
                                 <select class="select2select" name="role" id="role" required disabled>
-                                	<option value="spv" {{ (@$data->role == 'spv') ? "selected" : "" }}>SPV</option>
-                                	<option value="dm" {{ (@$data->role == 'dm') ? "selected" : "" }}>DM</option>
-                                	<option value="rsm" {{ (@$data->role == 'rsm') ? "selected" : "" }}>RSM</option>
-                                	<option value="admin" {{ (@$data->role == 'admin') ? "selected" : "" }}>ADMIN</option>
-                                	@if(Auth::user()->role == 'masteradmin')
-                                	<option value="MASTERADMIN" {{ (@$data->role == 'masteradmin') ? "selected" : "" }}>MASTERADMIN</option>
+                                	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
+                                	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
+                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>ADMIN</option>
+                                	@if(Auth::user()->role == 'Master')
+                                	<option value="Master" {{ (@$data->role == 'Master') ? "selected" : "" }}>Master Admin</option>
                                 	@endif
                                 </select>
                                	
