@@ -59,19 +59,20 @@ class RelationController extends Controller
         return response()->json($countStore);
     }
 
-    public function storeSpvRelation(Request $request){
+    public function storeSpvRelation($userId){
 
-        $user = User::find($request->userId);
+        $user = User::find($userId);
 
-        $countStore = 0;
+        // $countStore = 0;
+        $checkStore =false;
 
         if($user->role == 'Supervisor'){
 
-            $countStore = Store::where('user_id', $request->userId)->count();
+            $checkStore = Store::where('user_id', $userId)->first();
 
         }
 
-        return response()->json($countStore);
+        return $checkStore;
     }
 
     public function categoryGroupRelation(Request $request){
@@ -151,44 +152,42 @@ class RelationController extends Controller
         return response()->json($countSales);
     }
 
-    public function salesEmployeeRelation(Request $request){
+    public function salesEmployeeRelation($userId){
 
-        $countSales = 0;   
-
-        // COUNT IN SELL IN
-        $sellInCount = SellIn::where('user_id', $request->userId)->count();
-        if($sellInCount > 0){
-            $countSales += 1;
+        // CHECK IN SELL IN
+        $sellInCount = SellIn::where('user_id', $userId)->first();
+        if($sellInCount){
+            return true;
         }
 
-        // COUNT IN SELL OUT
-        $sellOutCount = SellOut::where('user_id', $request->userId)->count();
-        if($sellOutCount > 0){
-            $countSales += 1;
+        // CHECK IN SELL OUT
+        $sellOutCount = SellOut::where('user_id', $userId)->first();
+        if($sellOutCount){
+            return true;
         }
 
-        // COUNT IN RET DISTRIBUTOR
-        $retDistributorCount = RetDistributor::where('user_id', $request->userId)->count();
-        if($retDistributorCount > 0){
-            $countSales += 1;
+        // CHECK IN RET DISTRIBUTOR
+        $retDistributorCount = RetDistributor::where('user_id', $userId)->first();
+        if($retDistributorCount){
+            return true;
         }
 
-        // COUNT IN RET CONSUMENT
-        $retConsumentCount = RetConsument::where('user_id', $request->userId)->count();
-        if($retConsumentCount > 0){
-            $countSales += 1;
+        // CHECK IN RET CONSUMENT
+        $retConsumentCount = RetConsument::where('user_id', $userId)->first();
+        if($retConsumentCount){
+            return true;
         }
 
-        // COUNT IN FREE PRODUCT
-        $freeProductCount = FreeProduct::where('user_id', $request->userId)->count();
-        if($freeProductCount > 0){
-            $countSales += 1;
+        // CHECK IN FREE PRODUCT
+        $freeProductCount = FreeProduct::where('user_id', $userId)->first();
+        if($freeProductCount){
+            return true;
         }
 
-        // COUNT IN TBAT
-        $tbatCount = Tbat::where('user_id', $request->userId)->count();
-        if($tbatCount > 0){
-            $countSales += 1;
+        // CHECK IN TBAT
+        $tbatCount = Tbat::where('user_id', $userId)->first();
+        if($tbatCount){
+            return true;
         }
 
         // COUNT IN COMPETITOR ACTIVITY
@@ -203,7 +202,21 @@ class RelationController extends Controller
             $countSales += 1;
         }
 
+
+        // COUNT IN COMPETITOR ACTIVITY
+        $competitorActivity = CompetitorActivity::where('user_id', $request->userId)->count();
+        if($competitorActivity > 0){
+            $countSales += 1;
+        }
+
+        // COUNT IN PROMO ACTIVITY
+        $promoActivity = PromoActivity::where('user_id', $request->userId)->count();
+        if($promoActivity > 0){
+            $countSales += 1;
+        }
+
         return response()->json($countSales);
+
     }
 
     public function salesStoreRelation(Request $request){
@@ -261,22 +274,25 @@ class RelationController extends Controller
         return response()->json($countSales);
     }
 
-    public function newsEmployeeRelation(Request $request){
+    public function newsEmployeeRelation($userId){
 
         $news = News::where('target_type', 'Promoter')->get();
 
-        $countNews = 0;
+        // $countNews = 0;
+        $checkEmployee=false;
 
         foreach ($news as $data) {
 
             $array = explode(', ', $data->target_detail);
-            if(in_array($request->employeeId, $array)){
-                $countNews += 1;
+            if(in_array($userId, $array)){
+                // $countNews += 1;
+                $checkEmployee=true;
+                break;
             }
 
         }
 
-        return response()->json($countNews);
+        return $checkEmployee;
 
     }
 
@@ -324,10 +340,10 @@ class RelationController extends Controller
         return response()->json($countPosm);
     }
 
-    public function posmActivityEmployeeRelation(Request $request){
-        $countPosmActivity = PosmActivity::where('user_id', $request->employeeId)->count();
+    public function posmActivityEmployeeRelation($userId){
+        $countPosmActivity = PosmActivity::where('user_id', $userId)->first();
 
-        return response()->json($countPosmActivity);
+        return $countPosmActivity;
     }
 
     public function posmActivityStoreRelation(Request $request){
@@ -336,10 +352,10 @@ class RelationController extends Controller
         return response()->json($countPosmActivity);
     }
 
-    public function newsAdminRelation(Request $request){
-        $countNews = News::where('user_id', $request->userId)->count();
+    public function newsAdminRelation($userId){
+        $countNews = News::where('user_id', $userId)->first();
 
-        return response()->json($countNews);
+        return $countNews;
     }
 
     public function productKnowledgeEmployeeRelation(Request $request){
@@ -461,4 +477,12 @@ class RelationController extends Controller
         return response()->json($countSalesDetails);
     }
     
+    public function checkUserRelation(Request $request){
+        if(($this->salesEmployeeRelation($request->userId) && $this->storeSpvRelation($request->userId) && $this->newsEmployeeRelation($request->userId) && $this->posmActivityEmployeeRelation($request->userId) && $this->newsAdminRelation($request->userId))==false)
+        {
+            return response()->json(false);
+        }
+
+        return response()->json(true);
+    }
 }
