@@ -38,7 +38,7 @@
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_user" class="form-horizontal" action="{{ url('profile') }}" method="POST" enctype="multipart/form-data">
+	        	<form id="form_user" class="form-horizontal" action="{{ url('profile') }}" method="POST" enctype="multipart/form-data" files="true">
 			        {{ csrf_field() }}
 
 			        <div class="form-body">
