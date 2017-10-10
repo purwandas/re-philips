@@ -15,7 +15,7 @@ Route::get('/', function () {
 });
 
 Route::get('/path', function () {
-    return public_path();
+    return env('APP_URL');
 });
 
 Route::group(['middleware' => ['auth']], function () {
