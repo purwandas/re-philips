@@ -60,10 +60,24 @@ function storeAreaAppRelation(areaAppId) {
     }).responseText);
 }
 
-function storeSpvRelation(userId) {
+// function storeSpvRelation(userId) {
+//     return JSON.parse($.ajax({
+//         type: 'POST',
+//         url: 'relation/storespv',
+//         dataType: 'json',
+//         data: { userId: userId },
+//         global: false,
+//         async: false,
+//         success: function (data) {
+//             return data;
+//         }
+//     }).responseText);
+// }
+
+function userRelation(userId) {
     return JSON.parse($.ajax({
         type: 'POST',
-        url: 'relation/storespv',
+        url: 'relation/userrelation',
         dataType: 'json',
         data: { userId: userId },
         global: false,
@@ -74,19 +88,19 @@ function storeSpvRelation(userId) {
     }).responseText);
 }
 
-function salesEmployeeRelation(userId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/salesemployee',
-        dataType: 'json',
-        data: { userId: userId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
+// function salesEmployeeRelation(userId) {
+//     return JSON.parse($.ajax({
+//         type: 'POST',
+//         url: 'relation/salesemployee',
+//         dataType: 'json',
+//         data: { userId: userId },
+//         global: false,
+//         async: false,
+//         success: function (data) {
+//             return data;
+//         }
+//     }).responseText);
+// }
 
 function salesStoreRelation(storeId) {
     return JSON.parse($.ajax({
@@ -130,19 +144,19 @@ function productCategoryRelation(categoryId) {
     }).responseText);
 }
 
-function newsEmployeeRelation(employeeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/newsemployee',
-        dataType: 'json',
-        data: { employeeId: employeeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
+// function newsEmployeeRelation(employeeId) {
+//     return JSON.parse($.ajax({
+//         type: 'POST',
+//         url: 'relation/newsemployee',
+//         dataType: 'json',
+//         data: { employeeId: employeeId },
+//         global: false,
+//         async: false,
+//         success: function (data) {
+//             return data;
+//         }
+//     }).responseText);
+// }
 
 function newsStoreRelation(storeId) {
     return JSON.parse($.ajax({
@@ -186,19 +200,19 @@ function posmActivityDetailPosmRelation(posmId) {
     }).responseText);
 }
 
-function posmActivityEmployeeRelation(employeeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/posmactivityemployee',
-        dataType: 'json',
-        data: { employeeId: employeeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
+// function posmActivityEmployeeRelation(employeeId) {
+//     return JSON.parse($.ajax({
+//         type: 'POST',
+//         url: 'relation/posmactivityemployee',
+//         dataType: 'json',
+//         data: { employeeId: employeeId },
+//         global: false,
+//         async: false,
+//         success: function (data) {
+//             return data;
+//         }
+//     }).responseText);
+// }
 
 function posmActivityStoreRelation(storeId) {
     return JSON.parse($.ajax({
@@ -214,19 +228,19 @@ function posmActivityStoreRelation(storeId) {
     }).responseText);
 }
 
-function newsAdminRelation(userId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/newsadmin',
-        dataType: 'json',
-        data: { userId: userId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
+// function newsAdminRelation(userId) {
+//     return JSON.parse($.ajax({
+//         type: 'POST',
+//         url: 'relation/newsadmin',
+//         dataType: 'json',
+//         data: { userId: userId },
+//         global: false,
+//         async: false,
+//         success: function (data) {
+//             return data;
+//         }
+//     }).responseText);
+// }
 
 // Check role relation
 function storeSpvChangeRelation(spvId, role) {    

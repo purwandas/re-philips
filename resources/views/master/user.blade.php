@@ -112,30 +112,35 @@
         $('#userTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
-                if(storeSpvRelation(id) > 0){
+                if(userRelation(id)){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
                 }
 
-                if(salesEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }                
+                // if(storeSpvRelation(id) > 0){ //51
+                //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                //     return;
+                // }
 
-                if(newsEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
+                // if(salesEmployeeRelation(id) > 0){ //143
+                //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                //     return;
+                // }                
 
-                if(posmActivityEmployeeRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
+                // if(newsEmployeeRelation(id) > 0){ //229
+                //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                //     return;
+                // }
 
-                if(newsAdminRelation(id) > 0){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
+                // if(posmActivityEmployeeRelation(id) > 0){ //292
+                //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                //     return;
+                // }
+
+                // if(newsAdminRelation(id) > 0){ //304
+                //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                //     return;
+                // }
 
             	swal({
 					title: "Are you sure?",
