@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Posm;
 use App\PosmActivityDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -33,13 +34,14 @@ class PosmController extends Controller
 
             /* Check if image not match with other input count number */
             if(count($request->photo) != $dataLength){
-                return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+                return response()->json(['status' => false, 'message' => 'Photo tidak boleh ada yang kosong'], 500);
             }
 
             /* Create POSM Activity */
             $transaction = PosmActivity::create([
                                     'user_id' => $user->id,
                                     'store_id' => $request->store_id,
+                                    'week' => Carbon::now()->weekOfMonth,
                                     'date' => Carbon::now(),
                                 ]);
 
@@ -92,5 +94,15 @@ class PosmController extends Controller
 
         return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
 
+    }
+
+    public function all($param)
+    {
+    	$data = Posm::join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+    				   ->where('group_products.id', $param)
+    				   ->select('posms.id', 'posms.name')
+    				   ->get();
+
+    	return response()->json($data);
     }
 }

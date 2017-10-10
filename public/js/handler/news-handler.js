@@ -240,7 +240,7 @@ var FormValidation = function () {
         // $(this).parent('.input-group').children('.error_message')[0].innerHTML += "tes";
         // alert($(this).parent('.input-group').children('.error_message')[0].innerHTML);
 
-        var form = $('#form_employee');
+        var form = $('#form_news');
         var errorAlert = $('.alert-danger', form);
         var successAlert = $('.alert-success', form);
         var filename = $(this).val();          

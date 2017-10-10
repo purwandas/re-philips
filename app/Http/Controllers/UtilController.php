@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\NewsRead;
+use App\ProductKnowledgeRead;
 use Illuminate\Http\Request;
 use App\User;
 use App\Store;
 use App\AreaApp;
 use App\EmployeeStore;
+use DB;
 
 class UtilController extends Controller
 {
@@ -67,6 +70,24 @@ class UtilController extends Controller
 
     public function getUser($id){
         $data = User::find($id);
+        return response()->json($data);
+    }
+
+     public function getNewsRead($id){
+        $data = NewsRead::where('news_id', $id)
+                    ->join('users', 'news_reads.user_id', '=', 'users.id')
+                    ->select('users.*', 'news_reads.created_at as read_at')
+                    ->get();
+
+        return response()->json($data);
+    }
+
+    public function getProductRead($id){
+        $data = ProductKnowledgeRead::where('productknowledge_id', $id)
+                    ->join('users', 'product_knowledge_reads.user_id', '=', 'users.id')
+                    ->select('users.*', 'product_knowledge_reads.created_at as read_at')
+                    ->get();
+
         return response()->json($data);
     }
 }

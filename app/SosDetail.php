@@ -30,7 +30,7 @@ class SosDetail extends Model
 
     public function sos()
     {
-        return $this->belongsTo('App\SOS', 'sos_id');
+        return $this->belongsTo('App\Sos', 'sos_id');
     }
 
     public function product()

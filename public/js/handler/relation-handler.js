@@ -242,6 +242,91 @@ function posmActivityStoreRelation(storeId) {
 //     }).responseText);
 // }
 
+function productKnowledgeEmployeeRelation(employeeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgeemployee',
+        dataType: 'json',
+        data: { employeeId: employeeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productKnowledgeAdminRelation(userId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgeadmin',
+        dataType: 'json',
+        data: { userId: userId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productKnowledgeStoreRelation(storeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgestore',
+        dataType: 'json',
+        data: { storeId: storeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productKnowledgeAreaRelation(areaId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productknowledgearea',
+        dataType: 'json',
+        data: { areaId: areaId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function competitorActivityGroupRelation(groupCompetitorId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/competitoractivitygroup',
+        dataType: 'json',
+        data: { groupCompetitorId: groupCompetitorId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function salesProductRelation(productId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/salesproduction',
+        dataType: 'json',
+        data: { productId: productId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+
 // Check role relation
 function storeSpvChangeRelation(spvId, role) {    
     return JSON.parse($.ajax({

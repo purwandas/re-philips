@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/category', ['as'=> 'datatable.category','uses'=>'Master\CategoryController@masterDataTable']);
     Route::post('datatable/product', ['as'=> 'datatable.product','uses'=>'Master\ProductController@masterDataTable']);
     Route::post('datatable/news', ['as'=> 'datatable.news','uses'=>'Master\NewsController@masterDataTable']);
+    Route::post('datatable/productknowledge', ['as'=> 'datatable.productknowledge','uses'=>'Master\ProductKnowledgeController@masterDataTable']);
     Route::post('datatable/posm', ['as'=> 'datatable.posm','uses'=>'Master\PosmController@masterDataTable']);
 
     /**
@@ -68,6 +69,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('relation/posmactivityemployee', ['as'=> 'relation.posmactivityemployee','uses'=>'RelationController@posmActivityEmployeeRelation']);
     Route::post('relation/posmactivitystore', ['as'=> 'relation.posmactivitystore','uses'=>'RelationController@posmActivityStoreRelation']);
     Route::post('relation/newsadmin', ['as'=> 'relation.newsadmin','uses'=>'RelationController@newsAdminRelation']);
+    Route::post('relation/productknowledgeemployee', ['as'=> 'relation.productknowledgeemployee','uses'=>'RelationController@productKnowledgeEmployeeRelation']);
+    Route::post('relation/productknowledgestore', ['as'=> 'relation.productknowledgestore','uses'=>'RelationController@productKnowledgeStoreRelation']);
+    Route::post('relation/productknowledgearea', ['as'=> 'relation.productknowledgearea','uses'=>'RelationController@productKnowledgeAreaRelation']);
+    Route::post('relation/productknowledgeadmin', ['as'=> 'relation.productknowledgeadmin','uses'=>'RelationController@productKnowledgeAdminRelation']);
+    Route::post('relation/competitoractivitygroup', ['as'=> 'relation.competitoractivitygroup','uses'=>'RelationController@competitorActivityGroupRelation']);
+    Route::post('relation/salesproduction', ['as'=> 'relation.salesproduction','uses'=>'RelationController@salesProductRelation']);
 
     /**
      * Util
@@ -79,6 +86,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
     Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
     Route::get('util/user/{id}', ['uses'=>'UtilController@getUser']);
+    Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);
+    Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     
 });
 

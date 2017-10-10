@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <a href="{{ url('user') }}">News Management</a>
+        <a href="{{ url('news') }}">News Management</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>
@@ -97,7 +97,7 @@
 				        <label class="control-label col-md-2">Content
                                                 </label>
                                                 <div class="col-md-9">
-                                                    <textarea class="form-control" id="content" name="content" rows="6" data-error-container="#ckeditor_error"></textarea>
+                                                    <textarea class="form-control" id="content" name="content" rows="6" data-error-container="#ckeditor_error" required="required">{{ @$data->content  }}</textarea>
                                                     <div id="ckeditor_error"> </div>
                                                 </div>  
 				        </div>
@@ -110,7 +110,7 @@
                                                     <textarea class="wysihtml5 form-control" rows="6" name="content" data-error-container="#editor1_error"></textarea>
                                                     <div id="editor1_error"> </div>
                                                 </div> -->
-				        </div>
+				        <!-- </div> -->
 
 				        <div class="form-group">
                             <label class="control-label col-md-2">Target                               
@@ -252,7 +252,7 @@
 	        $('#employee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {            
 	        	filters = {};
 	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
-	            return filterData('name', params.term);
+	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                

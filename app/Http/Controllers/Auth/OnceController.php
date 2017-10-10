@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Posm;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -180,6 +181,61 @@ class OnceController extends Controller
         return redirect('/');
     }
 
+    public function createPosm(){
+        if(Auth::user()){
+            if(Auth::user()->role == 'Master'){
+                $posm = DB::table('posms')->count();
+
+                if($posm == 0){
+                    Posm::create(['name'=>'KITCHEN ISLAND', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'LEAFLET', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'PLINTHS', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'POSTER PROMOTION', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'SHELFTALKER', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'SHELFTALKER DI VACUUM', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'STICKERS DI JUICER', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'STICKERS DI BLENDER', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'STICKERS DI SETRIKA', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'STORE SIGN', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'TOP GONDOLA', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'TV BERJALAN BAIK', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'WALL RACK/PILLAR', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'WOBBLER', 'groupproduct_id'=>'1']);
+                    Posm::create(['name'=>'OTHERS', 'groupproduct_id'=>'1']);
+
+                    Posm::create(['name'=>'AQUA TANK', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'CUSTOMIZED RACK', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'DEMO PRODUCTS', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'FEATURE CARDS', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'IONIC BRUSH KARTON DISPLAY', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'KERASHINE FLOOR STANDS', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'PLOTAINER/RACK', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'POSTER PROMOTION', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'SENSOTOUCH STAND', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'ABLETOP STANDS', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'TOP GONDOLA', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'WALL RACK/PILLAR', 'groupproduct_id'=>'2']);
+                    Posm::create(['name'=>'OTHERS', 'groupproduct_id'=>'2']);
+
+                    Posm::create(['name'=>'2nd DISPLAY', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'CATALOGUE', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'DEMO PRODUCT', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'FLAGCHAINS', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'LEAFLET', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'POSTER', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'ROTATING DISPLAY', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'SHELFTALKER', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'STORE SIGN', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'TV BERJALAN BAIK', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'WOBBLER', 'groupproduct_id'=>'3']);
+                    Posm::create(['name'=>'OTHERS', 'groupproduct_id'=>'3']);
+                }
+            }
+        }
+
+        return redirect('/');
+    }
+
     public function createMaster(){
         if(Auth::user()){
             if(Auth::user()->role == 'Master'){
@@ -189,6 +245,7 @@ class OnceController extends Controller
                 $this->createGroupCompetitor();
                 $this->createAccountType();
                 $this->createAccount();
+                $this->createPosm();
             }
         }  
 

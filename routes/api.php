@@ -36,14 +36,18 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/store', 'Api\Master\StoreController@all');
 	Route::get('/competitor/{param}', 'Api\Master\GroupCompetitorController@all');
 	Route::get('/competitor/{param}/{param2}', 'Api\Master\GroupCompetitorController@allCategory');
+	Route::get('/posm/{param}', 'Api\Master\PosmController@all');
 
 	/**
      * Transaction Module(s)
      */
 
 	Route::post('/sales/{param}', 'Api\Master\SalesController@store');
-
 	Route::post('/posm', 'Api\Master\PosmController@store');
+	Route::post('/soh', 'Api\Master\SOHController@store');
+	Route::post('/sos', 'Api\Master\SOSController@store');
+	Route::post('/competitoractivity', 'Api\Master\CompetitorActivityController@store');
+	Route::post('/promoactivity', 'Api\Master\PromoActivityController@store');
 
 	/**
      * Other(s)
@@ -51,8 +55,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/news', 'Api\Master\NewsController@get');
     Route::get('/news/{param}', 'Api\Master\NewsController@read');
-    Route::post('/soh', 'Api\Master\SOHController@store');
-	Route::post('/sos', 'Api\Master\SOSController@store');
 
+    Route::get('/product-knowledge', 'Api\Master\ProductKnowledgeController@get');
+    Route::get('/product-knowledge/{param}', 'Api\Master\ProductKnowledgeController@read');
 
 });

@@ -13,7 +13,15 @@ class UserFilters extends QueryFilters
      */
     public function name($value) {
         return (!$this->requestAllData($value)) ? $this->builder->where('name', 'like', '%'.$value.'%') : null;
-    } 
+    }
+
+    public function employee($value) {
+        if(!$this->requestAllData($value)){
+        	$this->builder->where(function ($query) use ($value){
+                return $query->where('name', 'like', '%'.$value.'%')->orWhere('nik', 'like', '%'.$value.'%');
+            });
+        }
+    }
 
     /* Ordering data by role */
     public function role($value){
