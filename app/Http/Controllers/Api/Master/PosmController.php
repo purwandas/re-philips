@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Posm;
 use App\PosmActivityDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -93,5 +94,15 @@ class PosmController extends Controller
 
         return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
 
+    }
+
+    public function all($param)
+    {
+    	$data = Posm::join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+    				   ->where('group_products.id', $param)
+    				   ->select('posms.id', 'posms.name')
+    				   ->get();
+
+    	return response()->json($data);
     }
 }
