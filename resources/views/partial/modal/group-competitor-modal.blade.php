@@ -2,7 +2,7 @@
 <div id="groupcompetitor" class="modal container fade" tabindex="false" data-width="760" role="dialog">
     <div class="modal-header" style="margin-top: 30px;margin-left: 30px;margin-right: 30px;">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><b><span id="title">ADD NEW</span> AREA</b></h4>
+        <h4 class="modal-title"><b><span id="title">ADD NEW</span> GROUP COMPETITOR</b></h4>
     </div>
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
         

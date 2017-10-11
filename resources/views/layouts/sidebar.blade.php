@@ -19,11 +19,15 @@
                 </a>                
             </li>
 
-            @if(Auth::user()->role == 'Master')
+            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
 
             <li class="heading">
                 <h3 class="uppercase">MASTER DATA</h3>
             </li>
+
+            @endif
+
+            @if(Auth::user()->role == 'Master')
 
             <li class="nav-item {{ Request::is('area') ? 'active open' : '' }} {{ Request::is('areaapp') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
@@ -41,7 +45,7 @@
                         <a href="{{ url('areaapp') }}" class="nav-link ">
                             <span class="title">Area RE Apps</span>
                         </a>
-                    </li>                    
+                    </li>
                 </ul>
             </li>
             <li class="nav-item {{ Request::is('accounttype') ? 'active open' : '' }} {{ Request::is('account') ? 'active open' : '' }}">
@@ -60,13 +64,13 @@
                         <a href="{{ url('account') }}" class="nav-link ">
                             <span class="title">Account</span>
                         </a>
-                    </li>                    
+                    </li>
                 </ul>
             </li>
             <li class="nav-item {{ Request::is('user*') ? 'active open' : '' }}">
                 <a href="{{ url('user') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user"></i>
-                    <span class="title">Employee</span>                    
+                    <i class="fa fa-group"></i>
+                    <span class="title">Employee</span>
                 </a>
             </li>
             <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }}">
@@ -77,37 +81,37 @@
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }}">
-                        <a href="{{ url('store') }}" class="nav-link ">                        
+                        <a href="{{ url('store') }}" class="nav-link ">
                             <span class="title">Store</span>
-                        </a>                                    
+                        </a>
                     </li>
                     <li class="nav-item {{ Request::is('place*') ? 'active open' : '' }}">
                         <a href="{{ url('place') }}" class="nav-link ">
-                            <span class="title">Other Places</span>                                        
+                            <span class="title">Other Places</span>
                         </a>
                     </li>
                 </ul>
             </li>
             <li class="nav-item {{ Request::is('group') ? 'active open' : '' }} {{ Request::is('category') ? 'active open' : '' }} {{ Request::is('product') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-share-alt"></i>
+                    <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
                     <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('group') ? 'active open' : '' }}">
-                        <a href="{{ url('group') }}" class="nav-link ">                        
+                        <a href="{{ url('group') }}" class="nav-link ">
                             <span class="title">Group</span>
-                        </a>                                    
+                        </a>
                     </li>
                     <li class="nav-item {{ Request::is('category') ? 'active open' : '' }}">
                         <a href="{{ url('category') }}" class="nav-link ">
-                            <span class="title">Category</span>                                        
+                            <span class="title">Category</span>
                         </a>
                     </li>
                     <li class="nav-item {{ Request::is('product') ? 'active open' : '' }}">
                         <a href="{{ url('product') }}" class="nav-link ">
-                            <span class="title">Product</span>                                        
+                            <span class="title">Product</span>
                         </a>
                     </li>
                 </ul>
@@ -118,22 +122,27 @@
                     <span class="title">POS Material</span>
                 </a>
             </li>
-
             <li class="nav-item {{ Request::is('groupcompetitor') ? 'active open' : '' }}">
             <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
-                <i class="fa fa-user"></i>
+                <i class="fa fa-street-view"></i>
                 <span class="title">Group Competitor</span>
             </a>
-            </li> 
+
+            @endif
+
+            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+
+
+            </li>
             <li class="nav-item {{ Request::is('news*') ? 'active open' : '' }}">
                 <a href="{{ url('news') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user"></i>
-                    <span class="title">News</span>                    
+                    <i class="fa fa-newspaper-o"></i>
+                    <span class="title">News</span>
                 </a>
             </li>
             <li class="nav-item {{ Request::is('product-knowledge*') ? 'active open' : '' }}">
                 <a href="{{ url('product-knowledge') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-edit"></i>
                     <span class="title">Product Knowledge</span>
                 </a>
             </li>
