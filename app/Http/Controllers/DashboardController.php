@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class DashboardController extends Controller
 {
@@ -13,8 +14,12 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        //
-        return view('dashboard');
+        // Auto logout jika yang login bukan DM, RSM, Admin, atau Master Admin
+        if(Auth::user()->role == 'DM' || Auth::user()->role == 'RSM' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Master'){
+            return view('dashboard');
+        }
+
+        return redirect('/logout');
     }
 
 }
