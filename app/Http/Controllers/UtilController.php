@@ -53,7 +53,15 @@ class UtilController extends Controller
         // $empStore = EmployeeStore::where('employee_id', $employeeId);
         $empStore = EmployeeStore::where('user_id', $userId);        
         $empStoreIds = $empStore->pluck('store_id');
-        $store = Store::whereIn('id', $empStoreIds)->get();        
+        $store = Store::where('stores.deleted_at', null)
+        			->join('accounts', 'stores.account_id', '=', 'accounts.id')
+                    ->join('account_types', 'accounts.accounttype_id', '=', 'account_types.id')
+                    ->join('area_apps', 'stores.areaapp_id', '=', 'area_apps.id')
+                    ->join('areas', 'area_apps.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'stores.user_id', '=', 'users.id')
+                    ->whereIn('stores.id', $empStoreIds)
+                    ->select('stores.*', 'accounts.name as account_name', 'account_types.name as accounttype_name', 'area_apps.name as areaapp_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
 
         return response()->json($store);
     }
