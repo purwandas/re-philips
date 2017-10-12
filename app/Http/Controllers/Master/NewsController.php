@@ -242,12 +242,6 @@ class NewsController extends Controller
         // Admin
         $request['user_id'] = Auth::user()->id;
 
-        // Date
-        $request['date'] = Carbon::now();
-
-        // Total Read
-        $request['total_read'] = 0;
-
          /* Area Targets */
         if($request['target_type'] == 'Area'){
             $target = null;
