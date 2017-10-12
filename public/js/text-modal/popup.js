@@ -25,28 +25,29 @@ $(document).on("click", ".open-read-who-modal", function () {
 
     $.get(getDataUrl + '/' + newsId, function (data) {
         if(data){
-
-            content.innerHTML = "";
-            content.innerHTML += '<div class="row" style="margin-bottom: 15px;">'+
-                                    '<div class="col-md-3">'+
-                                        '<b>NIK</b>'+
-                                    '</div>'+
-                                    '<div class="col-md-5">'+
-                                        '<b>Name</b>'+
-                                    '</div>'+
-                                    '<div class="col-md-4">'+
-                                        '<b>Read at</b>'+
-                                    '</div>'+
-                                '</div>';
+            var readerTable = '';
+            readerTable = "<table class='table table-striped table-bordered responsive reader'>"+
+                                '<thead>'+
+                                    '<tr>'+
+                                        "<th class='center'>NIK</th>"+
+                                        '<th>Name</th>'+
+                                        '<th>Read at</th>'+
+                                    '</tr>'+
+                                '</thead>'+
+                                '<tbody>';
 
             $.each(data, function() {
-                content.innerHTML += '<div class="row" style="margin-bottom: 7px;">'+
-                                        '<div class="col-md-3">'+this.nik+'</div>'+
-                                        '<div class="col-md-5">'+this.name+'</div>'+
-                                        '<div class="col-md-4">'+this.read_at+'</div>'+
-                                     '</div>';
+                readerTable+=       '<tr>'+
+                                        '<td>'+this.nik+'</td>'+
+                                        '<td>'+this.name+'</td>'+
+                                        '<td>'+this.read_at+'</td>'+
+                                    '</tr>';
             });
 
+            content.innerHTML += readerTable+
+                                    '</tbody>'+
+                                '</table>';
+            resourceTable = $('.reader').dataTable();
         }
 
 

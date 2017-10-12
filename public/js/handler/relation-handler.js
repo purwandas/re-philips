@@ -4,103 +4,6 @@
  *
  */
 
-function areaAppsAreaRelation(areaId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/areaaappsarea',
-        dataType: 'json',
-        data: { areaId: areaId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function accountAccountTypeRelation(accountTypeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/accountaccounttype',
-        dataType: 'json',
-        data: { accountTypeId: accountTypeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function storeAccountRelation(accountId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/storeaccount',
-        dataType: 'json',
-        data: { accountId: accountId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function storeAreaAppRelation(areaAppId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/areaapp',
-        dataType: 'json',
-        data: { areaAppId: areaAppId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-// function storeSpvRelation(userId) {
-//     return JSON.parse($.ajax({
-//         type: 'POST',
-//         url: 'relation/storespv',
-//         dataType: 'json',
-//         data: { userId: userId },
-//         global: false,
-//         async: false,
-//         success: function (data) {
-//             return data;
-//         }
-//     }).responseText);
-// }
-
-function userRelation(userId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/userrelation',
-        dataType: 'json',
-        data: { userId: userId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-// function salesEmployeeRelation(userId) {
-//     return JSON.parse($.ajax({
-//         type: 'POST',
-//         url: 'relation/salesemployee',
-//         dataType: 'json',
-//         data: { userId: userId },
-//         global: false,
-//         async: false,
-//         success: function (data) {
-//             return data;
-//         }
-//     }).responseText);
-// }
 
 function salesStoreRelation(storeId) {
     return JSON.parse($.ajax({
@@ -115,217 +18,6 @@ function salesStoreRelation(storeId) {
         }
     }).responseText);
 }
-
-function categoryGroupRelation(groupId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/categorygroup',
-        dataType: 'json',
-        data: { groupId: groupId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function productCategoryRelation(categoryId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/productcategory',
-        dataType: 'json',
-        data: { categoryId: categoryId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-// function newsEmployeeRelation(employeeId) {
-//     return JSON.parse($.ajax({
-//         type: 'POST',
-//         url: 'relation/newsemployee',
-//         dataType: 'json',
-//         data: { employeeId: employeeId },
-//         global: false,
-//         async: false,
-//         success: function (data) {
-//             return data;
-//         }
-//     }).responseText);
-// }
-
-function newsStoreRelation(storeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/newsstore',
-        dataType: 'json',
-        data: { storeId: storeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function newsAreaRelation(areaId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/newsarea',
-        dataType: 'json',
-        data: { areaId: areaId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function posmActivityDetailPosmRelation(posmId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/posmactivitydetailposm',
-        dataType: 'json',
-        data: { posmId: posmId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-// function posmActivityEmployeeRelation(employeeId) {
-//     return JSON.parse($.ajax({
-//         type: 'POST',
-//         url: 'relation/posmactivityemployee',
-//         dataType: 'json',
-//         data: { employeeId: employeeId },
-//         global: false,
-//         async: false,
-//         success: function (data) {
-//             return data;
-//         }
-//     }).responseText);
-// }
-
-function posmActivityStoreRelation(storeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/posmactivitystore',
-        dataType: 'json',
-        data: { storeId: storeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-// function newsAdminRelation(userId) {
-//     return JSON.parse($.ajax({
-//         type: 'POST',
-//         url: 'relation/newsadmin',
-//         dataType: 'json',
-//         data: { userId: userId },
-//         global: false,
-//         async: false,
-//         success: function (data) {
-//             return data;
-//         }
-//     }).responseText);
-// }
-
-function productKnowledgeEmployeeRelation(employeeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/productknowledgeemployee',
-        dataType: 'json',
-        data: { employeeId: employeeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function productKnowledgeAdminRelation(userId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/productknowledgeadmin',
-        dataType: 'json',
-        data: { userId: userId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function productKnowledgeStoreRelation(storeId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/productknowledgestore',
-        dataType: 'json',
-        data: { storeId: storeId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function productKnowledgeAreaRelation(areaId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/productknowledgearea',
-        dataType: 'json',
-        data: { areaId: areaId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function competitorActivityGroupRelation(groupCompetitorId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/competitoractivitygroup',
-        dataType: 'json',
-        data: { groupCompetitorId: groupCompetitorId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
-function salesProductRelation(productId) {
-    return JSON.parse($.ajax({
-        type: 'POST',
-        url: 'relation/salesproduction',
-        dataType: 'json',
-        data: { productId: productId },
-        global: false,
-        async: false,
-        success: function (data) {
-            return data;
-        }
-    }).responseText);
-}
-
 
 // Check role relation
 function storeSpvChangeRelation(spvId, role) {    
@@ -361,3 +53,176 @@ function salesEmployeeChangeRelation(employeeId, role) {
         }
     }).responseText);
 }
+
+
+/* Check Relation ( [filename]Relation ) */
+
+function userRelation(userId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/userrelation',
+        dataType: 'json',
+        data: { userId: userId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function storeRelation(storeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/storerelation',
+        dataType: 'json',
+        data: { storeId: storeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function productRelation(productId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/productionrelation',
+        dataType: 'json',
+        data: { productId: productId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function posmRelation(posmId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/posmrelation',
+        dataType: 'json',
+        data: { posmId: posmId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function groupCompetitorRelation(groupCompetitorId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/groupcompetitorrelation',
+        dataType: 'json',
+        data: { groupCompetitorId: groupCompetitorId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function groupRelation(groupId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/grouprelation',
+        dataType: 'json',
+        data: { groupId: groupId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function employeeRelation(userId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/employeerelation',
+        dataType: 'json',
+        data: { userId: userId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function categoryRelation(categoryId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/categoryrelation',
+        dataType: 'json',
+        data: { categoryId: categoryId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function areaAppRelation(areaAppId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/areaapprelation',
+        dataType: 'json',
+        data: { areaAppId: areaAppId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function areaRelation(areaId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/arearelation',
+        dataType: 'json',
+        data: { areaId: areaId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function accountTypeRelation(accountTypeId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/accounttyperelation',
+        dataType: 'json',
+        data: { accountTypeId: accountTypeId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function accountRelation(accountId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/accountrelation',
+        dataType: 'json',
+        data: { accountId: accountId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+/* End Check Relation */
