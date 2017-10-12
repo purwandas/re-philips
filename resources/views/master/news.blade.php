@@ -29,7 +29,7 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-group font-green"></i>
+					<i class="fa fa-newspaper-o font-green"></i>
 					<span class="caption-subject font-green sbold uppercase">NEWS</span>
 				</div>
 	        </div>

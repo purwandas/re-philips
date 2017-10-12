@@ -11,6 +11,9 @@
 
 Route::group(['middleware' => ['auth']], function () {
 
+    /**
+     * Master Admin Module(s)
+     */
     Route::group(['middleware' => ['master']], function () {
 
         /**
@@ -24,10 +27,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('user/edit/{id}', 'UserController@edit');
         Route::patch('user/{id}', 'UserController@update');
         Route::delete('user/{id}', 'UserController@destroy');
-
-        /** Profile **/
-        Route::get('profile', 'ProfileController@index');
-        Route::post('profile', 'ProfileController@update');
 
         /** Area **/
         Route::get('area', 'Master\AreaController@index');
@@ -110,6 +109,25 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('product/{id}', 'Master\ProductController@update');
         Route::delete('product/{id}', 'Master\ProductController@destroy');
 
+        /** POS Material **/
+        Route::get('posm', 'Master\PosmController@index');
+        Route::post('posm', 'Master\PosmController@store');
+        Route::get('posm/edit/{id}', 'Master\PosmController@edit');
+        Route::patch('posm/{id}', 'Master\PosmController@update');
+        Route::delete('posm/{id}', 'Master\PosmController@destroy');
+
+    });
+
+    /**
+     * Master Admin & Admin Module(s)
+     */
+
+    Route::middleware(['admin'])->group(function () {
+
+        /** Profile **/
+        Route::get('profile', 'ProfileController@index');
+        Route::post('profile', 'ProfileController@update');
+
         /** News **/
         Route::get('news', 'Master\NewsController@index');
         Route::get('news/create', 'Master\NewsController@create');
@@ -118,13 +136,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('news/{id}', 'Master\NewsController@update');
         Route::delete('news/{id}', 'Master\NewsController@destroy');
 
-        /** POS Material **/
-        Route::get('posm', 'Master\PosmController@index');
-        Route::post('posm', 'Master\PosmController@store');
-        Route::get('posm/edit/{id}', 'Master\PosmController@edit');
-        Route::patch('posm/{id}', 'Master\PosmController@update');
-        Route::delete('posm/{id}', 'Master\PosmController@destroy');
-
         /** Product Knowledge **/
         Route::get('product-knowledge', 'Master\ProductKnowledgeController@index');
         Route::get('product-knowledge/create', 'Master\ProductKnowledgeController@create');
@@ -132,7 +143,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('product-knowledge/edit/{id}', 'Master\ProductKnowledgeController@edit');
         Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
         Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
-
 
     });
         

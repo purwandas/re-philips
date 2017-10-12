@@ -29,7 +29,7 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-share-alt font-green"></i>
+                    <i class="fa fa-building-o font-green"></i>
                     <span class="caption-subject font-green sbold uppercase">PLACE</span>
                 </div>
             </div>
