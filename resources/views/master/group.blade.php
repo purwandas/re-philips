@@ -111,7 +111,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},        
                 {data: 'groupproduct_name', name: 'groupproduct_name'},                       
-                {data: 'action', name: 'action', searchable: false, sortable: false},           
+                {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
@@ -125,7 +125,7 @@
         $('#groupTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
-                if(categoryGroupRelation(id) > 0){
+                if(groupRelation(id)){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
                 }

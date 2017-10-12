@@ -125,7 +125,7 @@
             $('#posmTable').on('click', 'tr td button.deleteButton', function () {
                 var id = $(this).val();
 
-                if(posmActivityDetailPosmRelation(id) > 0){
+                if(posmRelation(id)){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
                 }
