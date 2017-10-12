@@ -14,10 +14,6 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/path', function () {
-    return env('APP_URL');
-});
-
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'DashboardController@index');
 });
