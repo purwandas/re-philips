@@ -127,7 +127,7 @@
         $('#productTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
-                if(salesProductRelation(id) > 0){
+                if(productRelation(id)){
                     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                     return;
                 }
