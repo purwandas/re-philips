@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Store;
 use App\User;
 use App\RsmRegion;
 use App\DmArea;
@@ -62,7 +63,33 @@ class UserController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
-                ->rawColumns(['action'])
+                ->addColumn('store', function ($item) {
+
+//                    $storeIds = EmployeeStore::where('user_id', $item->id)->pluck('store_id');
+//                    $storeName = "";
+//
+//                    foreach ($storeIds as $storeId){
+//
+//                        $store = Store::find(trim($storeId));
+//                        $storeName .= $store->store_id." - ".$store->store_name_1." (".$store->store_name_2.")";
+//
+//                        if($storeId != $storeIds[count($storeIds)-1]){
+//                                $storeName .= ", ";
+//                        }
+//
+//                    }
+
+                    $countStore = EmployeeStore::where('user_id', $item->id)->count();
+
+                    if($countStore > 0){
+                        return
+                        "<a class='open-employee-store-modal' data-target='#employee-store-modal' data-toggle='modal' data-url='util/empstore' data-title='List Store' data-promoter-name='".$item->name."' data-id='".$item->id."'> See Details </a>";
+                    }
+
+                    return;
+
+                })
+                ->rawColumns(['store', 'action'])
                 ->make(true);
     }
 
