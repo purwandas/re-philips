@@ -381,6 +381,11 @@ var editor_config = {
 	],
 	toolbar : "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alighjustify | bullist numlist outdent indent | link ",
 	relative_urls : false,
+	setup : function (editor) {
+            editor.on('change', function () {
+                tinymce.triggerSave();
+            });
+        },
 	file_browser_callback : function(field_name, url, type, win){
 		var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
 		var y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
