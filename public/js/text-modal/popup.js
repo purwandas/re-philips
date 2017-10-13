@@ -47,7 +47,9 @@ $(document).on("click", ".open-read-who-modal", function () {
             content.innerHTML += readerTable+
                                     '</tbody>'+
                                 '</table>';
-            resourceTable = $('.reader').dataTable();
+            resourceTable = $('.reader').dataTable({
+                               "bInfo" : false
+                           });
         }
 
 
