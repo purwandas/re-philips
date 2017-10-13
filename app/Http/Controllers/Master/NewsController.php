@@ -234,6 +234,7 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($id);
         // dd($request->all());
         $this->validate($request, [
             'from' => 'required|string|max:255',
