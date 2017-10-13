@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAttendancesTable extends Migration
+class CreateTrackRecordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('track_records', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->date('date');
-            $table->enum('status', ['Alpha', 'Masuk', 'Sakit', 'Izin', 'Pending Sakit', 'Pending Izin', 'Off']);
+            $table->integer('attendance_id')->unsigned();
+            $table->foreign('attendance_id')->references('id')->on('attendances');
+            $table->double('longitude');
+            $table->double('latitude');
+            $table->string('location');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +32,6 @@ class CreateAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('track_records');
     }
 }
