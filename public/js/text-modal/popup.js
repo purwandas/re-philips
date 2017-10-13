@@ -25,8 +25,10 @@ $(document).on("click", ".open-read-who-modal", function () {
 
     $.get(getDataUrl + '/' + newsId, function (data) {
         if(data){
+            $("#reader").remove();
             var readerTable = '';
-            readerTable = "<table class='table table-striped table-bordered responsive reader'>"+
+            readerTable = "<div id='reader'>"+
+                            "<table class='table table-striped table-bordered responsive reader'>"+
                                 '<thead>'+
                                     '<tr>'+
                                         "<th class='center'>NIK</th>"+
@@ -46,10 +48,36 @@ $(document).on("click", ".open-read-who-modal", function () {
 
             content.innerHTML += readerTable+
                                     '</tbody>'+
-                                '</table>';
+                                '</table>'+
+                            '</div>';
+            
             resourceTable = $('.reader').dataTable({
                                "bInfo" : false
                            });
+            
+
+
+            // $("#read-who-modal").css("position","absolute");
+            
+            // var windowHeight = $(window).height();//screen.height;//$(document).height();
+            // var modalHeight = $("#read-who-modal").height();
+            // var gapPersen = modalHeight/windowHeight*100;
+            // var gap = windowHeight - modalHeight;
+            // $("#reader").append("<b>Window: </b>"+windowHeight+"->> <b>Modal: </b>"+modalHeight+"->> <b>Gap: </b>"+gapPersen);
+            $("#read-who-modal").css("top", "25%");
+                // $("#read-who-modal").css({
+                //     'max-height': 'calc(100% - 100px)',
+                //     'position': 'fixed',
+                //     'top': '50%',
+                //     'left': '50%',
+                //     'transform': 'translate(0%, -'+gapPersen+'%)'
+                // });
+
+    //                  css({'margin': '0',
+    //                   'position': 'absolute'
+    //                  });
+            // dialog("option", "position", {my: "center", at: "center", of: window});
+            // $("#dialog").dialog("option", "position", "center");
         }
 
 
