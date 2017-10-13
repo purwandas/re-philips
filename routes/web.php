@@ -44,3 +44,5 @@ Route::get('createadmin', 'Auth\OnceController@createAdmin');
 
 /* Method untuk generate master */
 Route::get('createmaster', 'Auth\OnceController@createMaster');
+
+Route::get('geo', 'Auth\OnceController@tesGeo');
