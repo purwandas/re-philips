@@ -111,7 +111,7 @@ class NewsController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
-                ->rawColumns(['total_read', 'action'])
+                ->rawColumns(['content','total_read', 'action'])
                 ->make(true);
 
     }
@@ -234,6 +234,8 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($id);
+        // dd($request->all());
         $this->validate($request, [
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',                  
