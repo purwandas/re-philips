@@ -26,6 +26,9 @@ var FormValidation = function () {
                         minlength: 2,
                         required: true,
                     },
+                    content:{
+                        required: true,
+                    },
 
                 },
                 messages:{

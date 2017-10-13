@@ -80,7 +80,10 @@ function setSelect2IfPatch(element, id, text){
 
         // Remove focus from selection
         element.next().removeClass('select2-container--focus');
+        // $(".select2-container--focus").removeClass("select2-container--focus");
 
+        // Disable select2 focus
+        $('.select2-search input').prop('focus',false);
         window.scrollTo(0, 0);
         $('html, body').scrollTop();
     }
