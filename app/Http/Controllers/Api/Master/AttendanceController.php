@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use Geotools;
 
 class AttendanceController extends Controller
 {
@@ -36,9 +37,18 @@ class AttendanceController extends Controller
 //            return response()->json('OK');
 
             /* CHECK IN */
-            $store = Store::find($content['store_id']);
 
-            return response()->json($store);
+            $store = Store::find($content['store_id']);
+            $coordStore = Geotools::coordinate([$store->latitude, $store->longitude]);
+            $coordNow = Geotools::coordinate([$content['latitude'], $content['longitude']]);
+            $distance = Geotools::distance()->setFrom($coordStore)->setTo($coordNow)->flat();
+
+            // Check distance if above 250 meter(s)
+            if($distance > 250){
+                return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari store'], 500);
+            }
+
+            return response()->json($distance);
 
         }elseif ($param == 2){
 

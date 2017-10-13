@@ -14,10 +14,21 @@ use App\Account;
 use App\AccountType;
 use App\GroupCompetitor;
 use Auth;
+use Geotools;
 
 class OnceController extends Controller
 {
     //
+    public function tesGeo(){
+//        $coordA   = Geotools::coordinate([106.8920396, -6.2318409]);
+        $coordA   = Geotools::coordinate([-6.2318409, 106.8920396]);
+//        $coordB   = Geotools::coordinate([106.8632812, -6.2623681]);
+        $coordB   = Geotools::coordinate([-6.2623681, 106.8632812]);
+        $distance = Geotools::distance()->setFrom($coordA)->setTo($coordB);
+
+        return $distance->flat();
+    }
+
     public function createAdmin(){
     	$users = DB::table('users')->count();
 
