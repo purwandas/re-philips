@@ -95,10 +95,11 @@ $(document).on("click", ".open-employee-store-modal", function () {
 
     var getDataUrl = $(this).data('url');
     var userId = $(this).data('id');
+    content.innerHTML = "";
 
     $.get(getDataUrl + '/' + userId, function (data) {
         if(data) {
-            content.innerHTML = "";
+
             $.each(data, function() {
                 content.innerHTML += '<div class="list-todo-line blue"></div>'+
                                      '<ul>'+

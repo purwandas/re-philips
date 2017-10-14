@@ -50,6 +50,12 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/promoactivity', 'Api\Master\PromoActivityController@store');
 
 	/**
+     * Attendance Module(s)
+     */
+
+	Route::post('/attendance/{param}', 'Api\Master\AttendanceController@attendance');
+
+	/**
      * Other(s)
      */
 

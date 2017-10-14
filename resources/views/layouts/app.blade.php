@@ -227,12 +227,17 @@
         
     @yield('additional-scripts')
 
+    @yield('additional-styles')
+
 </body>
 
 <style type="text/css">
     .tooltip {
         position: fixed;
         z-index: 10151 !important;
+    }
+    .modal.fade.in {
+        margin-bottom: 50px;
     }
 </style>
 

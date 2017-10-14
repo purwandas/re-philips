@@ -1,5 +1,13 @@
 @extends('layouts.app')
 
+@section('additional-styles')
+<style>
+.modal.fade.in {
+    top:30%;
+}
+</style>
+@endsection
+
 @section('header')
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
@@ -111,6 +119,7 @@
 	        "columnDefs": [
         		{"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [5]},
                 {"className": "dt-center", "targets": [6]},
       		],
             "order": [ [0, 'desc'] ],            
