@@ -368,7 +368,7 @@
 		});
 
 	</script>
-<script src="{{ URL::to('../vendor/tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ URL::to('js/tinymce/js/tinymce/tinymce.min.js') }}"></script>
 <script>
 var editor_config = {
 	path_absolute : "{{ URL::to('/') }}",
