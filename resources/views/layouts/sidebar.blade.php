@@ -118,7 +118,7 @@
             </li>
             <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
                 <a href="{{ url('posm') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-tasks"></i>
                     <span class="title">POS Material</span>
                 </a>
             </li>

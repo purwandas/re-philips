@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Api\Master;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Filters\StoreFilters;
 use App\Traits\StringTrait;
 use DB;
-use App\Store;
+use App\Place;
 
-class StoreController extends Controller
+class PlaceController extends Controller
 {
     public function all()
     {
-    	$data = Store::select('id', 'store_name_1 as name')->get();
-    	
+    	$data = Place::select('id', 'name')->get();
+
     	return response()->json($data);
     }
 
@@ -23,9 +22,9 @@ class StoreController extends Controller
         $content = json_decode($request->getContent(), true);
         $distance = 250;
 
-    	$data = Store::where('latitude', '!=', null)
+    	$data = Place::where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
-                    ->select('id', 'store_name_1 as name', 'latitude', 'longitude');
+                    ->select('id', 'name', 'latitude', 'longitude');
 
         // This will calculate the distance in km
         // if you want in miles use 3959 instead of 6371
@@ -34,5 +33,4 @@ class StoreController extends Controller
 
         return response()->json($data->get());
     }
-
 }
