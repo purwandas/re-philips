@@ -40,7 +40,7 @@ class ProfileController extends Controller
 
         $user = User::find(Auth::user()->id);
 
-        if($user->photo != "") {
+        if($user->photo != null && $request->photo_file != null) {
             /* Delete Image */
             $imagePath = explode('/', $user->photo);
             $count = count($imagePath);
@@ -62,7 +62,9 @@ class ProfileController extends Controller
 
         }else{
 
-        	$user->update(['photo' => $request['photo']]);
+            if($request->photo_file != null) {
+                $user->update(['photo' => $request['photo']]);
+            }
 
         }
 
