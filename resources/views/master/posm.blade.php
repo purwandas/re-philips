@@ -29,8 +29,8 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-green"></i>
-                        <span class="caption-subject font-green sbold uppercase">POS Material</span>
+                        <i class="fa fa-tasks font-blue"></i>
+                        <span class="caption-subject font-blue bold uppercase">POS Material</span>
                     </div>
                 </div>
                 <div class="portlet-body" style="padding: 15px;">

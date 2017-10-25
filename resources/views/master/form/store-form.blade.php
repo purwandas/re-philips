@@ -39,8 +39,8 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-shopping-cart font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">
+					<i class="fa fa-shopping-cart font-blue"></i>
+					<span class="caption-subject font-blue bold uppercase">
 						@if (empty($data))
 							ADD NEW STORE
 						@else
@@ -263,8 +263,7 @@
 	            }
 	        }));
 
-	        $('#user').select2(setOptions('{{ route("data.employee") }}', 'Supervisor', function (params) {            
-	        	filters = {};
+	        $('#user').select2(setOptions('{{ route("data.employee") }}', 'Supervisor', function (params) {
 	        	filters['role'] = 'Supervisor';
 	            return filterData('name', params.term);
 	        }, function (data, params) {
