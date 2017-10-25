@@ -162,9 +162,49 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('selloutreport') ? 'active open' : '' }}">
+                <a href="{{ url('selloutreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Sell Out Report</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('retconsumentreport') ? 'active open' : '' }}">
+                <a href="{{ url('retconsumentreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Return Consument Report</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('retdistributorreport') ? 'active open' : '' }}">
+                <a href="{{ url('retdistributorreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Return Distributor Report</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('tbatreport') ? 'active open' : '' }}">
+                <a href="{{ url('tbatreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">TBAT Report</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('sohreport') ? 'active open' : '' }}">
+                <a href="{{ url('sohreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">SOH Report</span>                    
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('sosreport') ? 'active open' : '' }}">
+                <a href="{{ url('sosreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">SOS Report</span>                    
+                </a>
+            </li>
+
             @endif
-
-
 
             <li class="heading">
                 <h3 class="uppercase">SETTINGS</h3>

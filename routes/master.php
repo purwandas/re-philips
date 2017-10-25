@@ -144,6 +144,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
         Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
 
+        
+
+
     });
 
     /**
@@ -151,6 +154,12 @@ Route::group(['middleware' => ['auth']], function () {
      */
 
     Route::get('sellinreport', 'Master\ReportController@sellInIndex');
+    Route::get('selloutreport', 'Master\ReportController@sellOutIndex');
+    Route::get('retconsumentreport', 'Master\ReportController@retConsumentIndex');
+    Route::get('retdistributorreport', 'Master\ReportController@retDistributorIndex');
+    Route::get('tbatreport', 'Master\ReportController@tbatIndex');
+    Route::get('sohreport', 'Master\ReportController@sohIndex');
+    Route::get('sosreport', 'Master\ReportController@sosIndex');
         
 });
 
