@@ -29,8 +29,8 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-cog font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">
+					<i class="fa fa-cog font-blue"></i>
+					<span class="caption-subject font-blue bold uppercase">
 						MY PROFILE
 					</span>
 				</div>

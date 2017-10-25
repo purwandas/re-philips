@@ -63,4 +63,47 @@ trait StringTrait {
         return $arrayDate[2]." ".$months[(int)$arrayDate[1]-1]." ".$arrayDate[0]." - ".$arrayDateTime[1];
     }
 
+    /**
+     * Convert Date From Picker
+     *
+     * @param $text
+     * @return string
+     */
+    public function convertSearchDateTime($text)
+    {
+        $arrayDate = explode(' ', $text);
+
+        $month = $arrayDate[1];
+        if($month == 'Januari' || $month == 'January'){
+            $month = 1;
+        }else if($month == 'Februari' || $month == 'January'){
+            $month = 2;
+        }else if($month == 'Maret' || $month == 'March'){
+            $month = 3;
+        }else if($month == 'April' || $month == 'April'){
+            $month = 4;
+        }else if($month == 'Mei' || $month == 'May'){
+            $month = 5;
+        }else if($month == 'Juni' || $month == 'June'){
+            $month = 6;
+        }else if($month == 'Juli' || $month == 'July'){
+            $month = 7;
+        }else if($month == 'Agustus' || $month == 'August'){
+            $month = 8;
+        }else if($month == 'September' || $month == 'September'){
+            $month = 9;
+        }else if($month == 'Oktober' || $month == 'October'){
+            $month = 10;
+        }else if($month == 'November' || $month == 'November'){
+            $month = 11;
+        }else if($month == 'Desember' || $month == 'December'){
+            $month = 12;
+        }
+
+        $day = $arrayDate[0];
+        $year = $arrayDate[2];
+
+        return $month.'/'.$day.'/'.$year;
+    }
+
 }

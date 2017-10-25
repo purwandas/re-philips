@@ -29,8 +29,8 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-building-o font-green"></i>
-                    <span class="caption-subject font-green sbold uppercase">PLACE</span>
+                    <i class="fa fa-building-o font-blue"></i>
+                    <span class="caption-subject font-blue bold uppercase">PLACE</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
