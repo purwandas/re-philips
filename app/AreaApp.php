@@ -34,6 +34,11 @@ class AreaApp extends Model
         return $this->belongsTo('App\Area', 'area_id');
     }
 
+    public function stores()
+    {
+        return $this->hasMany('App\Store', 'areaapp_id');
+    }
+
 	/**
      * Filtering Berdasarakan Request User
      * @param $query

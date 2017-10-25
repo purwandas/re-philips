@@ -29,8 +29,8 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="icon-settings font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">DASHBOARD</span>
+					<i class="icon-settings font-blue"></i>
+					<span class="caption-subject font-blue bold uppercase">DASHBOARD</span>
 				</div>
 	        </div>
 	        <div class="portlet-body">

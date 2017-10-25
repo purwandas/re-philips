@@ -35,10 +35,10 @@
 	<div class="col-lg-12 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 	    <!-- BEGIN EXAMPLE TABLE PORTLET-->
 	    <div class="portlet light bordered">
-			<div class="portlet-title">
+			<div class="portlet-title" >
 				<div class="caption">
-					<i class="fa fa-group font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">EMPLOYEE</span>
+					<i class="fa fa-group font-blue"></i>
+					<span class="caption-subject font-blue bold uppercase">EMPLOYEE</span>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">

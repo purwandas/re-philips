@@ -29,8 +29,8 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-share-alt font-green"></i>
-                    <span class="caption-subject font-green sbold uppercase">ACCOUNT</span>
+                    <i class="fa fa-share-alt font-blue"></i>
+                    <span class="caption-subject font-blue bold uppercase">ACCOUNT</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">

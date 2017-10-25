@@ -145,6 +145,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
 
     });
+
+    /**
+     * Reporting Module(s)
+     */
+
+    Route::get('sellinreport', 'Master\ReportController@sellInIndex');
         
 });
 

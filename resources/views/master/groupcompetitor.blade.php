@@ -29,8 +29,8 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-street-view font-green"></i>
-                    <span class="caption-subject font-green sbold uppercase">GROUP COMPETITOR</span>
+                    <i class="fa fa-street-view font-blue"></i>
+                    <span class="caption-subject font-blue bold uppercase">GROUP COMPETITOR</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
