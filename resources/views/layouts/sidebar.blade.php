@@ -118,7 +118,7 @@
             </li>
             <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
                 <a href="{{ url('posm') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-tasks"></i>
                     <span class="title">POS Material</span>
                 </a>
             </li>
@@ -148,6 +148,23 @@
             </li>
 
             @endif
+
+            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+
+            <li class="heading">
+                <h3 class="uppercase">REPORTING</h3>
+            </li>
+
+            <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}">
+                <a href="{{ url('sellinreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Sell In Report</span>
+                </a>
+            </li>
+
+            @endif
+
+
 
             <li class="heading">
                 <h3 class="uppercase">Report</h3>

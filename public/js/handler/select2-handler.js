@@ -1,5 +1,101 @@
 var filters = {};
 
+function showFilter() {
+    console.log(this.filters);
+}
+
+// Reset all filter for search
+function triggerReset (arrayOfData) {
+
+    var data = arrayOfData[0];
+    var table = arrayOfData[1];
+    var element = arrayOfData[2];
+    var url = arrayOfData[3];
+    var tableColumns = arrayOfData[4];
+    var columnDefs = arrayOfData[5];
+    var order = arrayOfData[6];
+
+    data.map((id) => {
+        $(id).val('').trigger('change');
+    });
+
+    this.filters = {};
+
+     // Datatable setup
+
+    if($.fn.dataTable.isDataTable('#'+table)){
+        element.DataTable().clear();
+        element.DataTable().destroy();
+    }
+    element.dataTable({
+        "fnCreatedRow": function (nRow, data) {
+            $(nRow).attr('class', data.id);
+        },
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+        },
+        "rowId": "id",
+        "columns": tableColumns,
+        "columnDefs": columnDefs,
+        "order": order,
+    })
+}
+
+// Set the selected value to key in filter
+function selected (key, val) {
+    this.filters[key] = val;
+    console.log(this.filters);
+}
+
+// Filtering data
+function filteringReport(arrayOfData) {
+
+    var table = arrayOfData[0];
+    var element = arrayOfData[1];
+    var url = arrayOfData[2];
+    var tableColumns = arrayOfData[3];
+    var columnDefs = arrayOfData[4];
+    var order = arrayOfData[5];
+
+    this.moreParams = [];
+    this.moreParamsPost  = {};
+
+    for (filter in this.filters) {
+        this.moreParams.push(filter + '=' + this.filters[filter]);
+        this.moreParamsPost[filter] = this.filters[filter];
+    }
+
+    var self = this;
+    $(document).ready(function () {
+        // console.log(self.moreParamsPost);
+        if($.fn.dataTable.isDataTable('#'+table)){
+            element.DataTable().clear();
+            element.DataTable().destroy();
+        }
+        element.dataTable({
+            "fnCreatedRow": function( nRow, data ) {
+                $(nRow).attr('class', data.id);
+            },
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: url,
+                data: self.moreParamsPost,
+                type: 'POST',
+                dataType: 'json',
+            },
+            "rowId": "id",
+            "columns": tableColumns,
+            "columnDefs": columnDefs,
+            "order": order,
+        })
+    })
+}
+
 // Set options
 function setOptions (url, placeholder, data, processResults) {
     return {
@@ -38,8 +134,8 @@ function filterData (search, term) {
             results[item] = term
         });
 
-        console.log('result-search');
-        console.log(results);
+        // console.log('result-search');
+        // console.log(results);
 
         return results;
     }
@@ -57,8 +153,8 @@ function filterData (search, term) {
         });
     }
 
-    console.log('results');
-    console.log(results);
+    // console.log('results');
+    // console.log(results);
 
     return results;
 }

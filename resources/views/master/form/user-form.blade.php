@@ -39,8 +39,8 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-group font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">
+					<i class="fa fa-group font-blue"></i>
+					<span class="caption-subject font-blue bold uppercase">
 						@if (empty($data))
 							ADD NEW EMPLOYEE
 						@else

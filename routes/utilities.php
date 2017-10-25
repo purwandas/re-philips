@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/productknowledge', ['as'=> 'datatable.productknowledge','uses'=>'Master\ProductKnowledgeController@masterDataTable']);
     Route::post('datatable/posm', ['as'=> 'datatable.posm','uses'=>'Master\PosmController@masterDataTable']);
     Route::post('datatable/soh', ['as'=> 'datatable.soh','uses'=>'Master\SohController@masterDataTable']);
+    Route::post('datatable/sellinreport', ['as'=> 'datatable.sellinreport','uses'=>'Master\ReportController@sellInData']);
 
     /**
      * Data with filter (select2, list)

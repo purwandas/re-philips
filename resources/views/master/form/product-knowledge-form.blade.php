@@ -39,8 +39,8 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-group font-green"></i>
-					<span class="caption-subject font-green sbold uppercase">
+					<i class="fa fa-group font-blue"></i>
+					<span class="caption-subject font-blue bold uppercase">
 						@if (empty($data))
 							ADD MORE PRODUCT KNOWLEDGE
 						@else
@@ -256,7 +256,6 @@
 	        }));
 
 	        $('#employee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters = {};
 	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 	            return filterData('employee', params.term);
 	        }, function (data, params) {

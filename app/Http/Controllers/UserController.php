@@ -85,7 +85,7 @@ class UserController extends Controller
 //
 //                    }
 
-                    $countStore = EmployeeStore::where('user_id', $item->id)->count();
+                    $countStore = $item->employeeStores()->count();
 
                     if($countStore > 0){
                         return
@@ -210,7 +210,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         /* Delete Image */
-        if($user->photo != "") {
+        if($user->photo != null && $request->photo_file != null) {
             $imagePath = explode('/', $user->photo);
             $count = count($imagePath);
             $folderpath = $imagePath[$count - 2];
@@ -252,7 +252,7 @@ class UserController extends Controller
 
         }
 
-        if($photo_url != ""){
+        if($request->photo_file != null){
 
             $requestNew['photo'] = $request['photo'];
 

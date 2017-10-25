@@ -149,6 +149,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     });
+
+    /**
+     * Reporting Module(s)
+     */
+
+    Route::get('sellinreport', 'Master\ReportController@sellInIndex');
         
 });
 

@@ -29,8 +29,8 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-shopping-cart font-green"></i>
-                    <span class="caption-subject font-green sbold uppercase">STORE</span>
+                    <i class="fa fa-shopping-cart font-blue"></i>
+                    <span class="caption-subject font-blue bold uppercase">STORE</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
