@@ -150,6 +150,17 @@
             @endif
 
             <li class="heading">
+                <h3 class="uppercase">Report</h3>
+            </li>
+
+            <li class="nav-item {{ Request::is('soh') ? 'active open' : '' }}">
+                <a href="{{ url('soh') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">SOH</span>                    
+                </a>
+            </li>
+
+            <li class="heading">
                 <h3 class="uppercase">SETTINGS</h3>
             </li>
 

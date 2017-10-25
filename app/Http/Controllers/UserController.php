@@ -51,6 +51,12 @@ class UserController extends Controller
 
         return $data;
     }
+    public function getDataPromoterWithFilters(UserFilters $filters){ 
+        $data = User::filter($filters)->where('role','=','Promoter')->get();
+
+        return $data;
+    }
+    
 
     // Datatable template
     public function makeTable($data){

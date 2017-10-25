@@ -144,6 +144,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
         Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
 
+        /** SOH **/
+        Route::get('soh', 'Master\SohController@index');
+
+
     });
         
 });
