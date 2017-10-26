@@ -30,7 +30,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/news', ['as'=> 'datatable.news','uses'=>'Master\NewsController@masterDataTable']);
     Route::post('datatable/productknowledge', ['as'=> 'datatable.productknowledge','uses'=>'Master\ProductKnowledgeController@masterDataTable']);
     Route::post('datatable/posm', ['as'=> 'datatable.posm','uses'=>'Master\PosmController@masterDataTable']);
+    
     Route::post('datatable/sellinreport', ['as'=> 'datatable.sellinreport','uses'=>'Master\ReportController@sellInData']);
+    Route::post('datatable/selloutreport', ['as'=> 'datatable.selloutreport','uses'=>'Master\ReportController@sellOutData']);
+    Route::post('datatable/retconsumentreport', ['as'=> 'datatable.retconsumentreport','uses'=>'Master\ReportController@retConsumentData']);
+    Route::post('datatable/retdistributorreport', ['as'=> 'datatable.retdistributorreport','uses'=>'Master\ReportController@retDistributorData']);
+    Route::post('datatable/tbatreport', ['as'=> 'datatable.tbatreport','uses'=>'Master\ReportController@tbatData']);
+    Route::post('datatable/sohreport', ['as'=> 'datatable.sohreport','uses'=>'Master\ReportController@sohData']);
+    Route::post('datatable/sosreport', ['as'=> 'datatable.sosreport','uses'=>'Master\ReportController@sosData']);
 
     /**
      * Data with filter (select2, list)
@@ -42,7 +49,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/account', ['as'=> 'data.account','uses'=>'Master\AccountController@getDataWithFilters']);
     Route::post('data/areaapp', ['as'=> 'data.areaapp','uses'=>'Master\AreaAppController@getDataWithFilters']);
     Route::post('data/employee', ['as'=> 'data.employee','uses'=>'UserController@getDataWithFilters']);
+    Route::post('data/promoter', ['as'=> 'data.promoter','uses'=>'UserController@getDataPromoterWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
+    
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
