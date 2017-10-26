@@ -12,7 +12,7 @@ class AttendanceDetail extends Model
 
     //
     protected $fillable = [
-        'attendance_id', 'store_id', 'is_store', 'check_in', 'check_out', 'check_in_longitude', 'check_in_latitude', 'check_out_longitude', 'check_out_latitude', 'check_in_location', 'check_out_location'
+        'attendance_id', 'store_id', 'is_store', 'check_in', 'check_out', 'check_in_longitude', 'check_in_latitude', 'check_out_longitude', 'check_out_latitude', 'check_in_location', 'check_out_location', 'detail'
     ];
 
     /**

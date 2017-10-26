@@ -20,195 +20,468 @@ use App\FreeProduct;
 use App\FreeProductDetail;
 use App\Tbat;
 use App\TbatDetail;
+use DB;
 
 class SalesController extends Controller
 {
-    //
-    public function store(Request $request, $param)
-    {   
-        try {
+    public function store(Request $request, $param){
 
-            // Decode buat inputan raw body
-            $content = json_decode($request->getContent(), true);
-            $user = JWTAuth::parseToken()->authenticate();   
+        // Decode buat inputan raw body
+        $content = json_decode($request->getContent(), true);
+        $user = JWTAuth::parseToken()->authenticate();
 
-            // TRANSACTION HEADER
-            if($param == 1){
+        if($param == 1) { /* SELL IN */
 
-                // SELL IN
-                $transaction = SellIn::create([
-                            'user_id' => $user->id,
-                            'store_id' => $content['id'],
-                            'week' => Carbon::now()->weekOfMonth,
-                            'date' => Carbon::now()
-                            ]);
+            // Check sell in header
+            $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
-            }else if($param == 2){
+            if ($sellInHeader) { // If header exist (update and/or create detail)
 
-                // SELL OUT
-                $transaction = SellOut::create([
-                            'user_id' => $user->id,
-                            'store_id' => $content['id'],
-                            'week' => Carbon::now()->weekOfMonth,
-                            'date' => Carbon::now()
-                            ]);
+                try {
+                    DB::transaction(function () use ($content, $sellInHeader, $user) {
 
-            }else if($param == 3){
+                        foreach ($content['data'] as $data) {
 
-                // RETURN DISTRIBUTOR
-                $transaction = RetDistributor::create([
-                            'user_id' => $user->id,
-                            'store_id' => $content['id'],
-                            'week' => Carbon::now()->weekOfMonth,
-                            'date' => Carbon::now()
-                            ]);
-                
-            }else if($param == 4){
+                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)->where('product_id', $data['product_id'])->first();
 
-                // RETURN CONSUMENT
-                $transaction = RetConsument::create([
-                            'user_id' => $user->id,
-                            'store_id' => $content['id'],
-                            'week' => Carbon::now()->weekOfMonth,
-                            'date' => Carbon::now()
-                            ]);
-                
-            }else if($param == 5){
+                            if ($sellInDetail) { // If data exist -> update
 
-                // FREE PRODUCT
-                $transaction = FreeProduct::create([
-                            'user_id' => $user->id,
-                            'store_id' => $content['id'],
-                            'week' => Carbon::now()->weekOfMonth,
-                            'date' => Carbon::now()
-                            ]);
-                
-            }else if($param == 6){
+                                $sellInDetail->update([
+                                    'quantity' => $sellInDetail->quantity + $data['quantity']
+                                ]);
 
-                // TBAT
-                $transaction = Tbat::create([
-                            'user_id' => $user->id,
-                            'store_id' => $content['id'],
-                            'week' => Carbon::now()->weekOfMonth,
-                            'date' => Carbon::now()
-                            ]);
-                
-            }
+                            } else { // If data didn't exist -> create
 
+                                SellInDetail::create([
+                                    'sellin_id' => $sellInHeader->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
 
-            // TRANSACTION DETAILS
-            foreach ($content['data'] as $data) {                
+                            }
 
-                if($param == 1){
+                        }
 
-                    // SELL IN
-                    SellInDetail::create([
-                        'sellin_id' => $transaction->id,
-                        'product_id' => $data['product_id'],
-                        'quantity' => $data['quantity']
-                        ]);
-
-                }else if($param == 2){
-
-                    // SELL OUT
-                    SellOutDetail::create([
-                        'sellout_id' => $transaction->id,
-                        'product_id' => $data['product_id'],
-                        'quantity' => $data['quantity']
-                        ]);
-
-                }else if($param == 3){
-
-                    // RETURN DISTRIBUTOR
-                    RetDistributorDetail::create([
-                        'retdistributor_id' => $transaction->id,
-                        'product_id' => $data['product_id'],
-                        'quantity' => $data['quantity']
-                        ]);
-                    
-                }else if($param == 4){
-
-                    // RETURN CONSUMENT
-                    RetConsumentDetail::create([
-                        'retconsument_id' => $transaction->id,
-                        'product_id' => $data['product_id'],
-                        'quantity' => $data['quantity']
-                        ]);
-                    
-                }else if($param == 5){
-
-                    // FREE PRODUCT
-                    FreeProductDetail::create([
-                        'freeproduct_id' => $transaction->id,
-                        'product_id' => $data['product_id'],
-                        'quantity' => $data['quantity']
-                        ]);
-                    
-                }else if($param == 6){
-
-                    // TBAT
-                    TbatDetail::create([
-                        'tbat_id' => $transaction->id,
-                        'product_id' => $data['product_id'],
-                        'quantity' => $data['quantity']
-                        ]);
-                    
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-            }
+                return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
 
-        } catch (\Exception $e) {
+            } else { // If header didn't exist (create header & detail)
 
-            /* Delete data that have been inserted before */
-            if(isset($transaction)){
-                if($param == 1){
-                    /* Delete Details */
-                    $details = SellInDetail::where('sellin_id', $transaction->id);
-                    $details->forceDelete();
+                try {
+                    DB::transaction(function () use ($content, $user) {
 
-                    /* Delete Header */
-                    SellIn::find($transaction->id)->forceDelete();
-                }else if($param == 2){
-                    /* Delete Details */
-                    $details = SellOutDetail::where('sellout_id', $transaction->id);
-                    $details->forceDelete();
+                        // HEADER
+                        $transaction = SellIn::create([
+                                            'user_id' => $user->id,
+                                            'store_id' => $content['id'],
+                                            'week' => Carbon::now()->weekOfMonth,
+                                            'date' => Carbon::now()
+                                        ]);
 
-                    /* Delete Header */
-                    SellOut::find($transaction->id)->forceDelete();
-                }else if($param == 3){
-                    /* Delete Details */
-                    $details = RetDistributorDetail::where('retdistributor_id', $transaction->id);
-                    $details->forceDelete();
+                        foreach ($content['data'] as $data) {
 
-                    /* Delete Header */
-                    RetDistributor::find($transaction->id)->forceDelete();
-                }else if($param == 4){
-                    /* Delete Details */
-                    $details = RetConsumentDetail::where('retconsument_id', $transaction->id);
-                    $details->forceDelete();
+                            // DETAILS
+                            SellInDetail::create([
+                                    'sellin_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
 
-                    /* Delete Header */
-                    RetConsument::find($transaction->id)->forceDelete();
-                }else if($param == 5){
-                    /* Delete Details */
-                    $details = FreeProductDetail::where('freeproduct_id', $transaction->id);
-                    $details->forceDelete();
+                        }
 
-                    /* Delete Header */
-                    FreeProduct::find($transaction->id)->forceDelete();
-                }else if($param == 6){
-                    /* Delete Details */
-                    $details = TbatDetail::where('tbat_id', $transaction->id);
-                    $details->forceDelete();
-
-                    /* Delete Header */
-                    Tbat::find($transaction->id)->forceDelete();
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
+
+                // Check sell in header after insert
+                $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+                return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
             }
 
-            return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+        } else if($param == 2) { /* SELL OUT */
+
+            // Check sell out header
+            $sellOutHeader = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+            if ($sellOutHeader) { // If header exist (update and/or create detail)
+
+                try {
+                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
+
+                        foreach ($content['data'] as $data) {
+
+                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)->where('product_id', $data['product_id'])->first();
+
+                            if ($sellOutDetail) { // If data exist -> update
+
+                                $sellOutDetail->update([
+                                    'quantity' => $sellOutDetail->quantity + $data['quantity']
+                                ]);
+
+                            } else { // If data didn't exist -> create
+
+                                SellOutDetail::create([
+                                    'sellout_id' => $sellOutHeader->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                            }
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
+
+            } else { // If header didn't exist (create header & detail)
+
+                try {
+                    DB::transaction(function () use ($content, $user) {
+
+                        // HEADER
+                        $transaction = SellOut::create([
+                                            'user_id' => $user->id,
+                                            'store_id' => $content['id'],
+                                            'week' => Carbon::now()->weekOfMonth,
+                                            'date' => Carbon::now()
+                                        ]);
+
+                        foreach ($content['data'] as $data) {
+
+                            // DETAILS
+                            SellOutDetail::create([
+                                    'sellout_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                // Check sell in header after insert
+                $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+                return response()->json(['status' => true, 'id_transaksi' => $sellOutHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
+            }
+
+        } else if($param == 3) { /* RETURN DISTRIBUTOR */
+
+            // Check ret distributor header
+            $retDistributorHeader = RetDistributor::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+            if ($retDistributorHeader) { // If header exist (update and/or create detail)
+
+                try {
+                    DB::transaction(function () use ($content, $retDistributorHeader, $user) {
+
+                        foreach ($content['data'] as $data) {
+
+                            $retDistributorDetail = RetDistributorDetail::where('retdistributor_id', $retDistributorHeader->id)->where('product_id', $data['product_id'])->first();
+
+                            if ($retDistributorDetail) { // If data exist -> update
+
+                                $retDistributorDetail->update([
+                                    'quantity' => $retDistributorDetail->quantity + $data['quantity']
+                                ]);
+
+                            } else { // If data didn't exist -> create
+
+                                RetDistributorDetail::create([
+                                    'retdistributor_id' => $retDistributorHeader->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                            }
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                return response()->json(['status' => true, 'id_transaksi' => $retDistributorHeader->id, 'message' => 'Data berhasil di input']);
+
+            } else { // If header didn't exist (create header & detail)
+
+                try {
+                    DB::transaction(function () use ($content, $user) {
+
+                        // HEADER
+                        $transaction = RetDistributor::create([
+                                            'user_id' => $user->id,
+                                            'store_id' => $content['id'],
+                                            'week' => Carbon::now()->weekOfMonth,
+                                            'date' => Carbon::now()
+                                        ]);
+
+                        foreach ($content['data'] as $data) {
+
+                            // DETAILS
+                            RetDistributorDetail::create([
+                                    'retdistributor_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                // Check ret distributor header after insert
+                $retDistributorHeaderAfter = RetDistributor::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+                return response()->json(['status' => true, 'id_transaksi' => $retDistributorHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
+            }
+
+        } else if($param == 4) { /* RETURN CONSUMENT */
+
+            // Check ret consument header
+            $retConsumentHeader = RetConsument::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+            if ($retConsumentHeader) { // If header exist (update and/or create detail)
+
+                try {
+                    DB::transaction(function () use ($content, $retConsumentHeader, $user) {
+
+                        foreach ($content['data'] as $data) {
+
+                            $retConsumentDetail = RetConsumentDetail::where('retconsument_id', $retConsumentHeader->id)->where('product_id', $data['product_id'])->first();
+
+                            if ($retConsumentDetail) { // If data exist -> update
+
+                                $retConsumentDetail->update([
+                                    'quantity' => $retConsumentDetail->quantity + $data['quantity']
+                                ]);
+
+                            } else { // If data didn't exist -> create
+
+                                RetConsumentDetail::create([
+                                    'retconsument_id' => $retConsumentHeader->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                            }
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                return response()->json(['status' => true, 'id_transaksi' => $retConsumentHeader->id, 'message' => 'Data berhasil di input']);
+
+            } else { // If header didn't exist (create header & detail)
+
+                try {
+                    DB::transaction(function () use ($content, $user) {
+
+                        // HEADER
+                        $transaction = RetConsument::create([
+                                            'user_id' => $user->id,
+                                            'store_id' => $content['id'],
+                                            'week' => Carbon::now()->weekOfMonth,
+                                            'date' => Carbon::now()
+                                        ]);
+
+                        foreach ($content['data'] as $data) {
+
+                            // DETAILS
+                            RetConsumentDetail::create([
+                                    'retconsument_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                // Check ret consument header after insert
+                $retConsumentHeaderAfter = RetConsument::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+                return response()->json(['status' => true, 'id_transaksi' => $retConsumentHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
+            }
+
+        } else if($param == 5) { /* FREE PRODUCT */
+
+            // Check free product header
+            $freeProductHeader = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+            if ($freeProductHeader) { // If header exist (update and/or create detail)
+
+                try {
+                    DB::transaction(function () use ($content, $freeProductHeader, $user) {
+
+                        foreach ($content['data'] as $data) {
+
+                            $freeProductDetail = FreeProductDetail::where('freeproduct_id', $freeProductHeader->id)->where('product_id', $data['product_id'])->first();
+
+                            if ($freeProductDetail) { // If data exist -> update
+
+                                $freeProductDetail->update([
+                                    'quantity' => $freeProductDetail->quantity + $data['quantity']
+                                ]);
+
+                            } else { // If data didn't exist -> create
+
+                                FreeProductDetail::create([
+                                    'freeproduct_id' => $freeProductHeader->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                            }
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                return response()->json(['status' => true, 'id_transaksi' => $freeProductHeader->id, 'message' => 'Data berhasil di input']);
+
+            } else { // If header didn't exist (create header & detail)
+
+                try {
+                    DB::transaction(function () use ($content, $user) {
+
+                        // HEADER
+                        $transaction = FreeProduct::create([
+                                            'user_id' => $user->id,
+                                            'store_id' => $content['id'],
+                                            'week' => Carbon::now()->weekOfMonth,
+                                            'date' => Carbon::now()
+                                        ]);
+
+                        foreach ($content['data'] as $data) {
+
+                            // DETAILS
+                            FreeProductDetail::create([
+                                    'freeproduct_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                // Check free product header after insert
+                $freeProductHeaderAfter = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+                return response()->json(['status' => true, 'id_transaksi' => $freeProductHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
+            }
+
+        } else if($param == 6) { /* TBAT */
+
+            // Check tbat header
+            $tbatHeader = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+            if ($tbatHeader) { // If header exist (update and/or create detail)
+
+                try {
+                    DB::transaction(function () use ($content, $tbatHeader, $user) {
+
+                        foreach ($content['data'] as $data) {
+
+                            $tbatDetail = TbatDetail::where('tbat_id', $tbatHeader->id)->where('product_id', $data['product_id'])->first();
+
+                            if ($tbatDetail) { // If data exist -> update
+
+                                $tbatDetail->update([
+                                    'quantity' => $tbatDetail->quantity + $data['quantity']
+                                ]);
+
+                            } else { // If data didn't exist -> create
+
+                                TbatDetail::create([
+                                    'tbat_id' => $tbatHeader->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                            }
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                return response()->json(['status' => true, 'id_transaksi' => $tbatHeader->id, 'message' => 'Data berhasil di input']);
+
+            } else { // If header didn't exist (create header & detail)
+
+                try {
+                    DB::transaction(function () use ($content, $user) {
+
+                        // HEADER
+                        $transaction = Tbat::create([
+                                            'user_id' => $user->id,
+                                            'store_id' => $content['id'],
+                                            'week' => Carbon::now()->weekOfMonth,
+                                            'date' => Carbon::now()
+                                        ]);
+
+                        foreach ($content['data'] as $data) {
+
+                            // DETAILS
+                            TbatDetail::create([
+                                    'tbat_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity']
+                                ]);
+
+                        }
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
+
+                // Check tbat header after insert
+                $tbatHeaderAfter = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+
+                return response()->json(['status' => true, 'id_transaksi' => $tbatHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
+            }
+
         }
-    	
-    	return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
+
     }
+
 }

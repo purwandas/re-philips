@@ -13,6 +13,7 @@ use App\Traits\StringTrait;
 use App\PromoActivity;
 use App\PromoActivityDetail;
 use File;
+use DB;
 
 class PromoActivityController extends Controller
 {
@@ -20,8 +21,6 @@ class PromoActivityController extends Controller
     use StringTrait;
 
     public function store(Request $request){
-
-//        return response()->json($request->all());
 
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -41,68 +40,140 @@ class PromoActivityController extends Controller
             return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
         }
 
-        try{
+        // Check promo activity header
+        $promoActivityHeader = PromoActivity::where('user_id', $user->id)
+                                ->where('store_id', $request->store_id)
+                                ->where('date', date('Y-m-d'))
+                                ->where('promo_type', $request->promo_type)
+                                ->where('information', $request->information)
+                                ->where('start_period', Carbon::parse($request->start_period)->format('Y-m-d'))
+                                ->where('end_period', Carbon::parse($request->end_period)->format('Y-m-d'))
+                                ->first();
 
-            $dataLength = count($request->product_id);
+        // Get how many data
+        $dataLength = count($request->product_id);
 
-            $startPeriod = Carbon::parse($request->start_period);//->format('d F Y'); Year - Month - Day
-            $endPeriod = Carbon::parse($request->end_period);//->format('d F Y');
+        $startPeriod = Carbon::parse($request->start_period);//->format('d F Y'); Year - Month - Day
+        $endPeriod = Carbon::parse($request->end_period);//->format('d F Y');
 
-            $photo_url = "";
+        if($promoActivityHeader){
 
-            if($request->photo){
-                $photo_url = $this->imageUpload($request->photo, "promo/".$this->getRandomPath());
+            try{
+
+                DB::transaction(function () use ($request, $user, $dataLength, $startPeriod, $endPeriod, $promoActivityHeader) {
+
+                    /* Create Promo Activity Detail */
+                    for ($i = 0; $i < $dataLength; $i++) {
+
+                        $promoActivityDetail = PromoActivityDetail::where('promoactivity_id', $promoActivityHeader->id)->where('product_id', $request->product_id[$i])->first();
+
+                        if(!$promoActivityDetail){ // Create
+
+                            PromoActivityDetail::create([
+                                'promoactivity_id' => $promoActivityHeader->id,
+                                'product_id' => $request->product_id[$i],
+                            ]);
+
+                        }
+
+                    }
+
+                    /* Delete Image (Include Folder) */
+                    $imagePath = explode('/', $promoActivityHeader->photo);
+                    $count = count($imagePath);
+                    $folderpath = $imagePath[$count - 2];
+                    File::deleteDirectory(public_path() . "/image/promo/" . $folderpath);
+
+                    /* Upload image again, anda again, and again~ */
+                    $photo_url = "";
+
+                    if($request->photo){
+                        $photo_url = $this->getUploadPath($request->photo, "promo/".$this->getRandomPath());
+                    }
+
+                    // Update photo to null
+                    $promoActivityHeader->update([
+                        'photo' => $photo_url
+                    ]);
+
+                });
+
+            }catch (\Exception $e){
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
             }
 
-            /* Create Promo Activity */
-            $transaction = PromoActivity::create([
-                                    'user_id' => $user->id,
-                                    'store_id' => $request->store_id,
-                                    'week' => Carbon::now()->weekOfMonth,
-                                    'date' => Carbon::now(),
-                                    'promo_type' => $request->promo_type,
-                                    'information' => $request->information,
-                                    'start_period' => $startPeriod,
-                                    'end_period' => $endPeriod,
-                                    'photo' => $photo_url
-                                ]);
+            // Upload image process
+            $imagePath = explode('/', $promoActivityHeader->photo);
+            $count = count($imagePath);
+            $imageFolder = "promo/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
 
+            $this->upload($request->photo, $imageFolder, $imageName);
 
-            /* Create Promo Activity Detail */
-            for($i=0;$i<$dataLength;$i++){
+            return response()->json(['status' => true, 'id_transaksi' => $promoActivityHeader->id, 'message' => 'Data berhasil di input']);
 
-                PromoActivityDetail::create([
-                    'promoactivity_id' => $transaction->id,
-                    'product_id' => $request->product_id[$i],
-                ]);
+        } else {
 
+            try {
+
+                DB::transaction(function () use ($request, $user, $dataLength, $startPeriod, $endPeriod, $promoActivityHeader) {
+
+                    $photo_url = "";
+
+                    if ($request->photo) {
+                        $photo_url = $this->getUploadPath($request->photo, "promo/" . $this->getRandomPath());
+                    }
+
+                    /* Create Promo Activity */
+                    $transaction = PromoActivity::create([
+                        'user_id' => $user->id,
+                        'store_id' => $request->store_id,
+                        'week' => Carbon::now()->weekOfMonth,
+                        'date' => Carbon::now(),
+                        'promo_type' => $request->promo_type,
+                        'information' => $request->information,
+                        'start_period' => $startPeriod,
+                        'end_period' => $endPeriod,
+                        'photo' => $photo_url
+                    ]);
+
+                    /* Create Promo Activity Detail */
+                    for ($i = 0; $i < $dataLength; $i++) {
+
+                        PromoActivityDetail::create([
+                            'promoactivity_id' => $transaction->id,
+                            'product_id' => $request->product_id[$i],
+                        ]);
+
+                    }
+
+                });
+
+            }catch (\Exception $e){
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
             }
 
-        }catch (\Exception $e){
+            // Check posm activity header after insert
+            $promoActivityHeaderAfter = PromoActivity::where('user_id', $user->id)
+                                    ->where('store_id', $request->store_id)
+                                    ->where('date', date('Y-m-d'))
+                                    ->where('promo_type', $request->promo_type)
+                                    ->where('information', $request->information)
+                                    ->where('start_period', Carbon::parse($request->start_period)->format('Y-m-d'))
+                                    ->where('end_period', Carbon::parse($request->end_period)->format('Y-m-d'))
+                                    ->first();
 
-            if(isset($transaction)) {
-                /*
-                 * Delete data that have been inserted before
-                 */
+            // Upload image process
+            $imagePath = explode('/', $promoActivityHeaderAfter->photo);
+            $count = count($imagePath);
+            $imageFolder = "promo/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
 
-                /* Delete Details */
-                $details = PromoActivityDetail::where('promoactivity_id', $transaction->id);
-                $details->forceDelete();
+            $this->upload($request->photo, $imageFolder, $imageName);
 
-                /* Delete Image (Include Folder) */
-                $imagePath = explode('/', $transaction->photo);
-                $count = count($imagePath);
-                $folderpath = $imagePath[$count - 2];
-                File::deleteDirectory(public_path() . "/image/promo/" . $folderpath);
+            return response()->json(['status' => true, 'id_transaksi' => $promoActivityHeaderAfter->id, 'message' => 'Data berhasil di input']);
 
-                /* Delete Header */
-                PromoActivity::find($transaction->id)->forceDelete();
-            }
-
-            return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
         }
-
-        return response()->json(['status' => true, 'id_transaksi' => $transaction->id, 'message' => 'Data berhasil di input']);
 
     }
 }
