@@ -96,7 +96,7 @@ class CompetitorActivityController extends Controller
                         $photo_url = $this->getUploadPath($request->photo, "competitor/".$this->getRandomPath());
                     }
 
-                    // Update photo to null
+                    // Update photo
                     $competitorActivityHeader->update([
                         'photo' => $photo_url
                     ]);
