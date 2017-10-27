@@ -47,6 +47,8 @@ class PosmController extends Controller
 
                 DB::transaction(function () use ($request, $posmHeader, $user, $dataLength) {
 
+                    $arrayUpdate = [];
+
                     for($i=0;$i<$dataLength;$i++){
 
                         $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmHeader->id)->where('posm_id', $request->posm_id[$i])->first();
@@ -63,11 +65,14 @@ class PosmController extends Controller
                                 throw new Exception();
                             }
 
-                            /* Delete Image (Include Folder) */
+                            /* Delete Image (Just get path, Delete later) */
                             $imagePath = explode('/', $posmActivityDetail->photo);
                             $count = count($imagePath);
                             $folderpath = $imagePath[$count - 2];
-                            File::deleteDirectory(public_path() . "/image/posm/" . $folderpath);
+//                            File::deleteDirectory(public_path() . "/image/posm/" . $folderpath);
+//                            array_push($arrayUpdate, { "id" : $posmActivityDetail->id, "path" : $folderpath });
+                            $newVal = array('id' => $posmActivityDetail->id, 'path' => $folderpath);
+                            array_push($arrayUpdate, $newVal);
 
                             /* Upload image again, anda again, and again~ */
                             $photo_url = "";
@@ -99,6 +104,12 @@ class PosmController extends Controller
                         }
 
                     }
+
+                    /* Delete image all updated photo */
+                    foreach ($arrayUpdate as $data){
+                        File::deleteDirectory(public_path() . "/image/posm/" . $data['path']);
+                    }
+
 
                 });
 
