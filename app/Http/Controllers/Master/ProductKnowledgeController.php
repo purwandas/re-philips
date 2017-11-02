@@ -337,7 +337,7 @@ class ProductKnowledgeController extends Controller
         // Update data
     	$productKnowledge->update($request->all());
 
-    	if($productKnowledge->file != null && $request->upload_file != null) {
+    	if($productKnowledge->file != null && $request->upload_file != null && $oldFile != "") {
 
             /* Delete File PDF */
             $filePath = explode('/', $oldFile);

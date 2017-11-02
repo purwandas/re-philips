@@ -345,7 +345,7 @@ class UserController extends Controller
             }
         }
 
-        if($user->photo != null && $request->photo_file != null) {
+        if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
             /* Delete Image */
             $imagePath = explode('/', $oldPhoto);
             $count = count($imagePath);
