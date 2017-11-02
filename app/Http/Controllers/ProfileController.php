@@ -66,7 +66,7 @@ class ProfileController extends Controller
 
         }
 
-        if($user->photo != null && $request->photo_file != null) {
+        if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
             /* Delete Image after any transaction */
             $imagePath = explode('/', $oldPhoto);
             $count = count($imagePath);

@@ -42,6 +42,13 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/posm/{param}', 'Api\Master\PosmController@all');
 
 	/**
+     * User Module(s)
+     */
+
+	Route::get('/profile', 'Api\AuthController@getProfile');
+	Route::post('/set-profile', 'Api\AuthController@setProfile');
+
+	/**
      * Transaction Module(s)
      */
 

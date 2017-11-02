@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
@@ -10,9 +11,14 @@ use Auth;
 use App\EmployeeStore;
 use App\Store;
 use Carbon\Carbon;
+use App\Traits\UploadTrait;
+use App\Traits\StringTrait;
 
 class AuthController extends Controller
 {
+    use UploadTrait;
+    use StringTrait;
+
     public function login(Request $request)
 	{
 		// grab credentials from the request
@@ -86,7 +92,78 @@ class AuthController extends Controller
 		return response()->json(compact('user'));
 	}
 
-	public function setProfilePhoto(){
-        // On Progress
+	public function getProfile(){
+
+	    try {
+
+			if (! $user = JWTAuth::parseToken()->authenticate()) {
+				return response()->json(['user_not_found'], 404);
+			}
+
+		} catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+			return response()->json(['token_expired'], $e->getStatusCode());
+
+		} catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+
+			return response()->json(['token_invalid'], $e->getStatusCode());
+
+		} catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+
+			return response()->json(['token_absent'], $e->getStatusCode());
+
+		}
+
+		$data['photo'] = $user->photo;
+	    $data['name'] = $user->name;
+	    $data['email'] = $user->email;
+
+		// the token is valid and we have found the user via the sub claim
+		return response()->json($data);
+
+    }
+
+	public function setProfile(Request $request){
+
+	    $user = JWTAuth::parseToken()->authenticate();
+
+	    if(!isset($request->photo) || $request->photo == null){
+            return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+        }
+
+        $userData = User::where('id', $user->id)->first();
+        $oldPhoto = "";
+
+        if($userData->photo != null && $request->photo != null) {
+            /* Save old photo path */
+            $oldPhoto = $userData->photo;
+        }
+
+        $photo_url = $this->getUploadPathName($request->photo, "user/".$this->getRandomPath(), 'USER');
+
+
+        // Update photo to null
+        $userData->update([
+            'photo' => $photo_url
+        ]);
+
+	    if($userData->photo != null && $request->photo != null && $oldPhoto != ""){
+	        /* Delete Image (Include Folder) */
+            $imagePath = explode('/', $oldPhoto);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+        }
+
+        // Upload image process
+        $imagePath = explode('/', $userData->photo);
+        $count = count($imagePath);
+        $imageFolder = "user/" . $imagePath[$count - 2];
+        $imageName = $imagePath[$count - 1];
+
+        $this->upload($request->photo, $imageFolder, $imageName);
+
+        return response()->json(['status' => true, 'message' => 'Profil berhasil di update']);
+
     }
 }
