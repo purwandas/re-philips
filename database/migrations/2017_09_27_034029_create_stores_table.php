@@ -20,11 +20,10 @@ class CreateStoresTable extends Migration
             $table->string('store_name_2')->nullable();
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
-            $table->enum('channel', ['Modern Retail', 'Traditional Retail', 'Mother Child & Care']);
-            $table->integer('account_id')->unsigned();
-            $table->foreign('account_id')->references('id')->on('accounts');
-            $table->integer('areaapp_id')->unsigned();
-            $table->foreign('areaapp_id')->references('id')->on('area_apps');
+            $table->integer('subchannel_id')->unsigned();
+            $table->foreign('subchannel_id')->references('id')->on('sub_channels');
+            $table->integer('district_id')->unsigned();
+            $table->foreign('district_id')->references('id')->on('districts');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

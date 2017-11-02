@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Store;
+use App\TrainerArea;
 use App\User;
 use App\RsmRegion;
 use App\DmArea;
@@ -155,9 +156,13 @@ class UserController extends Controller
             }
         }
 
-        // If DM
+        // If DM or Trainer
         if(isset($request->area)){
-            $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            if($request['role'] == 'DM') {
+                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            }elseif($request['role'] == 'Trainer') {
+                $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            }
         }
         // If RSM
         if(isset($request->region)){
@@ -229,6 +234,12 @@ class UserController extends Controller
             $dmArea->delete();
         }
 
+        // TRAINER AREA
+        $trainerArea = TrainerArea::where('user_id', $user->id);
+        if($trainerArea->count() > 0){
+            $trainerArea->delete();
+        }
+
         // RSM REGION 
         $rsmRegion = RsmRegion::where('user_id', $user->id);
         if($rsmRegion->count() > 0){
@@ -295,12 +306,22 @@ class UserController extends Controller
 
         // If DM
         if($request->area){
-            $dmArea = DmArea::where('user_id', $user->id);
-            if($dmArea->count() > 0){
-                $dmArea->first()->update(['area_id' => $request->area]);    
-            }else{
-                DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            if($request['role'] == 'DM') {
+                $dmArea = DmArea::where('user_id', $user->id);
+                if($dmArea->count() > 0){
+                    $dmArea->first()->update(['area_id' => $request->area]);
+                }else{
+                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                }
+            }elseif($request['role'] == 'Trainer') {
+                $trainerArea = TrainerArea::where('user_id', $user->id);
+                if($trainerArea->count() > 0){
+                    $trainerArea->first()->update(['area_id' => $request->area]);
+                }else{
+                    TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                }
             }
+
             
         }
         // If RSM
@@ -339,6 +360,12 @@ class UserController extends Controller
         $dmArea = DmArea::where('user_id', $id);
         if($dmArea->count() > 0){
             $dmArea->delete();
+        }
+
+        // TRAINER AREA
+        $trainerArea = TrainerArea::where('user_id', $id);
+        if($trainerArea->count() > 0){
+            $trainerArea->delete();
         }
 
         // RSM REGION 

@@ -19,4 +19,11 @@ class GroupController extends Controller
 
     	return response()->json($data);
     }
+
+    public function allGroup()
+    {
+    	$data = Group::select('groups.id', 'groups.name')->get();
+
+    	return response()->json($data);
+    }
 }

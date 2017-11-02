@@ -73,6 +73,27 @@
                         	<hr>
                         </div>
 
+						<div class="form-group">
+				          <label class="col-sm-2 control-label">Type</label>
+				          <div class="col-sm-9">
+
+				          <div class="input-group" style="width: 100%;">
+
+                                <select class="select2select" name="type" id="type" required>
+                                	<option value="Product Knowledge" {{ (@$data->type == 'Product Knowledge') ? "selected" : "" }}>Product Knowledge</option>
+                                	<option value="Planogram" {{ (@$data->type == 'Planogram') ? "selected" : "" }}>Planogram</option>
+                                	<option value="POSM" {{ (@$data->type == 'POSM') ? "selected" : "" }}>POSM</option>
+                                </select>
+
+                                <span class="input-group-addon display-hide">
+                                	<i class="fa"></i>
+                                </span>
+
+              				</div>
+
+				          </div>
+				        </div>
+
 				        <div class="form-group">
 				          <label class="col-sm-2 control-label">Sender</label>
 				          <div class="col-sm-9">
@@ -89,6 +110,16 @@
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
 				            	<input type="text" id="subject" name="subject" class="form-control" value="{{ @$data->subject }}" placeholder="Input Subject" />
+				            </div>
+				          </div>
+				        </div>
+
+                        <div class="form-group">
+				          <label class="col-sm-2 control-label">Filename</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="filename" name="filename" class="form-control" value="{{ @$data->filename }}" placeholder="Input Filename" />
 				            </div>
 				          </div>
 				        </div>
@@ -245,7 +276,7 @@
 	            }
 	        }));
 
-	        $('#area').select2(setOptions('{{ route("data.areaapp") }}', 'Area', function (params) {
+	        $('#area').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
@@ -265,6 +296,11 @@
 	                })
 	            }
 	        }));
+
+	        $('#type').select2({
+                width: '100%',
+                placeholder: 'Type of Product Knowledge'
+            })
 
 	        // First load method
 	        var target_type = $('input[type=radio][name=target_type]:checked').val();

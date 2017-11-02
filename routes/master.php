@@ -35,26 +35,33 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('area/{id}', 'Master\AreaController@update');
         Route::delete('area/{id}', 'Master\AreaController@destroy');
 
-        /** AreaApp **/
-        Route::get('areaapp', 'Master\AreaAppController@index');
-        Route::post('areaapp', 'Master\AreaAppController@store');
-        Route::get('areaapp/edit/{id}', 'Master\AreaAppController@edit');
-        Route::patch('areaapp/{id}', 'Master\AreaAppController@update');
-        Route::delete('areaapp/{id}', 'Master\AreaAppController@destroy');
+        /** District **/
+        Route::get('district', 'Master\DistrictController@index');
+        Route::post('district', 'Master\DistrictController@store');
+        Route::get('district/edit/{id}', 'Master\DistrictController@edit');
+        Route::patch('district/{id}', 'Master\DistrictController@update');
+        Route::delete('district/{id}', 'Master\DistrictController@destroy');
 
-        /** Account Type **/
-        Route::get('accounttype', 'Master\AccountTypeController@index');        
-        Route::post('accounttype', 'Master\AccountTypeController@store');
-        Route::get('accounttype/edit/{id}', 'Master\AccountTypeController@edit');
-        Route::patch('accounttype/{id}', 'Master\AccountTypeController@update');
-        Route::delete('accounttype/{id}', 'Master\AccountTypeController@destroy');
+        /** Channel **/
+        Route::get('channel', 'Master\ChannelController@index');
+        Route::post('channel', 'Master\ChannelController@store');
+        Route::get('channel/edit/{id}', 'Master\ChannelController@edit');
+        Route::patch('channel/{id}', 'Master\ChannelController@update');
+        Route::delete('channel/{id}', 'Master\ChannelController@destroy');
 
-        /** Account **/
-        Route::get('account', 'Master\AccountController@index');        
-        Route::post('account', 'Master\AccountController@store');
-        Route::get('account/edit/{id}', 'Master\AccountController@edit');
-        Route::patch('account/{id}', 'Master\AccountController@update');
-        Route::delete('account/{id}', 'Master\AccountController@destroy');
+        /** Sub Channel **/
+        Route::get('subchannel', 'Master\SubChannelController@index');
+        Route::post('subchannel', 'Master\SubChannelController@store');
+        Route::get('subchannel/edit/{id}', 'Master\SubChannelController@edit');
+        Route::patch('subchannel/{id}', 'Master\SubChannelController@update');
+        Route::delete('subchannel/{id}', 'Master\SubChannelController@destroy');
+
+        /** Distributor **/
+        Route::get('distributor', 'Master\DistributorController@index');
+        Route::post('distributor', 'Master\DistributorController@store');
+        Route::get('distributor/edit/{id}', 'Master\DistributorController@edit');
+        Route::patch('distributor/{id}', 'Master\DistributorController@update');
+        Route::delete('distributor/{id}', 'Master\DistributorController@destroy');
 
         /** Store **/
         Route::get('store', 'Master\StoreController@index'); 
@@ -88,6 +95,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('groupcompetitor/{id}', 'Master\GroupCompetitorController@update');
         Route::delete('groupcompetitor/{id}', 'Master\GroupCompetitorController@destroy');
 
+        /** Group Product **/
+        Route::get('groupproduct', 'Master\GroupProductController@index');
+        Route::post('groupproduct', 'Master\GroupProductController@store');
+        Route::get('groupproduct/edit/{id}', 'Master\GroupProductController@edit');
+        Route::patch('groupproduct/{id}', 'Master\GroupProductController@update');
+        Route::delete('groupproduct/{id}', 'Master\GroupProductController@destroy');
+
         /** Group **/
         Route::get('group', 'Master\GroupController@index');        
         Route::post('group', 'Master\GroupController@store');
@@ -115,6 +129,27 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('posm/edit/{id}', 'Master\PosmController@edit');
         Route::patch('posm/{id}', 'Master\PosmController@update');
         Route::delete('posm/{id}', 'Master\PosmController@destroy');
+
+        /** Price **/
+        Route::get('price', 'Master\PriceController@index');
+        Route::post('price', 'Master\PriceController@store');
+        Route::get('price/edit/{id}', 'Master\PriceController@edit');
+        Route::patch('price/{id}', 'Master\PriceController@update');
+        Route::delete('price/{id}', 'Master\PriceController@destroy');
+
+        /** Target **/
+        Route::get('target', 'Master\TargetController@index');
+        Route::post('target', 'Master\TargetController@store');
+        Route::get('target/edit/{id}', 'Master\TargetController@edit');
+        Route::patch('target/{id}', 'Master\TargetController@update');
+        Route::delete('target/{id}', 'Master\TargetController@destroy');
+
+        /** Product Focus **/
+        Route::get('productfocus', 'Master\ProductFocusController@index');
+        Route::post('productfocus', 'Master\ProductFocusController@store');
+        Route::get('productfocus/edit/{id}', 'Master\ProductFocusController@edit');
+        Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
+        Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
 
     });
 

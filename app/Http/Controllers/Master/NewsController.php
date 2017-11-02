@@ -10,7 +10,7 @@ use App\News;
 use App\Filters\NewsFilters;
 use Auth;
 use Carbon\Carbon;
-use App\AreaApp;
+use App\District;
 use App\Store;
 use App\User;
 use App\NewsRead;
@@ -61,7 +61,7 @@ class NewsController extends Controller
                         $data = explode(',' , $item->target_detail);
                         foreach ($data as $dataSplit) { 
 
-                            $area = AreaApp::find(trim($dataSplit));
+                            $area = District::find(trim($dataSplit));
                             $result .= $area->name;
                             if($dataSplit != end($data)){
                                 $result .= ", ";
@@ -138,7 +138,8 @@ class NewsController extends Controller
 
         $this->validate($request, [
             'from' => 'required|string|max:255',
-            'subject' => 'required|string|max:255',                  
+            'subject' => 'required|string|max:255',
+            'filename' => 'required|string|max:255',
             ]);  
 
         // Admin
@@ -238,7 +239,8 @@ class NewsController extends Controller
         // dd($request->all());
         $this->validate($request, [
             'from' => 'required|string|max:255',
-            'subject' => 'required|string|max:255',                  
+            'subject' => 'required|string|max:255',
+            'filename' => 'required|string|max:255',
             ]);  
 
         // Admin

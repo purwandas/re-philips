@@ -11,7 +11,7 @@ use App\ProductKnowledge;
 use App\Filters\ProductKnowledgeFilters;
 use Auth;
 use Carbon\Carbon;
-use App\AreaApp;
+use App\District;
 use App\Store;
 use App\User;
 use App\ProductKnowledgeRead;
@@ -64,7 +64,7 @@ class ProductKnowledgeController extends Controller
                         $data = explode(',' , $item->target_detail);
                         foreach ($data as $dataSplit) {
 
-                            $area = AreaApp::find(trim($dataSplit));
+                            $area = District::find(trim($dataSplit));
                             $result .= $area->name;
                             if($dataSplit != end($data)){
                                 $result .= ", ";
@@ -148,8 +148,10 @@ class ProductKnowledgeController extends Controller
         // dd($request->all());
 
         $this->validate($request, [
+            'type' => 'required',
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
+            'filename' => 'required|string|max:255',
             ]);
 
         // Upload file process
@@ -252,8 +254,10 @@ class ProductKnowledgeController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
+            'type' => 'required',
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
+            'filename' => 'required|string|max:255',
             ]);
 
         // Admin

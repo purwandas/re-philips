@@ -17,9 +17,11 @@ class CreateProductKnowledgesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->enum('type', ['Product Knowledge', 'Planogram', 'POSM']);
             $table->string('from');
             $table->string('subject');
             $table->datetime('date');
+            $table->string('filename');
             $table->text('file')->nullable();
             $table->enum('target_type', ['All', 'Area', 'Store', 'Promoter']);
             $table->string('target_detail')->nullable();
