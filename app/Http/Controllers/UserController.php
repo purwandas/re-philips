@@ -132,7 +132,7 @@ class UserController extends Controller
 
         // Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->getUploadPathName($request->photo_file, "user/".$this->getRandomPath(), 'USER') : $photo_url = "";
         
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
@@ -167,6 +167,18 @@ class UserController extends Controller
         // If RSM
         if(isset($request->region)){
             $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+        }
+
+        if($request->photo_file != null){
+
+            /* Upload updated image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $imageFolder = "user/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+
         }
         
         return response()->json(['url' => url('user')]);
@@ -213,13 +225,11 @@ class UserController extends Controller
             ]);
 
         $user = User::find($id);
+        $oldPhoto = "";
 
-        /* Delete Image */
         if($user->photo != null && $request->photo_file != null) {
-            $imagePath = explode('/', $user->photo);
-            $count = count($imagePath);
-            $folderpath = $imagePath[$count - 2];
-            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+            /* Save old photo path */
+            $oldPhoto = $user->photo;
         }
 
         /* Delete if any relation exist in employee store */
@@ -249,7 +259,7 @@ class UserController extends Controller
 
         // Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->getUploadPathName($request->photo_file, "user/".$this->getRandomPath(), 'USER') : $photo_url = "";
         
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
@@ -334,6 +344,23 @@ class UserController extends Controller
                 RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
             }
         }
+
+        if($user->photo != null && $request->photo_file != null) {
+            /* Delete Image */
+            $imagePath = explode('/', $oldPhoto);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+
+            /* Upload updated image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $imageFolder = "user/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+        }
+
         return response()->json(
             [
                 'url' => url('user'),

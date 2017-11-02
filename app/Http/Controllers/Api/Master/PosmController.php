@@ -78,7 +78,7 @@ class PosmController extends Controller
                             $photo_url = "";
 
                             if($request->photo[$i]){
-                                $photo_url = $this->getUploadPath($request->photo[$i], "posm/".$this->getRandomPath());
+                                $photo_url = $this->getUploadPathName($request->photo[$i], "posm/".$this->getRandomPath(), 'POSM');
                             }
 
                             $posmActivityDetail->update([
@@ -91,7 +91,7 @@ class PosmController extends Controller
                             $photo_url = "";
 
                             if($request->photo[$i]){
-                                $photo_url = $this->getUploadPath($request->photo[$i], "posm/".$this->getRandomPath());
+                                $photo_url = $this->getUploadPathName($request->photo[$i], "posm/".$this->getRandomPath(), 'POSM');
                             }
 
                             PosmActivityDetail::create([
@@ -152,12 +152,8 @@ class PosmController extends Controller
 
                         $photo_url = "";
 
-//                        if($request->photo[$i]){
-//                            $photo_url = $this->imageUpload($request->photo[$i], "posm/".$this->getRandomPath());
-//                        }
-
                         if($request->photo[$i]){
-                            $photo_url = $this->getUploadPath($request->photo[$i], "posm/".$this->getRandomPath());
+                            $photo_url = $this->getUploadPathName($request->photo[$i], "posm/".$this->getRandomPath(), 'POSM');
                         }
 
                         PosmActivityDetail::create([

@@ -53,4 +53,27 @@ trait UploadTrait {
         return true;
     }
 
+    public function getUploadPathName($image, $imageFolder, $imageName)
+    {
+        $image_new = $imageName.'-'.time().'.'.$image->getClientOriginalExtension();
+
+        // Back result url asset + filename (For insert/update data in model)
+        return asset('image').'/'.$imageFolder.'/'.$image_new;
+    }
+
+    public function getUploadPathNameFile($file, $fileFolder, $fileName)
+    {
+        $file_new = $fileName.'-'.time().'.'.$file->getClientOriginalExtension();
+
+        // Back result url asset + filename (For insert/update data in model)
+        return asset('file').'/'.$fileFolder.'/'.$file_new;
+    }
+
+    public function uploadFile($file, $fileFolder, $fileName)
+    {
+        $file->move(public_path('file/'.$fileFolder), $fileName);
+
+        return true;
+    }
+
 }

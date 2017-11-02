@@ -99,6 +99,7 @@
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
 				            	<input type="text" id="filename" name="filename" class="form-control" value="{{ @$data->filename }}" placeholder="Input Filename" />
+								<p style="font-size: 10pt;" class="help-block"> (Can just be entered with letters and numbers, and symbol '.' or '-') </p>
 				            </div>
 				          </div>
 				        </div>

@@ -88,7 +88,7 @@ class PromoActivityController extends Controller
                     $photo_url = "";
 
                     if($request->photo){
-                        $photo_url = $this->getUploadPath($request->photo, "promo/".$this->getRandomPath());
+                        $photo_url = $this->getUploadPathName($request->photo, "promo/".$this->getRandomPath(), 'PROMO');
                     }
 
                     // Update photo to null
@@ -121,7 +121,7 @@ class PromoActivityController extends Controller
                     $photo_url = "";
 
                     if ($request->photo) {
-                        $photo_url = $this->getUploadPath($request->photo, "promo/" . $this->getRandomPath());
+                        $photo_url = $this->getUploadPathName($request->photo, "promo/" . $this->getRandomPath(), 'PROMO');
                     }
 
                     /* Create Promo Activity */
