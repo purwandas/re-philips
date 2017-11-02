@@ -31,6 +31,7 @@ var FormValidation = function () {
                     },
                     filename:{
                         minlength: 2,
+                        validate_filename: true,
                         required: true,
                     },
 
@@ -421,3 +422,18 @@ $(document.body).on("change",".select2select",function(){
     select2Change($(this), $('#form_product_knowledge'));
 
 });
+
+/*
+ * Add custom validation
+ *
+ */
+
+jQuery.validator.addMethod("validate_filename",function(value, element) {
+
+    if(/^([a-zA-Z0-9_\.\-])+$/.test( value )){
+     return true;
+    }
+    else{
+     return false;
+    }
+},"Please enter a valid filename.");
