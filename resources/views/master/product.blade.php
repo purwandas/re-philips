@@ -57,6 +57,7 @@
                                 <th> Name </th> 
                                 <th> Category </th>
                                 <th> Model </th>
+                                <th> Variants </th>
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -113,6 +114,7 @@
                 {data: 'name', name: 'name'},        
                 {data: 'category_name', name: 'category_name'},
                 {data: 'model', name: 'model'},
+                {data: 'variants', name: 'variants'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
@@ -185,7 +187,8 @@
         modalTitle.innerHTML = "ADD NEW ";
 
         $('#model').val(''); 
-        $('#name').val('');        
+        $('#name').val('');
+        $('#variants').val('');
         select2Reset($("#category"));
 
         // Set action url form for add
@@ -224,6 +227,7 @@
 
                     $('#model').val(data.model); 
                     $('#name').val(data.name);
+                    $('#variants').val(data.variants);
                     setSelect2IfPatchModal($("#category"), data.category_id, data.category.name);
 
         })
@@ -253,10 +257,11 @@
     function generateProductName(){
         var category = $('#category').select2('data');
         var model = $('#model').val();
+        var variants = $('#variants').val();
 
-        if(category != '' && model != ''){
+        if(category != '' && model != '' && variants != ''){
             $('#name').val('');
-            $('#name').val(category[0].text + ' - ' + model);
+            $('#name').val(category[0].text + ' - ' + model + '/' + variants);
         }
     }
 
@@ -267,7 +272,11 @@
 
     $(document.body).on("keyup","#model",function(){                                        
         generateProductName();
-    });  
+    });
+
+    $(document.body).on("keyup","#variants",function(){
+        generateProductName();
+    });
 
 
 </script>

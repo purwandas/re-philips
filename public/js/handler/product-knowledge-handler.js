@@ -18,6 +18,9 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
                 rules: {
+                    type: {
+                        required: true,
+                    },
                     from: {
                         minlength: 2,
                         required: true,
@@ -26,10 +29,16 @@ var FormValidation = function () {
                         minlength: 2,
                         required: true,
                     },
+                    filename:{
+                        minlength: 2,
+                        required: true,
+                    },
 
                 },
                 messages:{
-
+                    type: {
+                        required: "Please select a Type!",
+                    },
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit

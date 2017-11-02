@@ -82,6 +82,7 @@ class ProductController extends Controller
         $this->validate($request, [
             'model' => 'required|string|max:255',
             'name' => 'required',
+            'variants' => 'required',
             'category_id' => 'required'
             ]);
 
@@ -109,7 +110,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $data = Product::with('group')->where('id', $id)->first();
+        $data = Product::with('category')->where('id', $id)->first();
 
         return response()->json($data);
     }
@@ -126,6 +127,7 @@ class ProductController extends Controller
         $this->validate($request, [
             'model' => 'required|string|max:255',
             'name' => 'required',
+            'variants' => 'required',
             'category_id' => 'required'
             ]);
 

@@ -134,7 +134,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                                                                         '<h5> Area : '+this.area_name+'</h5>'+
                                                                     '</li>'+
                                                                     '<li>'+
-                                                                        '<h5> Area RE App : '+this.areaapp_name+'</h5>'+
+                                                                        '<h5> District : '+this.district_name+'</h5>'+
                                                                     '</li>'+
                                                                     '<li>'+
                                                                         '<h5> Supervisor : '+this.spv_name+'</h5>'+

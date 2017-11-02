@@ -13,9 +13,18 @@ use App\Store;
 
 class ProductKnowledgeController extends Controller
 {
-    public function get()
+    public function get($param)
     {
         $user = JWTAuth::parseToken()->authenticate();
+
+        $type = "";
+        if($param == 1){
+            $type = "Product Knowledge";
+        }else if($param == 2){
+            $type = "Planogram";
+        }else{
+            $type = "POSM";
+        }
 
         // Check Promoter Group
 		$isPromoter = 0;
@@ -26,11 +35,11 @@ class ProductKnowledgeController extends Controller
         if($isPromoter == 1){
 
 		    $storeIds = $user->employeeStores()->pluck('store_id'); // Get Store ID
-		    $areaIds = Store::whereIn('id', $storeIds)->pluck('areaapp_id'); // Get Area App ID
+		    $areaIds = Store::whereIn('id', $storeIds)->pluck('district_id'); // Get District ID
 
         }
 
-        $data = ProductKnowledge::where('target_type', 'All')
+        $data = ProductKnowledge::where('target_type', 'All')->where('type', $type)
     				->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
     				->get();
 
@@ -50,7 +59,7 @@ class ProductKnowledgeController extends Controller
             }
 
             /* MERGER Data All dan Data Area */
-            $dataAreaSelect = ProductKnowledge::whereIn('id', $areaArray)
+            $dataAreaSelect = ProductKnowledge::whereIn('id', $areaArray)->where('type', $type)
                                 ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
                 ->get();
 
@@ -69,7 +78,7 @@ class ProductKnowledgeController extends Controller
             }
 
             /* MERGER Data All dan Data Store */
-            $dataStoreSelect = ProductKnowledge::whereIn('id', $storeArray)
+            $dataStoreSelect = ProductKnowledge::whereIn('id', $storeArray)->where('type', $type)
                                 ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
                 ->get();
 
@@ -86,7 +95,7 @@ class ProductKnowledgeController extends Controller
             }
 
             /* MERGER Data All dan Data Promoter */
-            $dataPromoterSelect = ProductKnowledge::whereIn('id', $promoterArray)
+            $dataPromoterSelect = ProductKnowledge::whereIn('id', $promoterArray)->where('type', $type)
                                 ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
                 ->get();
 

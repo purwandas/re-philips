@@ -4,19 +4,23 @@ namespace App\Http\Controllers;
 
 use App\CompetitorActivity;
 use App\CompetitorActivityDetail;
+use App\District;
 use App\FreeProductDetail;
+use App\Price;
+use App\ProductFocuses;
 use App\PromoActivity;
 use App\PromoActivityDetail;
 use App\RetConsumentDetail;
 use App\RetDistributorDetail;
 use App\SellOutDetail;
 use App\SellInDetail;
+use App\StoreDistributor;
+use App\SubChannel;
+use App\Target;
 use App\TbatDetail;
 use Illuminate\Http\Request;
 use App\Area;
-use App\AreaApp;
 use App\DmArea;
-use App\Account;
 use App\Store;
 use App\Category;
 use App\Product;
@@ -34,37 +38,38 @@ use App\Sos;
 use App\PosmActivityDetail;
 use App\PosmActivity;
 use App\ProductKnowledge;
+use App\Group;
 
 class RelationController extends Controller
 {
     //
-    public function areaAppsAreaRelation($areaId){
-        $countAreaApps = AreaApp::where('area_id', $areaId)->first();
-        if ($countAreaApps) {
+    public function districtAreaRelation($areaId){
+        $countDistrict = District::where('area_id', $areaId)->first();
+        if ($countDistrict) {
             return true;
         }
         return false;
     }
 
-    public function accountAccountTypeRelation($accountTypeId){
-        $countAccount = Account::where('accounttype_id', $accountTypeId)->first();
-        if ($countAccount) {
+    public function subChannelChannelRelation($channelId){
+        $countSubChannel = SubChannel::where('channel_id', $channelId)->first();
+        if ($countSubChannel) {
             return true;
         }
 
         return false;
     }
 
-    public function storeAccountRelation($accountId){
-        $countStore = Store::where('account_id', $accountId)->first();
-        if ($countStore) {
+    public function storeSubChannelRelation($subChannelId){
+        $countSubChannel = Store::where('subchannel_id', $subChannelId)->first();
+        if ($countSubChannel) {
             return true;
         }
         return false;
     }
 
-    public function storeAreaAppRelation($areaAppId){
-        $countStore = Store::where('areaapp_id', $areaAppId)->first();
+    public function storeDistrictRelation($districtId){
+        $countStore = Store::where('district_id', $districtId)->first();
         if($countStore){
             return true;
         }
@@ -90,6 +95,22 @@ class RelationController extends Controller
         return false;
     }
 
+    public function groupGroupProductRelation($groupProductId){
+        $countGroup = Group::where('groupproduct_id', $groupProductId)->first();
+        if ($countGroup) {
+            return true;
+        }
+        return false;
+    }
+
+    public function targetGroupProductRelation($groupProductId){
+        $countTarget = Target::where('groupproduct_id', $groupProductId)->first();
+        if ($countTarget) {
+            return true;
+        }
+        return false;
+    }
+
     public function categoryGroupRelation($groupId){
         $countCategory = Category::where('group_id', $groupId)->first();
         if ($countCategory) {
@@ -98,9 +119,19 @@ class RelationController extends Controller
         return false;
     }
 
+
+
     public function productCategoryRelation($categoryId){
         $countProduct = Product::where('category_id', $categoryId)->first();
         if ($countProduct) {
+            return true;
+        }
+        return false;
+    }
+
+    public function storeDistributorRelation($distributorId){
+        $countStoreDist = StoreDistributor::where('distributor_id', $distributorId)->first();
+        if ($countStoreDist) {
             return true;
         }
         return false;
@@ -115,6 +146,22 @@ class RelationController extends Controller
         }
 
         return response()->json($countStore);
+    }
+
+    public function priceProductRelation($productId){
+        $countPrice = Price::where('product_id', $productId)->first();
+        if ($countPrice) {
+            return true;
+        }
+        return false;
+    }
+
+    public function productFocusProductRelation($productId){
+        $countProductFocus = ProductFocuses::where('product_id', $productId)->first();
+        if ($countProductFocus) {
+            return true;
+        }
+        return false;
     }
 
     public function salesEmployeeChangeRelation(Request $request){
@@ -221,12 +268,6 @@ class RelationController extends Controller
             return true;
         }
 
-        // CHECK IN POSM
-        $posmCount = Posm::where('user_id', $userId)->first();
-        if($posmCount){
-            return true;
-        }
-
         // CHECK IN SOH
         $sohCount = Soh::where('user_id', $userId)->first();
         if($sohCount){
@@ -239,7 +280,7 @@ class RelationController extends Controller
             return true;
         }
 
-        return response()->json(false);
+        return false;
 
     }
 
@@ -290,12 +331,6 @@ class RelationController extends Controller
         // COUNT IN PROMO ACTIVITY
         $promoActivity = PromoActivity::where('store_id', $storeId)->first();
         if($promoActivity){
-            return true;
-        }
-
-        // CHECK IN POSM
-        $posmCount = Posm::where('store_id', $storeId)->first();
-        if($posmCount){
             return true;
         }
 
@@ -351,7 +386,7 @@ class RelationController extends Controller
 
     }
 
-    public function newsAreaAppRelation($areaId){
+    public function newsDistrictRelation($districtId){
 
         $news = News::where('target_type', 'Area')->get();
 
@@ -360,7 +395,7 @@ class RelationController extends Controller
         foreach ($news as $data) {
 
             $array = explode(', ', $data->target_detail);
-            if(in_array($areaId, $array)){
+            if(in_array($districtId, $array)){
                 return true;
             }
 
@@ -388,10 +423,29 @@ class RelationController extends Controller
         return false;
     }
 
+    public function targetEmployeeRelation($userId){
+        $countTarget = Target::where('user_id', $userId)->first();
+
+        if ($countTarget) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function posmActivityStoreRelation($storeId){
         $countPosmActivity = PosmActivity::where('store_id', $storeId)->first();
 
         if ($countPosmActivity) {
+            return true;
+        }
+        return false;
+    }
+
+    public function targetStoreRelation($storeId){
+        $countTarget = Target::where('store_id', $storeId)->first();
+
+        if ($countTarget) {
             return true;
         }
         return false;
@@ -441,7 +495,7 @@ class RelationController extends Controller
 
     }
 
-    public function productKnowledgeAreaAppRelation($areaId){
+    public function productKnowledgeDistrictRelation($districtId){
 
         $productKnowledge = ProductKnowledge::where('target_type', 'Area')->get();
 
@@ -450,7 +504,7 @@ class RelationController extends Controller
         foreach ($productKnowledge as $data) {
 
             $array = explode(', ', $data->target_detail);
-            if(in_array($areaId, $array)){
+            if(in_array($districtId, $array)){
                 return true;
             }
 
@@ -531,7 +585,7 @@ class RelationController extends Controller
     // Check Relation
 
     public function checkUserRelation(Request $request){
-        if(($this->salesEmployeeRelation($request->userId) || $this->storeSpvRelation($request->userId) || $this->newsEmployeeRelation($request->userId) || $this->posmActivityEmployeeRelation($request->userId) || $this->newsAdminRelation($request->userId) || $this->productKnowledgeEmployeeRelation($request->userId) || $this->productKnowledgeAdminRelation($request->userId)) )
+        if(($this->salesEmployeeRelation($request->userId) || $this->storeSpvRelation($request->userId) || $this->newsEmployeeRelation($request->userId) || $this->posmActivityEmployeeRelation($request->userId) || $this->newsAdminRelation($request->userId) || $this->targetEmployeeRelation($request->userId) || $this->productKnowledgeEmployeeRelation($request->userId) || $this->productKnowledgeAdminRelation($request->userId)) )
         {
             return response()->json(true);
         }
@@ -540,7 +594,7 @@ class RelationController extends Controller
     }
 
     public function checkStoreRelation(Request $request){
-        if ( ($this->newsStoreRelation($request->storeId) || $this->salesStoreRelation($request->storeId) || $this->posmActivityStoreRelation($request->storeId) || $this->productKnowledgeStoreRelation($request->storeId)) ) {
+        if ( ($this->newsStoreRelation($request->storeId) || $this->salesStoreRelation($request->storeId) || $this->targetStoreRelation($request->storeId) || $this->posmActivityStoreRelation($request->storeId) || $this->productKnowledgeStoreRelation($request->storeId)) ) {
             return response()->json(true);
         }
 
@@ -548,7 +602,7 @@ class RelationController extends Controller
     }
 
     public function checkProductRelation(Request $request){
-        if ( $this->salesProductRelation($request->productId)) {
+        if ( $this->salesProductRelation($request->productId) || $this->priceProductRelation($request->productId) || $this->productFocusProductRelation($request->productId)) {
             return response()->json(true);
         }
         return response()->json(false);
@@ -564,6 +618,13 @@ class RelationController extends Controller
     
     public function checkGroupCompetitorRelation(Request $request){
         if ( $this->competitorActivityGroupRelation($request->groupCompetitorId) ) {
+            return response()->json(true);
+        }
+        return response()->json(false);
+    }
+
+    public function checkGroupProductRelation(Request $request){
+        if ( $this->groupGroupProductRelation($request->groupProductId) || $this->targetGroupProductRelation($request->groupProductId) ) {
             return response()->json(true);
         }
         return response()->json(false);
@@ -595,8 +656,8 @@ class RelationController extends Controller
         return response()->json(false);
     }
 
-    public function checkAreaAppRelation(Request $request){
-        if(( $this->storeAreaAppRelation($request->areaAppId) || $this->newsAreaAppRelation($request->areaAppId) || $this->productKnowledgeAreaAppRelation($request->areaAppId)) )
+    public function checkDistrictRelation(Request $request){
+        if(( $this->storeDistrictRelation($request->districtId) || $this->newsDistrictRelation($request->districtId) || $this->productKnowledgeDistrictRelation($request->districtId)) )
         {
             return response()->json(true);
         }
@@ -605,16 +666,7 @@ class RelationController extends Controller
     }
     
     public function checkAreaRelation(Request $request){
-        if(( $this->areaAppsAreaRelation($request->areaId) ) )
-        {
-            return response()->json(true);
-        }
-
-        return response()->json(false);
-    }  
-    
-    public function checkAccountTypeRelation(Request $request){
-        if(( $this->accountAccountTypeRelation($request->accountTypeId) ) )
+        if(( $this->districtAreaRelation($request->areaId) ) )
         {
             return response()->json(true);
         }
@@ -622,8 +674,26 @@ class RelationController extends Controller
         return response()->json(false);
     }
 
-    public function checkAccountRelation(Request $request){
-        if(( $this->storeAccountRelation($request->accountId) ) )
+    public function checkChannelRelation(Request $request){
+        if(( $this->subChannelChannelRelation($request->channelId) ) )
+        {
+            return response()->json(true);
+        }
+
+        return response()->json(false);
+    }
+
+    public function checkSubChannelRelation(Request $request){
+        if(( $this->storeSubChannelRelation($request->subChannelId) ) )
+        {
+            return response()->json(true);
+        }
+
+        return response()->json(false);
+    }
+
+    public function checkDistributorRelation(Request $request){
+        if(( $this->storeDistributorRelation($request->distributorId) ) )
         {
             return response()->json(true);
         }

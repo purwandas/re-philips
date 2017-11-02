@@ -127,6 +127,20 @@ function groupCompetitorRelation(groupCompetitorId) {
     }).responseText);
 }
 
+function groupProductRelation(groupProductId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/groupproductrelation',
+        dataType: 'json',
+        data: { groupProductId: groupProductId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
 function groupRelation(groupId) {
     return JSON.parse($.ajax({
         type: 'POST',
@@ -169,12 +183,12 @@ function categoryRelation(categoryId) {
     }).responseText);
 }
 
-function areaAppRelation(areaAppId) {
+function districtRelation(districtId) {
     return JSON.parse($.ajax({
         type: 'POST',
-        url: 'relation/areaapprelation',
+        url: 'relation/districtrelation',
         dataType: 'json',
-        data: { areaAppId: areaAppId },
+        data: { districtId: districtId },
         global: false,
         async: false,
         success: function (data) {
@@ -197,12 +211,12 @@ function areaRelation(areaId) {
     }).responseText);
 }
 
-function accountTypeRelation(accountTypeId) {
+function channelRelation(channelId) {
     return JSON.parse($.ajax({
         type: 'POST',
-        url: 'relation/accounttyperelation',
+        url: 'relation/channelrelation',
         dataType: 'json',
-        data: { accountTypeId: accountTypeId },
+        data: { channelId: channelId },
         global: false,
         async: false,
         success: function (data) {
@@ -211,12 +225,26 @@ function accountTypeRelation(accountTypeId) {
     }).responseText);
 }
 
-function accountRelation(accountId) {
+function subChannelRelation(subChannelId) {
     return JSON.parse($.ajax({
         type: 'POST',
-        url: 'relation/accountrelation',
+        url: 'relation/subchannelrelation',
         dataType: 'json',
-        data: { accountId: accountId },
+        data: { subChannelId: subChannelId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function distributorRelation(distributorId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/distributorrelation',
+        dataType: 'json',
+        data: { distributorId: distributorId },
         global: false,
         async: false,
         success: function (data) {

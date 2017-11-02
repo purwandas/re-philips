@@ -210,7 +210,7 @@
 				        <!-- BEGIN DM DETAILS -->				       
 				        <div id="dmContent" class="display-hide">
 					        <div class="caption padding-caption">
-	                        	<span class="caption-subject font-dark bold uppercase">DM AREA</span>
+	                        	<span id="areaTitle" class="caption-subject font-dark bold uppercase">DM AREA</span>
 	                        	<hr>
 	                        </div>
 
@@ -448,6 +448,14 @@
 			if(role == 'DM'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				document.getElementById('areaTitle').innerHTML = "DM AREA";
+				$('#dmContent').removeClass('display-hide');
+			}
+
+			if(role == 'Trainer'){
+				$('#area').attr('required', 'required');
+				setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
+				document.getElementById('areaTitle').innerHTML = "TRAINER AREA";
 				$('#dmContent').removeClass('display-hide');
 			}
 

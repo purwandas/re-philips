@@ -19,7 +19,8 @@ class CreateNewsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');            
             $table->string('from');            
             $table->string('subject');
-            $table->datetime('date');            
+            $table->datetime('date');
+            $table->string('filename');
             $table->text('content')->nullable();
             $table->enum('target_type', ['All', 'Area', 'Store', 'Promoter']);
             $table->string('target_detail')->nullable();

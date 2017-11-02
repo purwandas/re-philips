@@ -56,10 +56,11 @@
                             <th> Store Name 2 </th>
                             <th> Region </th>
                             <th> Area </th>
-                            <th> Area RE Apps </th>
+                            <th> District </th>
+                            <th> Global Channel </th>
                             <th> Channel </th>
-                            <th> Account </th>                            
-                            <th> Account Type</th>                            
+                            <th> Sub Channel</th>
+                            <th> Distributor</th>
                             <th> Supervisor </th>
                             <th> Options </th>                        
                         </tr>
@@ -105,16 +106,17 @@
                 {data: 'store_name_2', name: 'store_name_2'},
                 {data: 'region_name', name: 'region_name'},
                 {data: 'area_name', name: 'area_name'},
-                {data: 'areaapp_name', name: 'areaapp_name'},
-                {data: 'channel', name: 'channel'},
-                {data: 'account_name', name: 'account_name'},
-                {data: 'accounttype_name', name: 'accounttype_name'},
+                {data: 'district_name', name: 'district_name'},
+                {data: 'globalchannel_name', name: 'globalchannel_name'},
+                {data: 'channel_name', name: 'channel_name'},
+                {data: 'subchannel_name', name: 'subchannel_name'},
+                {data: 'distributor', name: 'distributor'},
                 {data: 'spv_name', name: 'spv_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [8]},
+                {"className": "dt-center", "targets": [12]},
             ],
             "order": [ [0, 'desc'] ],            
         });

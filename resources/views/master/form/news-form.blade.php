@@ -93,6 +93,16 @@
 				          </div>
 				        </div>
 
+						<div class="form-group">
+				          <label class="col-sm-2 control-label">Filename</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="filename" name="filename" class="form-control" value="{{ @$data->filename }}" placeholder="Input Filename" />
+				            </div>
+				          </div>
+				        </div>
+
 				        <div class="form-group">
 				        <label class="control-label col-md-2">Content
                                                 </label>
@@ -239,7 +249,7 @@
 	            }
 	        })); 
 
-	        $('#area').select2(setOptions('{{ route("data.areaapp") }}', 'Area', function (params) {            
+	        $('#area').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {

@@ -17,7 +17,7 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-        'store_id', 'store_name_1', 'store_name_2', 'longitude', 'latitude', 'channel', 'account_id', 'areaapp_id', 'user_id'
+        'store_id', 'store_name_1', 'store_name_2', 'longitude', 'latitude', 'channel', 'subchannel_id', 'district_id', 'user_id'
     ];
 
     /* Metode tambahan untuk model Branch Sport. */
@@ -27,14 +27,14 @@ class Store extends Model
      *
      */
 
-    public function account()
+    public function subChannel()
     {
-        return $this->belongsTo('App\Account', 'account_id');
+        return $this->belongsTo('App\SubChannel', 'subchannel_id');
     }
 
-    public function areaapp()
+    public function district()
     {
-        return $this->belongsTo('App\AreaApp', 'areaapp_id');
+        return $this->belongsTo('App\District', 'district_id');
     }
 
     public function user()
@@ -45,6 +45,11 @@ class Store extends Model
     public function employeeStores()
     {
         return $this->hasMany('App\EmployeeStore', 'store_id');
+    }
+
+    public function storeDistributors()
+    {
+        return $this->hasMany('App\StoreDistributor', 'store_id');
     }
 
     // Transactions
