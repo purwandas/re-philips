@@ -20,6 +20,35 @@ trait UploadTrait {
     }
 
     /**
+     * Trait for Image Upload With Name
+     *
+     * @param $image, $imageFolder
+     * @return string
+     */
+    public function imageUploadName($image, $imageFolder, $imageName)
+    {
+        $image_new = $imageName.'-'.time().'.'.$image->getClientOriginalExtension();
+        $image->move(public_path('image/'.$imageFolder), $image_new);
+
+        // Back result url asset + filename (For insert/update data in model)
+        return asset('image').'/'.$imageFolder.'/'.$image_new;
+    }
+
+    /**
+     * Trait for Image Upload With Name (For POSM upload multi images)
+     *
+     * @param $image, $imageFolder
+     * @return string
+     */
+    public function posmUploadName($image, $imageFolder, $imageName)
+    {
+        $image_new = $imageName.'-'.str_random(8).'.'.$image->getClientOriginalExtension();
+        $image->move(public_path('image/'.$imageFolder), $image_new);
+
+        return true;
+    }
+
+    /**
      * Trait for File Upload
      *
      * @param $image, $imageFolder
