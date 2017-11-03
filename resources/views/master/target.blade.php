@@ -29,7 +29,7 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-cubes font-blue"></i>
+                    <i class="fa fa-line-chart font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">TARGET</span>
                 </div>
             </div>
