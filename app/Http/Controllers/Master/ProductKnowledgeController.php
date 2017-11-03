@@ -377,7 +377,17 @@ class ProductKnowledgeController extends Controller
             $productKnowledgeRead->delete();
         }
 
-        $productKnowledge = ProductKnowledge::destroy($id);
+        $productKnowledge = ProductKnowledge::find($id);
+
+        if($productKnowledge->file != "") {
+            /* Delete File */
+            $filePath = explode('/', $productKnowledge->file);
+            $count = count($filePath);
+            $folderpath = $filePath[$count - 2];
+            File::deleteDirectory(public_path() . "/file/productknowledge/" . $folderpath);
+        }
+
+        $productKnowledge->destroy($id);
 
         return response()->json($id);
     }

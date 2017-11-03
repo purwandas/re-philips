@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Master;
 
 use App\Posm;
 use App\PosmActivityDetail;
+use Image;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -23,6 +24,123 @@ class PosmController extends Controller
     use StringTrait;
 
     public function store(Request $request){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if(!isset($request->photo)){
+            return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+        }
+
+        // Check posm header
+        $posmHeader = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
+
+        // Get how many photo
+        $photoLength = count($request->photo);
+
+        // SET IMAGES FOLDER
+        $folderPath = asset('image').'/posm/'.$this->getRandomPath();
+
+        if ($posmHeader) { // If header exist (update and/or create detail)
+
+            try {
+
+                DB::transaction(function () use ($request, $posmHeader, $user, $photoLength, $folderPath) {
+
+                    $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmHeader->id)->where('posm_id', $request->posm_id)->first();
+
+                    if ($posmActivityDetail) { // If data exist -> update
+
+                        $posmActivityDetail->update([
+                            'quantity' => $posmActivityDetail->quantity + $request->quantity,
+                        ]);
+
+                    } else { // If data didn't exist -> create
+
+                        PosmActivityDetail::create([
+                                'posmactivity_id' => $posmHeader->id,
+                                'posm_id' => $request->posm_id,
+                                'quantity' => $request->quantity,
+                                'photo' => $folderPath
+                            ]);
+
+                    }
+
+                });
+
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+            }
+
+            // Check posm activity header after insert
+            $posmActivityHeaderAfter = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
+            $posmActivityDetailAfter = PosmActivityDetail::where('posmactivity_id', $posmActivityHeaderAfter->id)->where('posm_id', $request->posm_id)->first();
+
+            // Get just folder name
+            $folderArray = explode('/', $posmActivityDetailAfter->photo );
+            $folderName = "posm/" . $folderArray[count($folderArray) - 1];
+
+
+            // Finally upload image
+            for($i=0;$i<$photoLength;$i++){
+
+                $this->posmUploadName($request->photo[$i], $folderName, 'POSM');
+
+            }
+
+
+            return response()->json(['status' => true, 'id_transaksi' => $posmHeader->id, 'message' => 'Data berhasil di input']);
+
+        }else { // If header didn't exist (create header & detail)
+
+            try {
+                DB::transaction(function () use ($request, $user, $photoLength, $folderPath) {
+
+                    // HEADER
+                    $transaction = PosmActivity::create([
+                                        'user_id' => $user->id,
+                                        'store_id' => $request->store_id,
+                                        'week' => Carbon::now()->weekOfMonth,
+                                        'date' => Carbon::now()
+                                    ]);
+
+                    // DETAILS
+                    PosmActivityDetail::create([
+                            'posmactivity_id' => $transaction->id,
+                            'posm_id' => $request->posm_id,
+                            'quantity' => $request->quantity,
+                            'photo' => $folderPath
+                        ]);
+
+                });
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+            }
+
+            // Check posm activity header after insert
+            $posmActivityHeaderAfter = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
+
+            // Get just folder name
+            $folderArray = explode('/',$folderPath );
+            $folderName = "posm/" . $folderArray[count($folderArray) - 1];
+
+            // Finally upload image
+            for($i=0;$i<$photoLength;$i++){
+
+                $this->posmUploadName($request->photo[$i], $folderName, 'POSM');
+
+            }
+
+            return response()->json(['status' => true, 'id_transaksi' => $posmActivityHeaderAfter->id, 'message' => 'Data berhasil di input']);
+
+        }
+
+        return response()->json('goal');
+
+    }
+
+    public function store2(Request $request){
+
+        return response()->json($request->photo[0]->getClientOriginalExtension());
 
         $user = JWTAuth::parseToken()->authenticate();
 
