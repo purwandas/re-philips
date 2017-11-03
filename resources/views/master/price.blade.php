@@ -29,7 +29,7 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-cubes font-blue"></i>
+                    <i class="fa fa-dollar font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">PRICE</span>
                 </div>
             </div>

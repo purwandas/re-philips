@@ -129,19 +129,19 @@
             </li>
             <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
                 <a href="{{ url('price') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-group"></i>
+                    <i class="fa fa-dollar"></i>
                     <span class="title">Price</span>
                 </a>
             </li>
             <li class="nav-item {{ Request::is('target') ? 'active open' : '' }}">
                 <a href="{{ url('target') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-group"></i>
+                    <i class="fa fa-line-chart"></i>
                     <span class="title">Target</span>
                 </a>
             </li>
             <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
                 <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-group"></i>
+                    <i class="fa fa-search-plus"></i>
                     <span class="title">Product Focus</span>
                 </a>
             </li>

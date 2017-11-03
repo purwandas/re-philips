@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\AttendanceTrait;
 use Auth;
 use App\Filters\UserFilters;
 use File;
@@ -23,6 +24,7 @@ class UserController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use AttendanceTrait;
 
     /**
      * Display a listing of the resource.
@@ -179,6 +181,17 @@ class UserController extends Controller
 
             $this->upload($request->photo_file, $imageFolder, $imageName);
 
+        }
+
+        /*
+         * Generate attendance from day promoter works till end of month
+         * (Just work for promoter group)
+         */
+
+        $promoterArray = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+        if(in_array($user->role, $promoterArray)){
+            $this->generateAttendace($user->id);
         }
         
         return response()->json(['url' => url('user')]);
