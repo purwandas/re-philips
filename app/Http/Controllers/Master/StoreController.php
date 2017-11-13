@@ -43,6 +43,20 @@ class StoreController extends Controller
                     ->join('users', 'stores.user_id', '=', 'users.id')
                     ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
 
+        foreach ($data as $detail){
+            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
+            $dist = Distributor::whereIn('id', $distIds)->get();
+
+            $detail['distributor'] = '';
+            foreach ($dist as $distDetail){
+                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
+
+                if($distDetail->id != $dist->last()->id){
+                    $detail['distributor'] .= ', ';
+                }
+            }
+        }
+
         return $this->makeTable($data);
     }
 
@@ -57,22 +71,6 @@ class StoreController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
-                ->addColumn('distributor', function ($item) {
-
-                    $distIds = StoreDistributor::where('store_id', $item->id)->pluck('distributor_id')->toArray();
-                    $result = "";
-
-                    foreach($distIds as $distId){
-                        $dist = Distributor::find($distId);
-                        $result .= '(' . $dist->code . ') ' . $dist->name;
-                        if($distId != end($distIds)){
-                            $result .= ', ';
-                        }
-                    }
-
-                    return $result;
-
-                })
                 ->addColumn('action', function ($item) {
 
                     return 

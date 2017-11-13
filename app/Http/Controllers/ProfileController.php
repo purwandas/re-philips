@@ -8,6 +8,7 @@ use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use Auth;
 use File;
+use Illuminate\Support\Collection;
 
 class ProfileController extends Controller
 {
@@ -87,4 +88,5 @@ class ProfileController extends Controller
                 'url' => url('profile'),
             ]);
     }
+
 }
