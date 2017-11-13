@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\InitAttendance',
         'App\Console\Commands\GetInfo',
+        'App\Console\Commands\SalesHistory',
     ];
 
     /**

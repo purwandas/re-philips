@@ -27,22 +27,22 @@ function triggerReset (arrayOfData) {
         element.DataTable().clear();
         element.DataTable().destroy();
     }
-    element.dataTable({
-        "fnCreatedRow": function (nRow, data) {
-            $(nRow).attr('class', data.id);
-        },
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-        },
-        "rowId": "id",
-        "columns": tableColumns,
-        "columnDefs": columnDefs,
-        "order": order,
-    })
+    // element.dataTable({
+    //     "fnCreatedRow": function (nRow, data) {
+    //         $(nRow).attr('class', data.id);
+    //     },
+    //     "processing": true,
+    //     "serverSide": true,
+    //     "ajax": {
+    //         url: url,
+    //         type: 'POST',
+    //         dataType: 'json',
+    //     },
+    //     "rowId": "id",
+    //     "columns": tableColumns,
+    //     "columnDefs": columnDefs,
+    //     "order": order,
+    // })
 }
 
 // Set the selected value to key in filter

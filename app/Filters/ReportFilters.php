@@ -25,10 +25,17 @@ class ReportFilters extends QueryFilters
         });
     }
 
-    // Ordering by area app
-    public function byAreaApp($value) {
-        return $this->builder->whereHas('sellIn.store.areaapp', function ($query) use ($value) {
-            return $query->where('area_apps.id',$value);
+//    // Ordering by area app
+//    public function byAreaApp($value) {
+//        return $this->builder->whereHas('sellIn.store.areaapp', function ($query) use ($value) {
+//            return $query->where('area_apps.id',$value);
+//        });
+//    }
+
+    // Ordering by district
+    public function byDistrict($value) {
+        return $this->builder->whereHas('sellIn.store.district', function ($query) use ($value) {
+            return $query->where('districts.id',$value);
         });
     }
 

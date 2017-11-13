@@ -1,18 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Reports;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class Area extends Model
+class HistorySellIn extends Model
 {
     use SoftDeletes;
 
     //
     protected $fillable = [
-        'name', 'region_id', 
+        'user_id', 'month', 'year', 'details'
     ];
 
     /**
@@ -29,14 +29,9 @@ class Area extends Model
      *
      */
 
-	public function region()
+	public function user()
     {
-        return $this->belongsTo('App\Region', 'region_id');
-    }
-
-    public function districts()
-    {
-        return $this->hasMany('App\District', 'area_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
 	/**
