@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\SellIn;
 use App\SellInDetail;
+use App\SummarySellIn;
 use App\User;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
@@ -215,6 +216,11 @@ class SalesHistory extends Command
                     /* Delete data that has been inserted to history */
                     $sellIn = SellIn::where('id', $detail->id);
                     $sellInDetails =  SellInDetail::where('sellin_id', $sellIn->first()->id);
+
+                    /* Delete summary table */
+                    $summary = SummarySellIn::where('sellin_detail_id', $sellInDetails->first()->id);
+                    $summary->delete();
+
                     $sellInDetails->delete();
                     $sellIn->delete();
 

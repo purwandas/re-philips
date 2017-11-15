@@ -9,6 +9,7 @@ use App\ProductFocuses;
 use App\Region;
 use App\Reports\HistorySellIn;
 use App\StoreDistributor;
+use App\SummarySellIn;
 use App\TrainerArea;
 use App\User;
 use Illuminate\Http\Request;
@@ -75,7 +76,7 @@ class ReportController extends Controller
 
     public function sellInData(Request $request, SellinFilters $filters){
 
-        // Check data live atau history
+        // Check data summary atau history
         $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
@@ -83,104 +84,32 @@ class ReportController extends Controller
 
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SellInDetail::filter($filters);
+            $data = SummarySellIn::all();
 
-            $data = $data->where('sell_in_details.deleted_at', null)
-                ->join('sell_ins', 'sell_in_details.sellin_id', '=', 'sell_ins.id')
-                ->join('stores', 'stores.id', '=', 'sell_ins.store_id')
-                ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
-                ->join('districts', 'districts.id', '=', 'stores.district_id')
-                ->join('areas', 'areas.id', '=', 'districts.area_id')
-                ->join('regions', 'regions.id', '=', 'areas.region_id')
-                ->join('users', 'sell_ins.user_id', '=', 'users.id')
-                ->join('products', 'sell_in_details.product_id', '=', 'products.id')
-                ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->join('groups', 'categories.group_id', '=', 'groups.id')
-                ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
-                ->join('users as supervisor', 'stores.user_id', '=', 'supervisor.id')
-                ->join('prices', function ($join) {
-                    $join->on('prices.product_id', '=', 'products.id');
-                    $join->on('prices.globalchannel_id', '=', 'global_channels.id');
-                })
-                ->select('sell_in_details.*', 'regions.name as region', 'areas.id as area_id', 'areas.name as area',
-                    'districts.name as district', 'stores.store_name_1', 'stores.store_name_2', 'stores.id as storeId',
-                    'stores.store_id', 'channels.name as channel', 'sub_channels.name as sub_channel', 'users.role as role',
-                    'users.name as promoter_name', 'users.nik', 'sell_ins.date as date', 'group_products.name as group',
-                    'categories.name as category', 'prices.price as unit_price', 'supervisor.name as spv_name', 'sell_ins.week',
-                    'products.name as product_name', 'products.model as product_model', 'products.variants as product_variants')->get();
+            $filter = $data;
 
-            /* Fetch some information about models */
-            foreach ($data as $detail) {
-
-                /* Distributor */
-                $distIds = StoreDistributor::where('store_id', $detail->storeId)->pluck('distributor_id');
-                $dist = Distributor::whereIn('id', $distIds)->get();
-
-                $detail['distributor_code'] = '';
-                $detail['distributor_name'] = '';
-                foreach ($dist as $distDetail) {
-                    $detail['distributor_code'] .= $distDetail->code;
-                    $detail['distributor_name'] .= $distDetail->name;
-
-                    if ($distDetail->id != $dist->last()->id) {
-                        $detail['distributor_code'] .= ', ';
-                        $detail['distributor_name'] .= ', ';
-                    }
-                }
-
-                /* DM */
-                $dmIds = DmArea::where('area_id', $detail->area_id)->pluck('user_id');
-                $dm = User::whereIn('id', $dmIds)->get();
-
-                $detail['dm_name'] = '';
-                foreach ($dm as $dmDetail) {
-                    $detail['dm_name'] .= $dmDetail->name;
-
-                    if ($dmDetail->id != $dm->last()->id) {
-                        $detail['dm_name'] .= ', ';
-                    }
-                }
-
-                /* Trainer */
-                $trIds = TrainerArea::where('area_id', $detail->area_id)->pluck('user_id');
-                $tr = User::whereIn('id', $trIds)->get();
-
-                $detail['trainer_name'] = '';
-                foreach ($tr as $trDetail) {
-                    $detail['trainer_name'] .= $trDetail->name;
-
-                    if ($trDetail->id != $tr->last()->id) {
-                        $detail['trainer_name'] .= ', ';
-                    }
-                }
-
-                /* Variant */
-                $detail['model'] = $detail['product_model'] . '/' . $detail['product_variants'];
-
-                /* Value */
-                $detail['value'] = $detail['quantity'] * $detail['unit_price'];
-
-                /* Value - Product Focus */
-                $detail['value_pf_mr'] = '';
-                $detail['value_pf_tr'] = '';
-                $detail['value_pf_ppe'] = '';
-
-                $productFocus = ProductFocuses::where('product_id', $detail->product_id)->get();
-                foreach ($productFocus as $productFocusDetail) {
-                    if ($productFocusDetail->type == 'Modern Retail') {
-                        $detail['value_pf_mr'] = $detail->value;
-                    } else if ($productFocusDetail->type == 'Traditional Retail') {
-                        $detail['value_pf_tr'] = $detail->value;
-                    } else if ($productFocusDetail->type == 'PPE') {
-                        $detail['value_pf_ppe'] = $detail->value;
-                    }
-                }
-
+            /* If filter */
+            if($request['byRegion']){
+                $filter = $data->where('region_id', $request['byRegion']);
             }
 
-            return Datatables::of($data)
+            if($request['byArea']){
+                $filter = $data->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('storeId', $request['byStore']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            return Datatables::of($filter->all())
             ->make(true);
 
         }else{ // Fetch data from history
@@ -205,7 +134,7 @@ class ReportController extends Controller
                         $collection['region_id'] = $detail->region_id;
                         $collection['area_id'] = $detail->area_id;
                         $collection['district_id'] = $detail->district_id;
-                        $collection['store_id'] = $detail->storeId;
+                        $collection['storeId'] = $detail->storeId;
                         $collection['user_id'] = $detail->user_id;
                         $collection['week'] = $detail->week;
                         $collection['distributor_code'] = $detail->distributor_code;
@@ -231,6 +160,10 @@ class ReportController extends Controller
                         $collection['value_pf_mr'] = $transaction->value_pf_mr;
                         $collection['value_pf_tr'] = $transaction->value_pf_tr;
                         $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
+                        $collection['role'] = $detail->role;
+                        $collection['spv_name'] = $detail->spv_name;
+                        $collection['dm_name'] = $detail->dm_name;
+                        $collection['trainer_name'] = $detail->trainer_name;
 
                         $historyData->push($collection);
 

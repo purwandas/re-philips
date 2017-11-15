@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\SellIn;
+use App\SellInDetail;
+use App\SummarySellIn;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -9,10 +13,12 @@ use App\Filters\ProductFocusFilters;
 use App\Traits\StringTrait;
 use DB;
 use App\ProductFocuses;
+use App\Traits\SummaryTrait;
 
 class ProductFocusController extends Controller
 {
     use StringTrait;
+    use SummaryTrait;
 
     /**
      * Display a listing of the resource.
@@ -88,7 +94,12 @@ class ProductFocusController extends Controller
                     ->where('type', $request['type']);
 
         if($productFocus->count() == 0){
-            ProductFocuses::create($request->all());
+            $newProductFocus = ProductFocuses::create($request->all());
+
+            /* Summary Change */
+            $summary['product_id'] = $newProductFocus->product_id;
+            $summary['type'] = $newProductFocus->type;
+            $this->changeSummary($summary, 'change');
         }
 
         return response()->json(['url' => url('/productfocus')]);
@@ -132,7 +143,24 @@ class ProductFocusController extends Controller
             'type' => 'required'
             ]);
 
-        $productFocus = ProductFocuses::find($id)->update($request->all());
+        $productFocus = ProductFocuses::find($id);
+
+        $productFocusCount = ProductFocuses::where('product_id', $request['product_id'])->where('type', $request['type'])->count();
+        if($productFocusCount > 0){
+            return;
+        }
+
+        /* Summary Delete */
+        $summary['product_id'] = $productFocus->product_id;
+        $summary['type'] = $productFocus->type;
+        $this->changeSummary($summary, 'delete');
+
+        $productFocus->update($request->all());
+
+        /* Summary Change */
+        $summary['product_id'] = $productFocus->product_id;
+        $summary['type'] = $productFocus->type;
+        $this->changeSummary($summary, 'change');
 
         return response()->json(
             ['url' => url('/productfocus'), 'method' => $request->_method]);
@@ -146,8 +174,16 @@ class ProductFocusController extends Controller
      */
     public function destroy($id)
     {
-        $productFocus = ProductFocuses::destroy($id);
+        $productFocus = ProductFocuses::find($id);
+
+        /* Summary Delete */
+        $summary['product_id'] = $productFocus->product_id;
+        $summary['type'] = $productFocus->type;
+        $this->changeSummary($summary, 'delete');
+
+        $productFocus->delete();
 
         return response()->json($id);
     }
+
 }
