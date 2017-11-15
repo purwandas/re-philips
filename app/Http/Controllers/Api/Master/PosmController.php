@@ -321,4 +321,13 @@ class PosmController extends Controller
 
     	return response()->json($data);
     }
+
+    public function allNoParam()
+    {
+    	$data = Posm::join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+    				   ->select('posms.id', 'posms.name')
+    				   ->get();
+
+    	return response()->json($data);
+    }
 }

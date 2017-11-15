@@ -50,7 +50,7 @@ class PromoterController extends Controller
 
     public function approval(Request $request, $param){
 
-        $attendances = Attendance::where('user_id', $request->id)->where('date', Carbon::parse($request->date)->format('Y-m-d'))->first();
+        $attendances = Attendance::where('id', $request->attendance_id)->first();
         $message = "";
 
         if($param == 1){

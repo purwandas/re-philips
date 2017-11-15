@@ -40,6 +40,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/competitor/{param}', 'Api\Master\GroupCompetitorController@all');
 	Route::get('/competitor/{param}/{param2}', 'Api\Master\GroupCompetitorController@allCategory');
 	Route::get('/posm/{param}', 'Api\Master\PosmController@all');
+	Route::get('/posm', 'Api\Master\PosmController@allNoParam');
 
 	/**
      * User Module(s)

@@ -116,6 +116,10 @@
                                 <th> Value PF MR </th>
                                 <th> Value PF TR </th>
                                 <th> Value PF PPE </th>
+                                <th> Role </th>
+                                <th> SPV/ARO Name </th>
+                                <th> DM Name </th>
+                                <th> Trainer </th>
                             </tr>
                             </thead>
                         </table>
@@ -170,6 +174,10 @@
                             {data: 'value_pf_mr', name: 'value_pf_mr'},
                             {data: 'value_pf_tr', name: 'value_pf_tr'},
                             {data: 'value_pf_ppe', name: 'value_pf_ppe'},
+                            {data: 'role', name: 'role'},
+                            {data: 'spv_name', name: 'spv_name'},
+                            {data: 'dm_name', name: 'dm_name'},
+                            {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
         var paramFilter = ['sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\ProductFocuses;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -9,10 +10,16 @@ use App\Filters\PriceFilters;
 use App\Traits\StringTrait;
 use DB;
 use App\Price;
+use App\SellIn;
+use App\SellInDetail;
+use App\SummarySellIn;
+use Carbon\Carbon;
+use App\Traits\SummaryTrait;
 
 class PriceController extends Controller
 {
     use StringTrait;
+    use SummaryTrait;
 
     /**
      * Display a listing of the resource.
@@ -86,13 +93,27 @@ class PriceController extends Controller
             'price' => 'required|numeric'
             ]);
 
+//        return $this->changeSellInSummary($request['product_id'], $request['globalchannel_id'], $request['price']);
+
         $price = Price::where('product_id', $request['product_id'])
                     ->where('globalchannel_id', $request['globalchannel_id']);
 
         if($price->count() > 0){
             $price->update(['price'=>$request->price]);
+
+            /* Summary Change */
+            $summary['product_id'] = $request['product_id'];
+            $summary['globalchannel_id'] = $request['globalchannel_id'];
+            $summary['price'] = $request['price'];
+            $this->changeSummary($summary, 'change');
         }else{
-            Price::create($request->all());
+            $price = Price::create($request->all());
+
+            /* Summary Change */
+            $summary['product_id'] = $price->product_id;
+            $summary['globalchannel_id'] = $price->globalchannel_id;
+            $summary['price'] = $price->price;
+            $this->changeSummary($summary, 'change');
         }
 
         return response()->json(['url' => url('/price')]);
@@ -137,7 +158,24 @@ class PriceController extends Controller
             'price' => 'required|numeric'
             ]);
 
-        $price = Price::find($id)->update($request->all());
+        $price = Price::find($id);
+
+        $priceCount = Price::where('product_id', $request['product_id'])
+                    ->where('globalchannel_id', $request['globalchannel_id'])
+                    ->where('id', '<>', $id)
+                    ->count();
+
+        if($priceCount > 0){
+            return;
+        }
+
+        $price->update($request->all());
+
+        /* Summary Change */
+        $summary['product_id'] = $request['product_id'];
+        $summary['globalchannel_id'] = $request['globalchannel_id'];
+        $summary['price'] = $request['price'];
+        $this->changeSummary($summary, 'change');
 
         return response()->json(
             ['url' => url('/price'), 'method' => $request->_method]);
@@ -151,8 +189,17 @@ class PriceController extends Controller
      */
     public function destroy($id)
     {
-        $price = Price::destroy($id);
+        $price = Price::find($id);
+
+        /* Summary Delete */
+        $summary['product_id'] = $price->product_id;
+        $summary['globalchannel_id'] = $price->globalchannel_id;
+        $summary['price'] = $price->price;
+        $this->changeSummary($summary, 'delete');
+
+        $price->delete();
 
         return response()->json($id);
     }
+
 }
