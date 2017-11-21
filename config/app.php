@@ -185,6 +185,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         'Toin0u\Geotools\GeotoolsServiceProvider',
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 

@@ -64,7 +64,7 @@ class AttendanceController extends Controller
 
             // Check distance if above 250 meter(s)
             if($distance > 250){
-                return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari tempat absensi'], 500);
+                return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari tempat absensi'], 200);
             }
 
             // If promoter still didn't do check out
@@ -74,7 +74,7 @@ class AttendanceController extends Controller
                 $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
                 if($attendanceDetail->check_out == null){
-                    return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 500);
+                    return response()->json(['status' => false, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
                 }
 
             }
