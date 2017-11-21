@@ -66,9 +66,9 @@ class SalesController extends Controller
 
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = '';
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = '';
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = '';
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
 
                                 $summary->update([
                                     'quantity' => $summary->quantity + $data['quantity'],
@@ -122,9 +122,9 @@ class SalesController extends Controller
                                 }
 
                                 /* Value - Product Focus */
-                                $value_pf_mr = '';
-                                $value_pf_tr = '';
-                                $value_pf_ppe = '';
+                                $value_pf_mr = 0;
+                                $value_pf_tr = 0;
+                                $value_pf_ppe = 0;
 
                                 $productFocus = ProductFocuses::where('product_id', $product->id)->get();
                                 foreach ($productFocus as $productFocusDetail) {
@@ -269,9 +269,9 @@ class SalesController extends Controller
                             }
 
                             /* Value - Product Focus */
-                            $value_pf_mr = '';
-                            $value_pf_tr = '';
-                            $value_pf_ppe = '';
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
 
                             $productFocus = ProductFocuses::where('product_id', $product->id)->get();
                             foreach ($productFocus as $productFocusDetail) {

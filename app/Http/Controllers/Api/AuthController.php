@@ -53,7 +53,7 @@ class AuthController extends Controller
 		$store = Store::whereIn('id', $storeIds)->select('id', 'store_id', 'store_name_1', 'longitude', 'latitude')->get();
 
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'role' => $user->role, 'is_promoter' => $isPromoter, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){

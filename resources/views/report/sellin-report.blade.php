@@ -84,6 +84,12 @@
                             <i class="fa fa-map-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Sell In</span>
                         </div>
+                        <div class="actions" style="text-align: left">
+                            <a id="export-button" href="util/export-sellin/" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL ALT </a>
+                        </div>
                     </div>
 
                     <div class="portlet-body">
@@ -138,6 +144,7 @@
 
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
@@ -180,7 +187,9 @@
                             {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order];
+        var exportButton = '#export';
+
+        var paramFilter = ['sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton];
         var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
@@ -326,6 +335,49 @@
 
             // Set Table Content
             $('#dataContent').removeClass('display-hide');
+
+        });
+
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-sellin',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
 
         });
 

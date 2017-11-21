@@ -151,9 +151,9 @@ class SalesHistory extends Command
                         $price = Price::where('product_id', $product->id)->first();
 
                         /* Value - Product Focus */
-                        $value_pf_mr = '';
-                        $value_pf_tr = '';
-                        $value_pf_ppe = '';
+                        $value_pf_mr = 0;
+                        $value_pf_tr = 0;
+                        $value_pf_ppe = 0;
 
                         $productFocus = ProductFocuses::where('product_id', $product->id)->get();
                         foreach ($productFocus as $productFocusDetail) {

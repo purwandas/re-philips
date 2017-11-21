@@ -125,6 +125,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/user/{id}', ['uses'=>'UtilController@getUser']);
     Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);
     Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
+
+
+    /**
+     * Export
+     */
+
+    Route::post('util/export-sellin', ['uses'=>'Master\ExportController@exportSellIn']);
+    Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
     
 });
 

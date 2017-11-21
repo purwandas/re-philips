@@ -1,4 +1,5 @@
 var filters = {};
+var data = {};
 
 function showFilter() {
     console.log(this.filters);
@@ -87,6 +88,23 @@ function filteringReport(arrayOfData) {
                 data: self.moreParamsPost,
                 type: 'POST',
                 dataType: 'json',
+                dataSrc: function(result){
+
+                    if(typeof arrayOfData[6] !== 'undefined') {
+                        // export option exist
+
+                        var count = result.data.length;
+
+                        if(count > 0){
+                            $(arrayOfData[6]).removeAttr('disabled');
+                        }else{
+                            $(arrayOfData[6]).attr('disabled','disabled');
+                        }
+                    }
+
+                    data = result.data;
+                    return result.data;
+                }
             },
             "rowId": "id",
             "columns": tableColumns,

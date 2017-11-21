@@ -77,3 +77,41 @@ window.dateTimePickerChange = function(element, formParam){
 
     }
 }
+
+// Format "December 2017" -> "[12, 2017]"
+function monthYearFormat(text){
+
+    var splited = text.split(' ');
+    var array_temp = [];
+
+    if(splited[0] == 'Januari' || splited[0] == 'January'){
+        array_temp[0] = 1;
+    }else if(splited[0] == 'Februari' || splited[0] == 'February'){
+        array_temp[0] = 2;
+    }else if(splited[0] == 'Maret' || splited[0] == 'March'){
+        array_temp[0] = 3;
+    }else if(splited[0] == 'April' || splited[0] == 'April'){
+        array_temp[0] = 4;
+    }else if(splited[0] == 'Mei' || splited[0] == 'May'){
+        array_temp[0] = 5;
+    }else if(splited[0] == 'Juni' || splited[0] == 'June'){
+        array_temp[0] = 6;
+    }else if(splited[0] == 'Juli' || splited[0] == 'July'){
+        array_temp[0] = 7;
+    }else if(splited[0] == 'Agustus' || splited[0] == 'August'){
+        array_temp[0] = 8;
+    }else if(splited[0] == 'September' || splited[0] == 'September'){
+        array_temp[0] = 9;
+    }else if(splited[0] == 'Oktober' || splited[0] == 'October'){
+        array_temp[0] = 10;
+    }else if(splited[0] == 'November' || splited[0] == 'November'){
+        array_temp[0] = 11;
+    }else if(splited[0] == 'Desember' || splited[0] == 'December'){
+        array_temp[0] = 12;
+    }
+
+    array_temp[1] = splited[1];
+
+    return array_temp;
+
+}
