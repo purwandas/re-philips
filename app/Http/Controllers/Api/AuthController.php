@@ -52,8 +52,21 @@ class AuthController extends Controller
 		$storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 		$store = Store::whereIn('id', $storeIds)->select('id', 'store_id', 'store_name_1', 'longitude', 'latitude')->get();
 
+		// Generate access for mobile
+        $access = "";
+
+        if($user->role == 'Promoter' || $user->role == 'Promoter Additional' || $user->role == 'Promoter Event' || $user->role == 'Demonstrator MCC' || $user->role == 'Demonstrator DA' || $user->role == 'ACT'  || $user->role == 'PPE' || $user->role == 'BDT' || $user->role == 'Salesman Explorer' || $user->role == 'SMD' || $user->role == 'SMD Coordinator' || $user->role == 'HIC' || $user->role == 'HIE' || $user->role == 'SMD Additional' || $user->role == 'ASC'){
+            $access = "Promoter";
+        }
+
+        if($user->role == 'Salesman Explorer') $access = "Salesman";
+        if($user->role == 'Supervisor') $access = "Supervisor";
+        if($user->role == 'DM') $access = "DM";
+        if($user->role == 'RSM') $access = "RSM";
+        if($user->role == 'REM') $access = "REM";
+
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){
