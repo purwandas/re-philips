@@ -85,8 +85,6 @@
                             <span class="caption-subject font-blue bold uppercase">Sell In</span>
                         </div>
                         <div class="actions" style="text-align: left">
-                            <a id="export-button" href="util/export-sellin/" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
                             <a id="export" class="btn green-dark" >
                                 <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL ALT </a>
                         </div>

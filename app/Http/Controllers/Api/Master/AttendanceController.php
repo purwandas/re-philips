@@ -48,9 +48,9 @@ class AttendanceController extends Controller
         if($param == 1){ /* CHECK IN */
 
             if($content['is_store'] == 1){
-                $location = Store::find($content['id']);
+                $location = Store::where('id', $content['id'])->first();
             }else if($content['is_store'] == 0){
-                $location = Place::find($content['id']);
+                $location = Place::where('id', $content['id'])->first();
             }
 
             // Return if location longi and lati was not set
@@ -114,7 +114,7 @@ class AttendanceController extends Controller
 
             // If promoter hasn't data
             if($attendanceDetailsCount == 0){
-                return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 500);
+                return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 200);
             }
 
             // Get last attendance detail
@@ -124,7 +124,7 @@ class AttendanceController extends Controller
             if($attendanceDetailsCount > 0){
 
                 if($attendanceDetail->check_out != null){
-                    return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 500);
+                    return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 200);
                 }
 
             }
@@ -153,10 +153,10 @@ class AttendanceController extends Controller
 
             // Check if promoter has approvement
             if($attendanceHeader->status == 'Sakit'){
-                return response()->json(['status' => false, 'message' => 'Status anda (sakit) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 500);
+                return response()->json(['status' => false, 'message' => 'Status anda (sakit) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 200);
             }
             if($attendanceHeader->status == 'Izin'){
-                return response()->json(['status' => false, 'message' => 'Status anda (izin) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 500);
+                return response()->json(['status' => false, 'message' => 'Status anda (izin) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 200);
             }
 
             // If promoter has attendance data
@@ -166,7 +166,7 @@ class AttendanceController extends Controller
                 $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
                 if($attendanceDetail->check_out == null){
-                    return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 500);
+                    return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
                 }
 
             }
@@ -196,10 +196,10 @@ class AttendanceController extends Controller
 
             // Check if promoter has approvement
             if($attendanceHeader->status == 'Sakit'){
-                return response()->json(['status' => false, 'message' => 'Status anda (sakit) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 500);
+                return response()->json(['status' => false, 'message' => 'Status anda (sakit) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 200);
             }
             if($attendanceHeader->status == 'Izin'){
-                return response()->json(['status' => false, 'message' => 'Status anda (izin) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 500);
+                return response()->json(['status' => false, 'message' => 'Status anda (izin) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 200);
             }
 
             // If promoter has attendance data
@@ -209,7 +209,7 @@ class AttendanceController extends Controller
                 $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
                 if($attendanceDetail->check_out == null){
-                    return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 500);
+                    return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
                 }
 
             }
@@ -239,12 +239,12 @@ class AttendanceController extends Controller
 
             // Check if promoter has already in off status
             if($attendanceHeader->status == 'Off'){
-                return response()->json(['status' => false, 'message' => 'Anda sudah berada dalam status off(libur)'], 500);
+                return response()->json(['status' => false, 'message' => 'Anda sudah berada dalam status off(libur)'], 200);
             }
 
             // Promoter can set status to 'Off' just if in 'Alpha'
             if($attendanceHeader->status != 'Alpha' && $attendanceHeader->status != 'Pending Sakit' && $attendanceHeader->status != 'Pending Izin'){
-                return response()->json(['status' => false, 'message' => 'Maaf, anda tidak bisa mengganti status menjadi off(libur)'], 500);
+                return response()->json(['status' => false, 'message' => 'Maaf, anda tidak bisa mengganti status menjadi off(libur)'], 200);
             }
 
             try {

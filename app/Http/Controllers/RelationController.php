@@ -525,7 +525,7 @@ class RelationController extends Controller
     }
 
     public function competitorActivityGroupRelation($groupCompetitorId){
-        $countActivity = CompetitorActivityDetail::where('groupcompetitor_id', $groupCompetitorId)->first();
+        $countActivity = CompetitorActivity::where('groupcompetitor_id', $groupCompetitorId)->first();
         if($countActivity){
             return true;
         }
