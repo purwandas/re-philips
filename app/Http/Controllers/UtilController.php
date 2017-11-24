@@ -12,6 +12,8 @@ use App\Store;
 use App\AreaApp;
 use App\EmployeeStore;
 use DB;
+use Activity;
+use Auth;
 
 class UtilController extends Controller
 {
@@ -120,5 +122,15 @@ class UtilController extends Controller
                     ->get();
 
         return response()->json($data);
+    }
+
+    public function getUserOnline(){
+
+        $users = Activity::users()->where('user_id', '<>', Auth::user()->id)->orderByUsers('name');
+
+        return response()->json([
+            'count' => $users->count(),
+            'users' => $users->get(),
+        ]);
     }
 }

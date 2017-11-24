@@ -365,6 +365,9 @@ class UserController extends Controller
             $folderpath = $imagePath[$count - 2];
             File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
 
+        }
+
+        if($user->photo != null && $request->photo_file != null){
             /* Upload updated image */
             $imagePath = explode('/', $user->photo);
             $count = count($imagePath);
