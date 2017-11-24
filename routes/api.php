@@ -69,6 +69,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/place-nearby', 'Api\Master\PlaceController@nearby');
 	Route::get('/check-attendance', 'Api\Master\PromoterController@checkAttendance');
 	Route::get('/check-not-attendance', 'Api\Master\PromoterController@checkNotAttendance');
+	Route::get('/get-check-in', 'Api\Master\AttendanceController@getCheckIn');
 
 	/**
      * Other(s)

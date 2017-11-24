@@ -12,6 +12,7 @@ use App\Traits\StringTrait;
 use DB;
 use App\Store;
 use App\EmployeeStore;
+use App\User;
 
 class StoreController extends Controller
 {    
@@ -40,8 +41,11 @@ class StoreController extends Controller
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->join('users', 'stores.user_id', '=', 'users.id')
-                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
+//                    ->join('users', 'stores.user_id', '=', 'users.id')
+//                    ->where(function($query) {
+//                        return $query->orWhere('stores.user_id', null);
+//                    })
+                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name')->get();
 
         foreach ($data as $detail){
             $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
@@ -71,6 +75,15 @@ class StoreController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
+                ->editColumn('spv_name', function ($item) {
+
+                    if($item->user_id == null){
+                        return "";
+                    }
+
+                    return User::find($item->user_id)->first()->name;
+
+                })
                 ->addColumn('action', function ($item) {
 
                     return 
@@ -108,7 +121,6 @@ class StoreController extends Controller
             'latitude' => 'number',
             'subchannel_id' => 'required',
             'district_id' => 'required',
-            'user_id' => 'required'
         ]);
 
         $store = Store::create($request->all());

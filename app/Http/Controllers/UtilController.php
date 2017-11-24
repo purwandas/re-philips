@@ -62,9 +62,19 @@ class UtilController extends Controller
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->join('users', 'stores.user_id', '=', 'users.id')
+//                    ->join('users', 'stores.user_id', '=', 'users.id')
                     ->whereIn('stores.id', $empStoreIds)
-                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
+                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name')->get();
+
+        foreach ($store as $item){
+
+            if($item->user_id == null){
+                $item['spv_name'] = "";
+            }else{
+                $item['spv_name'] = $item->user->name;
+            }
+
+        }
 
         return response()->json($store);
     }

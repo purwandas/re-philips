@@ -40,7 +40,7 @@ class ProductKnowledgeController extends Controller
         }
 
         $data = ProductKnowledge::where('target_type', 'All')->where('type', $type)
-    				->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
+    				->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.filename', 'product_knowledges.file')
     				->get();
 
         // If user was in promoter group
@@ -60,7 +60,7 @@ class ProductKnowledgeController extends Controller
 
             /* MERGER Data All dan Data Area */
             $dataAreaSelect = ProductKnowledge::whereIn('id', $areaArray)->where('type', $type)
-                                ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
+                                ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.filename', 'product_knowledges.file')
                 ->get();
 
             $data = $data->merge($dataAreaSelect);
@@ -79,7 +79,7 @@ class ProductKnowledgeController extends Controller
 
             /* MERGER Data All dan Data Store */
             $dataStoreSelect = ProductKnowledge::whereIn('id', $storeArray)->where('type', $type)
-                                ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
+                                ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.filename', 'product_knowledges.file')
                 ->get();
 
             $data = $data->merge($dataStoreSelect);
@@ -96,7 +96,7 @@ class ProductKnowledgeController extends Controller
 
             /* MERGER Data All dan Data Promoter */
             $dataPromoterSelect = ProductKnowledge::whereIn('id', $promoterArray)->where('type', $type)
-                                ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.file')
+                                ->select('product_knowledges.id', 'product_knowledges.date', 'product_knowledges.from', 'product_knowledges.subject', 'product_knowledges.filename' , 'product_knowledges.file')
                 ->get();
 
             $data = $data->merge($dataPromoterSelect);

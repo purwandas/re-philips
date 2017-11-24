@@ -475,7 +475,14 @@
 
 			if(checkPromoter()){
 				$('#statusCheck').attr('required', 'required');
-				$('#statusContent').removeClass('display-hide');
+
+				if(role == 'Salesman Explorer'){
+					$('input[type=radio][name=status][value=mobile]').attr('checked', 'checked');
+//				    $('#statusContent').removeClass('display-hide');
+				}else{
+					$('#statusContent').removeClass('display-hide');
+				}
+
 
 				//Set Store
 			    var status = $('input[type=radio][name=status]:checked').val();

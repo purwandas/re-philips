@@ -26,7 +26,7 @@ class PromoterController extends Controller
 
         $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
                      ->join('users', 'attendances.user_id', '=', 'users.id')
-                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.photo as photo', 'attendances.status as status')->get();
+                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.role as role', 'users.photo as photo', 'attendances.status as status')->get();
 
         foreach($attendances as $attendance){
 
