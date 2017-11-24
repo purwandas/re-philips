@@ -67,12 +67,17 @@ class ProfileController extends Controller
 
         }
 
-        if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
+        if($user->photo != null && $request->photo_file != null && $oldPhoto != ""){
+
             /* Delete Image after any transaction */
             $imagePath = explode('/', $oldPhoto);
             $count = count($imagePath);
             $folderpath = $imagePath[$count - 2];
             File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+
+        }
+
+        if($user->photo != null && $request->photo_file != null) {
 
             /* Upload updated image */
             $imagePath = explode('/', $user->photo);
@@ -81,6 +86,7 @@ class ProfileController extends Controller
             $imageName = $imagePath[$count - 1];
 
             $this->upload($request->photo_file, $imageFolder, $imageName);
+
         }
 
         return response()->json(

@@ -159,10 +159,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::middleware(['admin'])->group(function () {
 
-        /** Profile **/
-        Route::get('profile', 'ProfileController@index');
-        Route::post('profile', 'ProfileController@update');
-
         /** News **/
         Route::get('news', 'Master\NewsController@index');
         Route::get('news/create', 'Master\NewsController@create');
@@ -195,6 +191,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('tbatreport', 'Master\ReportController@tbatIndex');
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');
+
+    /** Profile **/
+    Route::get('profile', 'ProfileController@index');
+    Route::post('profile', 'ProfileController@update');
         
 });
 
