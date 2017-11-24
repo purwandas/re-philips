@@ -29,9 +29,24 @@ class AttendanceController extends Controller
         $attendanceHeader = Attendance::where('user_id', $user->id)->where('date', '=', date('Y-m-d'))->first();
 
         // Response if header was not set (command -> init:attendance)
-        if(!$attendanceHeader) {
-            return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 500);
+        if($user->role == 'Supervisor' || $user->role == 'DM' || $user->role == 'Trainer' || $user->role == 'RSM' || $user->role='Salesman Explorer'){
+
+            if(!$attendanceHeader) {
+                $attendanceHeader = Attendance::create([
+                    'user_id' => $user->id,
+                    'date' => Carbon::now(),
+                    'status' => 'Alpha'
+                ]);
+            }
+
+        }else{
+
+            if(!$attendanceHeader) {
+                return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 500);
+            }
+
         }
+
 
         // Count Attendance Details
         $attendanceDetailsCount = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->count();
@@ -277,6 +292,34 @@ class AttendanceController extends Controller
         $d = $earth_radius * $c;
 
         return $d;
+    }
+
+    /* Check if promoter had checked in */
+    public function getCheckIn(){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $attendanceHeader = Attendance::where('user_id', $user->id)->where('date', '=', date('Y-m-d'))->first();
+
+        if($attendanceHeader){
+
+            $attendanceDetails = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC');
+
+            if($attendanceDetails->count() > 0){
+
+                if($attendanceDetails->first()->check_out == null) {
+
+                    $store = Store::find($attendanceDetails->first()->store_id);
+
+                    return response()->json(['status' => true, 'id_store' => $store->id, 'nama_store' => $store->store_name_1, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                }
+
+            }
+
+        }
+
+        return response()->json(['status' => false, 'message' => 'Tidak berada dalam status check in']);
+
     }
 
 }

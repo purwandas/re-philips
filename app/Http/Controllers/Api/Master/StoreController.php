@@ -27,9 +27,13 @@ class StoreController extends Controller
         $content = json_decode($request->getContent(), true);
         $distance = 250;
 
+        $user = JWTAuth::parseToken()->authenticate();
+        $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+
     	$data = Store::where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
-                    ->select('id', 'store_name_1 as name', 'latitude', 'longitude');
+                    ->whereNotIn('id', $storeIds)
+                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');
 
         // This will calculate the distance in km
         // if you want in miles use 3959 instead of 6371

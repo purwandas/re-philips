@@ -31,9 +31,6 @@ var FormValidation = function () {
                     district_id:{
                         required: true,
                     },
-                    user_id:{
-                        required: true,
-                    }
 
                 },
                 messages:{
@@ -42,9 +39,6 @@ var FormValidation = function () {
                     },
                     district_id:{
                         required: "Please select a District!"
-                    },
-                    user_id:{
-                        required: "Please select Supervisor!"
                     },
                 },
 

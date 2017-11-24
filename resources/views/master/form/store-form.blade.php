@@ -195,7 +195,7 @@
 
                           <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="user_id" id="user" required></select>
+                                <select class="select2select" name="user_id" id="user"></select>
                                 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
