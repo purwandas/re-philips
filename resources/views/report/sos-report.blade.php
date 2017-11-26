@@ -194,11 +194,11 @@
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
                             {data: 'date', name: 'date'},
-                            {data: 'model', name: 'store_name_1'},
-                            {data: 'group', name: 'store_name_1'},
-                            {data: 'category', name: 'store_name_1'},
+                            {data: 'model', name: 'model'},
+                            {data: 'group', name: 'group'},
+                            {data: 'category', name: 'category'},
                             {data: 'product_name', name: 'product_name'},
-                            {data: 'quantity', name: 'store_name_1'}];
+                            {data: 'quantity', name: 'quantity'}];
 
         var paramFilter = ['sosReport', $('#sosReport'), url, tableColumns, columnDefs, order];
         var paramReset = [filterId, 'sosReport', $('#sosReport'), url, tableColumns, columnDefs, order];

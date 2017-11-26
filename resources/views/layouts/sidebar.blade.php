@@ -155,6 +155,13 @@
                 <h3 class="uppercase">REPORTING</h3>
             </li>
 
+            <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
+                <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">POS Material</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}">
                 <a href="{{ url('sellinreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>

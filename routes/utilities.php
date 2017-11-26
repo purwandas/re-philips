@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/productknowledge', ['as'=> 'datatable.productknowledge','uses'=>'Master\ProductKnowledgeController@masterDataTable']);
     Route::post('datatable/posm', ['as'=> 'datatable.posm','uses'=>'Master\PosmController@masterDataTable']);
     
+    Route::post('datatable/posmreport', ['as'=> 'datatable.posmreport','uses'=>'Master\ReportController@posmActivityData']);
     Route::post('datatable/sellinreport', ['as'=> 'datatable.sellinreport','uses'=>'Master\ReportController@sellInData']);
     Route::post('datatable/selloutreport', ['as'=> 'datatable.selloutreport','uses'=>'Master\ReportController@sellOutData']);
     Route::post('datatable/retconsumentreport', ['as'=> 'datatable.retconsumentreport','uses'=>'Master\ReportController@retConsumentData']);

@@ -183,7 +183,7 @@
          *
          */
         var filterId = ['#filterRegion', '#filterArea', '#filterAreaApp', '#filterStore', '#filterEmployee'];
-        var url = 'datatable/returnconsumentreport';
+        var url = 'datatable/retconsumentreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
         var tableColumns = [{data: 'id', name: 'id'},
@@ -194,11 +194,11 @@
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
                             {data: 'date', name: 'date'},
-                            {data: 'model', name: 'store_name_1'},
-                            {data: 'group', name: 'store_name_1'},
-                            {data: 'category', name: 'store_name_1'},
+                            {data: 'model', name: 'model'},
+                            {data: 'group', name: 'group'},
+                            {data: 'category', name: 'category'},
                             {data: 'product_name', name: 'product_name'},
-                            {data: 'quantity', name: 'store_name_1'}];
+                            {data: 'quantity', name: 'quantity'}];
 
         var paramFilter = ['retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order];
         var paramReset = [filterId, 'retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order];

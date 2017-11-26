@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>TBAT Report
-                <small>report transfer barang antar toko</small>
+            <h1>POSM Report
+                <small>report point of sales materials</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">TBAT Reporting</span>
+            <span class="active">POSM Reporting</span>
         </li>
     </ul>
 @endsection
@@ -135,13 +135,13 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">TBAT</span>
+                            <span class="caption-subject font-blue bold uppercase">POSM</span>
                         </div>
                     </div>
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="tbatReport" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="posmReport" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th> No. </th>
@@ -152,9 +152,9 @@
                                 <th> NIK </th>
                                 <th> Promoter Name </th>
                                 <th> Date </th>
-                                <th> Model </th>
+                                <!-- <th> Model </th> -->
                                 <th> Group </th>
-                                <th> Category </th>
+                                <!-- <th> Category </th> -->
                                 <th> Product Name </th>
                                 <th> Quantity </th>
                             </tr>
@@ -183,7 +183,7 @@
          *
          */
         var filterId = ['#filterRegion', '#filterArea', '#filterAreaApp', '#filterStore', '#filterEmployee'];
-        var url = 'datatable/tbatreport';
+        var url = 'datatable/posmreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
         var tableColumns = [{data: 'id', name: 'id'},
@@ -194,14 +194,14 @@
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
                             {data: 'date', name: 'date'},
-                            {data: 'model', name: 'model'},
+                            // {data: 'model', name: 'model'},
                             {data: 'group', name: 'group'},
-                            {data: 'category', name: 'category'},
+                            // {data: 'category', name: 'category'},
                             {data: 'product_name', name: 'product_name'},
                             {data: 'quantity', name: 'quantity'}];
 
-        var paramFilter = ['tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['posmReport', $('#posmReport'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'posmReport', $('#posmReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
 
@@ -212,11 +212,11 @@
             });
 
             // Set data for Data Table
-            var table = $('#tbatReport').dataTable({
+            var table = $('#posmReport').dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.tbatreport') }}",
+                    url: "{{ route('datatable.posmreport') }}",
                     type: 'POST',
                 },
                 "rowId": "id",
@@ -281,8 +281,8 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
-	                })
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                    })
                 }
             }));
             $('#filterStore').on('select2:select', function () {
@@ -290,15 +290,15 @@
             });
 
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
-	            return filterData('employee', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.nik + " - " + obj.name}
-	                })
-	            }
-	        }));
+                filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.nik + " - " + obj.name}
+                    })
+                }
+            }));
             $('#filterEmployee').on('select2:select', function () {
                 self.selected('byEmployee', $('#filterEmployee').val());
             });
@@ -390,8 +390,8 @@
         }
 
         // On Change Search Date
-		$(document).ready(function() {
-		    $('input[type=radio][name=date_type]').change(function() {
+        $(document).ready(function() {
+            $('input[type=radio][name=date_type]').change(function() {
                 if(this.value == 'Date'){
                     hideShowSearch(1);
                 }else if(this.value == 'DateRange'){
@@ -401,10 +401,10 @@
                 }else if(this.value == 'MonthRange'){
                     hideShowSearch(4);
                 }
-		    });
+            });
 
-		    $('#filterDate').change(function(){
-		        var keys = ['searchDateRange', 'searchMonth', 'searchMonthRange'];
+            $('#filterDate').change(function(){
+                var keys = ['searchDateRange', 'searchMonth', 'searchMonthRange'];
                 keys.forEach(function(key) {
                     if(key in filters){
                         delete filters[key];
@@ -415,12 +415,12 @@
                         filters['searchMonthRange'] = [];
                     }
                 });
-				filters['searchDate'] = this.value;
-				console.log(filters);
+                filters['searchDate'] = this.value;
+                console.log(filters);
             });
 
-		    $('#filterDateRange1').change(function(){
-		        var keys = ['searchDate', 'searchMonth', 'searchMonthRange'];
+            $('#filterDateRange1').change(function(){
+                var keys = ['searchDate', 'searchMonth', 'searchMonthRange'];
                 keys.forEach(function(key) {
                     if (key in filters) {
                         delete filters[key];
@@ -430,12 +430,12 @@
                         filters['searchMonthRange'] = [];
                     }
                 });
-				filters.searchDateRange[0] = this.value;
-				console.log(filters);
+                filters.searchDateRange[0] = this.value;
+                console.log(filters);
             });
 
-		    $('#filterDateRange2').change(function(){
-		        var keys = ['searchDate', 'searchMonth', 'searchMonthRange'];
+            $('#filterDateRange2').change(function(){
+                var keys = ['searchDate', 'searchMonth', 'searchMonthRange'];
                 keys.forEach(function(key) {
                     if (key in filters) {
                         delete filters[key];
@@ -445,12 +445,12 @@
                         filters['searchMonthRange'] = [];
                     }
                 });
-				filters.searchDateRange[1] = this.value;
-				console.log(filters);
+                filters.searchDateRange[1] = this.value;
+                console.log(filters);
             });
 
-		    $('#filterMonth').change(function(){
-		        var keys = ['searchDate', 'searchDateRange', 'searchMonthRange'];
+            $('#filterMonth').change(function(){
+                var keys = ['searchDate', 'searchDateRange', 'searchMonthRange'];
                 keys.forEach(function(key) {
                     if(key in filters){
                         delete filters[key];
@@ -461,12 +461,12 @@
                         filters['searchMonthRange'] = [];
                     }
                 });
-				filters['searchMonth'] = this.value;
-				console.log(filters);
+                filters['searchMonth'] = this.value;
+                console.log(filters);
             });
 
-		    $('#filterMonthRange1').change(function(){
-		        var keys = ['searchDate', 'searchDateRange', 'searchMonth'];
+            $('#filterMonthRange1').change(function(){
+                var keys = ['searchDate', 'searchDateRange', 'searchMonth'];
                 keys.forEach(function(key) {
                     if (key in filters) {
                         delete filters[key];
@@ -476,12 +476,12 @@
                         filters['searchDateRange'] = [];
                     }
                 });
-				filters.searchMonthRange[0] = this.value;
-				console.log(filters);
+                filters.searchMonthRange[0] = this.value;
+                console.log(filters);
             });
 
-		    $('#filterMonthRange2').change(function(){
-		        var keys = ['searchDate', 'searchDateRange', 'searchMonth'];
+            $('#filterMonthRange2').change(function(){
+                var keys = ['searchDate', 'searchDateRange', 'searchMonth'];
                 keys.forEach(function(key) {
                     if (key in filters) {
                         delete filters[key];
@@ -491,10 +491,10 @@
                         filters['searchDateRange'] = [];
                     }
                 });
-				filters.searchMonthRange[1] = this.value;
-				console.log(filters);
+                filters.searchMonthRange[1] = this.value;
+                console.log(filters);
             });
-		});
+        });
 
         $("#resetButton").click( function(){
 

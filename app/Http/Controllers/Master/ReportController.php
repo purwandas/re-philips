@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use DB;
 use Auth;
+use App\PosmActivity;
+use App\PosmActivityDetail;
 use App\SellIn;
 use App\SellInDetail;
 use App\SellOut;
@@ -22,12 +24,23 @@ use App\SohDetail;
 use App\Sos;
 use App\SosDetail;
 use App\Filters\ReportFilters;
+use App\Filters\ReportPosmActivityFilters;
+use App\Filters\ReportSellOutFilters;
+use App\Filters\ReportSohFilters;
+use App\Filters\ReportSosFilters;
+use App\Filters\ReportRetConsumentFilters;
+use App\Filters\ReportRetDistributorFilters;
+use App\Filters\ReportTbatFilters;
 use App\Traits\StringTrait;
 use Carbon\Carbon;
 
 class ReportController extends Controller
 {
     use StringTrait;
+    
+    public function posmActivityIndex(){
+        return view('report.posmactivity-report');
+    }
 
     public function sellInIndex(){
         return view('report.sellin-report');
@@ -62,6 +75,28 @@ class ReportController extends Controller
         return view('report.sos-report');
     }
 
+    public function posmActivityData(ReportPosmActivityFilters $filters){
+
+        $data = PosmActivityDetail::filter($filters);
+
+        $data = $data->where('posm_activity_details.deleted_at', null)
+            ->join('posm_activities', 'posm_activity_details.posmactivity_id', '=', 'posm_activities.id')
+            ->join('stores', 'stores.id', '=', 'posm_activities.store_id')
+            ->join('area_apps', 'area_apps.id', '=', 'stores.areaapp_id')
+            ->join('areas', 'areas.id', '=', 'area_apps.area_id')
+            ->join('users', 'posm_activities.user_id', '=', 'users.id')
+            ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
+            ->join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+            ->select('posm_activity_details.*', 'areas.name as area', 'stores.store_name_1', 'stores.store_name_2', 'stores.store_id', 'users.name as promoter_name', 'users.nik', 'posm_activities.date as date', 'group_products.name as group',
+                'posms.name as product_name')->get();
+            
+            // return response()->json($data);
+
+        return Datatables::of($data)
+            ->make(true);
+
+    }
+
     public function sellInData(ReportFilters $filters){
 
 //        $data = SellInDetail::get();
@@ -90,7 +125,7 @@ class ReportController extends Controller
 
     }
 
-    public function sellOutData(ReportFilters $filters){
+    public function sellOutData(ReportSellOutFilters $filters){
 
         $data = SellOutDetail::filter($filters);
 
@@ -112,7 +147,7 @@ class ReportController extends Controller
 
     }
 
-    public function retConsumentData(ReportFilters $filters){
+    public function retConsumentData(ReportRetConsumentFilters $filters){
 
         $data = RetConsumentDetail::filter($filters);
 
@@ -132,7 +167,7 @@ class ReportController extends Controller
 
     }
 
-    public function retDistributorData(ReportFilters $filters){
+    public function retDistributorData(ReportRetDistributorFilters $filters){
 
         $data = RetDistributorDetail::filter($filters);
 
@@ -154,7 +189,7 @@ class ReportController extends Controller
 
     }
 
-    public function tbatData(ReportFilters $filters){
+    public function tbatData(ReportTbatFilters $filters){
 
         $data = TbatDetail::filter($filters);
 
@@ -176,7 +211,7 @@ class ReportController extends Controller
 
     }
 
-    public function sohData(ReportFilters $filters){
+    public function sohData(ReportSohFilters $filters){
 
         $data = SohDetail::filter($filters);
 
@@ -198,7 +233,7 @@ class ReportController extends Controller
             ->make(true);
     }
 
-    public function sosData(ReportFilters $filters){
+    public function sosData(ReportSosFilters $filters){
 
         $data = SosDetail::filter($filters);
 

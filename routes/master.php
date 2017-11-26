@@ -153,6 +153,7 @@ Route::group(['middleware' => ['auth']], function () {
      * Reporting Module(s)
      */
 
+    Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('sellinreport', 'Master\ReportController@sellInIndex');
     Route::get('selloutreport', 'Master\ReportController@sellOutIndex');
     Route::get('retconsumentreport', 'Master\ReportController@retConsumentIndex');
