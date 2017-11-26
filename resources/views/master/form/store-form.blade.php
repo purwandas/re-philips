@@ -78,7 +78,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="store_id" name="store_id" class="form-control" value="{{ @$data->store_id }}" placeholder="Input Store ID" />
+				            	<input type="text" id="store_id" name="store_id" class="form-control" value="{{ @$data->store_id }}" placeholder="Input Store ID" readonly="readonly" />
 				            </div>
 				          </div>
 				        </div>
@@ -230,6 +230,13 @@
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/store-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
+
+	<script>
+		var url = "{{url('util/get-store-id')}}";
+			$.get(url, function (data) {
+				$('#store_id').val(data);
+			});
+	</script>
 
     <script>
         var storeId = "{{ collect(request()->segments())->last() }}";
