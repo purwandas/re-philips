@@ -29,11 +29,11 @@
 
             @if(Auth::user()->role == 'Master')
 
-            <li class="nav-item {{ Request::is('area') ? 'active open' : '' }} {{ Request::is('areaapp') ? 'active open' : '' }}">
+            <li class="nav-item {{ Request::is('area') ? 'active open' : '' }} {{ Request::is('district') ? 'active open' : '' }} {{ Request::is('areaapp') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="icon-map"></i>
                     <span class="title">Area</span>
-                    <span class="arrow {{ Request::is('area') ? 'open' : '' }} {{ Request::is('areaapp') ? 'open' : '' }}"></span>
+                    <span class="arrow {{ Request::is('area') ? 'open' : '' }} {{ Request::is('district') ? 'active open' : '' }} {{ Request::is('areaapp') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('area') ? 'active' : '' }}">
@@ -41,31 +41,37 @@
                             <span class="title">Area</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ Request::is('areaapp') ? 'active open' : '' }} ">
-                        <a href="{{ url('areaapp') }}" class="nav-link ">
-                            <span class="title">Area RE Apps</span>
+                    <li class="nav-item {{ Request::is('district') ? 'active open' : '' }} ">
+                        <a href="{{ url('district') }}" class="nav-link ">
+                            <span class="title">District</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('accounttype') ? 'active open' : '' }} {{ Request::is('account') ? 'active open' : '' }}">
+            <li class="nav-item {{ Request::is('channel') ? 'active open' : '' }} {{ Request::is('subchannel') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-share-alt"></i>
-                    <span class="title">Account</span>
-                    <span class="arrow {{ Request::is('accounttype') ? 'open' : '' }} {{ Request::is('account') ? 'open' : '' }}"></span>
+                    <span class="title">Channel</span>
+                    <span class="arrow {{ Request::is('channel') ? 'open' : '' }} {{ Request::is('subchannel') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('accounttype') ? 'active open' : '' }}">
-                        <a href="{{ url('accounttype') }}" class="nav-link ">
-                            <span class="title">Account Type</span>
+                    <li class="nav-item {{ Request::is('channel') ? 'active open' : '' }}">
+                        <a href="{{ url('channel') }}" class="nav-link ">
+                            <span class="title">Channel</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ Request::is('account') ? 'active open' : '' }}">
-                        <a href="{{ url('account') }}" class="nav-link ">
-                            <span class="title">Account</span>
+                    <li class="nav-item {{ Request::is('subchannel') ? 'active open' : '' }}">
+                        <a href="{{ url('subchannel') }}" class="nav-link ">
+                            <span class="title">Sub Channel</span>
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item {{ Request::is('distributor') ? 'active open' : '' }}">
+                <a href="{{ url('distributor') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-industry"></i>
+                    <span class="title">Distributor</span>
+                </a>
             </li>
             <li class="nav-item {{ Request::is('user*') ? 'active open' : '' }}">
                 <a href="{{ url('user') }}" class="nav-link nav-toggle">
@@ -99,6 +105,11 @@
                     <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
+                        <a href="{{ url('groupproduct') }}" class="nav-link ">
+                            <span class="title">Group Product</span>
+                        </a>
+                    </li>
                     <li class="nav-item {{ Request::is('group') ? 'active open' : '' }}">
                         <a href="{{ url('group') }}" class="nav-link ">
                             <span class="title">Group</span>
@@ -115,6 +126,24 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
+                <a href="{{ url('price') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-dollar"></i>
+                    <span class="title">Price</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('target') ? 'active open' : '' }}">
+                <a href="{{ url('target') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-line-chart"></i>
+                    <span class="title">Target</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
+                <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-search-plus"></i>
+                    <span class="title">Product Focus</span>
+                </a>
             </li>
             <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
                 <a href="{{ url('posm') }}" class="nav-link nav-toggle">

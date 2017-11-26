@@ -11,7 +11,7 @@ class CompetitorActivity extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'store_id', 'week', 'date', 'sku', 'promo_type', 'information', 'start_period', 'end_period', 'photo'
+        'user_id', 'store_id', 'week', 'date', 'sku', 'groupcompetitor_id', 'promo_type', 'information', 'start_period', 'end_period', 'photo'
     ];
 
     /**
@@ -41,6 +41,11 @@ class CompetitorActivity extends Model
     public function user()
     {
         return $this->belongsTo('App\User', 'user_id');
+    }
+
+    public function groupCompetitor()
+    {
+        return $this->belongsTo('App\GroupCompetitor', 'groupcompetitor_id');
     }
 
     /**

@@ -51,6 +51,7 @@
                 	<thead>
                     	<tr>
                     		<th> No. </th>
+                            <th> Type </th>
                             <th> Date & Time</th>
                             <th> Admin </th>
                             <th> Sender </th>
@@ -103,6 +104,7 @@
 	        "rowId": "id",
 	        "columns": [
 	            {data: 'id', name: 'id'},
+                {data: 'type', name: 'type'},
                 {data: 'date', name: 'date'},
                 {data: 'user_name', name: 'user_name'},
 	            {data: 'from', name: 'from'},
@@ -115,9 +117,9 @@
 	        ],
 	        "columnDefs": [
         		{"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [6]},
-                {"className": "dt-center", "targets": [8]},
+                {"className": "dt-center", "targets": [7]},
                 {"className": "dt-center", "targets": [9]},
+                {"className": "dt-center", "targets": [10]},
       		],
             "order": [ [0, 'desc'] ],
     	});

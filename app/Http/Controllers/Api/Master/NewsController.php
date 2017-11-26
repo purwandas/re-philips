@@ -26,7 +26,7 @@ class NewsController extends Controller
         if($isPromoter == 1){
 
 		    $storeIds = $user->employeeStores()->pluck('store_id'); // Get Store ID
-		    $areaIds = Store::whereIn('id', $storeIds)->pluck('areaapp_id'); // Get Area App ID
+		    $areaIds = Store::whereIn('id', $storeIds)->pluck('district_id'); // Get District ID
 
         }
 

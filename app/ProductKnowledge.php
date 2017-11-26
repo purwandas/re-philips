@@ -11,7 +11,7 @@ class ProductKnowledge extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'from', 'date', 'subject', 'total_read', 'file', 'target_type', 'target_detail'
+        'user_id', 'type', 'from', 'date', 'subject', 'total_read', 'filename', 'file', 'target_type', 'target_detail'
     ];
 
     /**

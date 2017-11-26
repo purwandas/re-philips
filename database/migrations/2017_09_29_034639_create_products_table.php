@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->string('model');
             $table->string('name');
+            $table->string('variants');
             $table->timestamps();
             $table->softDeletes();
         });

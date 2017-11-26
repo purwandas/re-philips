@@ -11,7 +11,7 @@ class Product extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'category_id', 'model', 'name'
+        'category_id', 'model', 'name', 'variants'
     ];
 
     /**

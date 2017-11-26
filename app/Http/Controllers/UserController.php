@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Store;
+use App\TrainerArea;
 use App\User;
 use App\RsmRegion;
 use App\DmArea;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\AttendanceTrait;
 use Auth;
 use App\Filters\UserFilters;
 use File;
@@ -22,6 +24,7 @@ class UserController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use AttendanceTrait;
 
     /**
      * Display a listing of the resource.
@@ -131,7 +134,7 @@ class UserController extends Controller
 
         // Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->getUploadPathName($request->photo_file, "user/".$this->getRandomPath(), 'USER') : $photo_url = "";
         
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
@@ -155,13 +158,40 @@ class UserController extends Controller
             }
         }
 
-        // If DM
+        // If DM or Trainer
         if(isset($request->area)){
-            $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            if($request['role'] == 'DM') {
+                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            }elseif($request['role'] == 'Trainer') {
+                $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            }
         }
         // If RSM
         if(isset($request->region)){
             $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+        }
+
+        if($request->photo_file != null){
+
+            /* Upload updated image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $imageFolder = "user/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+
+        }
+
+        /*
+         * Generate attendance from day promoter works till end of month
+         * (Just work for promoter group)
+         */
+
+        $promoterArray = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+        if(in_array($user->role, $promoterArray)){
+            $this->generateAttendace($user->id);
         }
         
         return response()->json(['url' => url('user')]);
@@ -208,13 +238,11 @@ class UserController extends Controller
             ]);
 
         $user = User::find($id);
+        $oldPhoto = "";
 
-        /* Delete Image */
         if($user->photo != null && $request->photo_file != null) {
-            $imagePath = explode('/', $user->photo);
-            $count = count($imagePath);
-            $folderpath = $imagePath[$count - 2];
-            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+            /* Save old photo path */
+            $oldPhoto = $user->photo;
         }
 
         /* Delete if any relation exist in employee store */
@@ -229,6 +257,12 @@ class UserController extends Controller
             $dmArea->delete();
         }
 
+        // TRAINER AREA
+        $trainerArea = TrainerArea::where('user_id', $user->id);
+        if($trainerArea->count() > 0){
+            $trainerArea->delete();
+        }
+
         // RSM REGION 
         $rsmRegion = RsmRegion::where('user_id', $user->id);
         if($rsmRegion->count() > 0){
@@ -238,7 +272,7 @@ class UserController extends Controller
 
         // Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->getUploadPathName($request->photo_file, "user/".$this->getRandomPath(), 'USER') : $photo_url = "";
         
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
@@ -295,12 +329,22 @@ class UserController extends Controller
 
         // If DM
         if($request->area){
-            $dmArea = DmArea::where('user_id', $user->id);
-            if($dmArea->count() > 0){
-                $dmArea->first()->update(['area_id' => $request->area]);    
-            }else{
-                DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+            if($request['role'] == 'DM') {
+                $dmArea = DmArea::where('user_id', $user->id);
+                if($dmArea->count() > 0){
+                    $dmArea->first()->update(['area_id' => $request->area]);
+                }else{
+                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                }
+            }elseif($request['role'] == 'Trainer') {
+                $trainerArea = TrainerArea::where('user_id', $user->id);
+                if($trainerArea->count() > 0){
+                    $trainerArea->first()->update(['area_id' => $request->area]);
+                }else{
+                    TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                }
             }
+
             
         }
         // If RSM
@@ -313,6 +357,26 @@ class UserController extends Controller
                 RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
             }
         }
+
+        if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
+            /* Delete Image */
+            $imagePath = explode('/', $oldPhoto);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+
+        }
+
+        if($user->photo != null && $request->photo_file != null){
+            /* Upload updated image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $imageFolder = "user/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+        }
+
         return response()->json(
             [
                 'url' => url('user'),
@@ -339,6 +403,12 @@ class UserController extends Controller
         $dmArea = DmArea::where('user_id', $id);
         if($dmArea->count() > 0){
             $dmArea->delete();
+        }
+
+        // TRAINER AREA
+        $trainerArea = TrainerArea::where('user_id', $id);
+        if($trainerArea->count() > 0){
+            $trainerArea->delete();
         }
 
         // RSM REGION 

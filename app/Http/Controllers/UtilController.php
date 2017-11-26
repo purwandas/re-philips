@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Distributor;
 use App\NewsRead;
 use App\ProductKnowledgeRead;
+use App\StoreDistributor;
 use Illuminate\Http\Request;
 use App\User;
 use App\Store;
 use App\AreaApp;
 use App\EmployeeStore;
 use DB;
+use Activity;
+use Auth;
 
 class UtilController extends Controller
 {
@@ -54,16 +58,37 @@ class UtilController extends Controller
         $empStore = EmployeeStore::where('user_id', $userId);        
         $empStoreIds = $empStore->pluck('store_id');
         $store = Store::where('stores.deleted_at', null)
-        			->join('accounts', 'stores.account_id', '=', 'accounts.id')
-                    ->join('account_types', 'accounts.accounttype_id', '=', 'account_types.id')
-                    ->join('area_apps', 'stores.areaapp_id', '=', 'area_apps.id')
-                    ->join('areas', 'area_apps.area_id', '=', 'areas.id')
+        			->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->join('users', 'stores.user_id', '=', 'users.id')
+//                    ->join('users', 'stores.user_id', '=', 'users.id')
                     ->whereIn('stores.id', $empStoreIds)
-                    ->select('stores.*', 'accounts.name as account_name', 'account_types.name as accounttype_name', 'area_apps.name as areaapp_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
+                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name')->get();
+
+        foreach ($store as $item){
+
+            if($item->user_id == null){
+                $item['spv_name'] = "";
+            }else{
+                $item['spv_name'] = $item->user->name;
+            }
+
+        }
 
         return response()->json($store);
+    }
+
+    public function getDistributorForStore($storeId){
+
+        $storeDist = StoreDistributor::where('store_id', $storeId);
+        $storeDistIds = $storeDist->pluck('distributor_id');
+        $distributor = Distributor::where('distributors.deleted_at', null)
+                    ->whereIn('distributors.id', $storeDistIds)->get();
+
+        return response()->json($distributor);
     }
 
     public function getAreaApp($id){
@@ -97,5 +122,15 @@ class UtilController extends Controller
                     ->get();
 
         return response()->json($data);
+    }
+
+    public function getUserOnline(){
+
+        $users = Activity::users()->where('user_id', '<>', Auth::user()->id)->orderByUsers('name');
+
+        return response()->json([
+            'count' => $users->count(),
+            'users' => $users->get(),
+        ]);
     }
 }

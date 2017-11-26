@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\TrainerArea;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -151,6 +152,12 @@ class AreaController extends Controller
         $dmArea = DmArea::where('area_id', $id);
         if($dmArea->count() > 0){
             $dmArea->delete();
+        }
+
+        // TRAINER AREA
+        $trainerArea = TrainerArea::where('area_id', $id);
+        if($trainerArea->count() > 0){
+            $trainerArea->delete();
         }
 
         $area = Area::destroy($id);

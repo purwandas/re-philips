@@ -129,38 +129,34 @@
 				        </div>	        
 
 				        <div class="caption padding-caption">
-                        	<span class="caption-subject font-dark bold uppercase">Channel, Account, Area</span>
+                        	<span class="caption-subject font-dark bold uppercase">Distributor, Channel, District (Area)</span>
                         	<hr>
                         </div>
 
-				        <div class="form-group">
-				          <label class="col-sm-2 control-label">Channel</label>
-				          <div class="col-sm-9">
+						<div class="form-group">
+						  <label class="col-sm-2 control-label">Distributor</label>
+						  <div class="col-sm-9">
 
-				          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="channel" id="channel" required>
-                                	<option value="Modern Retail" {{ (@$data->role == 'Modern Retail') ? "selected" : "" }}>Modern Retail</option>
-                                	<option value="Traditional Retail" {{ (@$data->role == 'Traditional Retail') ? "selected" : "" }}>Traditional Retail</option>
-                                	<option value="Mother Child & Care" {{ (@$data->role == 'Mother Child & Care') ? "selected" : "" }}>Mother Child & Care</option>                                	
-                                </select>
-                               	
-                                <span class="input-group-addon display-hide">
-                                	<i class="fa"></i>
-                                </span>
+						  <div class="input-group" style="width: 100%;">
 
-              				</div>
-				            
-				          </div>
-				        </div>	
+								<select class="select2select" name="distributor_ids[]" id="distributors" multiple="multiple" required="required"></select>
+
+								<span class="input-group-addon display-hide">
+									<i class="fa"></i>
+								</span>
+
+							</div>
+
+						  </div>
+						</div>
 
                         <div class="form-group">
-                          <label class="col-sm-2 control-label">Account</label>
+                          <label class="col-sm-2 control-label">Sub Channel</label>
                           <div class="col-sm-9">
 
                           <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="account_id" id="account" required></select>
+                                <select class="select2select" name="subchannel_id" id="subchannel" required></select>
                                 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -172,12 +168,12 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="col-sm-2 control-label">Area RE Apps</label>
+                          <label class="col-sm-2 control-label">District</label>
                           <div class="col-sm-9">
 
                           <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="areaapp_id" id="areaapp" required></select>
+                                <select class="select2select" name="district_id" id="district" required></select>
                                 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -199,7 +195,7 @@
 
                           <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="user_id" id="user" required></select>
+                                <select class="select2select" name="user_id" id="user"></select>
                                 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -236,6 +232,8 @@
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
+        var storeId = "{{ collect(request()->segments())->last() }}";
+
 		$(document).ready(function () {
 			$.ajaxSetup({
 	        	headers: {
@@ -243,7 +241,7 @@
 	            }
 	        });
 
-	    	$('#account').select2(setOptions('{{ route("data.account") }}', 'Account', function (params) {            
+	    	$('#subchannel').select2(setOptions('{{ route("data.subchannel") }}', 'Sub Channel', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
@@ -253,7 +251,7 @@
 	            }
 	        }));   
 
-	        $('#areaapp').select2(setOptions('{{ route("data.areaapp") }}', 'Area RE Apps', function (params) {            
+	        $('#district').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
@@ -272,20 +270,47 @@
 	                    return {id: obj.id, text: obj.name}
 	                })
 	            }
-	        }));	   
+	        }));
 
-	       	$('#channel').select2({
-                width: '100%',
-                placeholder: 'Channel'
-            })
+	        $('#distributors').select2(setOptions('{{ route("data.distributor") }}', 'Distributor', function (params) {
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {
+	                    return {id: obj.id, text: obj.code + " - " + obj.name }
+	                })
+	            }
+	        }));
 
             // Set select2 if method PATCH            
-	       setSelect2IfPatch($("#account"), "{{ @$data->account_id }}", "{{ @$data->account->name }}");	
-	       setSelect2IfPatch($("#areaapp"), "{{ @$data->areaapp_id }}", "{{ @$data->areaapp->name }}");
+	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
+	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
 	       setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
 
+	       updateDistributor();
 
-		});    
+
+		});
+
+		function updateDistributor(){
+			var getDataUrl = "{{ url('util/storedist/') }}";
+
+			$.get(getDataUrl + '/' + storeId, function (data) {
+				if(data){
+
+				    var element = $("#distributors");
+
+                    select2Reset($('#distributors'));
+
+                    $.each(data, function() {
+                        setSelect2IfPatch(element, this.id, this.code + " - " + this.name);
+                    });
+
+
+            	}
+
+        	})
+		}
 
 	</script>	
 

@@ -87,11 +87,33 @@
                     <!-- END HEADER SEARCH BOX -->
                     <!-- BEGIN TOP NAVIGATION MENU -->
                     <div class="top-menu">
-                        <ul class="nav navbar-nav pull-right">                                            
+                        <ul class="nav navbar-nav pull-right">
+                            @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Master')
+                            <li class="dropdown dropdown-extended dropdown-notification dropdown-dark"
+                                id="header_notification_bar">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                                   data-close-others="true">
+                                    <i class="icon-user"></i>
+                                    <span class="badge badge-danger bedgecount">
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu" style="min-width: 335px;">
+                                    <li class="external">
+                                        <h3>
+                                            <span class="bold"><span class="bedgecount"></span>
+                                                Other user(s) is online </span>  </h3>
+                                    </li>
+                                    <li>
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px;"
+                                            data-handle-color="#637283" id="datanotif"></ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            @endif
                             <!-- BEGIN USER LOGIN DROPDOWN -->
                             <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
                             <li class="dropdown dropdown-user">
-                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
                                     <img alt="" class="img-circle" src="{{ Auth::user()->photo }}" onError="this.onerror=null;this.src='{{ asset('image/missing.png') }}';" />
                                     <span class="username username-hide-on-mobile"> {{ @Auth::user()->name }} </span>
                                     <i class="fa fa-angle-down"></i>
@@ -143,7 +165,7 @@
         <script src="{{ asset('assets/global/plugins/jquery.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/global/plugins/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/global/plugins/js.cookie.min.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js') }}" type="text/javascript"></script>
+{{--        <script src="{{ asset('assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js') }}" type="text/javascript"></script>--}}
         <script src="{{ asset('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/global/plugins/jquery.blockui.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/global/plugins/uniform/jquery.uniform.min.js') }}" type="text/javascript"></script>
@@ -224,7 +246,24 @@
         <script src="{{ asset('assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js') }}" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
-        
+
+        <script>
+            var url = "{{url('util/user-online')}}";
+                $.get(url, function (data) {
+//                    console.log(data);
+                    $('.bedgecount').text(data.count);
+
+                    var missing_image = "{{ asset('image/missing.png') }}";
+
+                    $.each(data.users, function (index, item) {
+//                        console.log(item);
+
+                        var li = $(`<li><a><img width='30px' height='30px' src='${item.user.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.user.role}) &nbsp;${item.user.name}</a></li>`);
+                        $('#datanotif').append(li);
+                    });
+                });
+        </script>
+
     @yield('additional-scripts')
 
     @yield('additional-styles')
