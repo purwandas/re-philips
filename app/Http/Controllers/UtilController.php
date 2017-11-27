@@ -133,4 +133,34 @@ class UtilController extends Controller
             'users' => $users->get(),
         ]);
     }
+
+    public function getStoreId(){
+
+        $store = Store::select('stores.*', DB::raw("( substr(stores.store_id, 3, (length(stores.store_id)-2)) ) as counting"))
+                    ->orderBy('counting', 'DESC')->first();
+
+        if(!$store){
+            return 'RE001';
+        }else{
+            $data = "";
+
+            for($i=2;$i<strlen($store->store_id);$i++){
+                $data .= $store->store_id[$i];
+            }
+
+            $increment = (integer)$data + 1;
+    		$countLength = strlen((string)$increment);
+    		$result = "";
+
+    		if($countLength == 1){
+    			$result .= 'RE' . '00' . $increment;
+    		} else if ($countLength == 2){
+    			$result .= 'RE' . '0' . $increment;
+    		} else {
+    			$result .= 'RE' . $increment;
+    		}
+
+    		return $result;
+        }
+    }
 }
