@@ -12,7 +12,7 @@ use DB;
 use App\Price;
 use App\SellIn;
 use App\SellInDetail;
-use App\SummarySellIn;
+use App\Reports\SummarySellIn;
 use Carbon\Carbon;
 use App\Traits\SummaryTrait;
 

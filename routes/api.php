@@ -77,7 +77,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/news', 'Api\Master\NewsController@get');
     Route::get('/news/{param}', 'Api\Master\NewsController@read');
-
     Route::get('/guidelines/{param}', 'Api\Master\ProductKnowledgeController@get');
     Route::get('/guidelines-read/{param}', 'Api\Master\ProductKnowledgeController@read');
 

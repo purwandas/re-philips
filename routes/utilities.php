@@ -126,6 +126,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);
     Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     Route::get('util/user-online', ['uses'=>'UtilController@getUserOnline']);
+    Route::get('util/get-store-id', ['uses'=>'UtilController@getStoreId']);
 
 
     /**
