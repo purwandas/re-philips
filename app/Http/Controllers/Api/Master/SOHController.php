@@ -10,6 +10,16 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\SOH;
 use App\SOHDetail;
+use App\Reports\SummarySoh;
+use App\Price;
+use App\Product;
+use App\Store;
+use App\StoreDistributor;
+use App\Distributor;
+use App\ProductFocuses;
+use App\DmArea;
+use App\User;
+use App\TrainerArea;
 use DB;
 
 class SOHController extends Controller
