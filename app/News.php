@@ -11,7 +11,7 @@ class News extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'from', 'date', 'subject', 'total_read', 'content', 'target_type', 'target_detail'
+        'user_id', 'from', 'date', 'subject', 'total_read', 'filename', 'content', 'target_type', 'target_detail'
     ];
 
     /**

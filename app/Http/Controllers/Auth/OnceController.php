@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\GlobalChannel;
 use App\Posm;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,9 +22,9 @@ class OnceController extends Controller
     //
     public function tesGeo(){
 //        $coordA   = Geotools::coordinate([106.8920396, -6.2318409]);
-        $coordA   = Geotools::coordinate([-6.2318409, 106.8920396]);
+        $coordA   = Geotools::coordinate([-6.1880673, 106.8746353]);
 //        $coordB   = Geotools::coordinate([106.8632812, -6.2623681]);
-        $coordB   = Geotools::coordinate([-6.2623681, 106.8632812]);
+        $coordB   = Geotools::coordinate([-6.2318409, 106.8920396]);
         $distance = Geotools::distance()->setFrom($coordA)->setTo($coordB);
 
         return $distance->flat();
@@ -143,6 +144,22 @@ class OnceController extends Controller
         return redirect('/');
     }
 
+    public function createGlobalChannel(){
+        if(Auth::user()){
+            if(Auth::user()->role == 'Master'){
+                $accountype = DB::table('global_channels')->count();
+
+                if($accountype == 0){
+                    GlobalChannel::create(['name'=>'Modern Retail']);
+                    GlobalChannel::create(['name'=>'Traditional Retail']);
+                    GlobalChannel::create(['name'=>'Mother Care & Child']);
+                }
+            }
+        }
+
+        return redirect('/');
+    }
+
     public function createAccountType(){
         if(Auth::user()){
             if(Auth::user()->role == 'Master'){
@@ -152,7 +169,7 @@ class OnceController extends Controller
                     AccountType::create(['name'=>'Counter']);
                     AccountType::create(['name'=>'Electronic Specialist']);
                     AccountType::create(['name'=>'Hypermarket']);
-                    AccountType::create(['name'=>'Traditional']);                
+                    AccountType::create(['name'=>'Traditional']);
                 }
             }
         }
@@ -254,9 +271,10 @@ class OnceController extends Controller
                 $this->createGroupProduct();
                 $this->createGroup();
                 $this->createGroupCompetitor();
-                $this->createAccountType();
-                $this->createAccount();
+//                $this->createAccountType();
+//                $this->createAccount();
                 $this->createPosm();
+                $this->createGlobalChannel();
             }
         }  
 

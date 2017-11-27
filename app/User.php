@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->hasOne('App\DmArea', 'user_id');
     }
 
+    public function trainerArea()
+    {
+        return $this->hasOne('App\TrainerArea', 'user_id');
+    }
+
     public function employeeStores()
     {
         return $this->hasMany('App\EmployeeStore', 'user_id');

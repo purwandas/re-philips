@@ -34,9 +34,9 @@ class Area extends Model
         return $this->belongsTo('App\Region', 'region_id');
     }
 
-    public function areaApps()
+    public function districts()
     {
-        return $this->hasMany('App\AreaApp', 'area_id');
+        return $this->hasMany('App\District', 'area_id');
     }
 
 	/**

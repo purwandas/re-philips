@@ -185,6 +185,8 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         'Toin0u\Geotools\GeotoolsServiceProvider',
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        Kim\Activity\ActivityServiceProvider::class,
 
     ],
 
@@ -241,6 +243,7 @@ return [
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Geotools' => 'Toin0u\Geotools\Facade\Geotools',
+        'Activity' => Kim\Activity\ActivityFacade::class,
 
     ],
 

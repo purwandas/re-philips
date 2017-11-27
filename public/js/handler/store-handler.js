@@ -25,32 +25,20 @@ var FormValidation = function () {
                         minlength: 2,
                         required: true,
                     },
-                    channel:{
+                    subchannel_id:{
                         required: true,
                     },
-                    account_id:{
+                    district_id:{
                         required: true,
                     },
-                    areaapp_id:{
-                        required: true,
-                    },
-                    user_id:{
-                        required: true,
-                    }
 
                 },
                 messages:{
-                    channel:{
-                        required: "Please select a Channel!"
+                    subchannel_id:{
+                        required: "Please select a Sub Channel!"
                     },
-                    account_id:{
-                        required: "Please select an Account!"
-                    },
-                    areaapp_id:{
-                        required: "Please select an Area RE Apps!"
-                    },
-                    user_id:{
-                        required: "Please select Supervisor!"
+                    district_id:{
+                        required: "Please select a District!"
                     },
                 },
 

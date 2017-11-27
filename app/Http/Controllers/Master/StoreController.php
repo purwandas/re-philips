@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\Distributor;
+use App\StoreDistributor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -10,6 +12,7 @@ use App\Traits\StringTrait;
 use DB;
 use App\Store;
 use App\EmployeeStore;
+use App\User;
 
 class StoreController extends Controller
 {    
@@ -32,13 +35,31 @@ class StoreController extends Controller
     public function masterDataTable(){
 
         $data = Store::where('stores.deleted_at', null)
-        			->join('accounts', 'stores.account_id', '=', 'accounts.id')
-                    ->join('account_types', 'accounts.accounttype_id', '=', 'account_types.id')
-                    ->join('area_apps', 'stores.areaapp_id', '=', 'area_apps.id')
-                    ->join('areas', 'area_apps.area_id', '=', 'areas.id')
+        			->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->join('users', 'stores.user_id', '=', 'users.id')
-                    ->select('stores.*', 'accounts.name as account_name', 'account_types.name as accounttype_name', 'area_apps.name as areaapp_name', 'areas.name as area_name', 'regions.name as region_name', 'users.name as spv_name')->get();
+//                    ->join('users', 'stores.user_id', '=', 'users.id')
+//                    ->where(function($query) {
+//                        return $query->orWhere('stores.user_id', null);
+//                    })
+                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name')->get();
+
+        foreach ($data as $detail){
+            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
+            $dist = Distributor::whereIn('id', $distIds)->get();
+
+            $detail['distributor'] = '';
+            foreach ($dist as $distDetail){
+                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
+
+                if($distDetail->id != $dist->last()->id){
+                    $detail['distributor'] .= ', ';
+                }
+            }
+        }
 
         return $this->makeTable($data);
     }
@@ -54,6 +75,15 @@ class StoreController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
+                ->editColumn('spv_name', function ($item) {
+
+                    if($item->user_id == null){
+                        return "";
+                    }
+
+                    return User::find($item->user_id)->first()->name;
+
+                })
                 ->addColumn('action', function ($item) {
 
                     return 
@@ -89,13 +119,21 @@ class StoreController extends Controller
             'store_name_2' => 'string|max:255',
             'longitude' => 'number',
             'latitude' => 'number',
-            'channel' => 'required',
-            'account_id' => 'required',
-            'areaapp_id' => 'required',
-            'user_id' => 'required'
+            'subchannel_id' => 'required',
+            'district_id' => 'required',
         ]);
 
         $store = Store::create($request->all());
+
+        /* Store Distributor */
+        if($request['distributor_ids']){
+            foreach ($request['distributor_ids'] as $distributorId) {
+                StoreDistributor::create([
+                    'store_id' => $store->id,
+                    'distributor_id' => $distributorId,
+                ]);
+            }
+        }
         
         return response()->json(['url' => url('/store')]);
     }
@@ -138,13 +176,30 @@ class StoreController extends Controller
             'store_name_2' => 'string|max:255',
             'longitude' => 'number',
             'latitude' => 'number',
-            'channel' => 'required',
-            'account_id' => 'required',
-            'areaapp_id' => 'required',
+            'subchannel_id' => 'required',
+            'district_id' => 'required',
             'user_id' => 'required'
         ]);
 
-        $store = Store::find($id)->update($request->all());
+        $store = Store::find($id);
+
+        /* Delete if any relation exist in store distributor */
+        $storeDist = StoreDistributor::where('store_id', $store->id);
+        if($storeDist->count() > 0){
+            $storeDist->delete();
+        }
+
+        $store->update($request->all());
+
+        /* Store Distributor */
+        if($request['distributor_ids']){
+            foreach ($request['distributor_ids'] as $distributorId) {
+                StoreDistributor::create([
+                    'store_id' => $store->id,
+                    'distributor_id' => $distributorId,
+                ]);
+            }
+        }
 
         return response()->json(
             ['url' => url('/store'), 'method' => $request->_method]); 
@@ -158,7 +213,14 @@ class StoreController extends Controller
      */
     public function destroy($id)
     {
+        /* Delete if any relation exist in store distributor */
+        $storeDist = StoreDistributor::where('store_id', $id);
+        if($storeDist->count() > 0){
+            $storeDist->delete();
+        }
+
         /* Deleting related to user */
+
         // Employee Store
         $empStore = EmployeeStore::where('store_id', $id);
         if($empStore->count() > 0){

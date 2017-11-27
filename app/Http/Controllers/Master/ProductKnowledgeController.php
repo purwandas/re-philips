@@ -11,7 +11,7 @@ use App\ProductKnowledge;
 use App\Filters\ProductKnowledgeFilters;
 use Auth;
 use Carbon\Carbon;
-use App\AreaApp;
+use App\District;
 use App\Store;
 use App\User;
 use App\ProductKnowledgeRead;
@@ -64,7 +64,7 @@ class ProductKnowledgeController extends Controller
                         $data = explode(',' , $item->target_detail);
                         foreach ($data as $dataSplit) {
 
-                            $area = AreaApp::find(trim($dataSplit));
+                            $area = District::find(trim($dataSplit));
                             $result .= $area->name;
                             if($dataSplit != end($data)){
                                 $result .= ", ";
@@ -148,13 +148,15 @@ class ProductKnowledgeController extends Controller
         // dd($request->all());
 
         $this->validate($request, [
+            'type' => 'required',
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
+            'filename' => 'required|string|max:255',
             ]);
 
         // Upload file process
         ($request->upload_file != null) ?
-            $file_url = $this->fileUpload($request->upload_file, "productknowledge/".$this->getRandomPath()) : $file_url = "";
+            $file_url = $this->getUploadPathNameFile($request->upload_file, "productknowledge/".$this->getRandomPath(), $request->filename) : $file_url = "";
 
         if($request->upload_file != null) $request['file'] = $file_url;
 
@@ -215,6 +217,18 @@ class ProductKnowledgeController extends Controller
         // dd($request->all());
         $productKnowledge = ProductKnowledge::create($request->all());
 
+        if($request->upload_file != null){
+
+            /* Upload updated image */
+            $imagePath = explode('/', $productKnowledge->file);
+            $count = count($imagePath);
+            $imageFolder = "productknowledge/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->uploadFile($request->upload_file, $imageFolder, $imageName);
+
+        }
+
         return response()->json(['url' => url('/product-knowledge')]);
     }
 
@@ -252,8 +266,10 @@ class ProductKnowledgeController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
+            'type' => 'required',
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
+            'filename' => 'required|string|max:255',
             ]);
 
         // Admin
@@ -305,25 +321,39 @@ class ProductKnowledgeController extends Controller
         }
 
         $productKnowledge = ProductKnowledge::find($id);
+        $oldFile = "";
 
-        if($request->upload_file != null) {
-            /* Delete File PDF */
-            if ($productKnowledge->file != "") {
-                $filePath = explode('/', $productKnowledge->file);
-                $count = count($filePath);
-                $folderpath = $filePath[$count - 2];
-                File::deleteDirectory(public_path() . "/file/productknowledge/" . $folderpath);
-            }
+        if($productKnowledge->file != null && $request->upload_file != null) {
+            /* Save old file path */
+            $oldFile = $productKnowledge->file;
         }
 
         // Upload file process
         ($request->upload_file != null) ?
-            $file_url = $this->fileUpload($request->upload_file, "productknowledge/".$this->getRandomPath()) : $file_url = "";
+            $file_url = $this->getUploadPathNameFile($request->upload_file, "productknowledge/".$this->getRandomPath(), $request->filename) : $file_url = "";
 
         if($request->upload_file != null) $request['file'] = $file_url;
 
         // Update data
     	$productKnowledge->update($request->all());
+
+    	if($productKnowledge->file != null && $request->upload_file != null && $oldFile != "") {
+
+            /* Delete File PDF */
+            $filePath = explode('/', $oldFile);
+            $count = count($filePath);
+            $folderpath = $filePath[$count - 2];
+            File::deleteDirectory(public_path() . "/file/productknowledge/" . $folderpath);
+
+            /* Upload updated file */
+            $filePath = explode('/', $productKnowledge->file);
+            $count = count($filePath);
+            $fileFolder = "productknowledge/" . $filePath[$count - 2];
+            $fileName = $filePath[$count - 1];
+
+            $this->uploadFile($request->upload_file, $fileFolder, $fileName);
+
+        }
 
         return response()->json(
             [
@@ -347,7 +377,17 @@ class ProductKnowledgeController extends Controller
             $productKnowledgeRead->delete();
         }
 
-        $productKnowledge = ProductKnowledge::destroy($id);
+        $productKnowledge = ProductKnowledge::find($id);
+
+        if($productKnowledge->file != "") {
+            /* Delete File */
+            $filePath = explode('/', $productKnowledge->file);
+            $count = count($filePath);
+            $folderpath = $filePath[$count - 2];
+            File::deleteDirectory(public_path() . "/file/productknowledge/" . $folderpath);
+        }
+
+        $productKnowledge->destroy($id);
 
         return response()->json($id);
     }

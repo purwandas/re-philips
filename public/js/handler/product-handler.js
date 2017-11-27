@@ -22,6 +22,10 @@ var FormValidation = function () {
                         minlength: 2,
                         required: true,
                     },
+                    variants: {
+                        minlength: 2,
+                        required: true,
+                    },
                     category_id:{
                         required: true,
                     },

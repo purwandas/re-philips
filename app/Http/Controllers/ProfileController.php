@@ -8,6 +8,7 @@ use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use Auth;
 use File;
+use Illuminate\Support\Collection;
 
 class ProfileController extends Controller
 {
@@ -39,18 +40,16 @@ class ProfileController extends Controller
             ]);
 
         $user = User::find(Auth::user()->id);
+        $oldPhoto = "";
 
         if($user->photo != null && $request->photo_file != null) {
-            /* Delete Image */
-            $imagePath = explode('/', $user->photo);
-            $count = count($imagePath);
-            $folderpath = $imagePath[$count - 2];
-            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+            /* Save old photo path */
+            $oldPhoto = $user->photo;
         }
 
         // Upload file process
         ($request->photo_file != null) ? 
-            $photo_url = $this->imageUpload($request->photo_file, "user/".$this->getRandomPath()) : $photo_url = "";        
+            $photo_url = $this->getUploadPathName($request->photo_file, "user/".$this->getRandomPath(), 'USER') : $photo_url = "";
 
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
@@ -68,9 +67,32 @@ class ProfileController extends Controller
 
         }
 
+        if($user->photo != null && $request->photo_file != null && $oldPhoto != ""){
+
+            /* Delete Image after any transaction */
+            $imagePath = explode('/', $oldPhoto);
+            $count = count($imagePath);
+            $folderpath = $imagePath[$count - 2];
+            File::deleteDirectory(public_path() . "/image/user/" . $folderpath);
+
+        }
+
+        if($user->photo != null && $request->photo_file != null) {
+
+            /* Upload updated image */
+            $imagePath = explode('/', $user->photo);
+            $count = count($imagePath);
+            $imageFolder = "user/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+
+        }
+
         return response()->json(
             [
                 'url' => url('profile'),
             ]);
     }
+
 }

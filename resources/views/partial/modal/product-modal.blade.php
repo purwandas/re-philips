@@ -43,7 +43,17 @@
                                 <input type="text" id="model" name="model" class="form-control" placeholder="Input Model" data-tooltip="true" />
                             </div>
                           </div>
-                        </div> 
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Variants</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="variants" name="variants" class="form-control" placeholder="Input Variants" data-tooltip="true" />
+                            </div>
+                          </div>
+                        </div>
 
                         <div class="form-group">
                           <label class="col-sm-3 control-label">Name</label>

@@ -45,16 +45,24 @@ class InitAttendance extends Command
         $dayOfMonth = date('t');
         for ($i=1;$i<=$dayOfMonth;$i++){
             foreach ($this->getEmployees() as $employee) {
+
                 if ($this->getStores($employee->id)->count() > 0) {
 
                     $generateDate = Carbon::createFromDate(Carbon::now()->year, Carbon::now()->month, $i);
 
-                    /* Main Method */
-                    Attendance::create([
-                        'user_id' => $employee->id,
-                        'date' => $generateDate,
-                        'status' => 'Alpha',
-                    ]);
+                    $countAttendance = Attendance::where('user_id', $employee->id)
+                                    ->where('date', Carbon::parse($generateDate)->format('Y-m-d'))->count();
+
+                    if($countAttendance == 0) {
+
+                        /* Main Method */
+                        Attendance::create([
+                            'user_id' => $employee->id,
+                            'date' => $generateDate,
+                            'status' => 'Alpha',
+                        ]);
+
+                    }
 
                 }
             }
@@ -64,7 +72,7 @@ class InitAttendance extends Command
 
     public function getEmployees(){
         $employee = User::all();
-        return$employee;
+        return $employee;
     }
 
     public function getStores($userId){
