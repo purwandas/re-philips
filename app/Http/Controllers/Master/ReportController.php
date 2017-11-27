@@ -9,7 +9,7 @@ use App\ProductFocuses;
 use App\Region;
 use App\Reports\HistorySellIn;
 use App\StoreDistributor;
-use App\SummarySellIn;
+use App\Reports\SummarySellIn;
 use App\TrainerArea;
 use App\User;
 use Illuminate\Http\Request;

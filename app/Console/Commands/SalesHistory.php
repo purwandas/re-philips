@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\SellIn;
 use App\SellInDetail;
-use App\SummarySellIn;
+use App\Reports\SummarySellIn;
 use App\User;
 use Illuminate\Console\Command;
 use Carbon\Carbon;

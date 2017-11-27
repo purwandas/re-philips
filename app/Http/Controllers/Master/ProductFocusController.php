@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\SellIn;
 use App\SellInDetail;
-use App\SummarySellIn;
+use App\Reports\SummarySellIn;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

@@ -9,7 +9,7 @@ use App\StoreDistributor;
 use App\Distributor;
 use App\ProductFocuses;
 use App\DmArea;
-use App\SummarySellIn;
+use App\Reports\SummarySellIn;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
