@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Return Consument Report
-                <small>report return consument</small>
+            <h1>Free Product Report
+                <small>report transfer barang antar toko</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Return Consument Reporting</span>
+            <span class="active">Free Product Reporting</span>
         </li>
     </ul>
 @endsection
@@ -82,13 +82,13 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Return Consument</span>
+                            <span class="caption-subject font-blue bold uppercase">Free Product</span>
                         </div>
                     </div>
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="retConsumentReport" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="freeProductReport" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th> No. </th>
@@ -146,7 +146,7 @@
          *
          */
         var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
-        var url = 'datatable/retconsumentreport';
+        var url = 'datatable/freeproductreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
@@ -180,8 +180,8 @@
                             {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['freeProductReport', $('#freeProductReport'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'freeProductReport', $('#freeProductReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
 
@@ -192,11 +192,11 @@
             });
 
             // Set data for Data Table
-            var table = $('#retConsumentReport').dataTable({
+            var table = $('#freeProductReport').dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.retconsumentreport') }}",
+                    url: "{{ route('datatable.freeproductreport') }}",
                     type: 'POST',
                 },
                 "rowId": "id",
@@ -338,7 +338,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-retconsument',
+                    url: 'util/export-freeproduct',
                     dataType: 'json',
                     data: {data: data},
                     global: false,

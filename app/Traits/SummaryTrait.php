@@ -35,6 +35,13 @@ trait SummaryTrait {
     public function changeSummary($data, $change){
 
         $this->changeSummarySellIn($data, $change);
+        $this->changeSummarySellOut($data, $change);
+        $this->changeSummaryRetConsument($data, $change);
+        $this->changeSummaryRetDistributor($data, $change);
+        $this->changeSummaryFreeProduct($data, $change);
+        $this->changeSummaryTbat($data, $change);
+        $this->changeSummarySoh($data, $change);
+        $this->changeSummarySos($data, $change);
 
     }
 

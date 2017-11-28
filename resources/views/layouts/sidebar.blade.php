@@ -219,6 +219,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('freeproductreport') ? 'active open' : '' }}">
+                <a href="{{ url('freeproductreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Free Product Report</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ Request::is('tbatreport') ? 'active open' : '' }}">
                 <a href="{{ url('tbatreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>

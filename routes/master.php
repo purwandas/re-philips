@@ -189,6 +189,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('selloutreport', 'Master\ReportController@sellOutIndex');
     Route::get('retconsumentreport', 'Master\ReportController@retConsumentIndex');
     Route::get('retdistributorreport', 'Master\ReportController@retDistributorIndex');
+    Route::get('freeproductreport', 'Master\ReportController@freeproductIndex');
     Route::get('tbatreport', 'Master\ReportController@tbatIndex');
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');

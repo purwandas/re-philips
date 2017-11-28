@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/retconsumentreport', ['as'=> 'datatable.retconsumentreport','uses'=>'Master\ReportController@retConsumentData']);
     Route::post('datatable/retdistributorreport', ['as'=> 'datatable.retdistributorreport','uses'=>'Master\ReportController@retDistributorData']);
     Route::post('datatable/tbatreport', ['as'=> 'datatable.tbatreport','uses'=>'Master\ReportController@tbatData']);
+    Route::post('datatable/freeproductreport', ['as'=> 'datatable.freeproductreport','uses'=>'Master\ReportController@freeproductData']);
     Route::post('datatable/sohreport', ['as'=> 'datatable.sohreport','uses'=>'Master\ReportController@sohData']);
     Route::post('datatable/sosreport', ['as'=> 'datatable.sosreport','uses'=>'Master\ReportController@sosData']);
 
@@ -135,6 +136,14 @@ Route::group(['middleware' => ['auth']], function () {
      */
 
     Route::post('util/export-sellin', ['uses'=>'Master\ExportController@exportSellIn']);
+    Route::post('util/export-sellout', ['uses'=>'Master\ExportController@exportSellOut']);
+    Route::post('util/export-retconsument', ['uses'=>'Master\ExportController@exportRetConsument']);
+    Route::post('util/export-retdistributor', ['uses'=>'Master\ExportController@exportRetDistributor']);
+    Route::post('util/export-freeproduct', ['uses'=>'Master\ExportController@exportFreeProduct']);
+    Route::post('util/export-tbat', ['uses'=>'Master\ExportController@exportTbat']);
+    Route::post('util/export-soh', ['uses'=>'Master\ExportController@exportSoh']);
+    Route::post('util/export-sos', ['uses'=>'Master\ExportController@exportSos']);
+
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
 
