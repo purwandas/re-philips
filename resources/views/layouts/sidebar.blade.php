@@ -184,6 +184,13 @@
                 <h3 class="uppercase">REPORTING</h3>
             </li>
 
+            <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
+                <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">POS Material</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}">
                 <a href="{{ url('sellinreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
@@ -212,6 +219,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('freeproductreport') ? 'active open' : '' }}">
+                <a href="{{ url('freeproductreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Free Product Report</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ Request::is('tbatreport') ? 'active open' : '' }}">
                 <a href="{{ url('tbatreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
@@ -230,6 +244,13 @@
                 <a href="{{ url('sosreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
                     <span class="title">SOS Report</span>                    
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('sosreport') ? 'active open' : '' }}">
+                <a href="{{ url('displaysharereport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Display Share Report</span>                    
                 </a>
             </li>
 

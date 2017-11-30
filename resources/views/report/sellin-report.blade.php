@@ -188,6 +188,7 @@
         var exportButton = '#export';
 
         var paramFilter = ['sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton];
+
         var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
