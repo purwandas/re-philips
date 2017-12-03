@@ -85,6 +85,7 @@ class TargetController extends Controller
             'user_id' => 'required',
             'store_id' => 'required',
             'groupproduct_id' => 'required',
+            'type' => 'required',
             'target' => 'required|numeric'
             ]);
 
@@ -138,6 +139,7 @@ class TargetController extends Controller
             'user_id' => 'required',
             'store_id' => 'required',
             'groupproduct_id' => 'required',
+            'type' => 'required',
             'target' => 'required|numeric'
             ]);
 

@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api\Master;
 
 use App\Attendance;
 use App\AttendanceDetail;
+use App\DmArea;
 use App\EmployeeStore;
+use App\RsmRegion;
 use App\Store;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
@@ -107,5 +110,95 @@ class PromoterController extends Controller
 
         return response()->json($details);
 
+    }
+
+    public function getSupervisor($param){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if($param == 1) { // BY NATIONAL
+
+            $supervisor = User::where(function ($query) {
+                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+            })->with('stores.district.area.region')->get();
+
+            return response()->json($this->getSupervisorCollection($supervisor));
+
+        }else if($param == 2) { // BY REGION
+
+            $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
+
+            $supervisor = User::where(function ($query) {
+                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                })->with('stores.district.area.region')
+                    ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
+                        return $query->whereIn('id', $regionIds);
+                    })->get();
+
+            return response()->json($this->getSupervisorCollection($supervisor));
+
+        }else if($param == 3) { // BY AREA
+
+            $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+
+            $supervisor = User::where(function ($query) {
+                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                })->with('stores.district.area.region')
+                    ->whereHas('stores.district.area', function ($query) use ($areaIds){
+                        return $query->whereIn('id', $areaIds);
+                    })->get();
+
+            return response()->json($this->getSupervisorCollection($supervisor));
+
+        }
+
+    }
+
+    public function getSupervisorCollection($supervisor){
+
+        $result = new Collection();
+
+        foreach ($supervisor as $data) {
+
+            $arr_area = [];
+            $arr_region = [];
+            $collection = new Collection();
+
+            foreach ($data->stores as $detail) {
+                if (!in_array($detail->district->area->name, $arr_area)) {
+                    array_push($arr_area, $detail->district->area->name);
+                }
+
+                if (!in_array($detail->district->area->region->name, $arr_region)) {
+                    array_push($arr_region, $detail->district->area->region->name);
+                }
+            }
+
+            for ($i = 0; $i < count($arr_area); $i++) {
+                $data['area'] .= $arr_area[$i];
+
+                if ($i != count($arr_area) - 1) {
+                    $data['area'] .= ', ';
+                }
+            }
+
+            for ($i = 0; $i < count($arr_region); $i++) {
+                $data['region'] .= $arr_region[$i];
+
+                if ($i != count($arr_region) - 1) {
+                    $data['region'] .= ', ';
+                }
+            }
+
+            $collection['nik'] = $data['nik'];
+            $collection['name'] = $data['name'];
+            $collection['area'] = $data['area'];
+            $collection['region'] = $data['region'];
+
+            $result->push($collection);
+
+        }
+
+        return $result;
     }
 }

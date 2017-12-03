@@ -36,4 +36,11 @@ class GroupCompetitorController extends Controller
 
     	return response()->json($data);
     }
+
+    public function allNoParam()
+    {
+    	$data = GroupCompetitor::select('group_competitors.id', 'group_competitors.name')->get();
+
+    	return response()->json($data);
+    }
 }

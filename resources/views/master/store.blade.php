@@ -61,6 +61,10 @@
                             <th> Channel </th>
                             <th> Sub Channel</th>
                             <th> Distributor</th>
+                            <th> Classification</th>
+                            <th> Longitude</th>
+                            <th> Latitude</th>
+                            <th> Address</th>
                             <th> Supervisor </th>
                             <th> Options </th>                        
                         </tr>
@@ -111,12 +115,16 @@
                 {data: 'channel_name', name: 'channel_name'},
                 {data: 'subchannel_name', name: 'subchannel_name'},
                 {data: 'distributor', name: 'distributor'},
+                {data: 'classification', name: 'classification'},
+                {data: 'longitude', name: 'longitude'},
+                {data: 'latitude', name: 'latitude'},
+                {data: 'address', name: 'address'},
                 {data: 'spv_name', name: 'spv_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [12]},
+                {"className": "dt-center", "targets": [15]},
             ],
             "order": [ [0, 'desc'] ],            
         });
