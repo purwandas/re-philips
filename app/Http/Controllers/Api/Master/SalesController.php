@@ -10,6 +10,11 @@ use App\Distributor;
 use App\ProductFocuses;
 use App\DmArea;
 use App\Reports\SummarySellIn;
+use App\Reports\SummarySellOut;
+use App\Reports\SummaryRetConsument;
+use App\Reports\SummaryRetDistributor;
+use App\Reports\SummaryFreeProduct;
+use App\Reports\SummaryTbat;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -381,12 +386,144 @@ class SalesController extends Controller
                                     'quantity' => $sellOutDetail->quantity + $data['quantity']
                                 ]);
 
+                                /** Update Summary **/
+
+                                $summary = SummarySellOut::where('sellout_detail_id', $sellOutDetail->id)->first();
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
                             } else { // If data didn't exist -> create
 
-                                SellOutDetail::create([
+                                $detail = SellOutDetail::create([
                                     'sellout_id' => $sellOutHeader->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
+                                ]);
+
+                                /** Insert Summary **/
+
+                                /* Store */
+                                $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $sellOutHeader->store_id)->first();
+
+                                /* Product */
+                                $product = Product::with('category.group.groupProduct')
+                                            ->where('id', $data['product_id'])->first();
+
+                                /* Price */
+                                $realPrice = 0;
+                                $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                                if($price){
+                                    $realPrice = $price->price;
+                                }
+
+                                /* Distributor */
+                                $distIds = StoreDistributor::where('store_id', $sellOutHeader->store_id)->pluck('distributor_id');
+                                $dist = Distributor::whereIn('id', $distIds)->get();
+
+                                $distributor_code = '';
+                                $distributor_name = '';
+                                foreach ($dist as $distDetail) {
+                                    $distributor_code .= $distDetail->code;
+                                    $distributor_name .= $distDetail->name;
+
+                                    if ($distDetail->id != $dist->last()->id) {
+                                        $distributor_code .= ', ';
+                                        $distributor_name .= ', ';
+                                    }
+                                }
+
+                                /* Value - Product Focus */
+                                $value_pf_mr = 0;
+                                $value_pf_tr = 0;
+                                $value_pf_ppe = 0;
+
+                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                                foreach ($productFocus as $productFocusDetail) {
+                                    if ($productFocusDetail->type == 'Modern Retail') {
+                                        $value_pf_mr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                        $value_pf_tr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'PPE') {
+                                        $value_pf_ppe = $realPrice * $data['quantity'];
+                                    }
+                                }
+
+                                /* DM */
+                                $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $dm = User::whereIn('id', $dmIds)->get();
+
+                                $dm_name = '';
+                                foreach ($dm as $dmDetail) {
+                                    $dm_name .= $dmDetail->name;
+
+                                    if ($dmDetail->id != $dm->last()->id) {
+                                        $dm_name .= ', ';
+                                    }
+                                }
+
+                                /* Trainer */
+                                $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $tr = User::whereIn('id', $trIds)->get();
+
+                                $trainer_name = '';
+                                foreach ($tr as $trDetail) {
+                                    $trainer_name .= $trDetail->name;
+
+                                    if ($trDetail->id != $tr->last()->id) {
+                                        $trainer_name .= ', ';
+                                    }
+                                }
+
+                                SummarySellOut::create([
+                                    'sellout_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $sellOutHeader->store_id,
+                                    'user_id' => $sellOutHeader->user_id,
+                                    'week' => $sellOutHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $sellOutHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $data['quantity'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $data['quantity'],
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role,
+                                    'spv_name' => $store->user->name,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
                                 ]);
 
                             }
@@ -416,11 +553,125 @@ class SalesController extends Controller
                         foreach ($content['data'] as $data) {
 
                             // DETAILS
-                            SellOutDetail::create([
+                            $detail = SellOutDetail::create([
                                     'sellout_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
                                 ]);
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_id)->first();
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $detail->product_id)->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $detail->quantity;
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            SummarySellOut::create([
+                                'sellout_detail_id' => $detail->id,
+                                'region_id' => $store->district->area->region->id,
+                                'area_id' => $store->district->area->id,
+                                'district_id' => $store->district->id,
+                                'storeId' => $transaction->store_id,
+                                'user_id' => $transaction->user_id,
+                                'week' => $transaction->week,
+                                'distributor_code' => $distributor_code,
+                                'distributor_name' => $distributor_name,
+                                'region' => $store->district->area->region->name,
+                                'channel' => $store->subChannel->channel->name,
+                                'sub_channel' => $store->subChannel->name,
+                                'area' => $store->district->area->name,
+                                'district' => $store->district->name,
+                                'store_name_1' => $store->store_name_1,
+                                'store_name_2' => $store->store_name_2,
+                                'store_id' => $store->store_id,
+                                'nik' => $user->nik,
+                                'promoter_name' => $user->name,
+                                'date' => $transaction->date,
+                                'model' => $product->model . '/' . $product->variants,
+                                'group' => $product->category->group->groupProduct->name,
+                                'category' => $product->category->name,
+                                'product_name' => $product->name,
+                                'quantity' => $detail->quantity,
+                                'unit_price' => $realPrice,
+                                'value' => $realPrice * $detail->quantity,
+                                'value_pf_mr' => $value_pf_mr,
+                                'value_pf_tr' => $value_pf_tr,
+                                'value_pf_ppe' => $value_pf_ppe,
+                                'role' => $user->role,
+                                'spv_name' => $store->user->name,
+                                'dm_name' => $dm_name,
+                                'trainer_name' => $trainer_name,
+                            ]);
 
                         }
 
@@ -456,12 +707,144 @@ class SalesController extends Controller
                                     'quantity' => $retDistributorDetail->quantity + $data['quantity']
                                 ]);
 
+                                /** Update Summary **/
+
+                                $summary = SummaryRetDistributor::where('retdistributor_detail_id', $retDistributorDetail->id)->first();
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
                             } else { // If data didn't exist -> create
 
-                                RetDistributorDetail::create([
+                                $detail = RetDistributorDetail::create([
                                     'retdistributor_id' => $retDistributorHeader->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
+                                ]);
+
+                                /** Insert Summary **/
+
+                                /* Store */
+                                $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $retDistributorHeader->store_id)->first();
+
+                                /* Product */
+                                $product = Product::with('category.group.groupProduct')
+                                            ->where('id', $data['product_id'])->first();
+
+                                /* Price */
+                                $realPrice = 0;
+                                $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                                if($price){
+                                    $realPrice = $price->price;
+                                }
+
+                                /* Distributor */
+                                $distIds = StoreDistributor::where('store_id', $retDistributorHeader->store_id)->pluck('distributor_id');
+                                $dist = Distributor::whereIn('id', $distIds)->get();
+
+                                $distributor_code = '';
+                                $distributor_name = '';
+                                foreach ($dist as $distDetail) {
+                                    $distributor_code .= $distDetail->code;
+                                    $distributor_name .= $distDetail->name;
+
+                                    if ($distDetail->id != $dist->last()->id) {
+                                        $distributor_code .= ', ';
+                                        $distributor_name .= ', ';
+                                    }
+                                }
+
+                                /* Value - Product Focus */
+                                $value_pf_mr = 0;
+                                $value_pf_tr = 0;
+                                $value_pf_ppe = 0;
+
+                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                                foreach ($productFocus as $productFocusDetail) {
+                                    if ($productFocusDetail->type == 'Modern Retail') {
+                                        $value_pf_mr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                        $value_pf_tr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'PPE') {
+                                        $value_pf_ppe = $realPrice * $data['quantity'];
+                                    }
+                                }
+
+                                /* DM */
+                                $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $dm = User::whereIn('id', $dmIds)->get();
+
+                                $dm_name = '';
+                                foreach ($dm as $dmDetail) {
+                                    $dm_name .= $dmDetail->name;
+
+                                    if ($dmDetail->id != $dm->last()->id) {
+                                        $dm_name .= ', ';
+                                    }
+                                }
+
+                                /* Trainer */
+                                $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $tr = User::whereIn('id', $trIds)->get();
+
+                                $trainer_name = '';
+                                foreach ($tr as $trDetail) {
+                                    $trainer_name .= $trDetail->name;
+
+                                    if ($trDetail->id != $tr->last()->id) {
+                                        $trainer_name .= ', ';
+                                    }
+                                }
+
+                                SummaryRetDistributor::create([
+                                    'retdistributor_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $retDistributorHeader->store_id,
+                                    'user_id' => $retDistributorHeader->user_id,
+                                    'week' => $retDistributorHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $retDistributorHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $data['quantity'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $data['quantity'],
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role,
+                                    'spv_name' => $store->user->name,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
                                 ]);
 
                             }
@@ -491,11 +874,125 @@ class SalesController extends Controller
                         foreach ($content['data'] as $data) {
 
                             // DETAILS
-                            RetDistributorDetail::create([
+                            $detail = RetDistributorDetail::create([
                                     'retdistributor_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
                                 ]);
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_id)->first();
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $detail->product_id)->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $detail->quantity;
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            SummaryRetDistributor::create([
+                                'retdistributor_detail_id' => $detail->id,
+                                'region_id' => $store->district->area->region->id,
+                                'area_id' => $store->district->area->id,
+                                'district_id' => $store->district->id,
+                                'storeId' => $transaction->store_id,
+                                'user_id' => $transaction->user_id,
+                                'week' => $transaction->week,
+                                'distributor_code' => $distributor_code,
+                                'distributor_name' => $distributor_name,
+                                'region' => $store->district->area->region->name,
+                                'channel' => $store->subChannel->channel->name,
+                                'sub_channel' => $store->subChannel->name,
+                                'area' => $store->district->area->name,
+                                'district' => $store->district->name,
+                                'store_name_1' => $store->store_name_1,
+                                'store_name_2' => $store->store_name_2,
+                                'store_id' => $store->store_id,
+                                'nik' => $user->nik,
+                                'promoter_name' => $user->name,
+                                'date' => $transaction->date,
+                                'model' => $product->model . '/' . $product->variants,
+                                'group' => $product->category->group->groupProduct->name,
+                                'category' => $product->category->name,
+                                'product_name' => $product->name,
+                                'quantity' => $detail->quantity,
+                                'unit_price' => $realPrice,
+                                'value' => $realPrice * $detail->quantity,
+                                'value_pf_mr' => $value_pf_mr,
+                                'value_pf_tr' => $value_pf_tr,
+                                'value_pf_ppe' => $value_pf_ppe,
+                                'role' => $user->role,
+                                'spv_name' => $store->user->name,
+                                'dm_name' => $dm_name,
+                                'trainer_name' => $trainer_name,
+                            ]);
 
                         }
 
@@ -504,7 +1001,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check ret distributor header after insert
+                // Check sell in header after insert
                 $retDistributorHeaderAfter = RetDistributor::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $retDistributorHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -531,12 +1028,144 @@ class SalesController extends Controller
                                     'quantity' => $retConsumentDetail->quantity + $data['quantity']
                                 ]);
 
+                                /** Update Summary **/
+
+                                $summary = SummaryRetConsument::where('retconsument_detail_id', $retConsumentDetail->id)->first();
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
                             } else { // If data didn't exist -> create
 
-                                RetConsumentDetail::create([
+                                $detail = RetConsumentDetail::create([
                                     'retconsument_id' => $retConsumentHeader->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
+                                ]);
+
+                                /** Insert Summary **/
+
+                                /* Store */
+                                $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $retConsumentHeader->store_id)->first();
+
+                                /* Product */
+                                $product = Product::with('category.group.groupProduct')
+                                            ->where('id', $data['product_id'])->first();
+
+                                /* Price */
+                                $realPrice = 0;
+                                $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                                if($price){
+                                    $realPrice = $price->price;
+                                }
+
+                                /* Distributor */
+                                $distIds = StoreDistributor::where('store_id', $retConsumentHeader->store_id)->pluck('distributor_id');
+                                $dist = Distributor::whereIn('id', $distIds)->get();
+
+                                $distributor_code = '';
+                                $distributor_name = '';
+                                foreach ($dist as $distDetail) {
+                                    $distributor_code .= $distDetail->code;
+                                    $distributor_name .= $distDetail->name;
+
+                                    if ($distDetail->id != $dist->last()->id) {
+                                        $distributor_code .= ', ';
+                                        $distributor_name .= ', ';
+                                    }
+                                }
+
+                                /* Value - Product Focus */
+                                $value_pf_mr = 0;
+                                $value_pf_tr = 0;
+                                $value_pf_ppe = 0;
+
+                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                                foreach ($productFocus as $productFocusDetail) {
+                                    if ($productFocusDetail->type == 'Modern Retail') {
+                                        $value_pf_mr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                        $value_pf_tr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'PPE') {
+                                        $value_pf_ppe = $realPrice * $data['quantity'];
+                                    }
+                                }
+
+                                /* DM */
+                                $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $dm = User::whereIn('id', $dmIds)->get();
+
+                                $dm_name = '';
+                                foreach ($dm as $dmDetail) {
+                                    $dm_name .= $dmDetail->name;
+
+                                    if ($dmDetail->id != $dm->last()->id) {
+                                        $dm_name .= ', ';
+                                    }
+                                }
+
+                                /* Trainer */
+                                $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $tr = User::whereIn('id', $trIds)->get();
+
+                                $trainer_name = '';
+                                foreach ($tr as $trDetail) {
+                                    $trainer_name .= $trDetail->name;
+
+                                    if ($trDetail->id != $tr->last()->id) {
+                                        $trainer_name .= ', ';
+                                    }
+                                }
+
+                                SummaryRetConsument::create([
+                                    'retconsument_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $retConsumentHeader->store_id,
+                                    'user_id' => $retConsumentHeader->user_id,
+                                    'week' => $retConsumentHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $retConsumentHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $data['quantity'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $data['quantity'],
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role,
+                                    'spv_name' => $store->user->name,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
                                 ]);
 
                             }
@@ -566,11 +1195,125 @@ class SalesController extends Controller
                         foreach ($content['data'] as $data) {
 
                             // DETAILS
-                            RetConsumentDetail::create([
+                            $detail = RetConsumentDetail::create([
                                     'retconsument_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
                                 ]);
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_id)->first();
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $detail->product_id)->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $detail->quantity;
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            SummaryRetConsument::create([
+                                'retconsument_detail_id' => $detail->id,
+                                'region_id' => $store->district->area->region->id,
+                                'area_id' => $store->district->area->id,
+                                'district_id' => $store->district->id,
+                                'storeId' => $transaction->store_id,
+                                'user_id' => $transaction->user_id,
+                                'week' => $transaction->week,
+                                'distributor_code' => $distributor_code,
+                                'distributor_name' => $distributor_name,
+                                'region' => $store->district->area->region->name,
+                                'channel' => $store->subChannel->channel->name,
+                                'sub_channel' => $store->subChannel->name,
+                                'area' => $store->district->area->name,
+                                'district' => $store->district->name,
+                                'store_name_1' => $store->store_name_1,
+                                'store_name_2' => $store->store_name_2,
+                                'store_id' => $store->store_id,
+                                'nik' => $user->nik,
+                                'promoter_name' => $user->name,
+                                'date' => $transaction->date,
+                                'model' => $product->model . '/' . $product->variants,
+                                'group' => $product->category->group->groupProduct->name,
+                                'category' => $product->category->name,
+                                'product_name' => $product->name,
+                                'quantity' => $detail->quantity,
+                                'unit_price' => $realPrice,
+                                'value' => $realPrice * $detail->quantity,
+                                'value_pf_mr' => $value_pf_mr,
+                                'value_pf_tr' => $value_pf_tr,
+                                'value_pf_ppe' => $value_pf_ppe,
+                                'role' => $user->role,
+                                'spv_name' => $store->user->name,
+                                'dm_name' => $dm_name,
+                                'trainer_name' => $trainer_name,
+                            ]);
 
                         }
 
@@ -579,7 +1322,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check ret consument header after insert
+                // Check sell in header after insert
                 $retConsumentHeaderAfter = RetConsument::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $retConsumentHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -606,12 +1349,144 @@ class SalesController extends Controller
                                     'quantity' => $freeProductDetail->quantity + $data['quantity']
                                 ]);
 
+                                /** Update Summary **/
+
+                                $summary = SummaryFreeProduct::where('freeproduct_detail_id', $freeProductDetail->id)->first();
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
                             } else { // If data didn't exist -> create
 
-                                FreeProductDetail::create([
+                                $detail = FreeProductDetail::create([
                                     'freeproduct_id' => $freeProductHeader->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
+                                ]);
+
+                                /** Insert Summary **/
+
+                                /* Store */
+                                $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $freeProductHeader->store_id)->first();
+
+                                /* Product */
+                                $product = Product::with('category.group.groupProduct')
+                                            ->where('id', $data['product_id'])->first();
+
+                                /* Price */
+                                $realPrice = 0;
+                                $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                                if($price){
+                                    $realPrice = $price->price;
+                                }
+
+                                /* Distributor */
+                                $distIds = StoreDistributor::where('store_id', $freeProductHeader->store_id)->pluck('distributor_id');
+                                $dist = Distributor::whereIn('id', $distIds)->get();
+
+                                $distributor_code = '';
+                                $distributor_name = '';
+                                foreach ($dist as $distDetail) {
+                                    $distributor_code .= $distDetail->code;
+                                    $distributor_name .= $distDetail->name;
+
+                                    if ($distDetail->id != $dist->last()->id) {
+                                        $distributor_code .= ', ';
+                                        $distributor_name .= ', ';
+                                    }
+                                }
+
+                                /* Value - Product Focus */
+                                $value_pf_mr = 0;
+                                $value_pf_tr = 0;
+                                $value_pf_ppe = 0;
+
+                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                                foreach ($productFocus as $productFocusDetail) {
+                                    if ($productFocusDetail->type == 'Modern Retail') {
+                                        $value_pf_mr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                        $value_pf_tr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'PPE') {
+                                        $value_pf_ppe = $realPrice * $data['quantity'];
+                                    }
+                                }
+
+                                /* DM */
+                                $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $dm = User::whereIn('id', $dmIds)->get();
+
+                                $dm_name = '';
+                                foreach ($dm as $dmDetail) {
+                                    $dm_name .= $dmDetail->name;
+
+                                    if ($dmDetail->id != $dm->last()->id) {
+                                        $dm_name .= ', ';
+                                    }
+                                }
+
+                                /* Trainer */
+                                $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $tr = User::whereIn('id', $trIds)->get();
+
+                                $trainer_name = '';
+                                foreach ($tr as $trDetail) {
+                                    $trainer_name .= $trDetail->name;
+
+                                    if ($trDetail->id != $tr->last()->id) {
+                                        $trainer_name .= ', ';
+                                    }
+                                }
+
+                                SummaryFreeProduct::create([
+                                    'freeproduct_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $freeProductHeader->store_id,
+                                    'user_id' => $freeProductHeader->user_id,
+                                    'week' => $freeProductHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $freeProductHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $data['quantity'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $data['quantity'],
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role,
+                                    'spv_name' => $store->user->name,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
                                 ]);
 
                             }
@@ -641,11 +1516,125 @@ class SalesController extends Controller
                         foreach ($content['data'] as $data) {
 
                             // DETAILS
-                            FreeProductDetail::create([
+                            $detail = FreeProductDetail::create([
                                     'freeproduct_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
                                 ]);
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_id)->first();
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $detail->product_id)->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $detail->quantity;
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            SummaryFreeProduct::create([
+                                'freeproduct_detail_id' => $detail->id,
+                                'region_id' => $store->district->area->region->id,
+                                'area_id' => $store->district->area->id,
+                                'district_id' => $store->district->id,
+                                'storeId' => $transaction->store_id,
+                                'user_id' => $transaction->user_id,
+                                'week' => $transaction->week,
+                                'distributor_code' => $distributor_code,
+                                'distributor_name' => $distributor_name,
+                                'region' => $store->district->area->region->name,
+                                'channel' => $store->subChannel->channel->name,
+                                'sub_channel' => $store->subChannel->name,
+                                'area' => $store->district->area->name,
+                                'district' => $store->district->name,
+                                'store_name_1' => $store->store_name_1,
+                                'store_name_2' => $store->store_name_2,
+                                'store_id' => $store->store_id,
+                                'nik' => $user->nik,
+                                'promoter_name' => $user->name,
+                                'date' => $transaction->date,
+                                'model' => $product->model . '/' . $product->variants,
+                                'group' => $product->category->group->groupProduct->name,
+                                'category' => $product->category->name,
+                                'product_name' => $product->name,
+                                'quantity' => $detail->quantity,
+                                'unit_price' => $realPrice,
+                                'value' => $realPrice * $detail->quantity,
+                                'value_pf_mr' => $value_pf_mr,
+                                'value_pf_tr' => $value_pf_tr,
+                                'value_pf_ppe' => $value_pf_ppe,
+                                'role' => $user->role,
+                                'spv_name' => $store->user->name,
+                                'dm_name' => $dm_name,
+                                'trainer_name' => $trainer_name,
+                            ]);
 
                         }
 
@@ -654,7 +1643,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check free product header after insert
+                // Check sell in header after insert
                 $freeProductHeaderAfter = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $freeProductHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -681,12 +1670,144 @@ class SalesController extends Controller
                                     'quantity' => $tbatDetail->quantity + $data['quantity']
                                 ]);
 
+                                /** Update Summary **/
+
+                                $summary = SummaryTbat::where('tbat_detail_id', $tbatDetail->id)->first();
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
                             } else { // If data didn't exist -> create
 
-                                TbatDetail::create([
+                                $detail = TbatDetail::create([
                                     'tbat_id' => $tbatHeader->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
+                                ]);
+
+                                /** Insert Summary **/
+
+                                /* Store */
+                                $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $tbatHeader->store_id)->first();
+
+                                /* Product */
+                                $product = Product::with('category.group.groupProduct')
+                                            ->where('id', $data['product_id'])->first();
+
+                                /* Price */
+                                $realPrice = 0;
+                                $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                                if($price){
+                                    $realPrice = $price->price;
+                                }
+
+                                /* Distributor */
+                                $distIds = StoreDistributor::where('store_id', $tbatHeader->store_id)->pluck('distributor_id');
+                                $dist = Distributor::whereIn('id', $distIds)->get();
+
+                                $distributor_code = '';
+                                $distributor_name = '';
+                                foreach ($dist as $distDetail) {
+                                    $distributor_code .= $distDetail->code;
+                                    $distributor_name .= $distDetail->name;
+
+                                    if ($distDetail->id != $dist->last()->id) {
+                                        $distributor_code .= ', ';
+                                        $distributor_name .= ', ';
+                                    }
+                                }
+
+                                /* Value - Product Focus */
+                                $value_pf_mr = 0;
+                                $value_pf_tr = 0;
+                                $value_pf_ppe = 0;
+
+                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                                foreach ($productFocus as $productFocusDetail) {
+                                    if ($productFocusDetail->type == 'Modern Retail') {
+                                        $value_pf_mr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                        $value_pf_tr = $realPrice * $data['quantity'];
+                                    } else if ($productFocusDetail->type == 'PPE') {
+                                        $value_pf_ppe = $realPrice * $data['quantity'];
+                                    }
+                                }
+
+                                /* DM */
+                                $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $dm = User::whereIn('id', $dmIds)->get();
+
+                                $dm_name = '';
+                                foreach ($dm as $dmDetail) {
+                                    $dm_name .= $dmDetail->name;
+
+                                    if ($dmDetail->id != $dm->last()->id) {
+                                        $dm_name .= ', ';
+                                    }
+                                }
+
+                                /* Trainer */
+                                $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $tr = User::whereIn('id', $trIds)->get();
+
+                                $trainer_name = '';
+                                foreach ($tr as $trDetail) {
+                                    $trainer_name .= $trDetail->name;
+
+                                    if ($trDetail->id != $tr->last()->id) {
+                                        $trainer_name .= ', ';
+                                    }
+                                }
+
+                                SummaryTbat::create([
+                                    'tbat_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $tbatHeader->store_id,
+                                    'user_id' => $tbatHeader->user_id,
+                                    'week' => $tbatHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $tbatHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $data['quantity'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $data['quantity'],
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role,
+                                    'spv_name' => $store->user->name,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
                                 ]);
 
                             }
@@ -716,11 +1837,125 @@ class SalesController extends Controller
                         foreach ($content['data'] as $data) {
 
                             // DETAILS
-                            TbatDetail::create([
+                            $detail = TbatDetail::create([
                                     'tbat_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
                                 ]);
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_id)->first();
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $detail->product_id)->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $detail->quantity;
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            SummaryTbat::create([
+                                'tbat_detail_id' => $detail->id,
+                                'region_id' => $store->district->area->region->id,
+                                'area_id' => $store->district->area->id,
+                                'district_id' => $store->district->id,
+                                'storeId' => $transaction->store_id,
+                                'user_id' => $transaction->user_id,
+                                'week' => $transaction->week,
+                                'distributor_code' => $distributor_code,
+                                'distributor_name' => $distributor_name,
+                                'region' => $store->district->area->region->name,
+                                'channel' => $store->subChannel->channel->name,
+                                'sub_channel' => $store->subChannel->name,
+                                'area' => $store->district->area->name,
+                                'district' => $store->district->name,
+                                'store_name_1' => $store->store_name_1,
+                                'store_name_2' => $store->store_name_2,
+                                'store_id' => $store->store_id,
+                                'nik' => $user->nik,
+                                'promoter_name' => $user->name,
+                                'date' => $transaction->date,
+                                'model' => $product->model . '/' . $product->variants,
+                                'group' => $product->category->group->groupProduct->name,
+                                'category' => $product->category->name,
+                                'product_name' => $product->name,
+                                'quantity' => $detail->quantity,
+                                'unit_price' => $realPrice,
+                                'value' => $realPrice * $detail->quantity,
+                                'value_pf_mr' => $value_pf_mr,
+                                'value_pf_tr' => $value_pf_tr,
+                                'value_pf_ppe' => $value_pf_ppe,
+                                'role' => $user->role,
+                                'spv_name' => $store->user->name,
+                                'dm_name' => $dm_name,
+                                'trainer_name' => $trainer_name,
+                            ]);
 
                         }
 
@@ -729,8 +1964,8 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check tbat header after insert
-                $tbatHeaderAfter = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+                // Check sell in header after insert
+                $tbatHeaderAfter = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $tbatHeaderAfter->id, 'message' => 'Data berhasil di input']);
 

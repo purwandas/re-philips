@@ -184,13 +184,16 @@ Route::group(['middleware' => ['auth']], function () {
      * Reporting Module(s)
      */
 
+    Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('sellinreport', 'Master\ReportController@sellInIndex');
     Route::get('selloutreport', 'Master\ReportController@sellOutIndex');
     Route::get('retconsumentreport', 'Master\ReportController@retConsumentIndex');
     Route::get('retdistributorreport', 'Master\ReportController@retDistributorIndex');
+    Route::get('freeproductreport', 'Master\ReportController@freeproductIndex');
     Route::get('tbatreport', 'Master\ReportController@tbatIndex');
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');
+    Route::get('displaysharereport', 'Master\ReportController@displayShareIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
