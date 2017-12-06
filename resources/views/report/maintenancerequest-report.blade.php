@@ -78,6 +78,11 @@
                             <i class="fa fa-map-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Maintenence Request</span>
                         </div>
+                        
+                        <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL ALT </a>
+                        </div>
                     </div>
 
                     <div class="portlet-body">

@@ -1351,7 +1351,7 @@ class ReportController extends Controller
                     ->join('areas', 'maintenance_requests.region_id', '=', 'areas.id')
                     ->join('stores', 'maintenance_requests.store_id', '=', 'stores.id')
                     ->join('users', 'maintenance_requests.user_id', '=', 'users.id')
-                    ->select('maintenance_requests.*', 'regions.name as region_name', 'areas.name as area_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
+                    ->select('maintenance_requests.*', 'maintenance_requests.photo as photo2', 'regions.name as region_name', 'areas.name as area_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
                     ->get();
 
             $filter = $data;
@@ -1385,6 +1385,17 @@ class ReportController extends Controller
                 foreach ($files as $file)
                 {
                     $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
+                }
+                    return $images;
+                })
+            ->editColumn('photo2', function ($item) {
+                $folderPath = explode('/', $item->photo2);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= asset((string)$file)."\n";
                 }
                     return $images;
                 })

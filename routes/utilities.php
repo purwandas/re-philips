@@ -146,7 +146,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-soh', ['uses'=>'Master\ExportController@exportSoh']);
     Route::post('util/export-sos', ['uses'=>'Master\ExportController@exportSos']);
     Route::post('util/export-displayshare', ['uses'=>'Master\ExportController@exportDisplayShare']);
-    Route::post('util/export-maintenancereport', ['uses'=>'Master\ExportController@exportMaintenanceReport']);
+    Route::post('util/export-maintenancerequest', ['uses'=>'Master\ExportController@exportMaintenanceRequest']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
 

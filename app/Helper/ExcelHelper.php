@@ -58,4 +58,26 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportReportMaintenance(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'USER' => @$item['user_name'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'STORE NAME 2' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeid'],
+                'CATEGORY' => @$item['category'],
+                'CHANNEL' => @$item['channel'],
+                'TYPE' => @$item['type'],
+                'REPORT' => @$item['report'],
+                'PHOTO' => @$item['photo2'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
+
 }
