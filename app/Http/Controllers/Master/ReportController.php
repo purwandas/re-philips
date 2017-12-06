@@ -1358,16 +1358,14 @@ class ReportController extends Controller
 
             /* If filter */
             if($request['searchMonth']){
-                // $filter = $data
-                //     ->whereMonth('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('m'))
-                //     ->whereYear('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('Y'));
-
-                $month = Carbon::parse($request['searchMonth'])->format('m'));
-                $year = Carbon::parse($request['searchMonth'])->format('Y'));
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                // $date2 = "$year-$month-01";
-                $filter = $data->where('date', 'between', "ini and ini");
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
             }
 
             if($request['byStore']){

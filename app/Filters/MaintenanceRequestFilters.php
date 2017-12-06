@@ -28,8 +28,8 @@ class MaintenanceRequestFilters extends QueryFilters
 
     // // Ordering by month
     // public function searchMonth($value) {
-    //    return $this->builder->whereMonth('maintenance_requests.date', '=', Carbon::parse($value)->format('m'))
-    //                      ->whereYear('maintenance_requests.date', '=', Carbon::parse($value)->format('Y'));
+    //    return $this->builder->whereMonth('maintenance_requests.date', '=', Carbon::parse($value)->format('m'));
+    //                      // ->whereYear('maintenance_requests.date', '=', Carbon::parse($value)->format('Y'));
     // }
 
 }

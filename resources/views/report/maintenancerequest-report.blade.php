@@ -37,6 +37,12 @@
                     <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
                 </div>
 
+                <div class="row filter" id="reportContent" style="margin-top: 10px;">
+                    <div class="col-md-8">
+                        <input type="text" id="filterReport" class="form-control" placeholder="Report Description">
+                    </div>
+                </div>
+                
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterStore" class="select2select"></select>
@@ -49,12 +55,6 @@
                 <div class="row filter" id="monthContent" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <input type="text" id="filterMonth" class="form-control" placeholder="Month">
-                    </div>
-                </div>
-
-                <div class="row filter" id="reportContent" style="margin-top: 10px;">
-                    <div class="col-md-4">
-                        <input type="text" id="filterReport" class="form-control" placeholder="Report Description">
                     </div>
                 </div>
 
