@@ -259,6 +259,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
+                <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Maintenance Request Report</span>                    
+                </a>
+            </li>
+            
             @endif
 
             <li class="heading">

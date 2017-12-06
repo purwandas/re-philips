@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/freeproductreport', ['as'=> 'datatable.freeproductreport','uses'=>'Master\ReportController@freeproductData']);
     Route::post('datatable/sohreport', ['as'=> 'datatable.sohreport','uses'=>'Master\ReportController@sohData']);
     Route::post('datatable/sosreport', ['as'=> 'datatable.sosreport','uses'=>'Master\ReportController@sosData']);
+    Route::post('datatable/maintenancerequestreport', ['as'=> 'datatable.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestData']);
 
     /**
      * Data with filter (select2, list)
@@ -145,7 +146,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-tbat', ['uses'=>'Master\ExportController@exportTbat']);
     Route::post('util/export-soh', ['uses'=>'Master\ExportController@exportSoh']);
     Route::post('util/export-sos', ['uses'=>'Master\ExportController@exportSos']);
-
+    Route::post('util/export-displayshare', ['uses'=>'Master\ExportController@exportDisplayShare']);
+    Route::post('util/export-maintenancereport', ['uses'=>'Master\ExportController@exportMaintenanceReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
 

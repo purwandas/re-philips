@@ -202,6 +202,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');
     Route::get('displaysharereport', 'Master\ReportController@displayShareIndex');
+    Route::get('maintenancerequest', 'Master\ReportController@maintenanceRequestIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
