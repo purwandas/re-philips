@@ -26,7 +26,7 @@ class MaintenanceRequestFilters extends QueryFilters
     //     return $this->builder->where('maintenance_requests.user_id',$value);
     // }
 
-    // // Ordering by month
+    // Ordering by month
     // public function searchMonth($value) {
     //    return $this->builder->whereMonth('maintenance_requests.date', '=', Carbon::parse($value)->format('m'));
     //                      // ->whereYear('maintenance_requests.date', '=', Carbon::parse($value)->format('Y'));

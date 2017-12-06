@@ -35,6 +35,7 @@ use App\Reports\HistorySoh;
 use App\Reports\SummarySos;
 use App\Reports\HistorySos;
 use App\MaintenanceRequest;
+use App\CompetitorActivity;
 use App\TrainerArea;
 use App\User;
 use Illuminate\Http\Request;
@@ -74,6 +75,7 @@ use App\Filters\ReportRetDistributorFilters;
 use App\Filters\ReportTbatFilters;
 use App\Filters\ReportDisplayShareFilters;
 use App\Filters\MaintenanceRequestFilters;
+use App\Filters\CompetitorActivityFilters;
 use App\Traits\StringTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -131,6 +133,10 @@ class ReportController extends Controller
 
     public function maintenanceRequestIndex(){
         return view('report.maintenancerequest-report');
+    }
+
+    public function competitorActivityIndex(){
+        return view('report.competitoractivity-report');
     }
     
 
@@ -1299,7 +1305,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -1322,10 +1327,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -1386,6 +1387,70 @@ class ReportController extends Controller
                 {
                     $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
                 }
+                    return $images;
+                })
+            ->editColumn('photo2', function ($item) {
+                $folderPath = explode('/', $item->photo2);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= asset((string)$file)."\n";
+                }
+                    return $images;
+                })
+            ->rawColumns(['photo'])
+            ->make(true);
+
+    }
+
+    public function competitorActivityData(Request $request){
+
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+            $data = CompetitorActivity::
+                    join('stores', 'competitor_activities.store_id', '=', 'stores.id')
+                    ->join('users', 'competitor_activities.user_id', '=', 'users.id')
+                    ->join('group_competitors', 'competitor_activities.groupcompetitor_id', '=', 'group_competitors.id')
+                    ->select('competitor_activities.*', 'competitor_activities.photo as photo2','stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'group_competitors.name as group_competitor')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            return Datatables::of($filter->all())
+            ->editColumn('photo', function ($item) {
+                // $folderPath = explode('/', $item->photo);
+                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                // $files = File::allFiles($folder);
+                $images = '';
+                // foreach ($files as $file)
+                // {
+                    $images .= "<img src='".$item->photo."' height='100px'>\n";
+                // }
                     return $images;
                 })
             ->editColumn('photo2', function ($item) {

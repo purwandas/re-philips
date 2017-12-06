@@ -260,6 +260,13 @@
                     <span class="title">Maintenance Request Report</span>                    
                 </a>
             </li>
+
+            <li class="nav-item {{ Request::is('competitoractivityreport') ? 'active open' : '' }}">
+                <a href="{{ url('competitoractivityreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Competitor Activity Report</span>                    
+                </a>
+            </li>
             
             @endif
 

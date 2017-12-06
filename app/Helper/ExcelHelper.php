@@ -80,4 +80,27 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportReportCompetitor(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'USER' => @$item['user_name'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'STORE NAME 2' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeid'],
+                'WEEK' => @$item['week'],
+                'SKU' => @$item['sku'],
+                'GROUP COMPETITOR' => @$item['group_competitor'],
+                'PROMO TYPE' => @$item['promo_type'],
+                'INFORMATION' => @$item['information'],
+                'START PERIOD' => @$item['start_period'],
+                'END PERIOD' => @$item['end_period'],
+                'PHOTO' => @$item['photo2'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
+
 }
