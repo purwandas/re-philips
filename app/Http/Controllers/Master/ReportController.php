@@ -34,6 +34,7 @@ use App\Reports\SummarySoh;
 use App\Reports\HistorySoh;
 use App\Reports\SummarySos;
 use App\Reports\HistorySos;
+use App\MaintenanceRequest;
 use App\TrainerArea;
 use App\User;
 use Illuminate\Http\Request;
@@ -72,8 +73,11 @@ use App\Filters\ReportRetConsumentFilters;
 use App\Filters\ReportRetDistributorFilters;
 use App\Filters\ReportTbatFilters;
 use App\Filters\ReportDisplayShareFilters;
+use App\Filters\MaintenanceRequestFilters;
 use App\Traits\StringTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use File;
 
 class ReportController extends Controller
 {
@@ -124,6 +128,11 @@ class ReportController extends Controller
     public function displayShareIndex(){
         return view('report.displayshare-report');
     }
+
+    public function maintenanceRequestIndex(){
+        return view('report.maintenancerequest-report');
+    }
+    
 
     public function sellInData(Request $request, SellinFilters $filters){
 
@@ -929,7 +938,7 @@ class ReportController extends Controller
         
     }
 
-    public function sohData(Request $request, TbatFilters $filters){
+    public function sohData(Request $request, SohFilters $filters){
 
         // Check data summary atau history
         $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
@@ -1063,7 +1072,7 @@ class ReportController extends Controller
 
     }
 
-    public function sosData(Request $request, TbatFilters $filters){
+    public function sosData(Request $request, SosFilters $filters){
 
         // Check data summary atau history
         $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
@@ -1322,6 +1331,67 @@ class ReportController extends Controller
             ->make(true);
 
         }
+
+    }
+
+    public function maintenanceRequestData(Request $request, MaintenanceRequestFilters $filters){
+
+        // Check data summary atau history
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+        
+            // $withFilter = MaintenanceRequest::filter($filters)->get();
+
+
+            $data = MaintenanceRequest::filter($filters)
+                    ->join('regions', 'maintenance_requests.region_id', '=', 'regions.id')
+                    ->join('areas', 'maintenance_requests.region_id', '=', 'areas.id')
+                    ->join('stores', 'maintenance_requests.store_id', '=', 'stores.id')
+                    ->join('users', 'maintenance_requests.user_id', '=', 'users.id')
+                    ->select('maintenance_requests.*', 'regions.name as region_name', 'areas.name as area_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                // $filter = $data
+                //     ->whereMonth('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('m'))
+                //     ->whereYear('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('Y'));
+
+                $month = Carbon::parse($request['searchMonth'])->format('m'));
+                $year = Carbon::parse($request['searchMonth'])->format('Y'));
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                // $date2 = "$year-$month-01";
+                $filter = $data->where('date', 'between', "ini and ini");
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            return Datatables::of($filter->all())
+            ->editColumn('photo', function ($item) {
+                $folderPath = explode('/', $item->photo);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
+                }
+                    return $images;
+                })
+            ->rawColumns(['photo'])
+            ->make(true);
 
     }
 
