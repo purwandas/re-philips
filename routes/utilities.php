@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/subchannel', ['as'=> 'datatable.subchannel','uses'=>'Master\SubChannelController@masterDataTable']);
     Route::post('datatable/distributor', ['as'=> 'datatable.distributor','uses'=>'Master\DistributorController@masterDataTable']);
     Route::post('datatable/employee', ['as'=> 'datatable.employee','uses'=>'Master\EmployeeController@masterDataTable']);
+    Route::post('datatable/fanspage', ['as'=> 'datatable.fanspage','uses'=>'Master\FanspageController@masterDataTable']);
     Route::post('datatable/store', ['as'=> 'datatable.store','uses'=>'Master\StoreController@masterDataTable']);
     Route::post('datatable/place', ['as'=> 'datatable.place','uses'=>'Master\PlaceController@masterDataTable']);
     Route::post('datatable/groupcompetitor', ['as'=> 'datatable.groupcompetitor','uses'=>'Master\GroupCompetitorController@masterDataTable']);

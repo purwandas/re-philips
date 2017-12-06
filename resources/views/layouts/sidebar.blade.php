@@ -156,6 +156,11 @@
                 <i class="fa fa-street-view"></i>
                 <span class="title">Group Competitor</span>
             </a>
+            <li class="nav-item {{ Request::is('fanspage') ? 'active open' : '' }}">
+            <a href="{{ url('fanspage') }}" class="nav-link nav-toggle">
+                <i class="fa fa-street-view"></i>
+                <span class="title">Fanspage</span>
+            </a>
 
             @endif
 
