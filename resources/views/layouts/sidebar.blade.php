@@ -98,7 +98,12 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('group') ? 'active open' : '' }} {{ Request::is('category') ? 'active open' : '' }} {{ Request::is('product') ? 'active open' : '' }}">
+            <li class="nav-item 
+            {{ Request::is('group') ? 'active open' : '' }} 
+            {{ Request::is('category') ? 'active open' : '' }} 
+            {{ Request::is('product') ? 'active open' : '' }}
+            {{ Request::is('groupproduct') ? 'active open' : '' }}
+            ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
