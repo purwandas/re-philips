@@ -54,7 +54,8 @@
                         <thead>
                             <tr>
                                 <th> No. </th>                            
-                                <th> Group Competitor Name </th>
+                                <th> Group Competitor Name </th> 
+                                <th> Group Name </th>
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -109,6 +110,7 @@
             "columns": [
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
+                {data: 'group_name', name: 'group_name'},      
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
@@ -183,6 +185,7 @@
         $('#name').val('');        
         select2Reset($("#kategori"));
         select2Reset($("#groupproduct"));
+        select2Reset($("#group"));
 
         // Set action url form for add
         var postDataUrl = "{{ url('groupcompetitor') }}";    
@@ -251,6 +254,22 @@
                 })
             }
         }));
+        $('#groupproduct').on('select2:select', function () {
+                self.selected('byGroupProduct', $('#groupproduct').val());
+            });
+
+        $('#group').select2(setOptions('{{ route("data.group") }}', 'Group', function (params) {            
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {                                
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+        $('#group').on('select2:select', function () {
+                self.selected('byGroup', $('#group').val());
+            });
 
     }
 

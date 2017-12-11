@@ -14,7 +14,7 @@ use App\Traits\StringTrait;
 use DB;
 use File;
 
-class MaintenanceReportController extends Controller
+class MaintenanceRequestController extends Controller
 {
     use UploadTrait;
     use StringTrait;

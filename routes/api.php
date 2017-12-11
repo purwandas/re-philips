@@ -67,7 +67,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/sales/{param}', 'Api\Master\SalesController@store');
 	Route::post('/posm', 'Api\Master\PosmController@store');
 	Route::post('/soh', 'Api\Master\SOHController@store');
-	Route::post('/maintenancereport', 'Api\Master\MaintenanceReportController@store');
+	Route::post('/maintenancereport', 'Api\Master\MaintenanceRequestController@store');
 	Route::post('/sos', 'Api\Master\SOSController@store');
 	Route::post('/displayshare', 'Api\Master\DisplayShareController@store');
 	Route::post('/competitoractivity', 'Api\Master\CompetitorActivityController@store');

@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Maintenance Request Report
-                <small>maintenance request report</small>
+            <h1>Competitor Activity Report
+                <small>competitor activity report</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Maintenance Request Reporting</span>
+            <span class="active">Competitor Activity Reporting</span>
         </li>
     </ul>
 @endsection
@@ -36,7 +36,7 @@
                 <div class="caption padding-caption">
                     <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
                 </div>
-
+                
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterRegion" class="select2select"></select>
@@ -48,7 +48,7 @@
                         <select id="filterDistrict" class="select2select"></select>
                     </div>
                 </div>
-                
+
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterStore" class="select2select"></select>
@@ -57,7 +57,7 @@
                         <select id="filterEmployee" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" id="filterReport" class="form-control" placeholder="Report Description">
+                        <select id="filterGroupCompetitor" class="select2select"></select>
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Maintenence Request</span>
+                            <span class="caption-subject font-blue bold uppercase">Competitor Activity</span>
                         </div>
                         
                         <div class="actions" style="text-align: left">
@@ -96,7 +96,7 @@
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="maintenanceRequest" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="competitorActivity" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th></th>
@@ -107,13 +107,15 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Category </th>
-                                <th> Channel </th>
-                                <th> Type </th>
-                                <th> Report </th>
+                                <th> Week </th>
+                                <th> SKU </th>
+                                <th> Group Competitor </th>
+                                <th> Promo Type </th>
+                                <th> Information </th>
+                                <th> Start Period </th>
+                                <th> End Period </th>
                                 <th> Photo </th>
                                 <th> Date </th>
-                                
                             </tr>
                             </thead>
                         </table>
@@ -139,10 +141,11 @@
          *
          *
          */
-        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterReport', '#filterStore', '#filterEmployee'];
-        var url = 'datatable/maintenancerequestreport';
+        var filterId = ['#filterGroupCompetitor', '#filterStore', '#filterEmployee', '#filterRegion', '#filterArea', '#filterDistrict'];
+        var url = 'datatable/competitoractivityreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
+
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
                             {data: 'user_name', name: 'user_name'},
                             {data: 'region_name', name: 'region_name'},
@@ -151,16 +154,19 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
-                            {data: 'category', name: 'category'},
-                            {data: 'channel', name: 'channel'},
-                            {data: 'type', name: 'type'},
-                            {data: 'report', name: 'report'},
+                            {data: 'week', name: 'week'},
+                            {data: 'sku', name: 'sku'},
+                            {data: 'group_competitor', name: 'group_competitor'},
+                            {data: 'promo_type', name: 'promo_type'},
+                            {data: 'information', name: 'information'},
+                            {data: 'start_period', name: 'start_period'},
+                            {data: 'end_period', name: 'end_period'},
                             {data: 'photo', name: 'photo'},
                             {data: 'date', name: 'date'}
                             ];
 
-        var paramFilter = ['maintenanceRequest', $('#maintenanceRequest'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'maintenanceRequest', $('#maintenanceRequest'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['competitorActivity', $('#competitorActivity'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'competitorActivity', $('#competitorActivity'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
 
@@ -171,11 +177,11 @@
             });
 
             // Set data for Data Table
-            var table = $('#maintenanceRequest').dataTable({
+            var table = $('#competitorActivity').dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.maintenancerequestreport') }}",
+                    url: "{{ route('datatable.competitoractivityreport') }}",
                     type: 'POST',
                 },
                 "rowId": "id",
@@ -195,7 +201,6 @@
              * Select 2 init
              *
              */
-
             $('#filterRegion').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {
                 return filterData('name', params.term);
             }, function (data, params) {
@@ -235,14 +240,26 @@
                 self.selected('byDistrict', $('#filterDistrict').val());
             });
 
+            $('#filterGroupCompetitor').select2(setOptions('{{ route("data.groupcompetitor") }}', 'GroupCompetitor', function (params) {
+                return filterData('groupcompetitor', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterGroupCompetitor').on('select2:select', function () {
+                self.selected('byGroupCompetitor', $('#filterGroupCompetitor').val());
+            });
 
             $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
-	                })
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                    })
                 }
             }));
             $('#filterStore').on('select2:select', function () {
@@ -289,12 +306,6 @@
                 console.log(filters);
             });
 
-            $('#filterReport').change(function(){
-                filters['byReport'] = this.value;
-                console.log(filters);
-            });
-
-
         });
 
         $("#resetButton").click( function(){
@@ -324,7 +335,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-maintenancerequest',
+                    url: 'util/export-competitoractivity',
                     dataType: 'json',
                     data: {data: data},
                     global: false,
