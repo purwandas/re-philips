@@ -9,6 +9,7 @@ use App\Filters\GroupCompetitorFilters;
 use App\Traits\StringTrait;
 use DB;
 use App\GroupCompetitor;
+use App\GroupcompetitorGroup;
 
 class GroupCompetitorController extends Controller
 {
@@ -33,7 +34,9 @@ class GroupCompetitorController extends Controller
 
         $data = GroupCompetitor::where('group_competitors.deleted_at', null)
         			->join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
-                    ->select('group_competitors.*', 'group_products.name as groupproduct_name')->get();
+                    ->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
+                    ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
+                    ->select('group_competitors.*', 'group_products.name as groupproduct_name', 'groups.name as group_name')->get();
 
         return $this->makeTable($data);
     }
@@ -82,12 +85,27 @@ class GroupCompetitorController extends Controller
     	// return $request->all();
 
         $this->validate($request, [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string',
             'kategori' => 'string|max:255',
-            'groupproduct_id' => 'required'
+            'groupproduct_id' => 'required',
+            'group_id' => 'required'
             ]);
 
        	$groupcompetitor = GroupCompetitor::create($request->all());
+
+        $groupCompetitorHeader = GroupCompetitor::where('group_competitors.name', $request['name'])
+            ->where('group_competitors.kategori', $request['kategori'])
+            ->where('group_competitors.groupproduct_id', $request['groupproduct_id'])
+            ->select('group_competitors.*')
+            ->orderBy('group_competitors.id','desc')
+            ->first();
+
+        $groupcompetitor = GroupCompetitor::create($request->all());
+
+        $groupcompetitorgroup = GroupcompetitorGroup::create([
+                                    'group_id' => $request['group_id'],
+                                    'groupcompetitor_id' => $groupCompetitorHeader->id
+                                ]);
         
         return response()->json(['url' => url('/groupcompetitor')]);
     }
@@ -111,7 +129,12 @@ class GroupCompetitorController extends Controller
      */
     public function edit($id)
     {
-        $data = GroupCompetitor::with('groupProduct')->where('id', $id)->first();
+        $data = GroupCompetitor::with('groupProduct')
+        ->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
+        ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
+        ->select('group_competitors.*', 'group_products.name as groupproduct_name', 'groups.name as group_name')
+        ->where('group_competitors.id', $id)
+        ->first()->get();
 
         return response()->json($data);
     }
@@ -128,10 +151,22 @@ class GroupCompetitorController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'kategori' => 'string|max:255',
-            'groupproduct_id' => 'required'
+            'groupproduct_id' => 'required',
+            'group_id' => 'required'
             ]);
 
         $groupcompetitor = GroupCompetitor::find($id)->update($request->all());
+
+        /* Delete if any relation exist in GroupCompetitorGroup */
+        $groupcompetitor_delete = GroupcompetitorGroup::where('groupcompetitor_id', $id);
+        if($groupcompetitor_delete->count() > 0){
+            $groupcompetitor_delete->delete();
+        }
+
+        $groupcompetitorgroup = GroupcompetitorGroup::create([
+                                    'group_id' => $request['group_id'],
+                                    'groupcompetitor_id' => $id
+                                ]);
 
         return response()->json(
             ['url' => url('/groupcompetitor'), 'method' => $request->_method]);  
@@ -146,6 +181,12 @@ class GroupCompetitorController extends Controller
     public function destroy($id)
     {
         $groupcompetitor = GroupCompetitor::destroy($id);
+
+        /* Delete if any relation exist in GroupCompetitorGroup */
+        $groupcompetitor_delete = GroupcompetitorGroup::where('groupcompetitor_id', $id);
+        if($groupcompetitor_delete->count() > 0){
+            $groupcompetitor_delete->delete();
+        }
 
         return response()->json($id);
     }

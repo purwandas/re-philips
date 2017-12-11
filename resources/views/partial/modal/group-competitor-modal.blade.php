@@ -46,6 +46,23 @@
                         </div>
 
                         <div class="form-group">
+                          <label class="col-sm-3 control-label">Group</label>
+                          <div class="col-sm-8">
+
+                          <div class="input-group" style="width: 100%;">
+
+                                <select class="select2select" name="group_id" id="group" required></select>
+                                
+                                <span class="input-group-addon display-hide">
+                                    <i class="fa"></i>
+                                </span>
+
+                            </div>
+                            
+                          </div>
+                        </div>
+
+                        <div class="form-group">
                           <label class="col-sm-3 control-label">Category</label>
                           <div class="col-sm-8">
 

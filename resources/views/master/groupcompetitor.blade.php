@@ -55,7 +55,8 @@
                             <tr>
                                 <th> No. </th>                            
                                 <th> Group Competitor Name </th> 
-                                <th> Group Product </th>                           
+                                <th> Group Product </th>
+                                <th> Group Name </th>
                                 <th> Category </th>
                                 <th> Options </th>                        
                             </tr>
@@ -110,7 +111,8 @@
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
-                {data: 'name', name: 'name'},        
+                {data: 'name', name: 'name'},
+                {data: 'group_name', name: 'group_name'},      
                 {data: 'groupproduct_name', name: 'groupproduct_name'},        
                 {data: 'kategori', name: 'kategori'},                
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
@@ -118,6 +120,11 @@
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [4]},
+                {render: function (data, type, full, meta) {
+                        return "<div class='text-wrap width-200'>" + data + "</div>";
+                    },
+                    targets: 0
+                }
             ],
             "order": [ [0, 'desc'] ],
         });
@@ -187,6 +194,7 @@
         $('#name').val('');        
         select2Reset($("#kategori"));
         select2Reset($("#groupproduct"));
+        select2Reset($("#group"));
 
         // Set action url form for add
         var postDataUrl = "{{ url('groupcompetitor') }}";    
@@ -255,6 +263,22 @@
                 })
             }
         }));
+        $('#groupproduct').on('select2:select', function () {
+                self.selected('byGroupProduct', $('#groupproduct').val());
+            });
+
+        $('#group').select2(setOptions('{{ route("data.group") }}', 'Group', function (params) {            
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {                                
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+        $('#group').on('select2:select', function () {
+                self.selected('byGroup', $('#group').val());
+            });
 
     }
 
