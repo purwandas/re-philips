@@ -151,6 +151,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
         Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
 
+        /** Fanspage **/
+        // Route::resource('fanspage', 'Master\FanspageController');
+        Route::get('fanspage', 'Master\FanspageController@index');
+        Route::post('fanspage', 'Master\FanspageController@store');
+        Route::get('fanspage/edit/{id}', 'Master\FanspageController@edit');
+        Route::patch('fanspage/{id}', 'Master\FanspageController@update');
+        Route::delete('fanspage/{id}', 'Master\FanspageController@destroy');
+
     });
 
     /**
@@ -194,6 +202,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');
     Route::get('displaysharereport', 'Master\ReportController@displayShareIndex');
+    Route::get('maintenancerequest', 'Master\ReportController@maintenanceRequestIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
