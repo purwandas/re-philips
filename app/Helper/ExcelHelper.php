@@ -67,6 +67,7 @@ class ExcelHelper
                 'USER' => @$item['user_name'],
                 'REGION' => @$item['region_name'],
                 'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
                 'STORE NAME 1' => @$item['store_name_1'],
                 'STORE NAME 2' => @$item['store_name_2'],
                 'STORE ID' => @$item['storeid'],
@@ -87,6 +88,9 @@ class ExcelHelper
         return $collection->map(function ($item) {
             return [
                 'USER' => @$item['user_name'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
                 'STORE NAME 1' => @$item['store_name_1'],
                 'STORE NAME 2' => @$item['store_name_2'],
                 'STORE ID' => @$item['storeid'],
@@ -97,6 +101,33 @@ class ExcelHelper
                 'INFORMATION' => @$item['information'],
                 'START PERIOD' => @$item['start_period'],
                 'END PERIOD' => @$item['end_period'],
+                'PHOTO' => @$item['photo2'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
+
+    public function mapForExportReportPromo(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'USER' => @$item['user_name'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'STORE NAME 2' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeid'],
+                'WEEK' => @$item['week'],
+                'PROMO TYPE' => @$item['promo_type'],
+                'INFORMATION' => @$item['information'],
+                'START PERIOD' => @$item['start_period'],
+                'END PERIOD' => @$item['end_period'],
+                'PRODUCT NAME' => @$item['product_name'],
+                'PRODUCT MODEL' => @$item['product_model'],
+                'PRODUCT VARIANTS' => @$item['product_variants'],
                 'PHOTO' => @$item['photo2'],
                 'DATE' => @$item['date'],
             ];

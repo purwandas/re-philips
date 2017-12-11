@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Maintenance Request Report
-                <small>maintenance request report</small>
+            <h1>POS Material Activity Report
+                <small>pos material activity report</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Maintenance Request Reporting</span>
+            <span class="active">POS Material Activity Reporting</span>
         </li>
     </ul>
 @endsection
@@ -36,7 +36,7 @@
                 <div class="caption padding-caption">
                     <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
                 </div>
-
+                
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterRegion" class="select2select"></select>
@@ -48,7 +48,7 @@
                         <select id="filterDistrict" class="select2select"></select>
                     </div>
                 </div>
-                
+
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterStore" class="select2select"></select>
@@ -57,7 +57,7 @@
                         <select id="filterEmployee" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" id="filterReport" class="form-control" placeholder="Report Description">
+                        <select id="filterProduct" class="select2select"></select>
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Maintenence Request</span>
+                            <span class="caption-subject font-blue bold uppercase">POSM Activity</span>
                         </div>
                         
                         <div class="actions" style="text-align: left">
@@ -96,7 +96,7 @@
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="maintenanceRequest" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="posmActivity" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th></th>
@@ -107,13 +107,12 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Category </th>
-                                <th> Channel </th>
-                                <th> Type </th>
-                                <th> Report </th>
+                                <th> Week </th>
+                                <th> POSM </th>
+                                <th> Group Product </th>
+                                <th> Quantity </th>
                                 <th> Photo </th>
                                 <th> Date </th>
-                                
                             </tr>
                             </thead>
                         </table>
@@ -139,10 +138,11 @@
          *
          *
          */
-        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterReport', '#filterStore', '#filterEmployee'];
-        var url = 'datatable/maintenancerequestreport';
+        var filterId = ['#filterProduct', '#filterStore', '#filterEmployee', '#filterRegion', '#filterArea', '#filterDistrict' ];
+        var url = 'datatable/posmactivityreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
+
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
                             {data: 'user_name', name: 'user_name'},
                             {data: 'region_name', name: 'region_name'},
@@ -151,16 +151,19 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
-                            {data: 'category', name: 'category'},
-                            {data: 'channel', name: 'channel'},
-                            {data: 'type', name: 'type'},
-                            {data: 'report', name: 'report'},
+                            {data: 'week', name: 'week'},
+                            {data: 'posm_name', name: 'posm_name'},
+                            {data: 'group_product_name', name: 'group_product_name'},
+                            {data: 'quantity', name: 'quantity'},
                             {data: 'photo', name: 'photo'},
+                            {data: 'product_name', name: 'product_name'},
+                            {data: 'product_model', name: 'product_model'},
+                            {data: 'product_variants', name: 'product_variants'},
                             {data: 'date', name: 'date'}
                             ];
 
-        var paramFilter = ['maintenanceRequest', $('#maintenanceRequest'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'maintenanceRequest', $('#maintenanceRequest'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['posmActivity', $('#posmActivity'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'posmActivity', $('#posmActivity'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
 
@@ -171,11 +174,11 @@
             });
 
             // Set data for Data Table
-            var table = $('#maintenanceRequest').dataTable({
+            var table = $('#posmActivity').dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.maintenancerequestreport') }}",
+                    url: "{{ route('datatable.posmactivityreport') }}",
                     type: 'POST',
                 },
                 "rowId": "id",
@@ -234,15 +237,27 @@
             $('#filterDistrict').on('select2:select', function () {
                 self.selected('byDistrict', $('#filterDistrict').val());
             });
-
+            
+            $('#filterProduct').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {
+                return filterData('product', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterProduct').on('select2:select', function () {
+                self.selected('byProduct', $('#filterProduct').val());
+            });
 
             $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
-	                })
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                    })
                 }
             }));
             $('#filterStore').on('select2:select', function () {
@@ -250,15 +265,15 @@
             });
 
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
-	            return filterData('employee', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.nik + " - " + obj.name}
-	                })
-	            }
-	        }));
+                filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.nik + " - " + obj.name}
+                    })
+                }
+            }));
             $('#filterEmployee').on('select2:select', function () {
                 self.selected('byEmployee', $('#filterEmployee').val());
             });
@@ -289,12 +304,6 @@
                 console.log(filters);
             });
 
-            $('#filterReport').change(function(){
-                filters['byReport'] = this.value;
-                console.log(filters);
-            });
-
-
         });
 
         $("#resetButton").click( function(){
@@ -324,7 +333,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-maintenancerequest',
+                    url: 'util/export-promoactivity',
                     dataType: 'json',
                     data: {data: data},
                     global: false,

@@ -39,6 +39,18 @@
                 
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
+                        <select id="filterRegion" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterArea" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterDistrict" class="select2select"></select>
+                    </div>
+                </div>
+
+                <div class="row filter" style="margin-top: 10px;">
+                    <div class="col-md-4">
                         <select id="filterStore" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
@@ -89,6 +101,9 @@
                             <tr>
                                 <th></th>
                                 <th> User </th>
+                                <th> Region </th>
+                                <th> Area </th>
+                                <th> District </th>
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
@@ -126,13 +141,16 @@
          *
          *
          */
-        var filterId = ['#filterGroupCompetitor', '#filterStore', '#filterEmployee'];
+        var filterId = ['#filterGroupCompetitor', '#filterStore', '#filterEmployee', '#filterRegion', '#filterArea', '#filterDistrict'];
         var url = 'datatable/competitoractivityreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
 
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
                             {data: 'user_name', name: 'user_name'},
+                            {data: 'region_name', name: 'region_name'},
+                            {data: 'area_name', name: 'area_name'},
+                            {data: 'district_name', name: 'district_name'},
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
@@ -183,6 +201,44 @@
              * Select 2 init
              *
              */
+            $('#filterRegion').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterRegion').on('select2:select', function () {
+                self.selected('byRegion', $('#filterRegion').val());
+            });
+
+            $('#filterArea').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterArea').on('select2:select', function () {
+                self.selected('byArea', $('#filterArea').val());
+            });
+
+            $('#filterDistrict').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterDistrict').on('select2:select', function () {
+                self.selected('byDistrict', $('#filterDistrict').val());
+            });
 
             $('#filterGroupCompetitor').select2(setOptions('{{ route("data.groupcompetitor") }}', 'GroupCompetitor', function (params) {
                 return filterData('groupcompetitor', params.term);
@@ -249,12 +305,6 @@
                 filters['searchMonth'] = this.value;
                 console.log(filters);
             });
-
-            $('#filterGroupCompetitor').change(function(){
-                filters['byReport'] = this.value;
-                console.log(filters);
-            });
-
 
         });
 

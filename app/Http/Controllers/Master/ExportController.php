@@ -481,7 +481,48 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+    
+    public function exportPromoActivity(Request $request){
 
+        $filename = 'Philips Retail Report Promo Activity ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Promo Activity');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Promo Activity Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Maintenance Request', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportReportPromo($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:AB1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:AB1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
     public function deleteExport(Request $request){
 
         try{

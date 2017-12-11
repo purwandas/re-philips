@@ -12,6 +12,27 @@ class MaintenanceRequestFilters extends QueryFilters
     /**
      * Ordering data by report description
      */
+
+    // public function byRegion($value) {
+    //     return $this->builder->whereHas('maintenanceRequest.store.district.area.region', function ($query) use ($value) {
+    //         return $query->where('regions.id',$value);
+    //     });
+    // }
+
+    // // Ordering by area
+    // public function byArea($value) {
+    //     return $this->builder->whereHas('maintenanceRequest.store.district.area', function ($query) use ($value) {
+    //         return $query->where('areas.id',$value);
+    //     });
+    // }
+
+    // // Ordering by district
+    // public function byDistrict($value) {
+    //     return $this->builder->whereHas('maintenanceRequest.store.district', function ($query) use ($value) {
+    //         return $query->where('districts.id',$value);
+    //     });
+    // }
+
     public function byReport($value) {
         return $this->builder->where('report','like','%'.$value.'%');
     }

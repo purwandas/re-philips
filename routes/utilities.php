@@ -52,6 +52,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/sosreport', ['as'=> 'datatable.sosreport','uses'=>'Master\ReportController@sosData']);
     Route::post('datatable/maintenancerequestreport', ['as'=> 'datatable.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestData']);
     Route::post('datatable/competitoractivityreport', ['as'=> 'datatable.competitoractivityreport','uses'=>'Master\ReportController@competitorActivityData']);
+    Route::post('datatable/promoactivityreport', ['as'=> 'datatable.promoactivityreport','uses'=>'Master\ReportController@promoActivityData']);
+    Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
+
     
 
     /**
@@ -151,6 +154,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-displayshare', ['uses'=>'Master\ExportController@exportDisplayShare']);
     Route::post('util/export-maintenancerequest', ['uses'=>'Master\ExportController@exportMaintenanceRequest']);
     Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
+    Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
     
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
