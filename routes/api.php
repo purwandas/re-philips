@@ -67,6 +67,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/sales/{param}', 'Api\Master\SalesController@store');
 	Route::post('/posm', 'Api\Master\PosmController@store');
 	Route::post('/soh', 'Api\Master\SOHController@store');
+	Route::post('/maintenancereport', 'Api\Master\MaintenanceReportController@store');
 	Route::post('/sos', 'Api\Master\SOSController@store');
 	Route::post('/displayshare', 'Api\Master\DisplayShareController@store');
 	Route::post('/competitoractivity', 'Api\Master\CompetitorActivityController@store');
@@ -91,6 +92,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/news/{param}', 'Api\Master\NewsController@read');
     Route::get('/guidelines/{param}', 'Api\Master\ProductKnowledgeController@get');
     Route::get('/guidelines-read/{param}', 'Api\Master\ProductKnowledgeController@read');
+    Route::get('/get-fanspage', 'Api\Master\FanspageController@getFanspage');
 
     /**
      * Supervisor Module(s)

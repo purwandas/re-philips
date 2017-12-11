@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/subchannel', ['as'=> 'datatable.subchannel','uses'=>'Master\SubChannelController@masterDataTable']);
     Route::post('datatable/distributor', ['as'=> 'datatable.distributor','uses'=>'Master\DistributorController@masterDataTable']);
     Route::post('datatable/employee', ['as'=> 'datatable.employee','uses'=>'Master\EmployeeController@masterDataTable']);
+    Route::post('datatable/fanspage', ['as'=> 'datatable.fanspage','uses'=>'Master\FanspageController@masterDataTable']);
     Route::post('datatable/store', ['as'=> 'datatable.store','uses'=>'Master\StoreController@masterDataTable']);
     Route::post('datatable/place', ['as'=> 'datatable.place','uses'=>'Master\PlaceController@masterDataTable']);
     Route::post('datatable/groupcompetitor', ['as'=> 'datatable.groupcompetitor','uses'=>'Master\GroupCompetitorController@masterDataTable']);
@@ -50,6 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/freeproductreport', ['as'=> 'datatable.freeproductreport','uses'=>'Master\ReportController@freeproductData']);
     Route::post('datatable/sohreport', ['as'=> 'datatable.sohreport','uses'=>'Master\ReportController@sohData']);
     Route::post('datatable/sosreport', ['as'=> 'datatable.sosreport','uses'=>'Master\ReportController@sosData']);
+    Route::post('datatable/maintenancerequestreport', ['as'=> 'datatable.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestData']);
 
     /**
      * Data with filter (select2, list)
@@ -144,7 +146,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-tbat', ['uses'=>'Master\ExportController@exportTbat']);
     Route::post('util/export-soh', ['uses'=>'Master\ExportController@exportSoh']);
     Route::post('util/export-sos', ['uses'=>'Master\ExportController@exportSos']);
-
+    Route::post('util/export-displayshare', ['uses'=>'Master\ExportController@exportDisplayShare']);
+    Route::post('util/export-maintenancereport', ['uses'=>'Master\ExportController@exportMaintenanceReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
 
