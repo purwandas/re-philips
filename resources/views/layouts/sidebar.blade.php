@@ -217,6 +217,14 @@
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
                     <span class="title">Sales Report</span>
+                    <span class="arrow 
+                    {{ Request::is('sellinreport') ? 'active open' : '' }} 
+                    {{ Request::is('selloutreport') ? 'active open' : '' }}
+                    {{ Request::is('retconsumentreport') ? 'active open' : '' }}
+                    {{ Request::is('retdistributorreport') ? 'active open' : '' }}
+                    {{ Request::is('freeproductreport') ? 'active open' : '' }}
+                    {{ Request::is('tbatreport') ? 'active open' : '' }}
+                    "></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}  ">
@@ -296,7 +304,11 @@
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">ISE Reporting</span>                    
+                    <span class="title">ISE Reporting</span>   
+                    <span class="arrow 
+                    {{ Request::is('displaysharereport') ? 'active open' : '' }}
+                    {{ Request::is('posmactivityreport') ? 'active open' : '' }}
+                    "></span>                 
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('displaysharereport') ? 'active open' : '' }}  ">
@@ -306,7 +318,6 @@
                     </li>
                     <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
                         <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-cog"></i>
                             <span class="title">POSM Activity Report</span>                    
                         </a>
                     </li>
