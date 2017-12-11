@@ -81,6 +81,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/news/{param}', 'Api\Master\NewsController@read');
     Route::get('/guidelines/{param}', 'Api\Master\ProductKnowledgeController@get');
     Route::get('/guidelines-read/{param}', 'Api\Master\ProductKnowledgeController@read');
+    Route::get('/get-fanspage', 'Api\Master\FanspageController@getFanspage');
 
     /**
      * Supervisor Module(s)
