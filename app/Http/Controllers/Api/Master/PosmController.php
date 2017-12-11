@@ -23,7 +23,7 @@ class PosmController extends Controller
     use UploadTrait;
     use StringTrait;
 
-    public function store(Request $request){
+    public function store2(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -138,9 +138,8 @@ class PosmController extends Controller
 
     }
 
-    public function store2(Request $request){
-
-        return response()->json($request->photo[0]->getClientOriginalExtension());
+    /* USED */
+    public function store(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
 

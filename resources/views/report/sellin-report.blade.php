@@ -86,7 +86,7 @@
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL ALT </a>
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
                         </div>
                     </div>
 

@@ -31,9 +31,11 @@ class GroupCompetitorController extends Controller
      */
     public function masterDataTable(){
 
-        $data = GroupCompetitor::where('group_competitors.deleted_at', null)
-        			->join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
-                    ->select('group_competitors.*', 'group_products.name as groupproduct_name')->get();
+//        $data = GroupCompetitor::where('group_competitors.deleted_at', null)
+//        			->join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
+//                    ->select('group_competitors.*', 'group_products.name as groupproduct_name')->get();
+
+        $data = GroupCompetitor::all();
 
         return $this->makeTable($data);
     }
@@ -83,8 +85,6 @@ class GroupCompetitorController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'kategori' => 'string|max:255',
-            'groupproduct_id' => 'required'
             ]);
 
        	$groupcompetitor = GroupCompetitor::create($request->all());
@@ -127,8 +127,6 @@ class GroupCompetitorController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'kategori' => 'string|max:255',
-            'groupproduct_id' => 'required'
             ]);
 
         $groupcompetitor = GroupCompetitor::find($id)->update($request->all());

@@ -1,17 +1,16 @@
 <?php
 
-namespace App;
+namespace App\Reports;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Filters\QueryFilters;
 
-class GroupCompetitor extends Model
+class HistoryTargetActual extends Model
 {
     use SoftDeletes;
 
+    //
     protected $fillable = [
-        'name'
+        'user_id', 'month', 'year', 'details'
     ];
 
     /**
@@ -21,19 +20,19 @@ class GroupCompetitor extends Model
      */
     protected $dates = ['deleted_at'];
 
-    /* Metode tambahan untuk model. */
+	/* Metode tambahan untuk model Branch Sport. */
 
-    /**
+	/**
      * Relation Method(s).
      *
      */
 
-    public function competitorActivityDetails()
+	public function user()
     {
-        return $this->hasMany('App\CompetitorActivityDetail', 'groupcompetitor_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
-    /**
+	/**
      * Filtering Berdasarakan Request User
      * @param $query
      * @param QueryFilters $filters

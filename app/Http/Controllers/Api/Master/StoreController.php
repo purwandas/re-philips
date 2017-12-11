@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\DmArea;
 use App\EmployeeStore;
+use App\RsmRegion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Filters\StoreFilters;
@@ -17,7 +19,9 @@ use App\Store;
 class StoreController extends Controller
 {
     public function all(){
-    	$data = Store::select('id', 'store_name_1 as name')->get();
+    	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
     	
     	return response()->json($data);
     }
@@ -30,10 +34,13 @@ class StoreController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 
-    	$data = Store::where('latitude', '!=', null)
+    	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
-                    ->whereNotIn('id', $storeIds)
-                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');
+                    ->whereNotIn('stores.id', $storeIds)
+                    ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name');
+//                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');
 
         // This will calculate the distance in km
         // if you want in miles use 3959 instead of 6371
@@ -50,7 +57,7 @@ class StoreController extends Controller
         $data = Store::where('user_id', $user->id)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
-                'stores.latitude', 'districts.name as district_name')->get();
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
 
     	return response()->json($data);
 
@@ -65,7 +72,7 @@ class StoreController extends Controller
         $data = Store::whereIn('stores.id', $storeIds)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
-                'stores.latitude', 'districts.name as district_name')->get();
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
 
     	return response()->json($data);
 
@@ -80,9 +87,56 @@ class StoreController extends Controller
 //            return response()->json(['status' => false, 'message' => 'Longitude dan latitude untuk store ini telah diinput'], 500);
 //        }
 
-        $store->update(['longitude' => $request->longitude, 'latitude' => $request->latitude]);
+        $store->update(['longitude' => $request->longitude, 'latitude' => $request->latitude, 'address' => $request->address]);
 
         return response()->json(['status' => true, 'message' => 'Update longitude dan latitude store berhasil']);
+
+    }
+
+    public function byArea(Request $request){
+
+        $data = Store::whereHas('district.area', function ($query) use ($request){
+                    return $query->where('id', $request->area_id);
+                })
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+    	return response()->json($data);
+
+    }
+
+    public function byDm(){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+
+        $data = Store::whereHas('district.area', function ($query) use ($areaIds){
+                    return $query->whereIn('id', $areaIds);
+                })
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+    	return response()->json($data);
+
+    }
+
+    public function byRsm(){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
+
+        $data = Store::whereHas('district.area.region', function ($query) use ($regionIds){
+                    return $query->whereIn('id', $regionIds);
+                })
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+    	return response()->json($data);
 
     }
 

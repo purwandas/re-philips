@@ -54,9 +54,7 @@
                         <thead>
                             <tr>
                                 <th> No. </th>                            
-                                <th> Group Competitor Name </th> 
-                                <th> Group Product </th>                           
-                                <th> Category </th>
+                                <th> Group Competitor Name </th>
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -110,14 +108,12 @@
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
-                {data: 'name', name: 'name'},        
-                {data: 'groupproduct_name', name: 'groupproduct_name'},        
-                {data: 'kategori', name: 'kategori'},                
+                {data: 'name', name: 'name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [2]},
             ],
             "order": [ [0, 'desc'] ],
         });

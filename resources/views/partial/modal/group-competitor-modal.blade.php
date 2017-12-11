@@ -28,45 +28,6 @@
                           </div>
                         </div>
 
-                        <div class="form-group">
-                          <label class="col-sm-3 control-label">Group Product</label>
-                          <div class="col-sm-8">
-
-                          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="groupproduct_id" id="groupproduct" required></select>
-                                
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
-
-                            </div>
-                            
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="col-sm-3 control-label">Category</label>
-                          <div class="col-sm-8">
-
-                          <div class="input-group" style="width: 100%;">
-             
-                                        <select class="select2select" name="kategori" id="kategori">
-                                          <!-- <option value="SPV" {{ (@$data->role == 'SPV') ? "selected" : "" }}>SPV</option> -->
-                                          <option value="Male Grooming" {{ (@$data->role == 'Male Grooming') ? "selected" : "" }}>Male Grooming</option>
-                                          <option value="Beauty" {{ (@$data->role == 'Beauty') ? "selected" : "" }}>Beauty</option>
-
-                                        </select>
-                                        
-                                        <span class="input-group-addon display-hide">
-                                          <i class="fa"></i>
-                                        </span>
-
-                              </div>
-                            
-                          </div>
-                        </div>                                                   
-
                         <div class="form-group" style="padding-top: 15pt;">
                           <div class="col-sm-8 col-sm-offset-3">
                             <button type="submit" class="btn btn-primary green">Save</button>

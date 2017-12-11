@@ -19,12 +19,12 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Promoter</label>
+                          <label class="col-sm-3 control-label">Group Product</label>
                           <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">
 
-                                <select class="select2select" name="user_id" id="promoter" required></select>
+                                <select class="select2select" name="groupproduct_id" id="groupproduct" required></select>
 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -53,12 +53,32 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Group Product</label>
+                          <label class="col-sm-3 control-label">Promoter</label>
                           <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">
 
-                                <select class="select2select" name="groupproduct_id" id="groupproduct" required></select>
+                                <select class="select2select" name="user_id" id="promoter" required></select>
+
+                                <span class="input-group-addon display-hide">
+                                    <i class="fa"></i>
+                                </span>
+
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Target Type</label>
+                          <div class="col-sm-8">
+
+                          <div class="input-group" style="width: 100%;">
+
+                                <select class="select2select" name="type" id="type" required>
+                                    <option value="Total Dedicate" {{ (@$data->role == 'Total Dedicate') ? "selected" : "" }}>Total Dedicate</option>
+                                    <option value="Product Focus" {{ (@$data->role == 'Product Focus') ? "selected" : "" }}>Product Focus</option>
+                                </select>
 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>

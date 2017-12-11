@@ -126,12 +126,45 @@
 				            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->latitude }}" disabled />
 				            </div>
 				          </div>
-				        </div>	        
+				        </div>
+
+						<div class="form-group">
+				          <label class="col-sm-2 control-label">Address</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->address }}" disabled />
+				            </div>
+				          </div>
+				        </div>
 
 				        <div class="caption padding-caption">
                         	<span class="caption-subject font-dark bold uppercase">Distributor, Channel, District (Area)</span>
                         	<hr>
                         </div>
+
+						<div class="form-group">
+				          <label class="col-sm-2 control-label">Classification</label>
+				          <div class="col-sm-9">
+
+				          <div class="input-group" style="width: 100%;">
+
+                                <select class="select2select" name="classification" id="classification" required>
+									<option value="New Store" {{ (@$data->role == 'New Store') ? "selected" : "" }}>New Store</option>
+									<option value="Gold" {{ (@$data->role == 'Gold') ? "selected" : "" }}>Gold</option>
+									<option value="Platinum" {{ (@$data->role == 'Platinum') ? "selected" : "" }}>Platinum</option>
+									<option value="Silver" {{ (@$data->role == 'Silver') ? "selected" : "" }}>Silver</option>
+									<option value="Don`t have any classification" {{ (@$data->role == 'Don`t have any classification') ? "selected" : "" }}>Don`t have any classification</option>
+                                </select>
+
+                                <span class="input-group-addon display-hide">
+                                	<i class="fa"></i>
+                                </span>
+
+              				</div>
+
+				          </div>
+				        </div>
 
 						<div class="form-group">
 						  <label class="col-sm-2 control-label">Distributor</label>
@@ -232,10 +265,12 @@
     <!-- END SELECT2 SCRIPTS -->
 
 	<script>
-		var url = "{{url('util/get-store-id')}}";
-			$.get(url, function (data) {
-				$('#store_id').val(data);
-			});
+		if(!($('input[name=_method]').val() == "PATCH")) {
+            var url = "{{url('util/get-store-id')}}";
+            $.get(url, function (data) {
+                $('#store_id').val(data);
+            });
+        }
 	</script>
 
     <script>
@@ -288,6 +323,11 @@
 	                })
 	            }
 	        }));
+
+	        $('#classification').select2({
+                width: '100%',
+                placeholder: 'Classification'
+            });
 
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
