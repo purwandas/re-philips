@@ -35,6 +35,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/group', 'Api\Master\GroupController@allGroup');
 	Route::get('/product/{param}', 'Api\Master\ProductController@all');
 	Route::get('/category-product', 'Api\Master\CategoryController@all');
+	Route::get('/category-product/{param}', 'Api\Master\CategoryController@allWithParam');
 	Route::get('/store', 'Api\Master\StoreController@all');
 	Route::get('/store-promoter', 'Api\Master\StoreController@byPromoter');
 	Route::post('/store-area', 'Api\Master\StoreController@byArea');
@@ -96,6 +97,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
 
     Route::post('/promoter-attendance', 'Api\Master\PromoterController@getAttendanceForSupervisor');
+    Route::post('/promoter-reject', 'Api\Master\PromoterController@reject');
+    Route::post('/promoter-undo-reject', 'Api\Master\PromoterController@undoReject');
     Route::post('/promoter-approval/{param}', 'Api\Master\PromoterController@approval');
     Route::get('/store-supervisor', 'Api\Master\StoreController@bySupervisor');
     Route::post('/store-update', 'Api\Master\StoreController@updateStore');
@@ -107,5 +110,12 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/supervisor/{param}', 'Api\Master\PromoterController@getSupervisor');
     Route::get('/store-dm', 'Api\Master\StoreController@byDm');
     Route::get('/store-rsm', 'Api\Master\StoreController@byRsm');
+
+    /**
+     * Visit Plan Module(s)
+     */
+    Route::post('/visit', 'Api\Master\VisitController@store');
+    Route::get('/visit-get', 'Api\Master\VisitController@getVisit');
+    Route::post('/visit-delete', 'Api\Master\VisitController@delete');
 
 });

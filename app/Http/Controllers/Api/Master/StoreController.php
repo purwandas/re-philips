@@ -37,7 +37,7 @@ class StoreController extends Controller
     	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
                     ->where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
-                    ->whereNotIn('id', $storeIds)
+                    ->whereNotIn('stores.id', $storeIds)
                     ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name');
 //                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');

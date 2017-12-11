@@ -29,7 +29,7 @@ class PromoterController extends Controller
 
         $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
                      ->join('users', 'attendances.user_id', '=', 'users.id')
-                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.role as role', 'users.photo as photo', 'attendances.status as status')->get();
+                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.role as role', 'users.photo as photo', 'attendances.status as status', 'attendances.reject as reject')->get();
 
         foreach($attendances as $attendance){
 
@@ -43,12 +43,52 @@ class PromoterController extends Controller
             if($attendance->status == 'Masuk'){
                 $attendance['detail'] = $detail;
             }else{
-                $attendance['detail'] = [];
+                if($attendance->reject == '1'){
+                    $attendance['detail'] = $detail;
+                }else {
+                    $attendance['detail'] = [];
+                }
             }
 
         }
 
         return response()->json($attendances);
+    }
+
+    public function reject(Request $request){
+
+        $attendance = Attendance::where('id', $request->id);
+
+        try{
+
+            $attendance->update([
+                'status' => 'Alpha',
+                'reject' => '1'
+            ]);
+
+        }catch (\Exception $exception){
+            return response()->json(['status' => false, 'message' => 'Gagal melakukan reject'], 500);
+        }
+
+        return response()->json(['status' => false, 'message' => 'Berhasil melakukan reject'], 200);
+    }
+
+    public function undoReject(Request $request){
+
+        $attendance = Attendance::where('id', $request->id);
+
+        try{
+
+            $attendance->update([
+                'status' => 'Masuk',
+                'reject' => '0'
+            ]);
+
+        }catch (\Exception $exception){
+            return response()->json(['status' => false, 'message' => 'Gagal melakukan undo reject'], 500);
+        }
+
+        return response()->json(['status' => false, 'message' => 'Berhasil melakukan undo reject'], 200);
     }
 
     public function approval(Request $request, $param){
@@ -86,6 +126,7 @@ class PromoterController extends Controller
         $details = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
                     ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
                     ->join('stores', 'attendance_details.store_id', '=', 'stores.id')
+                    ->whereMonth('attendances.date', '=', Carbon::now()->format('m'))
                     ->select('attendances.date as date', 'attendance_details.check_in as check_in', 'attendance_details.check_out as check_out',
                         'stores.store_name_1 as store_name')
                     ->get();
@@ -105,6 +146,7 @@ class PromoterController extends Controller
                                      ->orWhere('attendances.status', 'Alpha');
                     })
                     ->where('date', '<=', Carbon::now())
+                    ->whereMonth('date', '=', Carbon::now()->format('m'))
                     ->select('date', 'status')
                     ->get();
 

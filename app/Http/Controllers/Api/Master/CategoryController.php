@@ -14,4 +14,12 @@ class CategoryController extends Controller
 
     	return response()->json($data);
     }
+
+    public function allWithParam($param)
+    {
+    	$data = Category::where('categories.group_id', $param)
+                ->select('id', 'name')->get();
+
+    	return response()->json($data);
+    }
 }

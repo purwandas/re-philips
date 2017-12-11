@@ -265,10 +265,12 @@
     <!-- END SELECT2 SCRIPTS -->
 
 	<script>
-		var url = "{{url('util/get-store-id')}}";
-			$.get(url, function (data) {
-				$('#store_id').val(data);
-			});
+		if(!($('input[name=_method]').val() == "PATCH")) {
+            var url = "{{url('util/get-store-id')}}";
+            $.get(url, function (data) {
+                $('#store_id').val(data);
+            });
+        }
 	</script>
 
     <script>
