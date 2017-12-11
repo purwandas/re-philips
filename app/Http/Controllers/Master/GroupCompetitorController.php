@@ -32,11 +32,15 @@ class GroupCompetitorController extends Controller
      */
     public function masterDataTable(){
 
+//        $data = GroupCompetitor::where('group_competitors.deleted_at', null)
+//        			->join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
+//                    ->select('group_competitors.*', 'group_products.name as groupproduct_name')->get();
+
         $data = GroupCompetitor::where('group_competitors.deleted_at', null)
-        			->join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
                     ->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
                     ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
-                    ->select('group_competitors.*', 'group_products.name as groupproduct_name', 'groups.name as group_name')->get();
+                    ->select('group_competitors.*', 'groups.name as group_name')->get();
+//         $data = GroupCompetitor::all();
 
         return $this->makeTable($data);
     }
@@ -85,9 +89,7 @@ class GroupCompetitorController extends Controller
     	// return $request->all();
 
         $this->validate($request, [
-            'name' => 'required|string',
-            'kategori' => 'string|max:255',
-            'groupproduct_id' => 'required',
+            'name' => 'required|string|max:255',
             'group_id' => 'required'
             ]);
 
@@ -150,8 +152,6 @@ class GroupCompetitorController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'kategori' => 'string|max:255',
-            'groupproduct_id' => 'required',
             'group_id' => 'required'
             ]);
 

@@ -138,9 +138,8 @@ class PosmController extends Controller
 
     }
 
+    /* USED */
     public function store(Request $request){
-
-        // return response()->json($request->photo[0]->getClientOriginalExtension());
 
         $user = JWTAuth::parseToken()->authenticate();
 

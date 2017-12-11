@@ -55,9 +55,7 @@
                             <tr>
                                 <th> No. </th>                            
                                 <th> Group Competitor Name </th> 
-                                <th> Group Product </th>
                                 <th> Group Name </th>
-                                <th> Category </th>
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -113,18 +111,11 @@
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
                 {data: 'group_name', name: 'group_name'},      
-                {data: 'groupproduct_name', name: 'groupproduct_name'},        
-                {data: 'kategori', name: 'kategori'},                
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
-                {render: function (data, type, full, meta) {
-                        return "<div class='text-wrap width-200'>" + data + "</div>";
-                    },
-                    targets: 0
-                }
+                {"className": "dt-center", "targets": [2]},
             ],
             "order": [ [0, 'desc'] ],
         });

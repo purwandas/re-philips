@@ -27,6 +27,9 @@ var FormValidation = function () {
                     groupproduct_id:{
                         required: true,
                     },
+                    type:{
+                        required: true,
+                    },
                     target: {
                         number: true,
                         min: 1,
@@ -43,6 +46,9 @@ var FormValidation = function () {
                     },
                     groupproduct_id:{
                         required: "Please select a Group Product!"
+                    },
+                    type:{
+                        required: "Please select a Target Type!"
                     },
                 },
 

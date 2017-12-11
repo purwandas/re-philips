@@ -15,6 +15,7 @@ use App\Reports\SummaryRetConsument;
 use App\Reports\SummaryRetDistributor;
 use App\Reports\SummaryFreeProduct;
 use App\Reports\SummaryTbat;
+use App\Traits\PromoterTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -39,6 +40,8 @@ use App\TrainerArea;
 
 class SalesController extends Controller
 {
+    use PromoterTrait;
+
     public function store(Request $request, $param){
 
         // Decode buat inputan raw body
@@ -46,6 +49,8 @@ class SalesController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         if($param == 1) { /* SELL IN */
+
+//            return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell in header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -367,6 +372,8 @@ class SalesController extends Controller
             }
 
         } else if($param == 2) { /* SELL OUT */
+
+            return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell out header
             $sellOutHeader = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
