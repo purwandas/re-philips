@@ -390,7 +390,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
 	                })
 	            }
 	        }));
@@ -400,7 +400,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
 	                })
 	            }
 	        }));
@@ -540,7 +540,7 @@
 
                     if(oldStatus == status){                    	
 	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")" + " - " + this.dedicate);
 						});
                 	}                	
 

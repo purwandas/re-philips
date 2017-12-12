@@ -183,8 +183,6 @@
         modalTitle.innerHTML = "ADD NEW ";
 
         $('#name').val('');        
-        select2Reset($("#kategori"));
-        select2Reset($("#groupproduct"));
         select2Reset($("#group"));
 
         // Set action url form for add
@@ -222,14 +220,8 @@
         $.get(getDataUrl + '/' + id, function (data) {
 
                     $('#name').val(data.name);
-                    if(data.kategori != null){
-                        $('#kategori').val(data.kategori);
-                    }else{
-                        select2Reset($("#kategori"));
-                    }
-                    setSelect2IfPatchModal($("#groupproduct"), data.groupproduct_id, data.group_product.name);
-
-        })
+                    setSelect2IfPatchModal($("#group"), data.group_id, data.group_name);
+        });
 
     });
 
@@ -239,24 +231,6 @@
          * Select 2 init
          *
          */
-
-        $('#kategori').select2({
-                width: '100%',
-                placeholder: 'Kategori'
-            })
-
-        $('#groupproduct').select2(setOptions('{{ route("data.groupproduct") }}', 'Group Product', function (params) {            
-            return filterData('name', params.term);
-        }, function (data, params) {
-            return {
-                results: $.map(data, function (obj) {                                
-                    return {id: obj.id, text: obj.name}
-                })
-            }
-        }));
-        $('#groupproduct').on('select2:select', function () {
-                self.selected('byGroupProduct', $('#groupproduct').val());
-            });
 
         $('#group').select2(setOptions('{{ route("data.group") }}', 'Group', function (params) {            
             return filterData('name', params.term);

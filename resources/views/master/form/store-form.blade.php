@@ -101,6 +101,25 @@
 				            	<input type="text" id="store_name_2" name="store_name_2" class="form-control" value="{{ @$data->store_name_2 }}" placeholder="Input Store Name 2" />
 				            </div>
 				          </div>
+				        </div>
+
+				        <div class="form-group">
+				          <label class="col-sm-2 control-label">Dedicate</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<select class="select2select" name="dedicate" id="dedicate" required>
+									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
+									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
+									<option value="MCC" {{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>MCC</option>
+									<option value="HYBRID" {{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>HYBRID</option>
+                                </select>
+
+                                <span class="input-group-addon display-hide">
+                                	<i class="fa"></i>
+                                </span>
+				            </div>
+				          </div>
 				        </div>			
 
 				        <div class="caption padding-caption">
@@ -327,6 +346,11 @@
 	        $('#classification').select2({
                 width: '100%',
                 placeholder: 'Classification'
+            });
+
+            $('#dedicate').select2({
+                width: '100%',
+                placeholder: 'Dedicate'
             });
 
             // Set select2 if method PATCH            

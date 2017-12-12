@@ -98,7 +98,12 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('group') ? 'active open' : '' }} {{ Request::is('category') ? 'active open' : '' }} {{ Request::is('product') ? 'active open' : '' }}">
+            <li class="nav-item 
+            {{ Request::is('group') ? 'active open' : '' }} 
+            {{ Request::is('category') ? 'active open' : '' }} 
+            {{ Request::is('product') ? 'active open' : '' }}
+            {{ Request::is('groupproduct') ? 'active open' : '' }}
+            ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
@@ -216,7 +221,7 @@
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">Sales Report</span>
+                    <span class="title">Sales</span>
                     <span class="arrow 
                     {{ Request::is('sellinreport') ? 'active open' : '' }} 
                     {{ Request::is('selloutreport') ? 'active open' : '' }}
@@ -266,35 +271,29 @@
             <li class="nav-item {{ Request::is('sohreport') ? 'active open' : '' }}">
                 <a href="{{ url('sohreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">SOH Report</span>                    
+                    <span class="title">SOH</span>                    
                 </a>
             </li>
 
-            <li class="nav-item {{ Request::is('sosreport') ? 'active open' : '' }}">
-                <a href="{{ url('sosreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">SOS Report</span>                    
-                </a>
-            </li>
 
             <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
                 <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">Maintenance Request Report</span>                    
+                    <span class="title">Maintenance Request</span>                    
                 </a>
             </li>
 
             <li class="nav-item {{ Request::is('competitoractivityreport') ? 'active open' : '' }}">
                 <a href="{{ url('competitoractivityreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">Competitor Activity Report</span>                    
+                    <span class="title">Competitor Activity</span>                    
                 </a>
             </li>
 
             <li class="nav-item {{ Request::is('promoactivityreport') ? 'active open' : '' }}">
                 <a href="{{ url('promoactivityreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">Promo Activity Report</span>                    
+                    <span class="title">Promo Activity </span>                    
                 </a>
             </li>
 
@@ -304,7 +303,7 @@
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">ISE Reporting</span>   
+                    <span class="title">ISE </span>   
                     <span class="arrow 
                     {{ Request::is('displaysharereport') ? 'active open' : '' }}
                     {{ Request::is('posmactivityreport') ? 'active open' : '' }}
@@ -318,7 +317,7 @@
                     </li>
                     <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
                         <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
-                            <span class="title">POSM Activity Report</span>                    
+                            <span class="title">POSM Activity </span>                    
                         </a>
                     </li>
                 </ul>

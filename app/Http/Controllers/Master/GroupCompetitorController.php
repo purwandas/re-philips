@@ -96,8 +96,6 @@ class GroupCompetitorController extends Controller
        	$groupcompetitor = GroupCompetitor::create($request->all());
 
         $groupCompetitorHeader = GroupCompetitor::where('group_competitors.name', $request['name'])
-            ->where('group_competitors.kategori', $request['kategori'])
-            ->where('group_competitors.groupproduct_id', $request['groupproduct_id'])
             ->select('group_competitors.*')
             ->orderBy('group_competitors.id','desc')
             ->first();
@@ -131,13 +129,12 @@ class GroupCompetitorController extends Controller
      */
     public function edit($id)
     {
-        $data = GroupCompetitor::with('groupProduct')
-        ->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
+        $data = GroupCompetitor::
+        join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
         ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
-        ->select('group_competitors.*', 'group_products.name as groupproduct_name', 'groups.name as group_name')
+        ->select('group_competitors.*', 'groups.name as group_name', 'groups.id as group_id')
         ->where('group_competitors.id', $id)
-        ->first()->get();
-
+        ->first();
         return response()->json($data);
     }
 

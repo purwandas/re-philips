@@ -33,11 +33,6 @@ class GroupProduct extends Model
         return $this->hasMany('App\Group', 'groupproduct_id');
     }
 
-    public function groupCompetitors()
-    {
-        return $this->hasMany('App\GroupCompetitor', 'groupproduct_id');
-    }
-
     /**
      * Filtering Berdasarakan Request User
      * @param $query
