@@ -1,4 +1,4 @@
-BEGIN SIDEBAR -->
+<!-- BEGIN SIDEBAR -->
 <div class="page-sidebar-wrapper">
     <!-- BEGIN SIDEBAR -->
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
@@ -275,12 +275,6 @@ BEGIN SIDEBAR -->
                 </a>
             </li>
 
-            <!-- <li class="nav-item {{ Request::is('sosreport') ? 'active open' : '' }}">
-                <a href="{{ url('sosreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">SOS</span>                    
-                </a>
-            </li> -->
 
             <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
                 <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
@@ -299,7 +293,7 @@ BEGIN SIDEBAR -->
             <li class="nav-item {{ Request::is('promoactivityreport') ? 'active open' : '' }}">
                 <a href="{{ url('promoactivityreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">Promo Activity</span>                    
+                    <span class="title">Promo Activity </span>                    
                 </a>
             </li>
 
@@ -309,7 +303,7 @@ BEGIN SIDEBAR -->
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">ISE</span>   
+                    <span class="title">ISE </span>   
                     <span class="arrow 
                     {{ Request::is('displaysharereport') ? 'active open' : '' }}
                     {{ Request::is('posmactivityreport') ? 'active open' : '' }}
@@ -323,7 +317,7 @@ BEGIN SIDEBAR -->
                     </li>
                     <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
                         <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
-                            <span class="title">POSM Activity</span>                    
+                            <span class="title">POSM Activity </span>                    
                         </a>
                     </li>
                 </ul>
@@ -349,4 +343,4 @@ BEGIN SIDEBAR -->
     </div>
     <!-- END SIDEBAR -->
 </div>
-<!-- END SIDEBAR
+<!-- END SIDEBAR -->
