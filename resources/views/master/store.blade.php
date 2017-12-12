@@ -54,6 +54,7 @@
                             <th> Store ID </th>
                             <th> Store Name 1 </th>
                             <th> Store Name 2 </th>
+                            <th> Dedicate </th>
                             <th> Region </th>
                             <th> Area </th>
                             <th> District </th>
@@ -61,6 +62,10 @@
                             <th> Channel </th>
                             <th> Sub Channel</th>
                             <th> Distributor</th>
+                            <th> Classification</th>
+                            <th> Longitude</th>
+                            <th> Latitude</th>
+                            <th> Address</th>
                             <th> Supervisor </th>
                             <th> Options </th>                        
                         </tr>
@@ -104,6 +109,7 @@
                 {data: 'store_id', name: 'store_id'},
                 {data: 'store_name_1', name: 'store_name_1'},
                 {data: 'store_name_2', name: 'store_name_2'},
+                {data: 'dedicate', name: 'dedicate'},
                 {data: 'region_name', name: 'region_name'},
                 {data: 'area_name', name: 'area_name'},
                 {data: 'district_name', name: 'district_name'},
@@ -111,12 +117,16 @@
                 {data: 'channel_name', name: 'channel_name'},
                 {data: 'subchannel_name', name: 'subchannel_name'},
                 {data: 'distributor', name: 'distributor'},
+                {data: 'classification', name: 'classification'},
+                {data: 'longitude', name: 'longitude'},
+                {data: 'latitude', name: 'latitude'},
+                {data: 'address', name: 'address'},
                 {data: 'spv_name', name: 'spv_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [12]},
+                {"className": "dt-center", "targets": [15]},
             ],
             "order": [ [0, 'desc'] ],            
         });

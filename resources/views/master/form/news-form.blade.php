@@ -50,7 +50,7 @@
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md green" href="{{ url('news') }}">
+                	<a class="btn btn-md bg-yellow-lemon" href="{{ url('news') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>
@@ -245,7 +245,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
 	                })
 	            }
 	        })); 
@@ -337,7 +337,7 @@
 					var getDataUrl = "{{ url('util/store/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
-					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")" + " - " + data.dedicate);
 					    })
 				    });
 

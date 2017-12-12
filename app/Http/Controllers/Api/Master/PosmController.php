@@ -23,13 +23,13 @@ class PosmController extends Controller
     use UploadTrait;
     use StringTrait;
 
-    public function store(Request $request){
+    public function store2(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        if(!isset($request->photo)){
-            return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
-        }
+        // if(!isset($request->photo)){
+        //     return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+        // }
 
         // Check posm header
         $posmHeader = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
@@ -138,15 +138,14 @@ class PosmController extends Controller
 
     }
 
-    public function store2(Request $request){
-
-        return response()->json($request->photo[0]->getClientOriginalExtension());
+    /* USED */
+    public function store(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        if(!isset($request->photo)){
-            return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
-        }
+        // if(!isset($request->photo)){
+        //     return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+        // }
 
         // Check posm header
         $posmHeader = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
@@ -154,15 +153,16 @@ class PosmController extends Controller
         // Get how many data
         $dataLength = count($request->posm_id);
 
-        /* Check if image not match with other input count number */
-        if(count($request->photo) != $dataLength) {
-            return response()->json(['status' => false, 'message' => 'Photo tidak boleh ada yang kosong'], 500);
-        }
+        // /* Check if image not match with other input count number */
+        // if(count($request->photo) != $dataLength) {
+        //     return response()->json(['status' => false, 'message' => 'Photo tidak boleh ada yang kosong'], 500);
+        // }
 
         if ($posmHeader) { // If header exist (update and/or create detail)
 
-            try {
-
+            // try {
+                $photoArray = [];
+                
                 DB::transaction(function () use ($request, $posmHeader, $user, $dataLength) {
 
                     $arrayUpdate = [];
@@ -184,20 +184,27 @@ class PosmController extends Controller
                             }
 
                             /* Delete Image (Just get path, Delete later) */
-                            $imagePath = explode('/', $posmActivityDetail->photo);
-                            $count = count($imagePath);
-                            $folderpath = $imagePath[$count - 2];
-//                            File::deleteDirectory(public_path() . "/image/posm/" . $folderpath);
-//                            array_push($arrayUpdate, { "id" : $posmActivityDetail->id, "path" : $folderpath });
-                            $newVal = array('id' => $posmActivityDetail->id, 'path' => $folderpath);
-                            array_push($arrayUpdate, $newVal);
+                            if ($posmActivityDetail->photo != '') {
+                                
+                                $imagePath = explode('/', $posmActivityDetail->photo);
+                                $count = count($imagePath);
+                                $folderpath = $imagePath[$count - 2];
+    //                            File::deleteDirectory(public_path() . "/image/posm/" . $folderpath);
+    //                            array_push($arrayUpdate, { "id" : $posmActivityDetail->id, "path" : $folderpath });
+                                $newVal = array('id' => $posmActivityDetail->id, 'path' => $folderpath);
+                                array_push($arrayUpdate, $newVal);
+                            }
 
                             /* Upload image again, anda again, and again~ */
                             $photo_url = "";
 
-                            if($request->photo[$i]){
+                            if(isset($request->photo[$i])){
                                 $photo_url = $this->getUploadPathName($request->photo[$i], "posm/".$this->getRandomPath(), 'POSM');
+                            }else{
+                                $photo_url = '';
                             }
+
+                            $photoArray[$i]=$photo_url;
 
                             $posmActivityDetail->update([
                                 'quantity' => $posmActivityDetail->quantity + $request->quantity[$i],
@@ -208,9 +215,13 @@ class PosmController extends Controller
 
                             $photo_url = "";
 
-                            if($request->photo[$i]){
+                            if(isset($request->photo[$i])){
                                 $photo_url = $this->getUploadPathName($request->photo[$i], "posm/".$this->getRandomPath(), 'POSM');
+                            }else{
+                                $photo_url = '';
                             }
+
+                            $photoArray[$i]=$photo_url;
 
                             PosmActivityDetail::create([
                                 'posmactivity_id' => $posmHeader->id,
@@ -231,30 +242,30 @@ class PosmController extends Controller
 
                 });
 
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-            }
+            // } catch (\Exception $e) {
+            //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+            // }
 
             // Finally upload image for every data in details
             for($i=0;$i<$dataLength;$i++){
+                if ($photoArray[$i]!='') {
+                    $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmHeader->id)->where('posm_id', $request->posm_id[$i])->first();
 
-                $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmHeader->id)->where('posm_id', $request->posm_id[$i])->first();
+                    // Get folder and file name
+                    $imagePath = explode('/', $posmActivityDetail->photo);
+                    $count = count($imagePath);
+                    $imageFolder = "posm/" . $imagePath[$count - 2];
+                    $imageName = $imagePath[$count - 1];
 
-                // Get folder and file name
-                $imagePath = explode('/', $posmActivityDetail->photo);
-                $count = count($imagePath);
-                $imageFolder = "posm/" . $imagePath[$count - 2];
-                $imageName = $imagePath[$count - 1];
-
-                $this->upload($request->photo[$i], $imageFolder, $imageName);
-
+                    $this->upload($request->photo[$i], $imageFolder, $imageName);
+                }
             }
 
             return response()->json(['status' => true, 'id_transaksi' => $posmHeader->id, 'message' => 'Data berhasil di input']);
 
         }else { // If header didn't exist (create header & detail)
 
-            try {
+            // try {
                 DB::transaction(function () use ($request, $user, $dataLength) {
 
                     // HEADER
@@ -272,7 +283,11 @@ class PosmController extends Controller
 
                         if($request->photo[$i]){
                             $photo_url = $this->getUploadPathName($request->photo[$i], "posm/".$this->getRandomPath(), 'POSM');
+                        }else{
+                            $photo_url = '';
                         }
+
+                        $photoArray[$i]=$photo_url;
 
                         PosmActivityDetail::create([
                             'posmactivity_id' => $transaction->id,
@@ -284,26 +299,27 @@ class PosmController extends Controller
                     }
 
                 });
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-            }
+            // } catch (\Exception $e) {
+            //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+            // }
 
             // Check posm activity header after insert
             $posmActivityHeaderAfter = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
 
             // Finally upload image for every data in details
             for($i=0;$i<$dataLength;$i++){
+                
+                if ($photoArray[$i]!='') {
+                    $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmActivityHeaderAfter->id)->where('posm_id', $request->posm_id[$i])->first();
 
-                $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmActivityHeaderAfter->id)->where('posm_id', $request->posm_id[$i])->first();
+                    // Get folder and file name
+                    $imagePath = explode('/', $posmActivityDetail->photo);
+                    $count = count($imagePath);
+                    $imageFolder = "posm/" . $imagePath[$count - 2];
+                    $imageName = $imagePath[$count - 1];
 
-                // Get folder and file name
-                $imagePath = explode('/', $posmActivityDetail->photo);
-                $count = count($imagePath);
-                $imageFolder = "posm/" . $imagePath[$count - 2];
-                $imageName = $imagePath[$count - 1];
-
-                $this->upload($request->photo[$i], $imageFolder, $imageName);
-
+                    $this->upload($request->photo[$i], $imageFolder, $imageName);
+                }
             }
 
             return response()->json(['status' => true, 'id_transaksi' => $posmActivityHeaderAfter->id, 'message' => 'Data berhasil di input']);

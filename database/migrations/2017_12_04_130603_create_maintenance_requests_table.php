@@ -27,6 +27,8 @@ class CreateMaintenanceRequestsTable extends Migration
             $table->enum('channel', array('TR', 'MR'));
             $table->enum('type', array('RAK', 'POSM'));
             $table->string('report');
+            $table->integer('month');
+            $table->integer('year');
             $table->date('date');
             $table->text('photo');
             $table->timestamps();

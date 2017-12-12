@@ -43,7 +43,8 @@ class UserController extends Controller
      */
     public function masterDataTable(){
 
-        $data = User::where('id', '<>', Auth::user()->id);
+        $data = User::where('id', '<>', Auth::user()->id)->get();
+//        $data = User::all();
 
         return $this->makeTable($data);
     }

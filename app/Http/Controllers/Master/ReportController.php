@@ -34,7 +34,6 @@ use App\Reports\SummarySoh;
 use App\Reports\HistorySoh;
 use App\Reports\SummarySos;
 use App\Reports\HistorySos;
-use App\MaintenanceRequest;
 use App\TrainerArea;
 use App\User;
 use Illuminate\Http\Request;
@@ -64,6 +63,10 @@ use App\Sos;
 use App\SosDetail;
 use App\FreeProduct;
 use App\FreeProductDetail;
+use App\MaintenanceRequest;
+use App\CompetitorActivity;
+use App\PromoActivity;
+use App\PromoActivityDetail;
 use App\Filters\ReportFilters;
 use App\Filters\ReportPosmActivityFilters;
 use App\Filters\ReportSellOutFilters;
@@ -74,6 +77,7 @@ use App\Filters\ReportRetDistributorFilters;
 use App\Filters\ReportTbatFilters;
 use App\Filters\ReportDisplayShareFilters;
 use App\Filters\MaintenanceRequestFilters;
+use App\Filters\CompetitorActivityFilters;
 use App\Traits\StringTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -82,10 +86,6 @@ use File;
 class ReportController extends Controller
 {
     use StringTrait;
-    
-    public function posmActivityIndex(){
-        return view('report.posmactivity-report');
-    }
 
     public function sellInIndex(){
         return view('report.sellin-report');
@@ -132,7 +132,18 @@ class ReportController extends Controller
     public function maintenanceRequestIndex(){
         return view('report.maintenancerequest-report');
     }
-    
+
+    public function competitorActivityIndex(){
+        return view('report.competitoractivity-report');
+    }
+
+    public function promoActivityIndex(){
+        return view('report.promoactivity-report');
+    }
+   
+    public function posmActivityIndex(){
+        return view('report.posmactivity-report');
+    }
 
     public function sellInData(Request $request, SellinFilters $filters){
 
@@ -1299,7 +1310,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -1323,10 +1333,6 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
-
-
-//            return $historyData;
-
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -1348,30 +1354,41 @@ class ReportController extends Controller
 
             $data = MaintenanceRequest::filter($filters)
                     ->join('regions', 'maintenance_requests.region_id', '=', 'regions.id')
-                    ->join('areas', 'maintenance_requests.region_id', '=', 'areas.id')
+                    ->join('areas', 'maintenance_requests.area_id', '=', 'areas.id')
                     ->join('stores', 'maintenance_requests.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('users', 'maintenance_requests.user_id', '=', 'users.id')
-                    ->select('maintenance_requests.*', 'regions.name as region_name', 'areas.name as area_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
+                    ->select('maintenance_requests.*', 'maintenance_requests.photo as photo2', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.district_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
                     ->get();
 
             $filter = $data;
 
             /* If filter */
             if($request['searchMonth']){
-                // $filter = $data
-                //     ->whereMonth('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('m'))
-                //     ->whereYear('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('Y'));
 
-                $month = Carbon::parse($request['searchMonth'])->format('m'));
-                $year = Carbon::parse($request['searchMonth'])->format('Y'));
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                // $date2 = "$year-$month-01";
-                $filter = $data->where('date', 'between', "ini and ini");
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
             }
 
             if($request['byStore']){
                 $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->where('area_id', $request['byDistrict']);
+            }
+
+            if($request['byArea']){
+                $filter = $data->where('area_id', $request['byArea']);
+            }
+
+            if($request['byRegion']){
+                $filter = $data->where('region_id', $request['byRegion']);
             }
 
             if($request['byEmployee']){
@@ -1387,6 +1404,269 @@ class ReportController extends Controller
                 foreach ($files as $file)
                 {
                     $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
+                }
+                    return $images;
+                })
+            ->editColumn('photo2', function ($item) {
+                $folderPath = explode('/', $item->photo2);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= asset((string)$file)."\n";
+                }
+                    return $images;
+                })
+            ->rawColumns(['photo'])
+            ->make(true);
+
+    }
+
+    public function competitorActivityData(Request $request){
+
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+            $data = CompetitorActivity::
+                      join('stores', 'competitor_activities.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'competitor_activities.user_id', '=', 'users.id')
+                    ->join('group_competitors', 'competitor_activities.groupcompetitor_id', '=', 'group_competitors.id')
+                    ->select('competitor_activities.*', 'competitor_activities.photo as photo2','regions.name as region_name', 'regions.id as region_id', 'areas.name as area_name', 'areas.id as area_id', 'districts.name as district_name', 'stores.district_id','stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'group_competitors.name as group_competitor')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byArea']){
+                $filter = $data->where('area_id', $request['byArea']);
+            }
+
+            if($request['byRegion']){
+                $filter = $data->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            if($request['byGroupCompetitor']){
+                $filter = $data->where('groupcompetitor_id', $request['byGroupCompetitor']);
+            }
+
+            return Datatables::of($filter->all())
+            ->editColumn('photo', function ($item) {
+                // $folderPath = explode('/', $item->photo);
+                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                // $files = File::allFiles($folder);
+                $images = '';
+                // foreach ($files as $file)
+                // {
+                    $images .= "<img src='".$item->photo."' height='100px'>\n";
+                // }
+                    return $images;
+                })
+            ->editColumn('photo2', function ($item) {
+                $folderPath = explode('/', $item->photo2);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= asset((string)$file)."\n";
+                }
+                    return $images;
+                })
+            ->rawColumns(['photo'])
+            ->make(true);
+
+    }
+
+    public function promoActivityData(Request $request){
+
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+            $data = PromoActivity::
+                    join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
+                    ->join('stores', 'promo_activities.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'promo_activities.user_id', '=', 'users.id')
+                    ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
+                    ->select('promo_activities.*', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byArea']){
+                $filter = $data->where('area_id', $request['byArea']);
+            }
+
+            if($request['byRegion']){
+                $filter = $data->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            if($request['byProduct']){
+                $filter = $data->where('product_id', $request['byProduct']);
+            }
+
+            return Datatables::of($filter->all())
+            ->editColumn('photo', function ($item) {
+                // $folderPath = explode('/', $item->photo);
+                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                // $files = File::allFiles($folder);
+                $images = '';
+                // foreach ($files as $file)
+                // {
+                    $images .= "<img src='".$item->photo."' height='100px'>\n";
+                // }
+                    return $images;
+                })
+            ->editColumn('photo2', function ($item) {
+                $folderPath = explode('/', $item->photo2);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= asset((string)$file)."\n";
+                }
+                    return $images;
+                })
+            ->rawColumns(['photo'])
+            ->make(true);
+
+    }
+
+    public function posmActivityData(Request $request){
+
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+            $data = PosmActivity::
+                    join('posm_activity_details', 'posm_activity_details.posmactivity_id', '=', 'posm_activities.id')
+                    ->join('stores', 'posm_activities.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'posm_activities.user_id', '=', 'users.id')
+                    ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
+                    ->join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'posms.name as posm_name', 'group_products.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byArea']){
+                $filter = $data->where('area_id', $request['byArea']);
+            }
+
+            if($request['byRegion']){
+                $filter = $data->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            if($request['byProduct']){
+                $filter = $data->where('product_id', $request['byProduct']);
+            }
+
+            return Datatables::of($filter->all())
+            ->editColumn('photo', function ($item) {
+                // $folderPath = explode('/', $item->photo);
+                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                // $files = File::allFiles($folder);
+                $images = '';
+                // foreach ($files as $file)
+                // {
+                    $images .= "<img src='".$item->photo."' height='100px'>\n";
+                // }
+                    return $images;
+                })
+            ->editColumn('photo2', function ($item) {
+                $folderPath = explode('/', $item->photo2);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                $files = File::allFiles($folder);
+                $images = '';
+                foreach ($files as $file)
+                {
+                    $images .= asset((string)$file)."\n";
                 }
                     return $images;
                 })

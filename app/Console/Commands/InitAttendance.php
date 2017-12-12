@@ -71,7 +71,11 @@ class InitAttendance extends Command
     }
 
     public function getEmployees(){
-        $employee = User::all();
+
+        $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+        $employee = User::whereIn('role', $role)->get();
+
         return $employee;
     }
 

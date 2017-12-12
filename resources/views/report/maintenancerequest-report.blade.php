@@ -39,22 +39,31 @@
 
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
+                        <select id="filterRegion" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterArea" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterDistrict" class="select2select"></select>
+                    </div>
+                </div>
+                
+                <div class="row filter" style="margin-top: 10px;">
+                    <div class="col-md-4">
                         <select id="filterStore" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
                         <select id="filterEmployee" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="filterReport" class="form-control" placeholder="Report Description">
                     </div>
                 </div>
 
                 <div class="row filter" id="monthContent" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <input type="text" id="filterMonth" class="form-control" placeholder="Month">
-                    </div>
-                </div>
-
-                <div class="row filter" id="reportContent" style="margin-top: 10px;">
-                    <div class="col-md-4">
-                        <input type="text" id="filterReport" class="form-control" placeholder="Report Description">
                     </div>
                 </div>
 
@@ -78,6 +87,11 @@
                             <i class="fa fa-map-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Maintenence Request</span>
                         </div>
+                        
+                        <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL ALT </a>
+                        </div>
                     </div>
 
                     <div class="portlet-body">
@@ -89,6 +103,7 @@
                                 <th> User </th>
                                 <th> Region </th>
                                 <th> Area </th>
+                                <th> District </th>
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
@@ -124,7 +139,7 @@
          *
          *
          */
-        var filterId = ['#filterReport', '#filterStore', '#filterEmployee'];
+        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterReport', '#filterStore', '#filterEmployee'];
         var url = 'datatable/maintenancerequestreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
@@ -132,6 +147,7 @@
                             {data: 'user_name', name: 'user_name'},
                             {data: 'region_name', name: 'region_name'},
                             {data: 'area_name', name: 'area_name'},
+                            {data: 'district_name', name: 'district_name'},
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
@@ -180,13 +196,52 @@
              *
              */
 
+            $('#filterRegion').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterRegion').on('select2:select', function () {
+                self.selected('byRegion', $('#filterRegion').val());
+            });
+
+            $('#filterArea').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterArea').on('select2:select', function () {
+                self.selected('byArea', $('#filterArea').val());
+            });
+
+            $('#filterDistrict').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterDistrict').on('select2:select', function () {
+                self.selected('byDistrict', $('#filterDistrict').val());
+            });
+
 
             $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"+ " - " + obj.dedicate}
 	                })
                 }
             }));

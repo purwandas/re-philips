@@ -57,6 +57,7 @@
                                 <th> Group Product </th>
                                 <th> Promoter </th>
                                 <th> Store </th>
+                                <th> Target Type </th>
                                 <th> Target </th>
                                 <th> Options </th>
                             </tr>
@@ -114,12 +115,13 @@
                 {data: 'groupproduct_name', name: 'groupproduct_name'},
                 {data: 'promoter_name', name: 'promoter_name'},
                 {data: 'store_name', name: 'store_name'},
+                {data: 'type', name: 'type'},
                 {data: 'target', name: 'target'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [5]},
+                {"className": "dt-center", "targets": [6]},
             ],
             "order": [ [0, 'desc'] ],
         });
@@ -231,7 +233,7 @@
 
                     $('#targets').val(data.target);
                     setSelect2IfPatchModal($("#promoter"), data.user_id, data.user.name);
-                    setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id);
+                    setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")" + " - " + data.store.dedicate);
                     setSelect2IfPatchModal($("#groupproduct"), data.groupproduct_id, data.group_product.name);
 
                     // Set filters
@@ -268,7 +270,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
 	                })
 	            }
 	        }));
@@ -285,6 +287,11 @@
                 })
             }
         }));
+
+        $('#type').select2({
+            width: '100%',
+            placeholder: 'Target Type'
+        });
 
     }
 
