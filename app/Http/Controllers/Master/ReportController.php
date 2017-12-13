@@ -1362,8 +1362,8 @@ class ReportController extends Controller
                 //     ->whereMonth('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('m'))
                 //     ->whereYear('maintenance_requests.date', '=', Carbon::parse($request['searchMonth'])->format('Y'));
 
-                $month = Carbon::parse($request['searchMonth'])->format('m'));
-                $year = Carbon::parse($request['searchMonth'])->format('Y'));
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 // $date2 = "$year-$month-01";

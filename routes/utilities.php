@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/subchannel', ['as'=> 'datatable.subchannel','uses'=>'Master\SubChannelController@masterDataTable']);
     Route::post('datatable/distributor', ['as'=> 'datatable.distributor','uses'=>'Master\DistributorController@masterDataTable']);
     Route::post('datatable/employee', ['as'=> 'datatable.employee','uses'=>'Master\EmployeeController@masterDataTable']);
+    Route::post('datatable/fanspage', ['as'=> 'datatable.fanspage','uses'=>'Master\FanspageController@masterDataTable']);
     Route::post('datatable/store', ['as'=> 'datatable.store','uses'=>'Master\StoreController@masterDataTable']);
     Route::post('datatable/place', ['as'=> 'datatable.place','uses'=>'Master\PlaceController@masterDataTable']);
     Route::post('datatable/groupcompetitor', ['as'=> 'datatable.groupcompetitor','uses'=>'Master\GroupCompetitorController@masterDataTable']);
@@ -36,7 +37,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/price', ['as'=> 'datatable.price','uses'=>'Master\PriceController@masterDataTable']);
     Route::post('datatable/target', ['as'=> 'datatable.target','uses'=>'Master\TargetController@masterDataTable']);
     Route::post('datatable/productfocus', ['as'=> 'datatable.productfocus','uses'=>'Master\ProductFocusController@masterDataTable']);
-
+    Route::post('datatable/messageToAdmin', ['as'=> 'datatable.messageToAdmin','uses'=>'MessageToAdminController@masterDataTable']);
+    Route::post('datatable/feedbackCategory', ['as'=> 'datatable.feedbackCategory','uses'=>'Master\FeedbackCategoryController@masterDataTable']);
+    Route::post('datatable/feedbackQuestion', ['as'=> 'datatable.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@masterDataTable']);
+    
     /**
      * Report
      */
@@ -71,6 +75,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
+    Route::post('data/feedbackCategory', ['as'=> 'data.feedbackCategory','uses'=>'Master\FeedbackCategoryController@getDataWithFilters']);
 
     /**
      * Relation

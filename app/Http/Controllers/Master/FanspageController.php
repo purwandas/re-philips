@@ -5,15 +5,15 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
-use App\Filters\GroupFilters;
+use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
-use DB;
-use App\Posm;
+use App\Filters\FanspageFilters;
+use App\Fanspage;
 
-class PosmController extends Controller
+class FanspageController extends Controller
 {
+	use UploadTrait;
     use StringTrait;
-
     /**
      * Display a listing of the resource.
      *
@@ -21,26 +21,26 @@ class PosmController extends Controller
      */
     public function index()
     {
-        return view('master.posm');
+        return view('master.fanspage');
     }
 
     /**
-     * Data for DataTables
+     * Update the specified resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function masterDataTable(){
 
-        $data = Posm::where('posms.deleted_at', null)
-            ->join('groups', 'posms.group_id', '=', 'groups.id')
-            ->select('posms.*', 'groups.name as group_name')->get();
+        $data = Fanspage::all();
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(PosmFilters $filters){
-        $data = Posm::filter($filters)->get();
+    public function getDataWithFilters(FanspageFilters $filters){
+        $data = Fanspage::filter($filters)->get();
 
         return $data;
     }
@@ -49,15 +49,15 @@ class PosmController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
-            ->addColumn('action', function ($item) {
+                ->addColumn('action', function ($item) {
 
-                return
-                    "<a href='#posm' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-posm'><i class='fa fa-pencil'></i></a>
+                   return
+                    "<a href='#fanspage' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-fanspage'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+                })
+                ->rawColumns(['action'])
+                ->make(true);
 
     }
 
@@ -79,16 +79,14 @@ class PosmController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
-
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'group_id' => 'required'
-        ]);
+            'url' => 'required|string|max:255',
+            ]);
 
-        $posm = Posm::create($request->all());
+        $fanspage = Fanspage::create($request->all());
 
-        return response()->json(['url' => url('/posm')]);
+        return response()->json(['url' => url('/fanspage')]);
     }
 
     /**
@@ -110,7 +108,7 @@ class PosmController extends Controller
      */
     public function edit($id)
     {
-        $data = Posm::with('group')->where('id', $id)->first();
+        $data = Fanspage::find($id);
 
         return response()->json($data);
     }
@@ -126,13 +124,16 @@ class PosmController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'group_id' => 'required'
-        ]);
+            'url' => 'required|string|max:255',
+            ]);
 
-        $posm = Posm::find($id)->update($request->all());
+        $fanspage = Fanspage::find($id)->update($request->all());
 
         return response()->json(
-            ['url' => url('/posm'), 'method' => $request->_method]);
+            [
+                'url' => url('/fanspage'),
+                'method' => $request->_method
+            ]);
     }
 
     /**
@@ -143,8 +144,11 @@ class PosmController extends Controller
      */
     public function destroy($id)
     {
-        $posm = Posm::destroy($id);
+
+        $fanspage = Fanspage::destroy($id);
 
         return response()->json($id);
     }
+
 }
+

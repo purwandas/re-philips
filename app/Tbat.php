@@ -11,7 +11,7 @@ class Tbat extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'store_id', 'week', 'date'
+        'user_id', 'store_id', 'store_destination_id', 'week', 'date'
     ];
 
     /**

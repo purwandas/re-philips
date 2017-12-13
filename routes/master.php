@@ -151,6 +151,38 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
         Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
 
+        /** Fanspage **/
+        // Route::resource('fanspage', 'Master\FanspageController');
+        Route::get('fanspage', 'Master\FanspageController@index');
+        Route::post('fanspage', 'Master\FanspageController@store');
+        Route::get('fanspage/edit/{id}', 'Master\FanspageController@edit');
+        Route::patch('fanspage/{id}', 'Master\FanspageController@update');
+        Route::delete('fanspage/{id}', 'Master\FanspageController@destroy');
+
+        /** MessageToAdmin **/
+        // Route::resource('MessageToAdmin', 'Master\MessageToAdminController');
+        Route::get('messageToAdmin', 'MessageToAdminController@index');
+        Route::post('messageToAdmin', 'MessageToAdminController@store');
+        Route::get('messageToAdmin/show/{id}', 'MessageToAdminController@show');
+        Route::get('messageToAdmin/edit/{id}', 'MessageToAdminController@edit');
+        Route::patch('messageToAdmin/{id}', 'MessageToAdminController@update');
+        Route::delete('messageToAdmin/{id}', 'MessageToAdminController@destroy');
+
+        /** Feedback Category **/
+        // Route::resource('fanspage', 'Master\FanspageController');
+        Route::get('feedbackCategory', 'Master\FeedbackCategoryController@index');
+        Route::post('feedbackCategory', 'Master\FeedbackCategoryController@store');
+        Route::get('feedbackCategory/edit/{id}', 'Master\FeedbackCategoryController@edit');
+        Route::patch('feedbackCategory/{id}', 'Master\FeedbackCategoryController@update');
+        Route::delete('feedbackCategory/{id}', 'Master\FeedbackCategoryController@destroy');
+
+        /** Feedback Question **/
+        // Route::resource('fanspage', 'Master\FanspageController');
+        Route::get('feedbackQuestion', 'Master\FeedbackQuestionController@index');
+        Route::post('feedbackQuestion', 'Master\FeedbackQuestionController@store');
+        Route::get('feedbackQuestion/edit/{id}', 'Master\FeedbackQuestionController@edit');
+        Route::patch('feedbackQuestion/{id}', 'Master\FeedbackQuestionController@update');
+        Route::delete('feedbackQuestion/{id}', 'Master\FeedbackQuestionController@destroy');
     });
 
     /**

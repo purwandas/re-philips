@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class Group extends Model
+class FeedbackCategory extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'groupproduct_id'
+    	'name',
     ];
 
     /**
@@ -27,24 +27,9 @@ class Group extends Model
      * Relation Method(s).
      *
      */
-
-    public function groupProduct()
+    public function feedbackQuestion()
     {
-        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
-    }
-    public function posm()
-    {
-        return $this->hasMany('App\Posm', 'group_id');
-    }
-
-    public function categories()
-    {
-        return $this->hasMany('App\Category', 'group_id');
-    }
-
-    public function products()
-    {
-        return $this->hasMany('App\Product', 'group_id');
+        return $this->hasMany('App\feedbackQuestion', 'feedbackCategory_id');
     }
 
     /**
@@ -57,4 +42,6 @@ class Group extends Model
     {
         return $filters->apply($query);
     }
+
 }
+
