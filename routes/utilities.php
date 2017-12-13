@@ -55,6 +55,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/sohreport', ['as'=> 'datatable.sohreport','uses'=>'Master\ReportController@sohData']);
     Route::post('datatable/sosreport', ['as'=> 'datatable.sosreport','uses'=>'Master\ReportController@sosData']);
     Route::post('datatable/maintenancerequestreport', ['as'=> 'datatable.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestData']);
+    Route::post('datatable/competitoractivityreport', ['as'=> 'datatable.competitoractivityreport','uses'=>'Master\ReportController@competitorActivityData']);
+    Route::post('datatable/promoactivityreport', ['as'=> 'datatable.promoactivityreport','uses'=>'Master\ReportController@promoActivityData']);
+    Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
+
+    
 
     /**
      * Data with filter (select2, list)
@@ -76,6 +81,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
     Route::post('data/feedbackCategory', ['as'=> 'data.feedbackCategory','uses'=>'Master\FeedbackCategoryController@getDataWithFilters']);
+    Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
 
     /**
      * Relation
@@ -151,7 +157,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-soh', ['uses'=>'Master\ExportController@exportSoh']);
     Route::post('util/export-sos', ['uses'=>'Master\ExportController@exportSos']);
     Route::post('util/export-displayshare', ['uses'=>'Master\ExportController@exportDisplayShare']);
-    Route::post('util/export-maintenancereport', ['uses'=>'Master\ExportController@exportMaintenanceReport']);
+    Route::post('util/export-maintenancerequest', ['uses'=>'Master\ExportController@exportMaintenanceRequest']);
+    Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
+    Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
+    
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
 

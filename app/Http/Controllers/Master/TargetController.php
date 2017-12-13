@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\Reports\SummaryTargetActual;
+use App\Traits\PromoterTrait;
+use App\Traits\TargetTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -13,6 +16,7 @@ use App\Target;
 class TargetController extends Controller
 {
     use StringTrait;
+    use TargetTrait;
 
     /**
      * Display a listing of the resource.
@@ -85,6 +89,7 @@ class TargetController extends Controller
             'user_id' => 'required',
             'store_id' => 'required',
             'groupproduct_id' => 'required',
+            'type' => 'required',
             'target' => 'required|numeric'
             ]);
 
@@ -93,9 +98,32 @@ class TargetController extends Controller
                     ->where('groupproduct_id', $request['groupproduct_id']);
 
         if($target->count() > 0){
+
+            $targetOld = $target->first()->target;
+
             $target->update(['target'=>$request->target]);
+
+            /* Summary Target Add and/or Change */
+            $summary['user_id'] = $target->user_id;
+            $summary['store_id'] = $target->store_id;
+            $summary['groupproduct_id'] = $target->groupproduct_id;
+            $summary['targetOld'] = $targetOld;
+            $summary['target'] = $target->target;
+            $summary['type'] = $target->type;
+
+            $this->changeTarget($summary, 'change');
+
         }else{
-            Target::create($request->all());
+            $target = Target::create($request->all());
+
+            /* Summary Target Add and/or Change */
+            $summary['user_id'] = $target->user_id;
+            $summary['store_id'] = $target->store_id;
+            $summary['groupproduct_id'] = $target->groupproduct_id;
+            $summary['target'] = $target->target;
+            $summary['type'] = $target->type;
+
+            $this->changeTarget($summary, 'change');
         }
 
         return response()->json(['url' => url('/target')]);
@@ -138,10 +166,25 @@ class TargetController extends Controller
             'user_id' => 'required',
             'store_id' => 'required',
             'groupproduct_id' => 'required',
+            'type' => 'required',
             'target' => 'required|numeric'
             ]);
 
-        $target = Target::find($id)->update($request->all());
+        $target = Target::find($id);
+
+        $targetOld = $target->target;
+
+        $target->update($request->all());
+
+        /* Summary Target Add and/or Change */
+        $summary['user_id'] = $target->user_id;
+        $summary['store_id'] = $target->store_id;
+        $summary['groupproduct_id'] = $target->groupproduct_id;
+        $summary['targetOld'] = $targetOld;
+        $summary['target'] = $target->target;
+        $summary['type'] = $target->type;
+
+        $this->changeTarget($summary, 'change');
 
         return response()->json(
             ['url' => url('/target'), 'method' => $request->_method]);
@@ -155,7 +198,21 @@ class TargetController extends Controller
      */
     public function destroy($id)
     {
-        $target = Target::destroy($id);
+        $target = Target::where('id', $id)->first();
+
+        /* Summary Target Delete */
+        $summary['user_id'] = $target->user_id;
+        $summary['store_id'] = $target->store_id;
+        $summary['groupproduct_id'] = $target->groupproduct_id;
+        $summary['target'] = $target->target;
+        $summary['type'] = $target->type;
+
+        $this->changeTarget($summary, 'delete');
+
+        $target->delete();
+
+        /* Chage promoter title from Hybrid to One Dedicate */
+        $this->changePromoterTitle($summary['user_id'], $summary['store_id']);
 
         return response()->json($id);
     }

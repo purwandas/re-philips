@@ -101,20 +101,22 @@ class ProductKnowledgeController extends Controller
 
             $data = $data->merge($dataPromoterSelect);
 
-            // Set has read
-            $data->map(function ($detail) use ($user) {
-                $productRead = ProductKnowledgeRead::where('productknowledge_id', $detail['id'])->where('user_id', $user->id)->first();
 
-                if($productRead) {
-                    $detail['hasRead'] = 1;
-                }else{
-                    $detail['hasRead'] = 0;
-                }
-
-                return $detail;
-            });
 
         }
+
+        // Set has read
+        $data->map(function ($detail) use ($user) {
+            $productRead = ProductKnowledgeRead::where('productknowledge_id', $detail['id'])->where('user_id', $user->id)->first();
+
+            if($productRead) {
+                $detail['hasRead'] = 1;
+            }else{
+                $detail['hasRead'] = 0;
+            }
+
+            return $detail;
+        });
 
         return response()->json($data);
     }

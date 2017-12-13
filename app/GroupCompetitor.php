@@ -11,7 +11,7 @@ class GroupCompetitor extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'kategori', 'groupproduct_id'
+        'name'
     ];
 
     /**
@@ -27,11 +27,6 @@ class GroupCompetitor extends Model
      * Relation Method(s).
      *
      */
-
-    public function groupProduct()
-    {
-        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
-    }
 
     public function competitorActivityDetails()
     {

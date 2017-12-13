@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMessageToAdminTable extends Migration
+class CreateHistoryTargetActualsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateMessageToAdminTable extends Migration
      */
     public function up()
     {
-        Schema::create('message_to_admin', function (Blueprint $table) {
+        Schema::create('history_target_actuals', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('subject');
-            $table->text('message');
-            $table->date('date');
-            $table->enum('status', ['read', 'unread'])->nullable();
+            $table->integer('month');
+            $table->integer('year');
+            $table->longText('details');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +32,6 @@ class CreateMessageToAdminTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('message_to_admin');
+        Schema::dropIfExists('history_target_actuals');
     }
 }

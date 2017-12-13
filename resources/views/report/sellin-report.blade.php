@@ -86,7 +86,7 @@
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL ALT </a>
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
                         </div>
                     </div>
 
@@ -269,7 +269,7 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"+ " - " + obj.dedicate}
 	                })
                 }
             }));

@@ -111,32 +111,23 @@ class OnceController extends Controller
                 $groupCompetitor = DB::table('group_competitors')->count();
 
                 if($groupCompetitor == 0){
-                    GroupCompetitor::create(['name'=>'COSMOS','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'KIRIN','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'MASPION','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'MIYAKO','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'OXONE','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'PANASONIC','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'YONG MA','kategori'=>NULL, 'groupproduct_id'=>'1']);
-                    GroupCompetitor::create(['name'=>'OTHERS','kategori'=>NULL, 'groupproduct_id'=>'1']);
-
-                    GroupCompetitor::create(['name'=>'BRAUN','kategori'=>'MALE GROOMING', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'GILLETE','kategori'=>'MALE GROOMING', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'PANASONIC','kategori'=>'MALE GROOMING', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'OTHERS','kategori'=>'MALE GROOMING', 'groupproduct_id'=>'2']);
-
-                    GroupCompetitor::create(['name'=>'GLAM PALM','kategori'=>'BEAUTY', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'PANASONIC','kategori'=>'BEAUTY', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'REPID','kategori'=>'BEAUTY', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'SHARP','kategori'=>'BEAUTY', 'groupproduct_id'=>'2']);
-                    GroupCompetitor::create(['name'=>'OTHERS','kategori'=>'BEAUTY', 'groupproduct_id'=>'2']);
-
-
-                    GroupCompetitor::create(['name'=>'CHICCO','kategori'=>NULL, 'groupproduct_id'=>'3']);
-                    GroupCompetitor::create(['name'=>'DR.BROWN','kategori'=>NULL, 'groupproduct_id'=>'3']);
-                    GroupCompetitor::create(['name'=>'MEDELA','kategori'=>NULL, 'groupproduct_id'=>'3']);
-                    GroupCompetitor::create(['name'=>'PIGEON','kategori'=>NULL, 'groupproduct_id'=>'3']);
-                    GroupCompetitor::create(['name'=>'OTHERS','kategori'=>NULL, 'groupproduct_id'=>'3']);
+                    GroupCompetitor::create(['name'=>'COSMOS']);
+                    GroupCompetitor::create(['name'=>'KIRIN']);
+                    GroupCompetitor::create(['name'=>'MASPION']);
+                    GroupCompetitor::create(['name'=>'MIYAKO']);
+                    GroupCompetitor::create(['name'=>'OXONE']);
+                    GroupCompetitor::create(['name'=>'YONG MA']);
+                    GroupCompetitor::create(['name'=>'BRAUN']);
+                    GroupCompetitor::create(['name'=>'GILLETE']);
+                    GroupCompetitor::create(['name'=>'GLAM PALM']);
+                    GroupCompetitor::create(['name'=>'PANASONIC']);
+                    GroupCompetitor::create(['name'=>'REPID']);
+                    GroupCompetitor::create(['name'=>'SHARP']);
+                    GroupCompetitor::create(['name'=>'CHICCO']);
+                    GroupCompetitor::create(['name'=>'DR.BROWN']);
+                    GroupCompetitor::create(['name'=>'MEDELA']);
+                    GroupCompetitor::create(['name'=>'PIGEON']);
+                    GroupCompetitor::create(['name'=>'OTHERS']);
                 }
             }
         }

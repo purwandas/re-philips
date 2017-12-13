@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Master;
 use App\AttendanceDetail;
 use App\Store;
 use App\Place;
+use App\VisitPlan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -28,8 +29,10 @@ class AttendanceController extends Controller
         // Check header
         $attendanceHeader = Attendance::where('user_id', $user->id)->where('date', '=', date('Y-m-d'))->first();
 
+//        return response()->json($attendanceHeader);
+
         // Response if header was not set (command -> init:attendance)
-        if($user->role == 'Supervisor' || $user->role == 'DM' || $user->role == 'Trainer' || $user->role == 'RSM' || $user->role='Salesman Explorer'){
+        if($user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid' || $user->role == 'DM' || $user->role == 'Trainer' || $user->role == 'RSM' || $user->role == 'Salesman Explorer'){
 
             if(!$attendanceHeader) {
                 $attendanceHeader = Attendance::create([
@@ -62,24 +65,28 @@ class AttendanceController extends Controller
 
         if($param == 1){ /* CHECK IN */
 
-            if($content['is_store'] == 1){
-                $location = Store::where('id', $content['id'])->first();
-            }else if($content['is_store'] == 0){
-                $location = Place::where('id', $content['id'])->first();
-            }
+            if($user->role != 'Salesman Explorer') {
 
-            // Return if location longi and lati was not set
-            if($location->longitude == null || $location->latitude == null){
-                return response()->json(['status' => false, 'message' => 'Tempat absensi yang anda pilih belum terkonfigurasi, silahkan hubungi administrator'], 500);
-            }
+                if ($content['is_store'] == 1) {
+                    $location = Store::where('id', $content['id'])->first();
+                } else if ($content['is_store'] == 0) {
+                    $location = Place::where('id', $content['id'])->first();
+                }
 
-            $coordStore = Geotools::coordinate([$location->latitude, $location->longitude]);
-            $coordNow = Geotools::coordinate([$content['latitude'], $content['longitude']]);
-            $distance = Geotools::distance()->setFrom($coordStore)->setTo($coordNow)->flat();
+                // Return if location longi and lati was not set
+                if ($location->longitude == null || $location->latitude == null) {
+                    return response()->json(['status' => false, 'message' => 'Tempat absensi yang anda pilih belum terkonfigurasi, silahkan hubungi administrator'], 500);
+                }
 
-            // Check distance if above 250 meter(s)
-            if($distance > 250){
-                return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari tempat absensi'], 200);
+                $coordStore = Geotools::coordinate([$location->latitude, $location->longitude]);
+                $coordNow = Geotools::coordinate([$content['latitude'], $content['longitude']]);
+                $distance = Geotools::distance()->setFrom($coordStore)->setTo($coordNow)->flat();
+
+                // Check distance if above 250 meter(s)
+                if ($distance > 250) {
+                    return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari tempat absensi'], 200);
+                }
+
             }
 
             // If promoter still didn't do check out
@@ -121,6 +128,17 @@ class AttendanceController extends Controller
                 });
             } catch (\Exception $e) {
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+            }
+
+            if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
+
+                /* Set Visit Status */
+                $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
+
+                if ($visit) {
+                    $visit->update(['visit_status' => 1]);
+                }
+
             }
 
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi berhasil (Check In)']);

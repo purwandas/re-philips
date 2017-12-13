@@ -41,30 +41,40 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $data = User::where('id', '<>', Auth::user()->id);
+//        $data = User::all();
 
-        return $this->makeTable($data);
-    }
+        $filter = $data;
 
-    // Data for select2 with Filters
-    public function getDataWithFilters(UserFilters $filters){ 
-        $data = User::filter($filters)->get();
+        /* If filter */
+            if($request['byName']){
+                $filter = $data->where('id', $request['byName']);
+            }
 
-        return $data;
-    }
-    public function getDataPromoterWithFilters(UserFilters $filters){ 
-        $data = User::filter($filters)->where('role','=','Promoter')->get();
+            if($request['byNik']){
+                $filter = $data->where('id', $request['byNik']);
+            }
 
-        return $data;
-    }
+            if($request['byRole']){
+                $filter = $data->where('role', $request['byRole']);
+            }
+
+    //     return $this->makeTable($filter);
+    // }
+
+    
     
 
-    // Datatable template
-    public function makeTable($data){
+    // // Datatable template
+    // public function makeTable($data){
 
-        return Datatables::of($data)
+
+    //     // Datatables::of($filter->all())
+    //     //     ->make(true);
+
+        return Datatables::of($filter->get())
                 ->addColumn('action', function ($item) {
 
                     return 
@@ -100,6 +110,18 @@ class UserController extends Controller
                 })
                 ->rawColumns(['store', 'action'])
                 ->make(true);
+    }
+
+    // Data for select2 with Filters
+    public function getDataWithFilters(UserFilters $filters){ 
+        $data = User::filter($filters)->get();
+
+        return $data;
+    }
+    public function getDataPromoterWithFilters(UserFilters $filters){ 
+        $data = User::filter($filters)->where('role','=','Promoter')->get();
+
+        return $data;
     }
 
     /**

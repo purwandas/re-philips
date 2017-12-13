@@ -117,6 +117,15 @@
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [3]},
             ],
+            // createdRow: function( row, data, dataIndex ) {
+            //         // Set the data-status attribute, and add a class
+            //         $( row )
+            //             .attr('data-id',data.id)
+            //             .attr('data-toggle','modal')
+            //             .attr('data-target','#area')
+            //             .attr('style','cursor:pointer')
+            //             .addClass('clickable-row');
+            //     },
             "order": [ [0, 'desc'] ],
         });
 
@@ -225,6 +234,35 @@
         })
 
     });
+
+    // $(document).on("click", "#areaTable tbody tr", function () {
+    //     // alert('kampter');
+    //     resetValidation();       
+        
+    //     var modalTitle = document.getElementById('title');
+    //     modalTitle.innerHTML = "EDIT";
+
+    //     var id = $(this).data('id');
+    //     var getDataUrl = "{{ url('area/edit/') }}";
+    //     var postDataUrl = "{{ url('area') }}"+"/"+id;        
+
+    //     // Set action url form for update        
+    //     $("#form_area").attr("action", postDataUrl);
+
+    //     // Set Patch Method
+    //     if(!$('input[name=_method]').length){
+    //         $("#form_area").append("<input type='hidden' name='_method' value='PATCH'>");
+    //     }
+
+    //     $.get(getDataUrl + '/' + id, function (data) {
+
+    //                 $('#name').val(data.name);
+
+    //                 setSelect2IfPatchModal($("#region"), data.region_id, data.region.name);
+
+    //     })
+
+    // });
 
     function initSelect2Area(){
 

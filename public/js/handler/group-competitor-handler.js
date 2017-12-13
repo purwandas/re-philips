@@ -22,15 +22,9 @@ var FormValidation = function () {
                         minlength: 2,
                         required: true,
                     },
-                    groupproduct_id:{
-                        required: true,
-                    },
 
                 },
                 messages:{
-                    groupproduct_id:{
-                        required: "Please select a Group Product!"
-                    }
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit              
