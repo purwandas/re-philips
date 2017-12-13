@@ -54,7 +54,8 @@
                         <thead>
                             <tr>
                                 <th> No. </th>                            
-                                <th> Group Competitor Name </th>
+                                <th> Group Competitor Name </th> 
+                                <th> Group Name </th>
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -109,6 +110,7 @@
             "columns": [
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
+                {data: 'group_name', name: 'group_name'},      
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
@@ -181,8 +183,7 @@
         modalTitle.innerHTML = "ADD NEW ";
 
         $('#name').val('');        
-        select2Reset($("#kategori"));
-        select2Reset($("#groupproduct"));
+        select2Reset($("#group"));
 
         // Set action url form for add
         var postDataUrl = "{{ url('groupcompetitor') }}";    
@@ -219,14 +220,8 @@
         $.get(getDataUrl + '/' + id, function (data) {
 
                     $('#name').val(data.name);
-                    if(data.kategori != null){
-                        $('#kategori').val(data.kategori);
-                    }else{
-                        select2Reset($("#kategori"));
-                    }
-                    setSelect2IfPatchModal($("#groupproduct"), data.groupproduct_id, data.group_product.name);
-
-        })
+                    setSelect2IfPatchModal($("#group"), data.group_id, data.group_name);
+        });
 
     });
 
@@ -237,12 +232,7 @@
          *
          */
 
-        $('#kategori').select2({
-                width: '100%',
-                placeholder: 'Kategori'
-            })
-
-        $('#groupproduct').select2(setOptions('{{ route("data.groupproduct") }}', 'Group Product', function (params) {            
+        $('#group').select2(setOptions('{{ route("data.group") }}', 'Group', function (params) {            
             return filterData('name', params.term);
         }, function (data, params) {
             return {
@@ -251,6 +241,9 @@
                 })
             }
         }));
+        $('#group').on('select2:select', function () {
+                self.selected('byGroup', $('#group').val());
+            });
 
     }
 

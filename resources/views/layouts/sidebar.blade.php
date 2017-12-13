@@ -98,7 +98,12 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('group') ? 'active open' : '' }} {{ Request::is('category') ? 'active open' : '' }} {{ Request::is('product') ? 'active open' : '' }}">
+            <li class="nav-item 
+            {{ Request::is('group') ? 'active open' : '' }} 
+            {{ Request::is('category') ? 'active open' : '' }} 
+            {{ Request::is('product') ? 'active open' : '' }}
+            {{ Request::is('groupproduct') ? 'active open' : '' }}
+            ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
@@ -127,24 +132,41 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
-                <a href="{{ url('price') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-dollar"></i>
-                    <span class="title">Price</span>
+
+            <li class="nav-item 
+                {{ Request::is('target') ? 'active open' : '' }}
+                {{ Request::is('productfocus') ? 'active open' : '' }}
+                {{ Request::is('price') ? 'active open' : '' }}
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-cubes"></i>
+                    <span class="title">Traget</span>
+                    <span class="arrow 
+                        {{ Request::is('target') ? 'active open' : '' }}
+                        {{ Request::is('productfocus') ? 'active open' : '' }}
+                        {{ Request::is('price') ? 'active open' : '' }}
+                    "></span>
                 </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('target') ? 'active open' : '' }}">
+                        <a href="{{ url('target') }}" class="nav-link nav-toggle">
+                            <span class="title">Promoter Target</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
+                        <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
+                            <span class="title">Product Focus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
+                        <a href="{{ url('price') }}" class="nav-link nav-toggle">
+                            <span class="title">Price</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li class="nav-item {{ Request::is('target') ? 'active open' : '' }}">
-                <a href="{{ url('target') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-line-chart"></i>
-                    <span class="title">Target</span>
-                </a>
-            </li>
-            <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
-                <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-search-plus"></i>
-                    <span class="title">Product Focus</span>
-                </a>
-            </li>
+            
+            
             <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
                 <a href="{{ url('posm') }}" class="nav-link nav-toggle">
                     <i class="fa fa-tasks"></i>
@@ -189,82 +211,119 @@
                 <h3 class="uppercase">REPORTING</h3>
             </li>
 
-            <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
-                <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
+            <li class="nav-item 
+            {{ Request::is('sellinreport') ? 'active open' : '' }} 
+            {{ Request::is('selloutreport') ? 'active open' : '' }}
+            {{ Request::is('retconsumentreport') ? 'active open' : '' }}
+            {{ Request::is('retdistributorreport') ? 'active open' : '' }}
+            {{ Request::is('freeproductreport') ? 'active open' : '' }}
+            {{ Request::is('tbatreport') ? 'active open' : '' }}
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">POS Material</span>
+                    <span class="title">Sales</span>
+                    <span class="arrow 
+                    {{ Request::is('sellinreport') ? 'active open' : '' }} 
+                    {{ Request::is('selloutreport') ? 'active open' : '' }}
+                    {{ Request::is('retconsumentreport') ? 'active open' : '' }}
+                    {{ Request::is('retdistributorreport') ? 'active open' : '' }}
+                    {{ Request::is('freeproductreport') ? 'active open' : '' }}
+                    {{ Request::is('tbatreport') ? 'active open' : '' }}
+                    "></span>
                 </a>
-            </li>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}  ">
+                        <a href="{{ url('sellinreport') }}" class="nav-link ">
+                            <span class="title">Sell In</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('selloutreport') ? 'active open' : '' }}">
+                        <a href="{{ url('selloutreport') }}" class="nav-link nav-toggle">
+                            <span class="title">Sell Out</span>
+                        </a>
+                    </li>
 
-            <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}">
-                <a href="{{ url('sellinreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Sell In Report</span>
-                </a>
-            </li>
+                    <li class="nav-item {{ Request::is('retconsumentreport') ? 'active open' : '' }}">
+                        <a href="{{ url('retconsumentreport') }}" class="nav-link nav-toggle">
+                            <span class="title">Return Consument</span>
+                        </a>
+                    </li>
 
-            <li class="nav-item {{ Request::is('selloutreport') ? 'active open' : '' }}">
-                <a href="{{ url('selloutreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Sell Out Report</span>
-                </a>
-            </li>
+                    <li class="nav-item {{ Request::is('retdistributorreport') ? 'active open' : '' }}">
+                        <a href="{{ url('retdistributorreport') }}" class="nav-link nav-toggle">
+                            <span class="title">Return Distributor</span>
+                        </a>
+                    </li>
 
-            <li class="nav-item {{ Request::is('retconsumentreport') ? 'active open' : '' }}">
-                <a href="{{ url('retconsumentreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Return Consument Report</span>
-                </a>
-            </li>
+                    <li class="nav-item {{ Request::is('freeproductreport') ? 'active open' : '' }}">
+                        <a href="{{ url('freeproductreport') }}" class="nav-link nav-toggle">
+                            <span class="title">Free Product</span>
+                        </a>
+                    </li>
 
-            <li class="nav-item {{ Request::is('retdistributorreport') ? 'active open' : '' }}">
-                <a href="{{ url('retdistributorreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Return Distributor Report</span>
-                </a>
+                    <li class="nav-item {{ Request::is('tbatreport') ? 'active open' : '' }}">
+                        <a href="{{ url('tbatreport') }}" class="nav-link nav-toggle">
+                            <span class="title">TBAT</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-
-            <li class="nav-item {{ Request::is('freeproductreport') ? 'active open' : '' }}">
-                <a href="{{ url('freeproductreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Free Product Report</span>
-                </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('tbatreport') ? 'active open' : '' }}">
-                <a href="{{ url('tbatreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">TBAT Report</span>
-                </a>
-            </li>
-
             <li class="nav-item {{ Request::is('sohreport') ? 'active open' : '' }}">
                 <a href="{{ url('sohreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">SOH Report</span>                    
+                    <span class="title">SOH</span>                    
                 </a>
             </li>
 
-            <li class="nav-item {{ Request::is('sosreport') ? 'active open' : '' }}">
-                <a href="{{ url('sosreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">SOS Report</span>                    
-                </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('displaysharereport') ? 'active open' : '' }}">
-                <a href="{{ url('displaysharereport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Display Share Report</span>                    
-                </a>
-            </li>
 
             <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
                 <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
-                    <span class="title">Maintenance Request Report</span>                    
+                    <span class="title">Maintenance Request</span>                    
                 </a>
             </li>
+
+            <li class="nav-item {{ Request::is('competitoractivityreport') ? 'active open' : '' }}">
+                <a href="{{ url('competitoractivityreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Competitor Activity</span>                    
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('promoactivityreport') ? 'active open' : '' }}">
+                <a href="{{ url('promoactivityreport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Promo Activity </span>                    
+                </a>
+            </li>
+
+            <li class="nav-item 
+            {{ Request::is('displaysharereport') ? 'active open' : '' }}
+            {{ Request::is('posmactivityreport') ? 'active open' : '' }}
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">ISE </span>   
+                    <span class="arrow 
+                    {{ Request::is('displaysharereport') ? 'active open' : '' }}
+                    {{ Request::is('posmactivityreport') ? 'active open' : '' }}
+                    "></span>                 
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('displaysharereport') ? 'active open' : '' }}  ">
+                        <a href="{{ url('displaysharereport') }}" class="nav-link ">
+                            <span class="title">Display Share</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('posmactivityreport') ? 'active open' : '' }}">
+                        <a href="{{ url('posmactivityreport') }}" class="nav-link nav-toggle">
+                            <span class="title">POSM Activity </span>                    
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            
             
             @endif
 
