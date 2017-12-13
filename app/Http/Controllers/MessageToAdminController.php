@@ -1,18 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\MessageToAdmin;
+use App\User;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
-use App\Traits\UploadTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Traits\StringTrait;
-use App\Filters\FanspageFilters;
-use App\Fanspage;
+use Auth;
+use Carbon\Carbon;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use DB;
+use App\Filters\MessageToAdminFilters;
 
-class FanspageController extends Controller
+class MessageToAdminController extends Controller
 {
-	use UploadTrait;
+
+    
     use StringTrait;
     /**
      * Display a listing of the resource.
@@ -21,7 +28,8 @@ class FanspageController extends Controller
      */
     public function index()
     {
-        return view('master.fanspage');
+
+        return view('master.messageToAdmin');
     }
 
     /**
@@ -33,14 +41,17 @@ class FanspageController extends Controller
      */
     public function masterDataTable(){
 
-        $data = Fanspage::all();
+        $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
+                    ->join('users', 'message_to_admin.user_id', '=', 'users.id')
+                    ->select('message_to_admin.*', 'users.email as user')->get();
+
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(FanspageFilters $filters){
-        $data = Fanspage::filter($filters)->get();
+    public function getDataWithFilters(MessageToAdminFilters $filters){
+        $data = MessageToAdmin::filter($filters)->get();
 
         return $data;
     }
@@ -52,8 +63,8 @@ class FanspageController extends Controller
                 ->addColumn('action', function ($item) {
 
                    return
-                    "<a href='#fanspage' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-fanspage'><i class='fa fa-pencil'></i></a>
-                    <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    // "<a href='#messageToAdmin' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-messageToAdmin'><i class='fa fa-pencil'></i></a>
+                    "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 })
                 ->rawColumns(['action'])
@@ -80,13 +91,16 @@ class FanspageController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
             ]);
 
-        $fanspage = Fanspage::create($request->all());
+        $user = User::find(Auth::user()->id);
 
-        return response()->json(['url' => url('/fanspage')]);
+        $request['user_id']= $user->id;
+        $messageToAdmin = MessageToAdmin::create($request->all());
+
+        return response()->json(['url' => url('/messageToAdmin')]);
     }
 
     /**
@@ -97,7 +111,11 @@ class FanspageController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
+                    ->join('users', 'message_to_admin.user_id', '=', 'users.id')
+                    ->select('message_to_admin.*', 'users.email as user')->find($id);
+
+        return response()->json($data);
     }
 
     /**
@@ -108,7 +126,7 @@ class FanspageController extends Controller
      */
     public function edit($id)
     {
-        $data = Fanspage::find($id);
+        $data = MessageToAdmin::find($id);
 
         return response()->json($data);
     }
@@ -123,19 +141,21 @@ class FanspageController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:255',
             ]);
 
-        $fanspage = Fanspage::find($id)->update($request->all());
+        $user = User::find(Auth::user()->id);
+
+        $request['user_id']= $user->id;
+        $messageToAdmin = MessageToAdmin::find($id)->update($request->all());
 
         return response()->json(
             [
-                'url' => url('/fanspage'),
+                'url' => url('/messageToAdmin'),
                 'method' => $request->_method
             ]);
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -145,10 +165,10 @@ class FanspageController extends Controller
     public function destroy($id)
     {
 
-        $fanspage = Fanspage::destroy($id);
+        $messageToAdmin = MessageToAdmin::destroy($id);
 
         return response()->json($id);
     }
 
-}
 
+}
