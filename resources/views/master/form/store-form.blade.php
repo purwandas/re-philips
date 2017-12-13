@@ -67,18 +67,36 @@
                         	<button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                         <div class="alert alert-success display-hide">
                         	<button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        
+
                         <div class="caption padding-caption">
                         	<span class="caption-subject font-dark bold uppercase">DETAILS</span>
                         	<hr>
                         </div>
 
 				        <div class="form-group">
-				          <label class="col-sm-2 control-label">Store ID</label>
+					        <label class="col-sm-2 control-label">Store ID</label>
+					        <div 
+								@if (\Request::is('*store/edit*'))  
+								  class="display-hide" 
+								@endif
+					        >
+					          	<label class="col-sm-2">
+					          			<input type="radio" name="store_status" value="new" id="rNew" checked> NEW 
+				          			</label>
+					          	<label class="col-sm-2">
+					            	<input type="radio" name="store_status" value="old" id="rOld"> OLD
+				            	</label>
+			            	</div>	
 				          <div class="col-sm-9">
-				          	<div class="input-icon right">
+				          	<div class="input-icon right" id="new_store">
 				          		<i class="fa"></i>
 				            	<input type="text" id="store_id" name="store_id" class="form-control" value="{{ @$data->store_id }}" placeholder="Input Store ID" readonly="readonly" />
+				            </div>
+
+				            <div class="input-icon right display-hide" style="margin-top: 10px" id="old_store">
+				          		<i class="fa"></i>
+				            	<select id="old_store_id" name="old_store_id"  class="select2select">
+				            	</select>
 				            </div>
 				          </div>
 				        </div>
@@ -236,7 +254,7 @@
                           </div>
                         </div>
 
-                        <div class="caption padding-caption">
+                        <!-- <div class="caption padding-caption">
                         	<span class="caption-subject font-dark bold uppercase">Supervisor</span>
                         	<hr>
                         </div>
@@ -256,7 +274,7 @@
                             </div>
                             
                           </div>
-                        </div>                        
+                        </div>                         -->
 				        
 		        
 				        <div class="form-group" style="padding-top: 15pt;">
@@ -301,6 +319,16 @@
 	            	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 	            }
 	        });
+
+	        $('#old_store_id').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.store_id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                })
+	            }
+	        }));
 
 	    	$('#subchannel').select2(setOptions('{{ route("data.subchannel") }}', 'Sub Channel', function (params) {
 	            return filterData('name', params.term);
@@ -356,7 +384,7 @@
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
-	       setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
+	       // setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
 
 	       updateDistributor();
 
@@ -382,6 +410,17 @@
 
         	})
 		}
+
+		$('input[type=radio][name=store_status]').change(function() {
+	        if (this.value == 'old') {
+	            $('#new_store').addClass('display-hide');
+	            $('#old_store').removeClass('display-hide');
+	        }
+	        else if (this.value == 'new') {
+	            $('#old_store').addClass('display-hide');
+	            $('#new_store').removeClass('display-hide');
+	        }
+	    });
 
 	</script>	
 
