@@ -55,6 +55,41 @@ class PromoterController extends Controller
         return response()->json($attendances);
     }
 
+    public function getAttendanceForSupervisorWithParam(Request $request, $id){
+
+        $user = User::where('id', $id)->first();
+
+        $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
+
+        $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
+                     ->join('users', 'attendances.user_id', '=', 'users.id')
+                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.role as role', 'users.photo as photo', 'attendances.status as status', 'attendances.reject as reject')->get();
+
+        foreach($attendances as $attendance){
+
+            $detail = AttendanceDetail::where('attendance_id', $attendance->attendance_id)
+                    ->join('stores', 'attendance_details.store_id', '=', 'stores.id')
+                    ->select('attendance_details.check_in', 'attendance_details.check_in_longitude', 'attendance_details.check_in_latitude', 'attendance_details.check_in_location',
+                        'attendance_details.check_out', 'attendance_details.check_out_longitude', 'attendance_details.check_out_latitude', 'attendance_details.check_out_location', 'attendance_details.detail as keterangan',
+                        'stores.store_id', 'stores.store_name_1', 'stores.store_name_2')
+                    ->get();
+
+            if($attendance->status == 'Masuk'){
+                $attendance['detail'] = $detail;
+            }else{
+                if($attendance->reject == '1'){
+                    $attendance['detail'] = $detail;
+                }else {
+                    $attendance['detail'] = [];
+                }
+            }
+
+        }
+
+        return response()->json($attendances);
+    }
+
     public function reject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
