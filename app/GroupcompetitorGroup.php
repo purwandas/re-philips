@@ -3,34 +3,33 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class GroupProduct extends Model
+class GroupcompetitorGroup extends Model
 {
-    use SoftDeletes;
+    //
 
+    // protected $table = 'groupcompetitor_groups';
+    
     protected $fillable = [
-        'name'
+        'groupcompetitor_id', 'group_id', 
     ];
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['deleted_at'];
-
-    /* Metode tambahan untuk model. */
+    /* Metode tambahan untuk model Branch Sport. */
 
     /**
      * Relation Method(s).
      *
      */
 
-    public function groups()
+    public function groupcompetitor()
     {
-        return $this->hasMany('App\Group', 'groupproduct_id');
+        return $this->belongsTo('App\GroupCompetitor', 'groupcompetitor_id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo('App\Group', 'group_id');
     }
 
     /**

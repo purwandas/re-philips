@@ -191,8 +191,6 @@ Route::group(['middleware' => ['auth']], function () {
     /**
      * Reporting Module(s)
      */
-
-    Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('sellinreport', 'Master\ReportController@sellInIndex');
     Route::get('selloutreport', 'Master\ReportController@sellOutIndex');
     Route::get('retconsumentreport', 'Master\ReportController@retConsumentIndex');
@@ -203,6 +201,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('sosreport', 'Master\ReportController@sosIndex');
     Route::get('displaysharereport', 'Master\ReportController@displayShareIndex');
     Route::get('maintenancerequest', 'Master\ReportController@maintenanceRequestIndex');
+    Route::get('competitoractivityreport', 'Master\ReportController@competitorActivityIndex');
+    Route::get('promoactivityreport', 'Master\ReportController@promoActivityIndex');
+    Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
+
+    
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');

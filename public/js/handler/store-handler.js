@@ -192,24 +192,35 @@ var FormValidation = function () {
                         processData: false,
                         contentType: false,
                         success: function (data) {                            
-                            
+                            console.log(data);
+                            // return;
                             var titleMsg;
                             var textMsg;
+                            var typeMsg;
 
                             if(data.method == "PATCH"){
                                 titleMsg = "Update!";
                                 textMsg = 'Data has been updated!';
+                                typeMsg = 'success';
                             }else{
                                 titleMsg = "Insert!";
                                 textMsg = 'Data has been created!';
+                                typeMsg = 'success';
+                            }
+
+                            if (data.error) {
+                                titleMsg = "ERROR!";
+                                textMsg = data.error;
+                                typeMsg = 'error';
                             }
 
                             swal({
                                     title: titleMsg,
                                     text: textMsg,
-                                    type: 'success'
+                                    type: typeMsg
                                 },
                                 function(){
+                                    if (!data.error) 
                                     window.location.href = data.url;
                                     // console.log(data);                                  
                                 }

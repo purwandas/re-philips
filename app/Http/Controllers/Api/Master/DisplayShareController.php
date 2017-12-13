@@ -34,7 +34,7 @@ class DisplayShareController extends Controller
 
             if ($displayShareHeader) { // If header exist (update and/or create detail)
 
-                try {
+                // try {
                     DB::transaction(function () use ($content, $displayShareHeader, $user) {
 
                         foreach ($content['data'] as $data) {
@@ -120,7 +120,7 @@ class DisplayShareController extends Controller
                                 }
 
                                 SummaryDisplayShare::create([
-                                    'display_share_detail_id' => $detail->id,
+                                    'displayshare_detail_id' => $detail->id,
                                     'region_id' => $store->district->area->region->id,
                                     'area_id' => $store->district->area->id,
                                     'district_id' => $store->district->id,
@@ -155,15 +155,15 @@ class DisplayShareController extends Controller
                         }
 
                     });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+                // } catch (\Exception $e) {
+                //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                // }
 
                 return response()->json(['status' => true, 'id_transaksi' => $displayShareHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-                try {
+                // try {
                     DB::transaction(function () use ($content, $user) {
 
                         // HEADER
@@ -237,7 +237,7 @@ class DisplayShareController extends Controller
                             }
 
                             SummaryDisplayShare::create([
-                                'display_share_detail_id' => $detail->id,
+                                'displayshare_detail_id' => $detail->id,
                                 'region_id' => $store->district->area->region->id,
                                 'area_id' => $store->district->area->id,
                                 'district_id' => $store->district->id,
@@ -270,9 +270,9 @@ class DisplayShareController extends Controller
                         }
 
                     });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+                // } catch (\Exception $e) {
+                //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                // }
 
                 // Check sell in header after insert
                 $displayShareHeaderAfter = DisplayShare::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
