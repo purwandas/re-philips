@@ -113,7 +113,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<div class="list-todo-item grey">' +
                         '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.store_id + this.id + '"  aria-expanded="false">' +
                         '<div class="list-toggle done uppercase">' +
-                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')' + '</div>' +
+                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')'+ ' - ' + this.dedicate + '</div>' +
                         '</div>' +
                         '</a>' +
                         '<div class="task-list panel-collapse collapse" id="' + this.store_id + this.id + '" aria-expanded="false" style="height: 0px;">' +
@@ -129,6 +129,9 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '</li>' +
                         '<li>' +
                         '<h5> Store Name 2 : ' + this.store_name_2 + '</h5>' +
+                        '</li>' +
+                        '<li>' +
+                        '<h5> Dedicate : ' + this.dedicate + '</h5>' +
                         '</li>' +
                         '<li>' +
                         '<h5> Region : ' + this.region_name + '</h5>' +

@@ -33,7 +33,80 @@
 
 <div class="row">
 	<div class="col-lg-12 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-	    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <!-- BEGIN FILTER-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-map-o font-blue"></i>
+                        <span class="caption-subject font-blue bold uppercase">FILTER Employee</span>
+                    </div>
+                </div>
+
+                <div class="caption padding-caption">
+                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
+                </div>
+                
+                <div class="row filter" style="margin-top: 10px;">
+                    <div class="col-md-4">
+                        <select id="filterNik" class="select2select">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterName" class="select2select">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterRole" class="select2select" >
+                            <option value=""></option>
+                            <option value="Promoter">Promoter</option>
+                            <option value="Promoter Additional">Promoter Additional</option>
+                            <option value="Promoter Event">Promoter Event</option>
+                            <option value="Demonstrator MCC">Demonstrator MCC</option>
+                            <option value="Demonstrator DA">Demonstrator DA</option>
+                            <option value="Driver">Driver</option>
+                            <option value="Helper">Helper</option>
+                            <option value="ACT">ACT</option>
+                            <option value="PPE">PPE</option>
+                            <option value="BDT">BDT</option>
+                            <option value="Salesman Explorer">Salesman Explorer</option>
+                            <option value="PCE">PCE</option>
+                            <option value="RE Executive">RE Executive</option>
+                            <option value="RE Support">RE Support</option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="Trainer">Trainer</option>
+                            <option value="Head Trainer">Head Trainer</option>
+                            <option value="SMD">SMD</option>
+                            <option value="SMD Coordinator">SMD Coordinator</option>
+                            <option value="HIC">HIC</option>
+                            <option value="HIE">HIE</option>
+                            <option value="Supervisor Hybrid">Supervisor Hybrid</option>
+                            <option value="SMD Additional">SMD Additional</option>
+                            <option value="ASC">ASC</option>
+                            <option value="DM">DM</option>
+                            <option value="RSM">RSM</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Master">Master</option>
+                        </select>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="btn-group">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                        <i class="fa fa-refresh"></i> Reset </a>
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                        <i class="fa fa-filter"></i> Filter </a>
+                </div>
+
+                <br><br>
+
+            </div>
+        <!-- END FILTER-->
+
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
 	    <div class="portlet light bordered">
 			<div class="portlet-title" >
 				<div class="caption">
@@ -85,11 +158,38 @@
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
+    <!-- BEGIN SELECT2 SCRIPTS -->
+    <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
+    <!-- END SELECT2 SCRIPTS -->
 <!-- BEGIN TEXT MODAL SCRIPTS -->
 <script src="{{ asset('js/text-modal/popup.js') }}" type="text/javascript"></script>
 <!-- END TEXT MODAL SCRIPTS -->
 
 <script>
+        var filterId = ['#filterNik', '#filterName', '#filterRole'];
+        var url = 'datatable/user';
+        var order = [ [0, 'desc'] ];
+        var columnDefs = [
+                {"className": "dt-center", "targets": [0]},
+                {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [5]},
+                {"className": "dt-center", "targets": [6]},
+            ];
+
+        var tableColumns = [
+                {data: 'id', name: 'id'}, 
+                {data: 'nik', name: 'nik'},               
+                {data: 'name', name: 'name'},
+                {data: 'role', name: 'role'},
+                {data: 'status', name: 'status'},
+                {data: 'store', name: 'store'},
+                {data: 'action', name: 'action', searchable: false, sortable: false},                
+            ];
+
+        var paramFilter = ['userTable', $('#userTable'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'userTable', $('#userTable'), url, tableColumns, columnDefs, order];
+
 	$(document).ready(function () {    	
 
 		$.ajaxSetup({
@@ -98,32 +198,41 @@
             }
         });
 
-        // Set data for Data Table '#athletesTable'
-        var table = $('#userTable').dataTable({
-	        "processing": true,
-	        "serverSide": true,	          
-	        "ajax": {
-                url: "{{ route('datatable.user') }}",
-                type: 'POST',
-            },
-	        "rowId": "id",
-	        "columns": [
-	            {data: 'id', name: 'id'}, 
-                {data: 'nik', name: 'nik'},               
-	            {data: 'name', name: 'name'},
-                {data: 'role', name: 'role'},
-                {data: 'status', name: 'status'},
-                {data: 'store', name: 'store'},
-	            {data: 'action', name: 'action', searchable: false, sortable: false},                
-	        ],
-	        "columnDefs": [
-        		{"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
-                {"className": "dt-center", "targets": [5]},
-                {"className": "dt-center", "targets": [6]},
-      		],
-            "order": [ [0, 'desc'] ],            
-    	});
+     //    // Set data for Data Table '#athletesTable'
+     //    var table = $('#userTable').dataTable({
+	    //     "processing": true,
+	    //     "serverSide": true,	          
+	    //     "ajax": {
+     //            url: "{{ route('datatable.user') }}",
+     //            type: 'POST',
+     //        },
+	    //     "rowId": "id",
+	    //     "columns": [
+	    //         {data: 'id', name: 'id'}, 
+     //            {data: 'nik', name: 'nik'},               
+	    //         {data: 'name', name: 'name'},
+     //            {data: 'role', name: 'role'},
+     //            {data: 'status', name: 'status'},
+     //            {data: 'store', name: 'store'},
+	    //         {data: 'action', name: 'action', searchable: false, sortable: false},                
+	    //     ],
+	    //     "columnDefs": ,
+     //        "order": [ [0, 'desc'] ],            
+    	// });
+
+        // Set data for Data Table
+            var table = $('#userTable').dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "{{ route('datatable.user') }}",
+                    type: 'POST',
+                },
+                "rowId": "id",
+                "columns": tableColumns,
+                "columnDefs": columnDefs,
+                "order": order,
+            });
 
 
     	// Delete data with sweet alert
@@ -177,7 +286,58 @@
                 });
         });
 
+
+        initSelect2();       
+
     });
+
+     function initSelect2(){
+
+            /*
+             * Select 2 init
+             *
+             */
+            $('#filterNik').select2(setOptions('{{ route("data.employee") }}', 'Nik', function (params) {
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.nik}
+                    })
+                }
+            }));
+            $('#filterNik').on('select2:select', function () {
+                select2Reset($('#filterName'));
+                self.selected('byNik', $('#filterNik').val());
+            });
+
+            $('#filterName').select2(setOptions('{{ route("data.employee") }}', 'Nama', function (params) {
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterName').on('select2:select', function () {
+                select2Reset($('#filterNik'));
+                self.selected('byName', $('#filterName').val());
+            });
+
+            // $("#filterRole").attr("data-placeholder","bar");
+            // $("#filterRole").select2();
+            $('#filterRole').select2({
+                width: '100%',
+                placeholder: 'Dedicate'
+            });
+            $('#filterRole').on('select2:select', function () {
+                self.selected('byRole', $('#filterRole').val());
+            });
+
+
+
+        }
 
 </script>
 @endsection
