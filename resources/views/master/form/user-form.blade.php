@@ -465,6 +465,12 @@
 				$('#rsmContent').removeClass('display-hide');
 			}
 
+			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
+				$('#storeContent').removeClass('display-hide');				
+				$('#multipleStoreContent').removeClass('display-hide');			
+	            $('#stores').attr('required', 'required');
+			}
+
 			if(!checkAdmin()){
 				$('#nik').attr('required', 'required');
 			}
@@ -520,6 +526,11 @@
 
 			if($('input[name=_method]').val() == "PATCH" && checkPromoter()){
 				updateStore();
+			}
+
+			var role = $('#role').val();
+			if($('input[name=_method]').val() == "PATCH" && (role == 'Supervisor' || role == 'Supervisor Hybrid')){
+				updateStoreSpv();
 			}			
 		}
 
@@ -543,6 +554,26 @@
 							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")" + " - " + this.dedicate);
 						});
                 	}                	
+
+            	}	
+
+        	})
+		}
+
+		function updateStoreSpv(){
+			var oldStatus = "{{ @$data->status }}";
+			var getDataUrl = "{{ url('util/empstore/') }}";
+			var status = $('input[type=radio][name=status]:checked').val();
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+                    var element = $("#stores");
+
+                    select2Reset(element);
+
+	                    $.each(data, function() {
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")" + " - " + this.dedicate);
+						});
 
             	}	
 
