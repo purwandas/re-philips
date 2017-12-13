@@ -75,6 +75,11 @@ class User extends Authenticatable
         return $this->hasMany('App\ProductKnowledge', 'user_id');
     }
 
+    public function messageToAdmin()
+    {
+        return $this->hasMany('App\MessageToAdmin', 'user_id');
+    }
+
     // Transactions
 
     public function sellInTransactions(){
