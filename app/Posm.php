@@ -11,7 +11,7 @@ class Posm extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'groupproduct_id'
+        'name', 'group_id'
     ];
 
     /**
@@ -28,9 +28,9 @@ class Posm extends Model
      *
      */
 
-    public function groupProduct()
+    public function group()
     {
-        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
+        return $this->belongsTo('App\Group', 'group_id');
     }
 
     public function posmActivityDetails()

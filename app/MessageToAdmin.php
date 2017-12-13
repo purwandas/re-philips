@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class Group extends Model
+class MessageToAdmin extends Model
 {
     use SoftDeletes;
+    protected $table = 'message_to_admin';
 
     protected $fillable = [
-        'name', 'groupproduct_id'
+        'user_id', 'subject', 'message', 'date', 'status',
     ];
 
     /**
@@ -28,24 +29,11 @@ class Group extends Model
      *
      */
 
-    public function groupProduct()
+    public function user()
     {
-        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
-    }
-    public function posm()
-    {
-        return $this->hasMany('App\Posm', 'group_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 
-    public function categories()
-    {
-        return $this->hasMany('App\Category', 'group_id');
-    }
-
-    public function products()
-    {
-        return $this->hasMany('App\Product', 'group_id');
-    }
 
     /**
      * Filtering Berdasarakan Request User
