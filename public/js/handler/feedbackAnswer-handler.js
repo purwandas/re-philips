@@ -6,9 +6,9 @@
 var FormValidation = function () {
 
     // Master Validation
-    var feedbackCategoryValidation = function() {
+    var feedbackAnswerValidation = function() {
 
-            var form = $('#form_feedbackCategory');
+            var form = $('#form_feedbackAnswer');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
@@ -18,11 +18,16 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
                 rules: {
-                    name: {
-                        minlength: 2,
+                    assessor_id: {
                         required: true,
                     },
-                    type: {
+                    promoter_id: {
+                        required: true,
+                    },
+                    question_id: {
+                        required: true,
+                    },
+                    answer: {
                         required: true,
                     },
 
@@ -196,10 +201,10 @@ var FormValidation = function () {
                                     // window.location.href = data.url;
                                     // console.log(data);
 
-                                    $('#feedbackCategoryTable').DataTable().search('').draw();
-                                    $('#feedbackCategoryTable').DataTable().ajax.reload();
+                                    $('#feedbackAnswerTable').DataTable().search('').draw();
+                                    $('#feedbackAnswerTable').DataTable().ajax.reload();
 
-                                    $('#feedbackCategory').modal('hide');
+                                    $('#feedbackAnswer').modal('hide');
                                 }
                             )
                             // console.log(data.method);
@@ -221,7 +226,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            feedbackCategoryValidation();
+            feedbackAnswerValidation();
 
         }
 
@@ -245,17 +250,17 @@ jQuery(document).ready(function() {
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($(this), $('#form_form_feedbackCategory'));
+    select2Change($(this), $('#form_form_feedbackAnswer'));
 
 });
 
 // Reset Validation
 function resetValidation(){
-    $('#form_feedbackCategory').each(function(){
+    $('#form_feedbackAnswer').each(function(){
         $(this).find('.form-group').removeClass('has-error').removeClass('has-success');
         $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
     });
 
-    $('.alert-danger', $('#form_feedbackCategory')).hide();
-    $('.alert-success', $('#form_feedbackCategory')).hide();
+    $('.alert-danger', $('#form_feedbackAnswer')).hide();
+    $('.alert-success', $('#form_feedbackAnswer')).hide();
 }

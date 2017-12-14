@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
-use App\Filters\FeedbackCategoryFilters;
+use App\Filters\FeedbackAnswerFilters;
 use App\FeedbackAnswer;
 
 class FeedbackAnswerController extends Controller
@@ -34,10 +34,10 @@ class FeedbackAnswerController extends Controller
     public function masterDataTable(){
 
         $data = FeedbackAnswer::where('feedback_answers.deleted_at', null)
-                    ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'users.id')
-                    ->join('users as promoters', 'feedback_answers.promoter_id', '=', 'users.id')
+                    ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'assessors.id')
+                    ->join('users as promoters', 'feedback_answers.promoter_id', '=', 'promoters.id')
                     ->join('feedback_questions', 'feedback_answers.feedbackQuestion_id', '=', 'feedback_questions.id')
-                    ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as assessor_name', 'feedback_questions.name as feedback_question_name' )->get();
+                    ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as promoter_name', 'feedback_questions.question as feedback_question' )->get();
 
 
         return $this->makeTable($data);
@@ -57,8 +57,8 @@ class FeedbackAnswerController extends Controller
                 ->addColumn('action', function ($item) {
 
                    return
-                    "<a href='#feedbackAnswer' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-feedbackAnswer'><i class='fa fa-pencil'></i></a>
-                    <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    // "<a href='#feedbackAnswer' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-feedbackAnswer'><i class='fa fa-pencil'></i></a>
+                    "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 })
                 ->rawColumns(['action'])
@@ -85,9 +85,10 @@ class FeedbackAnswerController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'feedbackCategory_id' => 'required',
-            'Answer' => 'required|string|max:255',
-            'type' => 'required',
+            'assessor_id' => 'required',
+            'promoter_id' => 'required',
+            'feedbackQuestion_id' => 'required',
+            'answer' => 'required',
             ]);
 
         $feedbackAnswer = FeedbackAnswer::create($request->all());
@@ -114,7 +115,7 @@ class FeedbackAnswerController extends Controller
      */
     public function edit($id)
     {
-        $data = FeedbackAnswer::with('feedbackCategory')->where('id', $id)->first();
+        $data = FeedbackAnswer::with('assessor', 'promoter', 'feedbackQuestion')->where('id', $id)->first();
 
         return response()->json($data);
     }
@@ -129,9 +130,10 @@ class FeedbackAnswerController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'feedbackCategory_id' => 'required',
-            'Answer' => 'required|string|max:255',
-            'type' => 'required',
+            'assessor_id' => 'required',
+            'promoter_id' => 'required',
+            'feedbackQuestion_id' => 'required',
+            'answer' => 'required',
             ]);
 
         $feedbackAnswer = FeedbackAnswer::find($id)->update($request->all());

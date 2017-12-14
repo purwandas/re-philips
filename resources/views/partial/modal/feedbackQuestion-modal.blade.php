@@ -45,25 +45,6 @@
                           </div>
                         </div>
 
-                        <div class="form-group">
-                          <label class="col-sm-3 control-label">Type</label>
-                          <div class="col-sm-8">
-                            <div class="input-icon" style="width: 100%;">
-                                <select class="select2select" name="type" id="type" required>
-                                    <option value="PK" {{ (@$data->type == 'PK') ? "selected" : "" }}>PK</option>
-                                    <option value="POG" {{ (@$data->type == 'POG') ? "selected" : "" }}>POG</option>
-                                    <option value="POSM" {{ (@$data->type == 'POSM') ? "selected" : "" }}>POSM</option>                                                             
-                                </select>
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
-                                
-                            </div>
-                          </div>
-                        </div>
-
-                                                     
-
                         <div class="form-group" style="padding-top: 15pt;">
                           <div class="col-sm-8 col-sm-offset-3">
                             <button type="submit" class="btn btn-primary green">Save</button>
