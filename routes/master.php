@@ -183,6 +183,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('feedbackQuestion/edit/{id}', 'Master\FeedbackQuestionController@edit');
         Route::patch('feedbackQuestion/{id}', 'Master\FeedbackQuestionController@update');
         Route::delete('feedbackQuestion/{id}', 'Master\FeedbackQuestionController@destroy');
+
+        /** Feedback Answer **/
+        // Route::resource('fanspage', 'Master\FanspageController');
+        Route::get('feedbackAnswer', 'Master\FeedbackAnswerController@index');
+        Route::post('feedbackAnswer', 'Master\FeedbackAnswerController@store');
+        Route::get('feedbackAnswer/edit/{id}', 'Master\FeedbackAnswerController@edit');
+        Route::patch('feedbackAnswer/{id}', 'Master\FeedbackAnswerController@update');
+        Route::delete('feedbackAnswer/{id}', 'Master\FeedbackAnswerController@destroy');
     });
 
     /**

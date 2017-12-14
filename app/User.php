@@ -79,6 +79,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\MessageToAdmin', 'user_id');
     }
+    public function feedbackAnswer()
+    {
+        return $this->morphToMany('App\FeedbackAnswer', 'user_id');
+    }
 
     // Transactions
 

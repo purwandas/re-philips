@@ -88,6 +88,7 @@ class FeedbackCategoryController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
+            'type' => 'required',
             ]);
 
         $feedbackCategory = FeedbackCategory::create($request->all());
@@ -130,6 +131,7 @@ class FeedbackCategoryController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
+            'type' => 'required',
             ]);
 
         $feedbackCategory = FeedbackCategory::find($id)->update($request->all());
