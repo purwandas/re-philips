@@ -100,7 +100,7 @@ class GroupCompetitorController extends Controller
             ->orderBy('group_competitors.id','desc')
             ->first();
 
-        $groupcompetitor = GroupCompetitor::create($request->all());
+        // $groupcompetitor = GroupCompetitor::create($request->all());
 
         $groupcompetitorgroup = GroupcompetitorGroup::create([
                                     'group_id' => $request['group_id'],
