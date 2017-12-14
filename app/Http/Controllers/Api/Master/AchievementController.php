@@ -17,6 +17,7 @@ use App\EmployeeStore;
 use App\User;
 use App\DmArea;
 use App\RsmRegion;
+use App\Attendance;
 
 class AchievementController extends Controller
 {
@@ -149,6 +150,7 @@ class AchievementController extends Controller
             'actual_week4' => $this->achievement($user->id)[21],
             'target_week5' => $this->achievement($user->id)[22],
             'actual_week5' => $this->achievement($user->id)[23],
+            'working_days' => $this->getTotalHK($user->id)
         ]);
     }
 
@@ -181,7 +183,26 @@ class AchievementController extends Controller
             'actual_week4' => $this->achievement($user->id)[21],
             'target_week5' => $this->achievement($user->id)[22],
             'actual_week5' => $this->achievement($user->id)[23],
+            'working_days' => $this->getTotalHK($user->id)
         ]);
+    }
+
+    public function getTotalHK($id){
+
+        $user = User::where('id', $id)->first();
+
+        $countHK = Attendance::where('user_id', $user->id)
+                    ->whereMonth('date', Carbon::now()->format('m'))
+                    ->whereYear('date', Carbon::now()->format('Y'))
+                    ->whereDate('date', '<=', Carbon::now()->format('Y-m-d'))
+                    ->where('status', '<>', 'Off')->count('id');
+
+        if($countHK > 26){
+            $countHK = 26;
+        }
+
+        return $countHK;
+
     }
 
     public function getAchievementForSupervisor(){

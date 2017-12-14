@@ -143,11 +143,15 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/promoter-feedback-list', 'Api\Master\FeedbackController@getListPromoterFeedback');
     Route::get('/promoter-feedback-list/{param}', 'Api\Master\FeedbackController@getListPromoterFeedbackWithParam');
+    Route::get('/category-feedback-list/{param}', 'Api\Master\FeedbackController@getListCategoryFeedback');
+    Route::get('/question-feedback-list/{param}', 'Api\Master\FeedbackController@getListQuestionFeedback');
+    Route::post('/promoter-feedback-send', 'Api\Master\FeedbackController@feedbackSend');
 
     /**
      * Quiz Module(s)
      */
 
     Route::get('/quiz-list', 'Api\Master\QuizController@getListQuiz');
+    Route::get('/quiz-read/{param}', 'Api\Master\QuizController@read');
 
 });
