@@ -356,7 +356,12 @@
                 </ul>
             </li>
 
-            
+            <li class="nav-item {{ Request::is('attendancereport') ? 'active open' : '' }}">
+                <a href="{{ url('attendancereport') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title"> Attendance </span>                    
+                </a>
+            </li>            
             
             @endif
 
