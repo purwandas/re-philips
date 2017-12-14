@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class Group extends Model
+class FeedbackAnswer extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'groupproduct_id'
+        'assessor_id','promoter_id','feedbackQuestion_id', 'answer',
     ];
 
     /**
@@ -27,26 +27,20 @@ class Group extends Model
      * Relation Method(s).
      *
      */
-
-    public function groupProduct()
+    public function feedbackQuestion()
     {
-        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
-    }
-    public function posm()
-    {
-        return $this->hasMany('App\Posm', 'group_id');
+        return $this->belongsTo('App\feedbackQuestion', 'feedbackQuestion_id');
     }
 
-    public function categories()
+    public function assessor()
     {
-        return $this->hasMany('App\Category', 'group_id');
+        return $this->belongsTo('App\user', 'assessor_id');
     }
 
-    public function products()
+    public function promoter()
     {
-        return $this->hasMany('App\Product', 'group_id');
+        return $this->belongsTo('App\user', 'promoter_id');
     }
-
     /**
      * Filtering Berdasarakan Request User
      * @param $query
@@ -57,4 +51,6 @@ class Group extends Model
     {
         return $filters->apply($query);
     }
+
 }
+
