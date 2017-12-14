@@ -55,8 +55,7 @@
                             <tr>
                                 <th> No. </th>
                                 <th> Category </th>
-                                <th> Question </th>
-                                <th> Type </th>      
+                                <th> Question </th>   
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -114,7 +113,6 @@
                 {data: 'id', name: 'id'},
                 {data: 'fbcategory_name', name: 'fbcategory_name'},
                 {data: 'question', name: 'question'},
-                {data: 'type', name: 'type'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
@@ -185,10 +183,9 @@
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
-        select2Reset($("#feedbackcategory"));
+        select2Reset($("#feedbackCategory"));
         $('#question').val('');
         // $('#type').val('');
-        select2Reset($('#type'));
 
         // Set action url form for add
         var postDataUrl = "{{ url('feedbackQuestion') }}";
@@ -222,10 +219,9 @@
             $("#form_feedbackQuestion").append("<input type='hidden' name='_method' value='PATCH'>");
         }
         $.get(getDataUrl + '/' + id, function (data) {
-            console.log(data.question)
+            // console.log(data.question)
                     setSelect2IfPatchModal($("#feedbackCategory"), data.feedbackCategory_id, data.feedback_category.name);
                     $('#question').val(data.question);
-                    setSelect2IfPatchModal($("#type"), data.type, data.type);
 
 
             })
@@ -248,12 +244,6 @@
                     })
                 }
             }));
-
-
-            $('#type').select2({
-                width: '100%',
-                placeholder: 'type'
-            })    
 
 
         }

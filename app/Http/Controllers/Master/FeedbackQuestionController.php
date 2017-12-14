@@ -8,6 +8,7 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Filters\FeedbackCategoryFilters;
+use App\Filters\FeedbackQuestionFilters;
 use App\FeedbackQuestion;
 
 class FeedbackQuestionController extends Controller
@@ -84,7 +85,6 @@ class FeedbackQuestionController extends Controller
         $this->validate($request, [
             'feedbackCategory_id' => 'required',
             'question' => 'required|string|max:255',
-            'type' => 'required',
             ]);
 
         $feedbackQuestion = FeedbackQuestion::create($request->all());
@@ -128,7 +128,6 @@ class FeedbackQuestionController extends Controller
         $this->validate($request, [
             'feedbackCategory_id' => 'required',
             'question' => 'required|string|max:255',
-            'type' => 'required',
             ]);
 
         $feedbackQuestion = FeedbackQuestion::find($id)->update($request->all());

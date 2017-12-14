@@ -11,7 +11,7 @@ class FeedbackQuestion extends Model
     use SoftDeletes;
 
     protected $fillable = [
-    	'feedbackCategory_id','question','type',
+    	'feedbackCategory_id','question',
     ];
 
     /**
