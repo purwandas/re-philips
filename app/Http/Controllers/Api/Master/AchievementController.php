@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Area;
+use App\Region;
 use App\Reports\SummaryTargetActual;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Collection;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
+use App\Store;
+use App\EmployeeStore;
+use App\User;
+use App\DmArea;
+use App\RsmRegion;
 
 class AchievementController extends Controller
 {
+
     // Default summarize for total achievement
     public function achievement($id){
 
@@ -183,27 +192,283 @@ class AchievementController extends Controller
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
         $promoters = User::whereIn('id', $promoterIds)->get();
 
-//        foreach($promoters as $promoter){
-//
-//            $detail = AttendanceDetail::where('attendance_id', $attendance->attendance_id)
-//                    ->join('stores', 'attendance_details.store_id', '=', 'stores.id')
-//                    ->select('attendance_details.check_in', 'attendance_details.check_in_longitude', 'attendance_details.check_in_latitude', 'attendance_details.check_in_location',
-//                        'attendance_details.check_out', 'attendance_details.check_out_longitude', 'attendance_details.check_out_latitude', 'attendance_details.check_out_location', 'attendance_details.detail as keterangan',
-//                        'stores.store_id', 'stores.store_name_1', 'stores.store_name_2')
-//                    ->get();
-//
-//            if($attendance->status == 'Masuk'){
-//                $attendance['detail'] = $detail;
-//            }else{
-//                if($attendance->reject == '1'){
-//                    $attendance['detail'] = $detail;
-//                }else {
-//                    $attendance['detail'] = [];
-//                }
-//            }
-//
-//        }
+        foreach($promoters as $promoter){
 
-//        return response()->json($attendances);
+            $promoter['target'] =  $this->achievement($promoter['id'])[0];
+            $promoter['actual'] =  $this->achievement($promoter['id'])[1];
+
+        }
+
+        return response()->json($promoters);
+    }
+
+    public function getAchievementForSupervisorWithParam($id){
+
+        $user = User::where('id', $id)->first();
+
+        $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
+        $promoters = User::whereIn('id', $promoterIds)->get();
+
+        foreach($promoters as $promoter){
+
+            $promoter['target'] =  $this->achievement($promoter['id'])[0];
+            $promoter['actual'] =  $this->achievement($promoter['id'])[1];
+
+        }
+
+        return response()->json($promoters);
+    }
+
+    public function getSupervisorAchievement($param){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if($param == 1) { // BY NATIONAL
+
+            $supervisor = User::where(function ($query) {
+                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+            })->with('stores.district.area.region')->get();
+
+            $result = $this->getSupervisorCollection($supervisor);
+
+            foreach ($result as $item) {
+
+                $target = 0;
+                $actual = 0;
+
+                $stores = Store::where('user_id', $item['id'])->get();
+
+                foreach ($stores as $data) {
+
+                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->first();
+                    if($summary){
+                        $target += $summary->sum_target_store;
+                        $actual += $summary->sum_actual_store;
+                    }
+
+                }
+
+                $item['target'] = $target;
+                $item['actual'] = $actual;
+
+            }
+
+            return response()->json($result);
+
+        }else if($param == 2) { // BY REGION
+
+            $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
+
+            $supervisor = User::where(function ($query) {
+                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                })->with('stores.district.area.region')
+                    ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
+                        return $query->whereIn('id', $regionIds);
+                    })->get();
+
+            $result = $this->getSupervisorCollection($supervisor);
+
+            foreach ($result as $item) {
+
+                $target = 0;
+                $actual = 0;
+
+                $stores = Store::where('user_id', $item['id'])->get();
+
+                foreach ($stores as $data) {
+
+                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->first();
+                    if($summary){
+                        $target += $summary->sum_target_store;
+                        $actual += $summary->sum_actual_store;
+                    }
+
+                }
+
+                $item['target'] = $target;
+                $item['actual'] = $actual;
+
+            }
+
+            return response()->json($result);
+
+        }else if($param == 3) { // BY AREA
+
+            $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+
+            $supervisor = User::where(function ($query) {
+                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                })->with('stores.district.area.region')
+                    ->whereHas('stores.district.area', function ($query) use ($areaIds){
+                        return $query->whereIn('id', $areaIds);
+                    })->get();
+
+            $result = $this->getSupervisorCollection($supervisor);
+
+            foreach ($result as $item) {
+
+                $target = 0;
+                $actual = 0;
+
+                $stores = Store::where('user_id', $item['id'])->get();
+
+                foreach ($stores as $data) {
+
+                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->first();
+                    if($summary){
+                        $target += $summary->sum_target_store;
+                        $actual += $summary->sum_actual_store;
+                    }
+
+                }
+
+                $item['target'] = $target;
+                $item['actual'] = $actual;
+
+            }
+
+            return response()->json($result);
+
+        }
+
+    }
+
+    public function getSupervisorCollection($supervisor){
+
+        $result = new Collection();
+
+        foreach ($supervisor as $data) {
+
+            $arr_area = [];
+            $arr_region = [];
+            $collection = new Collection();
+
+            foreach ($data->stores as $detail) {
+                if (!in_array($detail->district->area->name, $arr_area)) {
+                    array_push($arr_area, $detail->district->area->name);
+                }
+
+                if (!in_array($detail->district->area->region->name, $arr_region)) {
+                    array_push($arr_region, $detail->district->area->region->name);
+                }
+            }
+
+            for ($i = 0; $i < count($arr_area); $i++) {
+                $data['area'] .= $arr_area[$i];
+
+                if ($i != count($arr_area) - 1) {
+                    $data['area'] .= ', ';
+                }
+            }
+
+            for ($i = 0; $i < count($arr_region); $i++) {
+                $data['region'] .= $arr_region[$i];
+
+                if ($i != count($arr_region) - 1) {
+                    $data['region'] .= ', ';
+                }
+            }
+
+            $collection['id'] = $data['id'];
+            $collection['nik'] = $data['nik'];
+            $collection['name'] = $data['name'];
+            $collection['area'] = $data['area'];
+            $collection['region'] = $data['region'];
+
+            $result->push($collection);
+
+        }
+
+        return $result;
+    }
+
+    public function getTotalAchievementSupervisor()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        $store = Store::whereIn('id', $storeIds)->get();
+
+        $totalTarget = 0;
+        $totalActual = 0;
+
+        foreach ($store as $data) {
+
+            $summary = SummaryTargetActual::where('storeId', $data['id'])->first();
+
+            if($summary) {
+                $totalTarget += $summary->sum_target_store;
+                $totalActual += $summary->sum_actual_store;
+            }
+        }
+
+        return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
+    }
+
+    public function getTotalAchievementArea()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+        $area = Area::whereIn('id', $areaIds)->get();
+
+        $totalTarget = 0;
+        $totalActual = 0;
+
+        foreach ($area as $data) {
+
+            $summary = SummaryTargetActual::where('area_id', $data['id'])->first();
+
+            if($summary) {
+                $totalTarget += $summary->sum_target_area;
+                $totalActual += $summary->sum_actual_area;
+            }
+        }
+
+        return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
+    }
+
+    public function getTotalAchievementRegion()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
+        $region = Region::whereIn('id', $regionIds)->get();
+
+        $totalTarget = 0;
+        $totalActual = 0;
+
+        foreach ($region as $data) {
+
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->first();
+
+            if($summary) {
+                $totalTarget += $summary->sum_target_region;
+                $totalActual += $summary->sum_actual_region;
+            }
+        }
+
+        return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
+    }
+
+    public function getTotalAchievementNational()
+    {
+        $region = Region::whereIn('id', [1, 2, 3, 4])->get();
+
+        $totalTarget = 0;
+        $totalActual = 0;
+
+        foreach ($region as $data) {
+
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->first();
+
+            if($summary) {
+                $totalTarget += $summary->sum_target_region;
+                $totalActual += $summary->sum_actual_region;
+            }
+        }
+
+        return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
     }
 }

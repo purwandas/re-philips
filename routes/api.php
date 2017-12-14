@@ -83,6 +83,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/check-attendance', 'Api\Master\PromoterController@checkAttendance');
 	Route::get('/check-not-attendance', 'Api\Master\PromoterController@checkNotAttendance');
 	Route::get('/get-check-in', 'Api\Master\AttendanceController@getCheckIn');
+	Route::get('/get-total-hk', 'Api\Master\AttendanceController@getTotalHK');
 
 	/**
      * Other(s)
@@ -127,9 +128,26 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
 
     Route::get('/achievement', 'Api\Master\AchievementController@getAchievement');
-    Route::get('/achievement-dedicate/{param}', 'Api\Master\AchievementController@getAchievementByDedicate');
-    Route::get('/achievement-week/{param}', 'Api\Master\AchievementController@getAchievementByWeek');
+    Route::get('/achievement/{param}', 'Api\Master\AchievementController@getAchievementWithParam');
     Route::get('/promoter-achievement', 'Api\Master\AchievementController@getAchievementForSupervisor');
+    Route::get('/promoter-achievement/{param}', 'Api\Master\AchievementController@getAchievementForSupervisorWithParam');
+    Route::get('/supervisor-achievement/{param}', 'Api\Master\AchievementController@getSupervisorAchievement');
+    Route::get('/achievement-by-supervisor', 'Api\Master\AchievementController@getTotalAchievementSupervisor');
+    Route::get('/achievement-by-area', 'Api\Master\AchievementController@getTotalAchievementArea');
+    Route::get('/achievement-by-region', 'Api\Master\AchievementController@getTotalAchievementRegion');
+    Route::get('/achievement-by-national', 'Api\Master\AchievementController@getTotalAchievementNational');
 
+    /**
+     * Promoter Feedback Module(s)
+     */
+
+    Route::get('/promoter-feedback-list', 'Api\Master\FeedbackController@getListPromoterFeedback');
+    Route::get('/promoter-feedback-list/{param}', 'Api\Master\FeedbackController@getListPromoterFeedbackWithParam');
+
+    /**
+     * Quiz Module(s)
+     */
+
+    Route::get('/quiz-list', 'Api\Master\QuizController@getListQuiz');
 
 });

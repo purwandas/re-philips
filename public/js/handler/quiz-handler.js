@@ -8,7 +8,7 @@ var FormValidation = function () {
     // Master Validation
     var quizValidation = function() {
 
-            var form = $('#form_news');
+            var form = $('#form_quiz');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
              

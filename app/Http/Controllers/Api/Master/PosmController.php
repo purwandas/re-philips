@@ -141,6 +141,8 @@ class PosmController extends Controller
     /* USED */
     public function store(Request $request){
 
+//        return response()->json($request->all());
+
         $user = JWTAuth::parseToken()->authenticate();
 
         // if(!isset($request->photo)){
@@ -160,7 +162,7 @@ class PosmController extends Controller
 
         if ($posmHeader) { // If header exist (update and/or create detail)
 
-            // try {
+             try {
                 $photoArray = [];
                 
                 DB::transaction(function () use ($request, $posmHeader, $user, $dataLength) {
@@ -173,6 +175,8 @@ class PosmController extends Controller
 
                         if ($posmActivityDetail) { // If data exist -> update
 
+//                            return response()->json(($posmActivityDetail->photo != ''));
+
                             /*
                              *  Check request quantity is integer
                              *  In update function if quantity + $request->quantity,
@@ -184,7 +188,7 @@ class PosmController extends Controller
                             }
 
                             /* Delete Image (Just get path, Delete later) */
-                            if ($posmActivityDetail->photo != '') {
+                            if (($posmActivityDetail->photo != '') && isset($request->photo[$i])) {
                                 
                                 $imagePath = explode('/', $posmActivityDetail->photo);
                                 $count = count($imagePath);
@@ -194,6 +198,8 @@ class PosmController extends Controller
                                 $newVal = array('id' => $posmActivityDetail->id, 'path' => $folderpath);
                                 array_push($arrayUpdate, $newVal);
                             }
+
+//                            return response()->json($arrayUpdate);
 
                             /* Upload image again, anda again, and again~ */
                             $photo_url = "";
@@ -206,10 +212,16 @@ class PosmController extends Controller
 
                             $photoArray[$i]=$photo_url;
 
-                            $posmActivityDetail->update([
-                                'quantity' => $posmActivityDetail->quantity + $request->quantity[$i],
-                                'photo' => $photo_url
-                            ]);
+                            if(isset($request->photo[$i])){
+                                $posmActivityDetail->update([
+                                    'quantity' => $posmActivityDetail->quantity + $request->quantity[$i],
+                                    'photo' => $photo_url
+                                ]);
+                            }else{
+                                $posmActivityDetail->update([
+                                    'quantity' => $posmActivityDetail->quantity + $request->quantity[$i],
+                                ]);
+                            }
 
                         } else { // If data didn't exist -> create
 
@@ -223,12 +235,24 @@ class PosmController extends Controller
 
                             $photoArray[$i]=$photo_url;
 
-                            PosmActivityDetail::create([
-                                'posmactivity_id' => $posmHeader->id,
-                                'posm_id' => $request->posm_id[$i],
-                                'quantity' => $request->quantity[$i],
-                                'photo' => $photo_url
-                            ]);
+                            if(isset($request->photo[$i])) {
+
+                                PosmActivityDetail::create([
+                                    'posmactivity_id' => $posmHeader->id,
+                                    'posm_id' => $request->posm_id[$i],
+                                    'quantity' => $request->quantity[$i],
+                                    'photo' => $photo_url
+                                ]);
+
+                            }else{
+
+                                PosmActivityDetail::create([
+                                    'posmactivity_id' => $posmHeader->id,
+                                    'posm_id' => $request->posm_id[$i],
+                                    'quantity' => $request->quantity[$i],
+                                ]);
+
+                            }
 
                         }
 
@@ -242,13 +266,13 @@ class PosmController extends Controller
 
                 });
 
-            // } catch (\Exception $e) {
-            //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-            // }
+             } catch (\Exception $e) {
+                 return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+             }
 
             // Finally upload image for every data in details
             for($i=0;$i<$dataLength;$i++){
-                if ($photoArray[$i]!='') {
+                if (isset($request->photo[$i])) {
                     $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmHeader->id)->where('posm_id', $request->posm_id[$i])->first();
 
                     // Get folder and file name
@@ -265,7 +289,7 @@ class PosmController extends Controller
 
         }else { // If header didn't exist (create header & detail)
 
-            // try {
+             try {
                 DB::transaction(function () use ($request, $user, $dataLength) {
 
                     // HEADER
@@ -289,19 +313,33 @@ class PosmController extends Controller
 
                         $photoArray[$i]=$photo_url;
 
-                        PosmActivityDetail::create([
-                            'posmactivity_id' => $transaction->id,
-                            'posm_id' => $request->posm_id[$i],
-                            'quantity' => $request->quantity[$i],
-                            'photo' => $photo_url
-                        ]);
+                        if($request->photo[$i]){
+
+                            PosmActivityDetail::create([
+                                'posmactivity_id' => $transaction->id,
+                                'posm_id' => $request->posm_id[$i],
+                                'quantity' => $request->quantity[$i],
+                                'photo' => $photo_url
+                            ]);
+
+                        }else{
+
+                            PosmActivityDetail::create([
+                                'posmactivity_id' => $transaction->id,
+                                'posm_id' => $request->posm_id[$i],
+                                'quantity' => $request->quantity[$i],
+                            ]);
+
+                        }
+
+
 
                     }
 
                 });
-            // } catch (\Exception $e) {
-            //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-            // }
+             } catch (\Exception $e) {
+                 return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+             }
 
             // Check posm activity header after insert
             $posmActivityHeaderAfter = PosmActivity::where('user_id', $user->id)->where('store_id', $request->store_id)->where('date', date('Y-m-d'))->first();
@@ -309,7 +347,7 @@ class PosmController extends Controller
             // Finally upload image for every data in details
             for($i=0;$i<$dataLength;$i++){
                 
-                if ($photoArray[$i]!='') {
+                if (isset($request->photo[$i])) {
                     $posmActivityDetail = PosmActivityDetail::where('posmactivity_id', $posmActivityHeaderAfter->id)->where('posm_id', $request->posm_id[$i])->first();
 
                     // Get folder and file name
@@ -330,8 +368,8 @@ class PosmController extends Controller
 
     public function all($param)
     {
-    	$data = Posm::join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
-    				   ->where('group_products.id', $param)
+    	$data = Posm::join('groups', 'posms.group_id', '=', 'groups.id')
+    				   ->where('groups.id', $param)
     				   ->select('posms.id', 'posms.name')
     				   ->get();
 
@@ -340,7 +378,7 @@ class PosmController extends Controller
 
     public function allNoParam()
     {
-    	$data = Posm::join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+    	$data = Posm::join('groups', 'posms.group_id', '=', 'groups.id')
     				   ->select('posms.id', 'posms.name')
     				   ->get();
 

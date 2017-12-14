@@ -340,4 +340,17 @@ class AttendanceController extends Controller
 
     }
 
+    public function getTotalHK(){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $countHK = Attendance::where('user_id', $user->id)
+                    ->whereMonth('date', Carbon::now()->format('m'))
+                    ->whereYear('date', Carbon::now()->format('Y'))
+                    ->where('status', '<>', 'Off')->count('id');
+
+        return response()->json(['total_hk' => $countHK]);
+
+    }
+
 }

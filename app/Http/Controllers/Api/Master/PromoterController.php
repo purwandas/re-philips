@@ -267,6 +267,7 @@ class PromoterController extends Controller
                 }
             }
 
+            $collection['id'] = $data['id'];
             $collection['nik'] = $data['nik'];
             $collection['name'] = $data['name'];
             $collection['area'] = $data['area'];

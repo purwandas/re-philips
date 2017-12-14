@@ -5,7 +5,7 @@ namespace App\Filters;
 use App\FeedbackQuestion;
 use Illuminate\Http\Request;
 
-class FeedbackQuestioFilters extends QueryFilters
+class FeedbackQuestionyFilters extends QueryFilters
 {
 
     /**

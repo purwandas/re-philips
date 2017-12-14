@@ -13,8 +13,13 @@ class GroupCompetitorController extends Controller
 {
     public function all($param)
     {
-    	$data = GroupCompetitor::join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
-    				->where('group_products.id', $param)
+//    	$data = GroupCompetitor::join('group_products', 'group_competitors.groupproduct_id', '=', 'group_products.id')
+//    				->where('group_products.id', $param)
+//    				->select('group_competitors.id', 'group_competitors.name')
+//    				->get();
+
+        $data = GroupCompetitor::join('groupcompetitor_groups', 'groupcompetitor_groups.groupcompetitor_id', '=', 'group_competitors.id')
+    				->where('groupcompetitor_groups.group_id', $param)
     				->select('group_competitors.id', 'group_competitors.name')
     				->get();
 
