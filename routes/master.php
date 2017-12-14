@@ -183,6 +183,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
         Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
 
+        /** Quiz **/
+        Route::get('quiz', 'Master\QuizController@index');
+        Route::get('quiz/create', 'Master\QuizController@create');
+        Route::post('quiz', 'Master\QuizController@store');
+        Route::get('quiz/edit/{id}', 'Master\QuizController@edit');
+        Route::patch('quiz/{id}', 'Master\QuizController@update');
+        Route::delete('quiz/{id}', 'Master\QuizController@destroy');
         
 
 

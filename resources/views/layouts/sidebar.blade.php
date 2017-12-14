@@ -202,6 +202,12 @@
                     <span class="title">Product Knowledge</span>
                 </a>
             </li>
+            <li class="nav-item {{ Request::is('quiz*') ? 'active open' : '' }}">
+                <a href="{{ url('quiz') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-edit"></i>
+                    <span class="title">Quiz</span>
+                </a>
+            </li>
 
             @endif
 
