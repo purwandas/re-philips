@@ -11,7 +11,7 @@ class FeedbackCategory extends Model
     use SoftDeletes;
 
     protected $fillable = [
-    	'name',
+    	'name', 'type',
     ];
 
     /**

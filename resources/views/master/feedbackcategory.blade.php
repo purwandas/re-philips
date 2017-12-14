@@ -54,7 +54,8 @@
                         <thead>
                             <tr>
                                 <th> No. </th>
-                                <th> Name </th>      
+                                <th> Name </th>
+                                <th> Type </th>         
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -111,6 +112,7 @@
             "columns": [
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
+                {data: 'type', name: 'type'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
@@ -169,6 +171,8 @@
                 });
         });
 
+        initSelect2();
+
     });
 
     // Init add form
@@ -180,6 +184,7 @@
         modalTitle.innerHTML = "ADD NEW ";
 
         $('#name').val('');
+        select2Reset($('#type'));
 
         // Set action url form for add
         var postDataUrl = "{{ url('feedbackCategory') }}";
@@ -216,10 +221,28 @@
         $.get(getDataUrl + '/' + id, function (data) {
 
                     $('#name').val(data.name);
+                    setSelect2IfPatchModal($("#type"), data.type, data.type);
 
         })
 
     });
+
+
+        function initSelect2(){
+            // console.log('ok');
+            /*
+             * Select 2 init
+             *
+             */
+
+
+            $('#type').select2({
+                width: '100%',
+                placeholder: 'type'
+            })    
+
+
+        }
 
 </script>
 @endsection
