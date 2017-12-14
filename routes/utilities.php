@@ -59,6 +59,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/competitoractivityreport', ['as'=> 'datatable.competitoractivityreport','uses'=>'Master\ReportController@competitorActivityData']);
     Route::post('datatable/promoactivityreport', ['as'=> 'datatable.promoactivityreport','uses'=>'Master\ReportController@promoActivityData']);
     Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
+    Route::post('datatable/attendancereport', ['as'=> 'datatable.attendancereport','uses'=>'Master\ReportController@attendanceData']);
+    
 
     
 
