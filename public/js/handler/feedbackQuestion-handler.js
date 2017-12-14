@@ -18,14 +18,11 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
                 rules: {
-                    role: {
+                    feedbackCategory_id: {
                         required: true,
                     },
-                    name: {
+                    question: {
                         minlength: 2,
-                        required: true,
-                    },
-                    type: {
                         required: true,
                     },
 
