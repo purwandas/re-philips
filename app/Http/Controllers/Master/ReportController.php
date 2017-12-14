@@ -67,6 +67,8 @@ use App\MaintenanceRequest;
 use App\CompetitorActivity;
 use App\PromoActivity;
 use App\PromoActivityDetail;
+use App\Attendance;
+use App\AttendanceDetail;
 use App\Filters\ReportFilters;
 use App\Filters\ReportPosmActivityFilters;
 use App\Filters\ReportSellOutFilters;
@@ -143,6 +145,14 @@ class ReportController extends Controller
    
     public function posmActivityIndex(){
         return view('report.posmactivity-report');
+    }
+
+    public function attendanceIndex(){
+        return view('report.attendance-report');
+    }
+    
+    public function attendanceForm(){
+        return view('report.form.attendance-form');
     }
 
     public function sellInData(Request $request, SellinFilters $filters){
@@ -378,7 +388,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -401,10 +410,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -512,7 +517,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -535,10 +539,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -646,7 +646,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -669,10 +668,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -780,7 +775,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -803,10 +797,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -914,7 +904,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -937,10 +926,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -1048,7 +1033,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -1071,10 +1055,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -1182,7 +1162,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -1205,10 +1184,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
-
-
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -1671,6 +1646,75 @@ class ReportController extends Controller
                     return $images;
                 })
             ->rawColumns(['photo'])
+            ->make(true);
+
+    }
+
+    public function attendanceData(Request $request){
+
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+            $data = Attendance::
+                    join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
+                    ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'attendances.user_id', '=', 'users.id')
+                    ->groupBy('attendances.user_id')
+                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name',DB::raw('count(*) as total_hk'))
+                    ->where('attendances.status', '!=', 'Off')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byStore']){
+                $filter = $data->where('store_id', $request['byStore']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byArea']){
+                $filter = $data->where('area_id', $request['byArea']);
+            }
+
+            if($request['byRegion']){
+                $filter = $data->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            return Datatables::of($filter->all())
+            ->addColumn('action', function ($item) {
+
+                return 
+                "
+                <a href='".url('attendancereport/detail/'.$item->id)."' class='btn btn-sm btn-info'>
+                    <i class='fa fa-industry'> Detail</i>
+                </a>
+                ";
+                
+            })
+            ->rawColumns(['action'])
             ->make(true);
 
     }
