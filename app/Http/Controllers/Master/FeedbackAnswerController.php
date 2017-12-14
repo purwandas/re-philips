@@ -5,15 +5,15 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
-use App\Filters\GroupFilters;
+use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
-use DB;
-use App\Posm;
+use App\Filters\FeedbackCategoryFilters;
+use App\FeedbackAnswer;
 
-class PosmController extends Controller
+class FeedbackAnswerController extends Controller
 {
+    use UploadTrait;
     use StringTrait;
-
     /**
      * Display a listing of the resource.
      *
@@ -21,26 +21,31 @@ class PosmController extends Controller
      */
     public function index()
     {
-        return view('master.posm');
+        return view('master.feedbackanswer');
     }
 
     /**
-     * Data for DataTables
+     * Update the specified resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function masterDataTable(){
 
-        $data = Posm::where('posms.deleted_at', null)
-            ->join('groups', 'posms.group_id', '=', 'groups.id')
-            ->select('posms.*', 'groups.name as group_name')->get();
+        $data = FeedbackAnswer::where('feedback_answers.deleted_at', null)
+                    ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'users.id')
+                    ->join('users as promoters', 'feedback_answers.promoter_id', '=', 'users.id')
+                    ->join('feedback_questions', 'feedback_answers.feedbackQuestion_id', '=', 'feedback_questions.id')
+                    ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as assessor_name', 'feedback_questions.name as feedback_question_name' )->get();
+
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(PosmFilters $filters){
-        $data = Posm::filter($filters)->get();
+    public function getDataWithFilters(FeedbackAnswerFilters $filters){
+        $data = FeedbackAnswer::filter($filters)->get();
 
         return $data;
     }
@@ -49,15 +54,15 @@ class PosmController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
-            ->addColumn('action', function ($item) {
+                ->addColumn('action', function ($item) {
 
-                return
-                    "<a href='#posm' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-posm'><i class='fa fa-pencil'></i></a>
+                   return
+                    "<a href='#feedbackAnswer' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-feedbackAnswer'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+                })
+                ->rawColumns(['action'])
+                ->make(true);
 
     }
 
@@ -79,16 +84,15 @@ class PosmController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
-
         $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'group_id' => 'required'
-        ]);
+            'feedbackCategory_id' => 'required',
+            'Answer' => 'required|string|max:255',
+            'type' => 'required',
+            ]);
 
-        $posm = Posm::create($request->all());
+        $feedbackAnswer = FeedbackAnswer::create($request->all());
 
-        return response()->json(['url' => url('/posm')]);
+        return response()->json(['url' => url('/feedbackAnswer')]);
     }
 
     /**
@@ -110,7 +114,7 @@ class PosmController extends Controller
      */
     public function edit($id)
     {
-        $data = Posm::with('group')->where('id', $id)->first();
+        $data = FeedbackAnswer::with('feedbackCategory')->where('id', $id)->first();
 
         return response()->json($data);
     }
@@ -125,14 +129,18 @@ class PosmController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'group_id' => 'required'
-        ]);
+            'feedbackCategory_id' => 'required',
+            'Answer' => 'required|string|max:255',
+            'type' => 'required',
+            ]);
 
-        $posm = Posm::find($id)->update($request->all());
+        $feedbackAnswer = FeedbackAnswer::find($id)->update($request->all());
 
         return response()->json(
-            ['url' => url('/posm'), 'method' => $request->_method]);
+            [
+                'url' => url('/feedbackAnswer'),
+                'method' => $request->_method
+            ]);
     }
 
     /**
@@ -143,8 +151,11 @@ class PosmController extends Controller
      */
     public function destroy($id)
     {
-        $posm = Posm::destroy($id);
+
+        $feedbackAnswer = FeedbackAnswer::destroy($id);
 
         return response()->json($id);
     }
+
 }
+

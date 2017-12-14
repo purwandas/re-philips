@@ -178,12 +178,39 @@
                 <i class="fa fa-street-view"></i>
                 <span class="title">Group Competitor</span>
             </a>
+            </li>
+
             <li class="nav-item {{ Request::is('fanspage') ? 'active open' : '' }}">
             <a href="{{ url('fanspage') }}" class="nav-link nav-toggle">
-                <i class="fa fa-street-view"></i>
+                <i class="fa fa-chain"></i>
                 <span class="title">Fanspage</span>
             </a>
+            </li>
 
+            <li class="nav-item {{ Request::is('feedbackCategory*') ? 'active open' : '' }} {{ Request::is('feedbackAnswer*') ? 'active open' : '' }} {{ Request::is('product') ? 'active open' : '' }}">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-commenting-o"></i>
+                    <span class="title">Feedback</span>
+                    <span class="arrow {{ Request::is('feedbackCategory*') ? 'open' : '' }} {{ Request::is('feedbackAnswer*') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('feedbackCategory*') ? 'active open' : '' }}">
+                        <a href="{{ url('feedbackCategory') }}" class="nav-link ">
+                            <span class="title">Feedback Category</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('feedbackQuestion*') ? 'active open' : '' }}">
+                        <a href="{{ url('feedbackQuestion') }}" class="nav-link ">
+                            <span class="title">Feedback Question</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('feedbackAnswer*') ? 'active open' : '' }}">
+                        <a href="{{ url('feedbackAnswer') }}" class="nav-link ">
+                            <span class="title">Feedback Answer</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             @endif
 
             @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
@@ -341,6 +368,12 @@
                 <a href="{{ url('profile') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
                     <span class="title">Profile</span>                    
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('messageToAdmin') ? 'active open' : '' }}">
+                <a href="{{ url('messageToAdmin') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Message</span>                    
                 </a>
             </li>
 

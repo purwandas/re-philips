@@ -22,14 +22,14 @@ var FormValidation = function () {
                     minlength: 2,
                     required: true,
                 },
-                groupproduct_id:{
+                group_id:{
                     required: true,
                 },
 
             },
             messages:{
-                groupproduct_id:{
-                    required: "Please select a Group Product!"
+                group_id:{
+                    required: "Please select a Group !"
                 }
             },
 
