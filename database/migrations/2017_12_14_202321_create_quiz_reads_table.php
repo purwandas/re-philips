@@ -33,13 +33,4 @@ class CreateQuizReadsTable extends Migration
         Schema::dropIfExists('quiz_reads');
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        //
-    }
 }
