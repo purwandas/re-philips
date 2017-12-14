@@ -311,7 +311,7 @@
                 self.selected('byNik', $('#filterNik').val());
             });
 
-            $('#filterName').select2(setOptions('{{ route("data.employee") }}', 'Nama', function (params) {
+            $('#filterName').select2(setOptions('{{ route("data.employee") }}', 'Name', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {
