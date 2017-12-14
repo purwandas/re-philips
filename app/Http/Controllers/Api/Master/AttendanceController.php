@@ -340,4 +340,22 @@ class AttendanceController extends Controller
 
     }
 
+    public function getTotalHK($id){
+
+        $user = User::where('id', $id)->first();
+
+        $countHK = Attendance::where('user_id', $user->id)
+                    ->whereMonth('date', Carbon::now()->format('m'))
+                    ->whereYear('date', Carbon::now()->format('Y'))
+                    ->whereDate('date', '<=', Carbon::now()->format('Y-m-d'))
+                    ->where('status', '<>', 'Off')->count('id');
+
+        if($countHK > 26){
+            $countHK = 26;
+        }
+
+        return $countHK;
+
+    }
+
 }

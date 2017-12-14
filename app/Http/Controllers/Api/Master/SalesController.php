@@ -1660,7 +1660,7 @@ class SalesController extends Controller
         } else if($param == 6) { /* TBAT */
 
             // Check tbat header
-            $tbatHeader = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+            $tbatHeader = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('store_destination_id', $content['destination_id'])->where('date', date('Y-m-d'))->first();
 
             if ($tbatHeader) { // If header exist (update and/or create detail)
 
@@ -1708,6 +1708,10 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $tbatHeader->store_id)->first();
+
+                                /* Store Destination */
+                                $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $tbatHeader->store_destination_id)->first();
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -1786,6 +1790,7 @@ class SalesController extends Controller
                                     'area_id' => $store->district->area->id,
                                     'district_id' => $store->district->id,
                                     'storeId' => $tbatHeader->store_id,
+                                    'storeDestinationId' => $tbatHeader->store_destination_id,
                                     'user_id' => $tbatHeader->user_id,
                                     'week' => $tbatHeader->week,
                                     'distributor_code' => $distributor_code,
@@ -1798,6 +1803,9 @@ class SalesController extends Controller
                                     'store_name_1' => $store->store_name_1,
                                     'store_name_2' => $store->store_name_2,
                                     'store_id' => $store->store_id,
+                                    'store_destination_name_1' => $storeDestination->store_name_1,
+                                    'store_destination_name_2' => $storeDestination->store_name_2,
+                                    'store_destination_id' => $storeDestination->store_id,
                                     'nik' => $user->nik,
                                     'promoter_name' => $user->name,
                                     'date' => $tbatHeader->date,
@@ -1837,6 +1845,7 @@ class SalesController extends Controller
                         $transaction = Tbat::create([
                                             'user_id' => $user->id,
                                             'store_id' => $content['id'],
+                                            'store_destination_id' => $content['destination_id'],
                                             'week' => Carbon::now()->weekOfMonth,
                                             'date' => Carbon::now()
                                         ]);
@@ -1855,6 +1864,10 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
+
+                            /* Store Destination */
+                            $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_destination_id)->first();
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1933,6 +1946,7 @@ class SalesController extends Controller
                                 'area_id' => $store->district->area->id,
                                 'district_id' => $store->district->id,
                                 'storeId' => $transaction->store_id,
+                                'storeDestinationId' => $transaction->store_destination_id,
                                 'user_id' => $transaction->user_id,
                                 'week' => $transaction->week,
                                 'distributor_code' => $distributor_code,
@@ -1945,6 +1959,9 @@ class SalesController extends Controller
                                 'store_name_1' => $store->store_name_1,
                                 'store_name_2' => $store->store_name_2,
                                 'store_id' => $store->store_id,
+                                'store_destination_name_1' => $storeDestination->store_name_1,
+                                'store_destination_name_2' => $storeDestination->store_name_2,
+                                'store_destination_id' => $storeDestination->store_id,
                                 'nik' => $user->nik,
                                 'promoter_name' => $user->name,
                                 'date' => $transaction->date,
@@ -1972,7 +1989,7 @@ class SalesController extends Controller
                 }
 
                 // Check sell in header after insert
-                $tbatHeaderAfter = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+                $tbatHeaderAfter = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('store_destination_id', $content['destination_id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $tbatHeaderAfter->id, 'message' => 'Data berhasil di input']);
 
