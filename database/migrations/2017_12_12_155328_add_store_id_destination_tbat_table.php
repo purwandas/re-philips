@@ -14,7 +14,7 @@ class AddStoreIdDestinationTbatTable extends Migration
    public function up()
     {
         Schema::table('tbats', function (Blueprint $table) {
-            $table->integer('store_destination_id')->unsigned();
+            $table->integer('store_destination_id')->unsigned()->after('store_id');
             $table->foreign('store_destination_id')->references('id')->on('stores');
         });
     }

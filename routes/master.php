@@ -243,6 +243,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('competitoractivityreport', 'Master\ReportController@competitorActivityIndex');
     Route::get('promoactivityreport', 'Master\ReportController@promoActivityIndex');
     Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
+    Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
+    Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
 
     
 
