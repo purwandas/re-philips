@@ -54,6 +54,9 @@
                         <select id="filterStore" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
+                        <select id="filterStore2" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
                         <select id="filterEmployee" class="select2select"></select>
                     </div>
                 </div>
@@ -103,6 +106,9 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
+                                <th> Store Destination Name 1 </th>
+                                <th> Store Destination Name 2 </th>
+                                <th> Store Destination ID </th>
                                 <th> NIK </th>
                                 <th> Promoter Name </th>
                                 <th> Date </th>
@@ -145,7 +151,7 @@
          *
          *
          */
-        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
+        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterStore2', '#filterEmployee'];
         var url = 'datatable/tbatreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
@@ -161,6 +167,9 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'store_id', name: 'store_id'},
+                            {data: 'store_destination_name_1', name: 'store_destination_name_1'},
+                            {data: 'store_destination_name_2', name: 'store_destination_name_2'},
+                            {data: 'store_destination_id', name: 'store_destination_id'},
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
                             {data: 'date', name: 'date'},
@@ -267,6 +276,19 @@
             }));
             $('#filterStore').on('select2:select', function () {
                 self.selected('byStore', $('#filterStore').val());
+            });
+
+            $('#filterStore2').select2(setOptions('{{ route("data.store") }}', 'Store Destination', function (params) {
+                return filterData('store', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"+ " - " + obj.dedicate}
+                    })
+                }
+            }));
+            $('#filterStore2').on('select2:select', function () {
+                self.selected('byStore2', $('#filterStore2').val());
             });
 
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
