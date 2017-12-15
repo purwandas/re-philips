@@ -174,7 +174,7 @@
 	        var newTarget = [];
 	        console.log("{{@$data->target}}");
 	        <?php 
-	        if ($data->target) 
+	        if (isset($data->target))
 	        {
 	        	
 	        			$bangs = explode(',',$data->target);
