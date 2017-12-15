@@ -55,6 +55,7 @@
                             <th> Description </th>
                             <th> Link </th>
                         	<th> Target </th>
+                            <th> Total Read </th>
                             <th> Date </th>
                             <th> Action </th>
                         </tr>
@@ -105,6 +106,7 @@
 	            {data: 'description', name: 'description'},                
                 {data: 'link', name: 'link'},
                 {data: 'target', name: 'target'},
+                {data: 'total_read', name: 'total_read'},
                 {data: 'date', name: 'date'},
 	            {data: 'action', name: 'action', searchable: false, sortable: false},                
 	        ],
