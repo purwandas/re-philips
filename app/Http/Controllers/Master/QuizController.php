@@ -82,7 +82,7 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json($request);
+        // return response()->json($request);
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -116,7 +116,7 @@ class QuizController extends Controller
         // dd($request->all());
         $quiz = Quiz::create($request->all());
         
-        // return response()->json(['url' => url('/quiz')]);
+        return response()->json(['url' => url('/quiz')]);
     }
 
     /**
