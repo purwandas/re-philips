@@ -18,7 +18,7 @@ class ChangeFieldGroupPosmTable extends Migration
             $table->dropColumn('groupproduct_id');
         });
         Schema::table('posms', function (Blueprint $table) {
-            $table->integer('group_id')->unsigned();
+            $table->integer('group_id')->unsigned()->after('name');
             $table->foreign('group_id')->references('id')->on('groups');
         });
     }
