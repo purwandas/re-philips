@@ -31,7 +31,7 @@ class FeedbackAnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $data = FeedbackAnswer::where('feedback_answers.deleted_at', null)
                     ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'assessors.id')
@@ -39,8 +39,19 @@ class FeedbackAnswerController extends Controller
                     ->join('feedback_questions', 'feedback_answers.feedbackQuestion_id', '=', 'feedback_questions.id')
                     ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as promoter_name', 'feedback_questions.question as feedback_question' )->get();
 
+        $filter = $data;
 
-        return $this->makeTable($data);
+        /* If filter */
+            if($request['byAssesssor']){
+                $filter = $data->where('assessor_id', $request['byAssesssor']);
+            }
+
+            if($request['byPromoter']){
+                $filter = $data->where('promoter_id', $request['byPromoter']);
+            }
+
+
+        return $this->makeTable($filter);
     }
 
     // Data for select2 with Filters
