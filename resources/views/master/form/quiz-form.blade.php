@@ -108,7 +108,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 
-				          		<select class="select2select" name="target" id="target">
+				          		<select class="select2select" multiple="multiple" name="target[]" id="target">
 				          			<option></option>
                                 	<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
                                 	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? "selected" : "" }}>Promoter Additional</option>
@@ -171,9 +171,34 @@
                 placeholder: 'Select Target'
             }); 
 
-            setSelect2IfPatch($("#target"), "{{ @$data->target }}", "{{ @$data->target }}");
+	        var newTarget = [];
+	        console.log("{{@$data->target}}");
+	        <?php 
+	        if ($data->target) 
+	        {
+	        	
+	        			$bangs = explode(',',$data->target);
+	        			// print_r($bangs);
+	        	
+		        // $target = explode(',', $data->target);
+		        foreach ($bangs as $key => $value)
+		        {
+		        	if ($value != '') {
+			        	echo "newTarget.push('$value');";
+			        }
+		        }
+	        }
+	        ?>
+
+	        // var target = ({{ @$target }}).split(',');
+	        newTarget.forEach(setSelect2);
 
 		});
+
+		function setSelect2(item, index){
+        	console.log(item);
+            setSelect2IfPatch($("#target"), item, item);
+        }
 
 	</script>
 

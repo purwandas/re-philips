@@ -82,7 +82,7 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-        // return response()->json($request);
+        return response()->json($request);
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -95,10 +95,28 @@ class QuizController extends Controller
         // Date
         $request['date'] = Carbon::now();
 
+        $allTarget = '';
+        $counTarget=0;
+
+        foreach ($request['target'] as $key => $value) {
+            if ($counTarget == 0) {
+                $allTarget .= $value;
+                if ($value!='') {
+                    $counTarget++;
+                }
+            }else{
+                $allTarget .= ','.$value;
+            }            
+        }
+
+        $request->merge(array('target'=> $allTarget));
+
+        // return $request->all();
+
         // dd($request->all());
         $quiz = Quiz::create($request->all());
         
-        return response()->json(['url' => url('/quiz')]);
+        // return response()->json(['url' => url('/quiz')]);
     }
 
     /**
@@ -142,6 +160,22 @@ class QuizController extends Controller
             'target' => 'required',
             ]);  
 
+        $allTarget = '';
+        $counTarget=0;
+        
+        foreach ($request['target'] as $key => $value) {
+            if ($counTarget == 0) {
+                $allTarget .= $value;
+                if ($value!='') {
+                    $counTarget++;
+                }
+            }else{
+                $allTarget .= ','.$value;
+            }            
+        }
+
+        $request->merge(array('target'=> $allTarget));
+        
         $quiz = Quiz::find($id);
     	$quiz->update($request->all());        
 
