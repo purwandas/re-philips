@@ -116,12 +116,38 @@ class StoreController extends Controller
     {
         $error = '';
         if ($request->store_status == 'old') {
+
+            $this->validate($request, [
+                'old_store_id' => 'required',
+                'dedicate' => 'required',
+            ]);
+
             // return $request->old_store_id;
-            $storeData = Store::where('stores.store_id', $request->old_store_id)->get();
+            $storeData = Store::where('stores.id', $request->old_store_id)->get();
+            $dedicate = [];
+            $store_id = '';
+            $store_name_1 = '';
+            $store_name_2 = '';
+            $latitude = '';
+            $longitude = '';
+            $address = '';
+            $classification = '';
+            $subchannel_id = '';
+            $district_id = '';
+
             foreach ($storeData as $key => $value) {
-                $dedicate[] = 
-                $value->dedicate;
+                $dedicate[] = $value->dedicate;
+                $store_id = $value->store_id;
+                $store_name_1 = $value->store_name_1;
+                $store_name_2 = $value->store_name_2;
+                $latitude = $value->latitude;
+                $longitude = $value->longitude;
+                $address = $value->address;
+                $classification = $value->classification;
+                $subchannel_id = $value->subchannel_id;
+                $district_id = $value->district_id;
             }
+            
             // return response()->json($storeData);
             foreach ($dedicate as $key => $value) {
                 if ($value == $request->dedicate) { //redudant
@@ -151,34 +177,49 @@ class StoreController extends Controller
 
             if ($error == '') {
                 // $request->store_id = $request->old_store_id;
-                 $request->merge(array('store_id'=> $request->old_store_id));
+
+                $request->merge(array('store_id'=> $store_id));
+                $request->merge(array('store_name_1'=> $store_name_1));
+                $request->merge(array('store_name_2'=> $store_name_2));
+                $request->merge(array('latitude'=> $latitude));
+                $request->merge(array('longitude'=> $longitude));
+                $request->merge(array('address'=> $address));
+                $request->merge(array('classification'=> $classification));
+                $request->merge(array('subchannel_id'=> $subchannel_id));
+                $request->merge(array('district_id'=> $district_id));
             }else{
                 return response()->json([
                     'url' => url('/store'),
                     'error' => $error
                 ]);
             }
+        }else{
+            $this->validate($request, [
+                'store_name_1' => 'required|string|max:255',
+                'store_name_2' => 'string|max:255',
+                'dedicate' => 'required',
+                'longitude' => 'number',
+                'latitude' => 'number',
+                'subchannel_id' => 'required',
+                'district_id' => 'required',
+            ]);
         }
-        
 
         // return response()->json($request->all());
-
-        $this->validate($request, [
-            'store_name_1' => 'required|string|max:255',
-            'store_name_2' => 'string|max:255',
-            'dedicate' => 'required',
-            'longitude' => 'number',
-            'latitude' => 'number',
-            'subchannel_id' => 'required',
-            'district_id' => 'required',
-        ]);
-
-        // return response()->json($reques t->all());
 
         $store = Store::create($request->all());
 
         /* Store Distributor */
-        if($request['distributor_ids']){
+        if ($request->store_status == 'old') {
+            $distributor = StoreDistributor::where('store_distributors.store_id', $request->old_store_id)->get();
+            foreach ($distributor as $key => $value) {
+                StoreDistributor::create([
+                    'store_id' => $store->id,
+                    'distributor_id' => $value->distributor_id,
+                ]);
+            }
+
+        }else if($request['distributor_ids']){
             foreach ($request['distributor_ids'] as $distributorId) {
                 StoreDistributor::create([
                     'store_id' => $store->id,
@@ -230,46 +271,52 @@ class StoreController extends Controller
             where('stores.store_id', $request->store_id)
             ->where('stores.id', '!=', $request->id)
             ->get();
+            $count = 0;
             foreach ($storeData as $key => $value) {
+                $count = 1;
                 $dedicate[] = 
                 $value->dedicate;
             }
-            // return response()->json($storeData);
-            foreach ($dedicate as $key => $value) {
-                if ($value == $request->dedicate) { //redudant
-                    $error = "Dedicate: Duplicate Entry for ".$value;
-                }
-                if ($value == 'DA' && $request->dedicate == 'PC') {
-                    $error = "Dedicate: PC cannot be Added, You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
-                if ($value == 'PC' && $request->dedicate == 'DA') {
-                    $error = "Dedicate: DA cannot be Added, You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
-                if ($value == 'HYBRID' && $request->dedicate == 'PC') {
-                    $error = "Dedicate: PC cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be PC";
-                }
-                if ($value == 'HYBRID' && $request->dedicate == 'DA') {
-                    $error = "Dedicate: DA cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be DA";
-                }
-                if ($value == 'DA' && $request->dedicate == 'HYBRID') {
-                    $error = "Dedicate: HYBRID cannot be Added, You already have DA. You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
-                if ($value == 'PC' && $request->dedicate == 'HYBRID') {
-                    $error = "Dedicate: HYBRID cannot be Added, You already have PC. You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+            if ($count>0) {
+            
+                // return response()->json($storeData);
+                foreach ($dedicate as $key => $value) {
+                    if ($value == $request->dedicate) { //redudant
+                        $error = "Dedicate: Duplicate Entry for ".$value;
+                    }
+                    if ($value == 'DA' && $request->dedicate == 'PC') {
+                        $error = "Dedicate: PC cannot be Added, You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                    }
+                    if ($value == 'PC' && $request->dedicate == 'DA') {
+                        $error = "Dedicate: DA cannot be Added, You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                    }
+                    if ($value == 'HYBRID' && $request->dedicate == 'PC') {
+                        $error = "Dedicate: PC cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be PC";
+                    }
+                    if ($value == 'HYBRID' && $request->dedicate == 'DA') {
+                        $error = "Dedicate: DA cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be DA";
+                    }
+                    if ($value == 'DA' && $request->dedicate == 'HYBRID') {
+                        $error = "Dedicate: HYBRID cannot be Added, You already have DA. You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                    }
+                    if ($value == 'PC' && $request->dedicate == 'HYBRID') {
+                        $error = "Dedicate: HYBRID cannot be Added, You already have PC. You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                    }
+
+                    // return error json, di store-handler.js success: if data.error -> message
                 }
 
-                // return error json, di store-handler.js success: if data.error -> message
-            }
+                if ($error == '') {
+                    // $request->store_id = $request->old_store_id;
+                     // $request->merge(array('store_id'=> $request->old_store_id));
+                }else{
+                    return response()->json([
+                        'url' => url('/store'),
+                        'error' => $error
+                    ]);
+                }
 
-            if ($error == '') {
-                // $request->store_id = $request->old_store_id;
-                 // $request->merge(array('store_id'=> $request->old_store_id));
-            }else{
-                return response()->json([
-                    'url' => url('/store'),
-                    'error' => $error
-                ]);
-            }
+            }//end $count
         // }
 
         $this->validate($request, [

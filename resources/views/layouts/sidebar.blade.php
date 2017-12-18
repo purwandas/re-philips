@@ -140,7 +140,7 @@
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
-                    <span class="title">Traget</span>
+                    <span class="title">Target</span>
                     <span class="arrow 
                         {{ Request::is('target') ? 'active open' : '' }}
                         {{ Request::is('productfocus') ? 'active open' : '' }}
