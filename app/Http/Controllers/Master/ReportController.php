@@ -1726,7 +1726,76 @@ class ReportController extends Controller
                 ";
                 
             })
-            ->rawColumns(['action'])
+            ->addColumn('attendance_details', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                    $status = ['Alpha','Masuk','Sakit','Izin','Pending Sakit','Pending Izin','Off'];
+                    $warna = ['#34495e','#3498db','#f1c40f','#f1c40f','#2980b9','#f39c12','#c0392b'];
+                    $tomorrowColor = "#ecf0f1";
+
+                    /* Get data from attendanceDetails then convert them into colored table */
+                    // return $item->user_id;
+                    $dataD = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.id',$item->id)
+                        ->get()->all();
+                    foreach ($dataD as $key => $value) {
+                        $statusAttendance[] = $value->status;
+                    }
+                    // return $statusAttendance;
+                    // GATAU ITU HARUSNYA GET KEMANA
+                    $report = '<table><tr>';
+
+                    /* Repeat as much as max day in month */
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=1; $i <= $totalDay ; $i++) { 
+                        $bgColor = $warna[0];
+                        foreach ($status as $key => $value) {
+                            if (isset($statusAttendance[$i-1])) {
+                                if ($value == $statusAttendance[$i-1]) {
+                                    $bgColor = $warna[$key];
+                                    break;
+                                }
+                            }
+                        }
+
+                        $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateI = date("$year-$month-$i");
+
+                        $kampret ='kosong';
+                        if ($dateI > $dateNow) {
+                            $kampret ='yup';
+                            $bgColor = $tomorrowColor;
+                        }
+
+                        if (!isset($bgColor)) {
+                            $bgColor="#7f8c8d";
+                        }
+
+                        $report .= "<td style='
+                            background-color: $bgColor
+                        '>";
+                        
+
+
+                        
+                        $report .= "$kampret<td>";
+                    }
+                    $report .= '</tr></table>';
+                    return $report;
+                    return "
+                        <span class='active' style='
+                            background-color: $bgColor
+                        '>
+                            $item->status
+                        </span>";
+                })
+            ->rawColumns(['action','attendance_details'])
             ->make(true);
 
     }
