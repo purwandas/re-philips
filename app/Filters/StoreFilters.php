@@ -21,6 +21,7 @@ class StoreFilters extends QueryFilters
         return null;
     }
 
+
     // Order by region
     public function byRegion($value) {
         return $this->builder->whereHas('district.area.region', function ($query) use ($value) {
