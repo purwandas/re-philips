@@ -278,7 +278,7 @@
                 self.selected('byStore', $('#filterStore').val());
             });
 
-            $('#filterStore2').select2(setOptions('{{ route("data.store") }}', 'Store Destination', function (params) {
+            $('#filterStore2').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {

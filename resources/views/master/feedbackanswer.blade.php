@@ -338,7 +338,7 @@
                 width: '100%',
                 placeholder: 'answer'
             })    
-            $('#filterAssessor').select2(setOptions('{{ route("data.employee") }}', 'Nik', function (params) {
+            $('#filterAssessor').select2(setOptions('{{ route("data.employee") }}', 'Assesssor', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {
@@ -355,7 +355,7 @@
                 self.selected('byAssesssor', $('#assessor').val());
             });
 
-            $('#filterPromoter').select2(setOptions('{{ route("data.employee") }}', 'Nama', function (params) {
+            $('#filterPromoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {

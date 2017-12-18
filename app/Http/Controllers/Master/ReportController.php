@@ -708,7 +708,7 @@ class ReportController extends Controller
             }
 
             if($request['byStore2']){
-                $filter = $data->where('store_destination_id', $request['byStore2']);
+                $filter = $data->where('storeDestinationId', $request['byStore2']);
             }
 
             if($request['byEmployee']){
@@ -741,7 +741,7 @@ class ReportController extends Controller
                         $collection['area_id'] = $detail->area_id;
                         $collection['district_id'] = $detail->district_id;
                         $collection['storeId'] = $detail->storeId;
-                        $collection['store_destination_id'] = $detail->storeId;
+                        $collection['store_destinationId'] = $detail->store_destinationId;
                         $collection['user_id'] = $detail->user_id;
                         $collection['week'] = $detail->week;
                         $collection['distributor_code'] = $detail->distributor_code;
@@ -753,9 +753,10 @@ class ReportController extends Controller
                         $collection['district'] = $detail->district;
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
-                        $collection['store_destination_name_1'] = $detail->store_name_1;
-                        $collection['store_destination_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['store_destination_name_1'] = $detail->store_destination_name_1;
+                        $collection['store_destination_name_2'] = $detail->store_destination_name_2;
+                        $collection['store_destination_id'] = $detail->store_destination_id;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -802,7 +803,7 @@ class ReportController extends Controller
             }
 
             if($request['byStore2']){
-                $filter = $historyData->where('store_destination_id', $request['byStore2']);
+                $filter = $historyData->where('storeDestinationId', $request['byStore2']);
             }
 
             if($request['byEmployee']){
