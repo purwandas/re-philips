@@ -213,7 +213,7 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
     var title_list = document.getElementById('title-list');
     var content = document.getElementById('content');
     title_modal.innerHTML = $(this).data('title');
-    title_list.innerHTML = "Employee : "+$(this).data('employee-name');
+    title_list.innerHTML = "Employee : "+$(this).data('employee-name')+" ("+$(this).data('employee-nik')+")";
 
     var getDataUrl = $(this).data('url');
     var attendanceId = $(this).data('id');
@@ -244,10 +244,16 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
                                         '<div class="task-content">' +
                                             '<ul>' +
                                                 '<li>' +
-                                                    '<h5> Time : ' + this.check_in + '</h5>' +
+                                                    '<h5> Check-in Time : ' + this.check_in + '</h5>' +
                                                 '</li>' +
                                                 '<li>' +
-                                                    '<h5> Location : ' + this.check_in_location + '</h5>' +
+                                                    '<h5> Check-in Location : ' + this.check_in_location + '</h5>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<h5> Check-out Time : ' + this.check_out + '</h5>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<h5> Check-out Location : ' + this.check_out_location + '</h5>' +
                                                 '</li>' +
                                                 '<li>' +
                                                     '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
