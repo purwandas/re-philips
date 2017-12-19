@@ -164,7 +164,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<div class="list-todo-item grey">' +
                         '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.store_id + this.id + '"  aria-expanded="false">' +
                         '<div class="list-toggle done uppercase">' +
-                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')' + '</div>' +
+                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')' + ' - ' + this.dedicate + '</div>' +
                         '</div>' +
                         '</a>' +
                         '<div class="task-list panel-collapse collapse" id="' + this.store_id + this.id + '" aria-expanded="false" style="height: 0px;">' +
@@ -200,6 +200,72 @@ $(document).on("click", ".open-employee-store-modal", function () {
                     '</ul>';
                 }
 
+
+            });
+        }
+    });
+
+});
+
+// Attendance Detail Popup
+$(document).on("click", ".open-attendance-detail-modal", function () {
+    var title_modal = document.getElementById('title-modal');
+    var title_list = document.getElementById('title-list');
+    var content = document.getElementById('content');
+    title_modal.innerHTML = $(this).data('title');
+    title_list.innerHTML = "Employee : "+$(this).data('employee-name');
+
+    var getDataUrl = $(this).data('url');
+    var attendanceId = $(this).data('id');
+    content.innerHTML = "";
+    console.log(getDataUrl+'/'+attendanceId);
+    $.get(getDataUrl + '/' + attendanceId, function (data) {
+            console.log(data);
+        if(data) {
+            $.each(data, function() {
+
+                content.innerHTML += 
+                '<div class="list-todo-line blue"></div>' +
+                '<ul>' +
+                    '<li class="mt-list-item">' +
+                        '<div class="list-todo-icon bg-white font-blue">' +
+                            '<i class="fa fa-database"></i>' +
+                        '</div>' +
+                        '<div class="list-todo-item grey">' +
+                            '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.store_id + this.id + '"  aria-expanded="false">' +
+                                '<div class="list-toggle done uppercase">' +
+                                    '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')' + 
+                                    '</div>' +
+                                '</div>' +
+                            '</a>' +
+                            '<div class="task-list panel-collapse collapse" id="' + this.store_id + this.id + '" aria-expanded="false" style="height: 0px;">' +
+                                '<ul>' +
+                                    '<li class="task-list-item" >' +
+                                        '<div class="task-content">' +
+                                            '<ul>' +
+                                                '<li>' +
+                                                    '<h5> Time : ' + this.check_in + '</h5>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<h5> Location : ' + this.check_in_location + '</h5>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<h5> Store Name 2 : ' + this.store_name_2 + '</h5>' +
+                                                '</li>' +
+                                                '<li>' +
+                                                    '<h5> Store ID : ' + this.storeId + '</h5>' +
+                                                '</li>' +
+                                            '</ul>' +
+                                        '</div>' +
+                                    '</li>' +
+                                '</ul>' +
+                            '</div>' +
+                        '</div>' +
+                    '</li>' +
+                '</ul>';
 
             });
         }

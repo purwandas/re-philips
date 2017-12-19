@@ -254,7 +254,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -280,7 +279,6 @@ class ReportController extends Controller
 
 
 
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -1677,8 +1675,8 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'attendances.user_id', '=', 'users.id')
                     ->groupBy('attendances.user_id')
-                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name',DB::raw('count(*) as total_hk'))
-                    ->where('attendances.status', '!=', 'Off')
+                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name')//,DB::raw('count(*) as total_hk'))
+                    // ->where('attendances.status', '!=', 'Off')
                     ->get();
 
             $filter = $data;
@@ -1716,13 +1714,28 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->addColumn('action', function ($item) {
+            ->addColumn('total_hk', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+
+                $dataD = Attendance::
+                        select(DB::raw('count(*) as total_hk'))
+                        ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->get()->all();
+                $hk = 0;
+                foreach ($dataD as $key => $value) {
+                    $hk = $value->total_hk;
+                }
 
                 return 
                 "
-                <a href='".url('attendancereport/detail/'.$item->id)."' class='btn btn-sm btn-info'>
-                    <i class='fa fa-industry'> Detail</i>
-                </a>
+                $hk
                 ";
                 
             })
@@ -1732,8 +1745,9 @@ class ReportController extends Controller
                 $minDate = "$year-$month-01";
                 $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
                 $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
-                    $status = ['Alpha','Masuk','Sakit','Izin','Pending Sakit','Pending Izin','Off'];
-                    $warna = ['#34495e','#3498db','#f1c40f','#f1c40f','#2980b9','#f39c12','#c0392b'];
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
+                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
 
                     /* Get data from attendanceDetails then convert them into colored table */
@@ -1752,39 +1766,55 @@ class ReportController extends Controller
                     $report = '<table><tr>';
 
                     /* Repeat as much as max day in month */
+                    
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
                     for ($i=1; $i <= $totalDay ; $i++) { 
+                        $index = 0;
                         $bgColor = $warna[0];
+                        $textColor = $text[0];
                         foreach ($status as $key => $value) {
+                            // $index = $key;
                             if (isset($statusAttendance[$i-1])) {
                                 if ($value == $statusAttendance[$i-1]) {
                                     $bgColor = $warna[$key];
+                                    $textColor = $text[$key];
+                                    $index = $key;
                                     break;
                                 }
                             }
                         }
 
                         $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateNow = explode('-', $dateNow);
                         $dateI = date("$year-$month-$i");
+                        $dateI = explode('-', $dateI);
 
-                        $kampret ='kosong';
-                        if ($dateI > $dateNow) {
-                            $kampret ='yup';
-                            $bgColor = $tomorrowColor;
+
+                        if ($dateI[2] > $dateNow[2]) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
                         }
 
                         if (!isset($bgColor)) {
-                            $bgColor="#7f8c8d";
+                            $bgColor="#34495e";
                         }
 
-                        $report .= "<td style='
-                            background-color: $bgColor
-                        '>";
+                        if ($index == 1) {
+                            $report .= "<td 
+                            class='col-md-12 text-center open-attendance-detail-modal btn btn-primary' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-id='".$item->id."'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }else{
+                            $report .= "<td 
+                            class='col-md-12 text-center'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }
                         
 
 
                         
-                        $report .= "$kampret<td>";
+                        $report .= "<b>$i</b><br>".$status[$index]."<td>";
                     }
                     $report .= '</tr></table>';
                     return $report;
@@ -1795,7 +1825,7 @@ class ReportController extends Controller
                             $item->status
                         </span>";
                 })
-            ->rawColumns(['action','attendance_details'])
+            ->rawColumns(['attendance_details'])
             ->make(true);
 
     }
