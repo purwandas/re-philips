@@ -82,6 +82,30 @@ class UtilController extends Controller
         return response()->json($store);
     }
 
+    public function getStoreForSpvEmployee($userId){        
+        $store = Store::where('stores.deleted_at', null)
+                    ->where('stores.user_id', $userId)
+                    ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name')->get();
+
+        foreach ($store as $item){
+
+            if($item->user_id == null){
+                $item['user_id'] = "";
+            }else{
+                $item['user_id'] = $item->user->name;
+            }
+
+        }
+
+        return response()->json($store);
+    }
+
     public function getAttendanceDetail($attendance_id){        
         $attendance = AttendanceDetail::where('attendance_id',$attendance_id)
             ->join('stores','stores.id', 'attendance_details.store_id')

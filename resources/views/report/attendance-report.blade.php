@@ -69,7 +69,7 @@
                 <div class="btn-group">
                     <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
-                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringAttendanceReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
                 </div>
 
@@ -90,7 +90,7 @@
                         </div>
                     </div>
 
-                    <div class="portlet-body">
+                    <div class="portlet-body" id="attendanceTable">
 
                         <table class="table table-striped table-hover table-bordered" id="AttendanceReport" style="white-space: nowrap;">
                             <thead>
@@ -98,7 +98,8 @@
                                 <th> No. </th>
                                 <th> NIK </th>
                                 <th> Name </th>
-                                <th> Total HK </th>
+                                <th> Role </th>
+                                <th> Attendance </th>
                                 <th> Attendance Detail </th>
                             </tr>
                             </thead>
@@ -137,13 +138,14 @@
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
                             {data: 'user_nik', name: 'user_nik'},
                             {data: 'user_name', name: 'user_name'},
+                            {data: 'user_role', name: 'user_role'},
                             {data: 'total_hk', name: 'total_hk'},
                             {data: 'attendance_details', name: 'attendance_details'},
                             ];
 
         var exportButton = '#export';
 
-        var paramFilter = ['AttendanceReport', $('#AttendanceReport'), url, tableColumns, columnDefs, order, exportButton];
+        var paramFilter = ['AttendanceReport', $("#AttendanceReport"), url, tableColumns, columnDefs, order, exportButton];
 
         var paramReset = [filterId, 'AttendanceReport', $('#AttendanceReport'), url, tableColumns, columnDefs, order];
 
@@ -154,29 +156,6 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
-            // Set data for Data Table
-            // {{--var table = $('#AttendanceReport').dataTable({--}}
-            //     {{--"scrollY":        "300px", --}}
-            //     {{--"scrollX":        true, --}}
-            //     {{--"scrollCollapse": true, --}}
-            //     {{--"paging":         false, --}}
-            //     {{--"fixedColumns":   { --}}
-            //         {{--"leftColumns": "1", --}}
-            //         // {{--"rightColumns": 1 --}}
-            //     {{-- }, --}}
-            //     {{--"processing": true,--}}
-            //     {{--"serverSide": true,--}}
-            //     {{--"ajax": {--}}
-            //         {{--url: "{{ route('datatable.attendancereport') }}",--}}
-            //         {{--type: 'POST',--}}
-            //     {{--},--}}
-                
-            //     {{--"rowId": "id",--}}
-            //     {{--"columns": tableColumns,--}}
-            //     {{--"columnDefs": columnDefs,--}}
-            //     {{--"order": order,--}}
-            // {{--});--}}
 
             initSelect2();
             initDateTimePicker();

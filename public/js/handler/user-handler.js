@@ -242,10 +242,12 @@ var FormValidation = function () {
                     // Check if employee is mobile and just select one store
                     if($('#stores').val() != null){
                         var storesLength = $('#stores').val().length;
-
-                        if(storesLength == 1){
-                            swal("Warning", "Mobile employee must have at least 2 stores.", "warning");
-                            return;
+                        if ($('#role').val()!='Supervisor' && $('#role').val()!='Supervisor Hybrid') 
+                        {
+                            if(storesLength == 1){
+                                swal("Warning", "Mobile employee must have at least 2 stores.", "warning");
+                                return;
+                            }
                         }
                     }
 

@@ -69,6 +69,7 @@ use App\PromoActivity;
 use App\PromoActivityDetail;
 use App\Attendance;
 use App\AttendanceDetail;
+use App\RsmRegion;
 use App\Filters\ReportFilters;
 use App\Filters\ReportPosmActivityFilters;
 use App\Filters\ReportSellOutFilters;
@@ -163,6 +164,11 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        $userRole = "RSM";//Auth::user()->role;
+        $userId = 26;//Auth::user()->id;
+
+        // return response()->json($userRole);
+
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             $data = SummarySellIn::all();
@@ -188,6 +194,13 @@ class ReportController extends Controller
 
             if($request['byEmployee']){
                 $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
             }
 
             return Datatables::of($filter->all())
@@ -277,7 +290,12 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
-
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
 
 
             return Datatables::of($filter->all())
@@ -1675,7 +1693,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'attendances.user_id', '=', 'users.id')
                     ->groupBy('attendances.user_id')
-                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name')//,DB::raw('count(*) as total_hk'))
+                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'users.nik as user_nik', 'users.role as user_role')//,DB::raw('count(*) as total_hk'))
                     // ->where('attendances.status', '!=', 'Off')
                     ->get();
 
@@ -1720,10 +1738,16 @@ class ReportController extends Controller
                 $minDate = "$year-$month-01";
                 $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
                 $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                $maxDate = date('Y-m-d');
 
                 $dataD = Attendance::
                         select(DB::raw('count(*) as total_hk'))
                         ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.status', '!=', 'Sakit')
+                        ->where('attendances.status', '!=', 'Izin')
+                        ->where('attendances.status', '!=', 'Pending Sakit')
+                        ->where('attendances.status', '!=', 'Pending Izin')
+                        ->where('attendances.status', '!=', 'Alpha')
                         ->where('attendances.date','>=',$minDate)
                         ->where('attendances.date','<=',$maxDate)
                         ->where('attendances.user_id',$item->user_id)
@@ -1733,13 +1757,11 @@ class ReportController extends Controller
                     $hk = $value->total_hk;
                 }
 
-                return 
-                "
-                $hk
-                ";
+                return "$hk";
                 
             })
             ->addColumn('attendance_details', function ($item) {
+                // return 'kampret';
                 $month = Carbon::parse($item->date)->format('m');
                 $year = Carbon::parse($item->date)->format('Y');
                 $minDate = "$year-$month-01";
@@ -1749,39 +1771,41 @@ class ReportController extends Controller
                     $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
                     $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
+                // return $minDate.' / '.$maxDate;
 
                     /* Get data from attendanceDetails then convert them into colored table */
                     // return $item->user_id;
-                    $dataD = Attendance::
+                    $dataDetail = Attendance::
                         select('attendances.*')
                         ->where('attendances.date','>=',$minDate)
                         ->where('attendances.date','<=',$maxDate)
-                        ->where('attendances.id',$item->id)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
                         ->get()->all();
-                    foreach ($dataD as $key => $value) {
+                    foreach ($dataDetail as $key => $value) {
                         $statusAttendance[] = $value->status;
                     }
                     // return $statusAttendance;
-                    // GATAU ITU HARUSNYA GET KEMANA
                     $report = '<table><tr>';
 
                     /* Repeat as much as max day in month */
                     
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
                     for ($i=1; $i <= $totalDay ; $i++) { 
+
                         $index = 0;
                         $bgColor = $warna[0];
                         $textColor = $text[0];
                         foreach ($status as $key => $value) {
                             // $index = $key;
-                            if (isset($statusAttendance[$i-1])) {
+                            // if (isset($statusAttendance[$i-1])) {
                                 if ($value == $statusAttendance[$i-1]) {
                                     $bgColor = $warna[$key];
                                     $textColor = $text[$key];
                                     $index = $key;
                                     break;
                                 }
-                            }
+                            // }
                         }
 
                         $dateNow = Carbon::now()->format('Y-m-d');
@@ -1801,7 +1825,7 @@ class ReportController extends Controller
 
                         if ($index == 1) {
                             $report .= "<td 
-                            class='col-md-12 text-center open-attendance-detail-modal btn btn-primary' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-id='".$item->id."'
+                            class='col-md-12 text-center open-attendance-detail-modal btn btn-primary' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$item->id."'
                             style='background-color: $bgColor;color:$textColor;'
                             >";
                         }else{
@@ -1811,19 +1835,38 @@ class ReportController extends Controller
                             >";
                         }
                         
-
-
-                        
                         $report .= "<b>$i</b><br>".$status[$index]."<td>";
                     }
+
                     $report .= '</tr></table>';
                     return $report;
-                    return "
-                        <span class='active' style='
-                            background-color: $bgColor
-                        '>
-                            $item->status
-                        </span>";
+                })
+            ->addColumn('attendance_detail_excell', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d');
+
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+
+                    /* Get data from attendanceDetails then convert them into colored table */
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+                        $statusAttendance = '';
+                    foreach ($dataDetail as $key => $value) {
+                        if ($key==0) {
+                            $statusAttendance .= $value->status;
+                        }else{
+                            $statusAttendance .= ','.$value->status;
+                        }
+                    }
+
+                    return $statusAttendance;
                 })
             ->rawColumns(['attendance_details'])
             ->make(true);

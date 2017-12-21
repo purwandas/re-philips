@@ -28,7 +28,9 @@ class AddStoreDestinationInReportTbatTable extends Migration
     public function down()
     {
         Schema::table('summary_tbats', function (Blueprint $table) {
-            //
+            $table->dropColumn('store_destination_id');
+            $table->dropColumn('store_destination_name_1');
+            $table->dropColumn('store_destination_name_2');
         });
     }
 }
