@@ -134,4 +134,26 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportAttendance(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            $array = [
+                'USER NAME' => @$item['user_name'],
+                'USER NIK' => @$item['user_nik'],
+                'USER ROLE' => @$item['user_role'],
+                'ATTENDANCE' => @$item['total_hk'],
+                'HK TOTAL' => 26,
+            ];
+
+            $status = explode(',', @$item['attendance_detail_excell']);
+            foreach ( $status as $key => $value) {
+                $array[$key+1] = $value;
+            }
+
+            return $array;
+        });
+    }
+
 }

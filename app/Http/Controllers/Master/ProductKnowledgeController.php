@@ -78,7 +78,7 @@ class ProductKnowledgeController extends Controller
                         foreach ($data as $dataSplit) {
 
                             $store = Store::find(trim($dataSplit));
-                            $result .= "(" . $store->store_id . ") " . $store->store_name_1;
+                            $result .= "(" . $store->store_id . ") " . $store->store_name_1. " - " . $store->dedicate;
                             if($dataSplit != end($data)){
                                 $result .= ", ";
                             }

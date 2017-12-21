@@ -114,6 +114,79 @@ function filteringReport(arrayOfData) {
     })
 }
 
+// Filtering data
+function filteringAttendanceReport(arrayOfData) {
+
+    var table = arrayOfData[0];
+    var element = arrayOfData[1];
+    var url = arrayOfData[2];
+    var tableColumns = arrayOfData[3];
+    var columnDefs = arrayOfData[4];
+    var order = arrayOfData[5];
+
+    // console.log(tableColumns);
+
+    this.moreParams = [];
+    this.moreParamsPost  = {};
+
+    for (filter in this.filters) {
+        this.moreParams.push(filter + '=' + this.filters[filter]);
+        this.moreParamsPost[filter] = this.filters[filter];
+    }
+
+    var self = this;
+    $(document).ready(function () {
+
+        if($.fn.dataTable.isDataTable('#'+table)){
+            // element.DataTable().clear();
+            element.DataTable().destroy();
+        }
+
+        element.dataTable({
+            "fnCreatedRow": function( nRow, data ) {
+                $(nRow).attr('class', data.id);
+            },
+            // "scrollY":        "300px", 
+                "scrollX":        true, 
+                "scrollCollapse": true, 
+                "paging":         true, 
+                "fixedColumns":   { 
+                    "leftColumns": "4",
+                    // {{--"rightColumns": 1 --}}
+                },
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: url,
+                data: self.moreParamsPost,
+                type: 'POST',
+                dataType: 'json',
+                dataSrc: function(result){
+
+                    if(typeof arrayOfData[6] !== 'undefined') {
+                        // export option exist
+
+                        var count = result.data.length;
+
+                        if(count > 0){
+                            $(arrayOfData[6]).removeAttr('disabled');
+                        }else{
+                            $(arrayOfData[6]).attr('disabled','disabled');
+                        }
+                    }
+
+                    data = result.data;
+                    return result.data;
+                }
+            },
+            "rowId": "id",
+            "columns": tableColumns,
+            "columnDefs": columnDefs,
+            "order": order,
+        })
+    })
+}
+
 // Set options
 function setOptions (url, placeholder, data, processResults) {
     return {
@@ -153,7 +226,7 @@ function filterData (search, term) {
         });
 
         // console.log('result-search');
-        // console.log(results);
+        console.log(results);
 
         return results;
     }
@@ -172,7 +245,7 @@ function filterData (search, term) {
     }
 
     // console.log('results');
-    // console.log(results);
+    console.log(results);
 
     return results;
 }
