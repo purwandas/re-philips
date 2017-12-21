@@ -329,7 +329,7 @@
             // $("#filterRole").select2();
             $('#filterRole').select2({
                 width: '100%',
-                placeholder: 'Dedicate'
+                placeholder: 'Role'
             });
             $('#filterRole').on('select2:select', function () {
                 self.selected('byRole', $('#filterRole').val());

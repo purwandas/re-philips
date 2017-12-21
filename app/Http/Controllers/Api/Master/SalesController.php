@@ -1662,7 +1662,7 @@ class SalesController extends Controller
             // Check tbat header
             $tbatHeader = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('store_destination_id', $content['destination_id'])->where('date', date('Y-m-d'))->first();
 
-            if ($tbatHeader) { // If header exist (update and/or create detail)
+            if ($tbatHeader) { // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++If header exist (update and/or create detail)
 
                 try {
                     DB::transaction(function () use ($content, $tbatHeader, $user) {
@@ -1803,9 +1803,9 @@ class SalesController extends Controller
                                     'store_name_1' => $store->store_name_1,
                                     'store_name_2' => $store->store_name_2,
                                     'store_id' => $store->store_id,
-                                    'store_destination_name_1' => $storeDestination->store_name_1,
-                                    'store_destination_name_2' => $storeDestination->store_name_2,
-                                    'store_destination_id' => $storeDestination->store_id,
+                                    'store_destination_name_1' => $storeDestination->store_destination_name_1,
+                                    'store_destination_name_2' => $storeDestination->store_destination_name_2,
+                                    'store_destination_id' => $storeDestination->store_destination_id,
                                     'nik' => $user->nik,
                                     'promoter_name' => $user->name,
                                     'date' => $tbatHeader->date,
@@ -1869,7 +1869,7 @@ class SalesController extends Controller
                             $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_destination_id)->first();
 
-                            /* Product */
+                            // /* Product */
                             $product = Product::with('category.group.groupProduct')
                                         ->where('id', $detail->product_id)->first();
 

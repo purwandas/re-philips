@@ -41,46 +41,13 @@
                 
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
-                        <select id="filterNik" class="select2select">
+                        <select id="filterAssessor" class="select2select">
                             <option value=""></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <select id="filterName" class="select2select">
+                        <select id="filterPromoter" class="select2select">
                             <option value=""></option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <select id="filterRole" class="select2select" >
-                            <option value=""></option>
-                            <option value="Promoter">Promoter</option>
-                            <option value="Promoter Additional">Promoter Additional</option>
-                            <option value="Promoter Event">Promoter Event</option>
-                            <option value="Demonstrator MCC">Demonstrator MCC</option>
-                            <option value="Demonstrator DA">Demonstrator DA</option>
-                            <option value="Driver">Driver</option>
-                            <option value="Helper">Helper</option>
-                            <option value="ACT">ACT</option>
-                            <option value="PPE">PPE</option>
-                            <option value="BDT">BDT</option>
-                            <option value="Salesman Explorer">Salesman Explorer</option>
-                            <option value="PCE">PCE</option>
-                            <option value="RE Executive">RE Executive</option>
-                            <option value="RE Support">RE Support</option>
-                            <option value="Supervisor">Supervisor</option>
-                            <option value="Trainer">Trainer</option>
-                            <option value="Head Trainer">Head Trainer</option>
-                            <option value="SMD">SMD</option>
-                            <option value="SMD Coordinator">SMD Coordinator</option>
-                            <option value="HIC">HIC</option>
-                            <option value="HIE">HIE</option>
-                            <option value="Supervisor Hybrid">Supervisor Hybrid</option>
-                            <option value="SMD Additional">SMD Additional</option>
-                            <option value="ASC">ASC</option>
-                            <option value="DM">DM</option>
-                            <option value="RSM">RSM</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Master">Master</option>
                         </select>
                     </div>
                 </div>
@@ -168,6 +135,27 @@
      *
      *
      */
+
+        var filterId = ['#filterAssessor', '#filterPromoter'];
+        var url = 'datatable/feedbackAnswer';
+        var order = [ [0, 'desc'] ];
+        var columnDefs = [
+                {"className": "dt-center", "targets": [0]},
+                {"className": "dt-center", "targets": [2,4,5]},
+            ];
+
+        var tableColumns = [
+                {data: 'id', name: 'id'},
+                {data: 'assessor_name', name: 'assessor_name'},
+                {data: 'promoter_name', name: 'promoter_name'},
+                {data: 'feedback_question', name: 'feedback_question'},
+                {data: 'answer', name: 'answer'},
+                {data: 'action', name: 'action', searchable: false, sortable: false},              
+            ];
+        var paramFilter = ['feedbackAnswerTable', $('#feedbackAnswerTable'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'feedbackAnswerTable', $('#feedbackAnswerTable'), url, tableColumns, columnDefs, order];
+
+
     $(document).ready(function () {
 
         $.ajaxSetup({
@@ -350,6 +338,36 @@
                 width: '100%',
                 placeholder: 'answer'
             })    
+            $('#filterAssessor').select2(setOptions('{{ route("data.employee") }}', 'Assesssor', function (params) {
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterAssessor').on('select2:select', function () {
+                self.selected('byAssesssor', $('#filterAssessor').val());
+            });
+
+            $('#assessor').on('select2:select', function () {
+                self.selected('byAssesssor', $('#assessor').val());
+            });
+
+            $('#filterPromoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterPromoter').on('select2:select', function () {
+                self.selected('byPromoter', $('#filterPromoter').val());
+            });
+
 
 
         }
