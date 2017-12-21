@@ -228,12 +228,16 @@ class StoreController extends Controller
             // return $request->old_store_id;
             $storeData = Store::
             where('stores.store_id', $request->store_id)
-            ->where('stores.id', '!=', $request->id)
+            ->where('stores.id', '!=', $id)
             ->get();
+
+            $dedicate = [];
+
             foreach ($storeData as $key => $value) {
-                $dedicate[] = 
+                $dedicate[] =
                 $value->dedicate;
             }
+
             // return response()->json($storeData);
             foreach ($dedicate as $key => $value) {
                 if ($value == $request->dedicate) { //redudant
