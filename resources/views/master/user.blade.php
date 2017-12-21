@@ -297,7 +297,7 @@
              * Select 2 init
              *
              */
-            $('#filterNik').select2(setOptions('{{ route("data.employee") }}', 'Nik', function (params) {
+            $('#filterNik').select2(setOptions('{{ route("data.employee") }}', 'NIK', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {

@@ -9,7 +9,7 @@ class DmArea extends Model
 {
     //
     protected $fillable = [
-        'user_id', 'area_id', 
+        'user_id', 'area_id', 'dedicate'
     ];
 
 	/* Metode tambahan untuk model Branch Sport. */

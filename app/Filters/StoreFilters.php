@@ -36,6 +36,13 @@ class StoreFilters extends QueryFilters
         });
     }
 
+    // Ordering by spv
+    public function bySpv($value) {
+        return $this->builder->where('user_id',null)->orwhere('user_id',$value);
+    }
+
+
+
 //    // Ordering by area
 //    public function byAreaApp($value) {
 //        return $this->builder->whereHas('areaapp', function ($query) use ($value) {
