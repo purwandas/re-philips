@@ -38,8 +38,7 @@ class TargetController extends Controller
         $data = Target::where('targets.deleted_at', null)
         			->join('users', 'targets.user_id', '=', 'users.id')
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
-                    ->join('group_products', 'targets.groupproduct_id', '=', 'group_products.id')
-                    ->select('targets.*', 'users.name as promoter_name', 'stores.store_id as store_name', 'group_products.name as groupproduct_name')->get();
+                    ->select('targets.*', 'users.name as promoter_name', 'stores.store_id as store_name')->get();
 
         return $this->makeTable($data);
     }
@@ -88,40 +87,69 @@ class TargetController extends Controller
         $this->validate($request, [
             'user_id' => 'required',
             'store_id' => 'required',
-            'groupproduct_id' => 'required',
-            'type' => 'required',
-            'target' => 'required|numeric'
+            'sell_type' => 'required',
+            'target_da' => 'numeric',
+            'target_pf_da' => 'numeric',
+            'target_pc' => 'numeric',
+            'target_pf_pc' => 'numeric',
+            'target_mcc' => 'numeric',
+            'target_pf_mcc' => 'numeric',
             ]);
 
         $target = Target::where('user_id', $request['user_id'])
                     ->where('store_id', $request['store_id'])
-                    ->where('groupproduct_id', $request['groupproduct_id']);
+                    ->where('sell_type', $request['sell_type']);
 
         if($target->count() > 0){
 
-            $targetOld = $target->first()->target;
+            $targetOldDa = $target->first()->target_da;
+            $targetOldPfDa = $target->first()->target_pf_da;
+            $targetOldPc = $target->first()->target_pc;
+            $targetOldPfPc = $target->first()->target_pf_pc;
+            $targetOldMcc = $target->first()->target_mcc;
+            $targetOldPfMcc = $target->first()->target_pf_mcc;
 
-            $target->update(['target'=>$request->target]);
+            $target->update(['target_da'=>$request->target_da]);
+            $target->update(['target_pf_da'=>$request->target_pf_da]);
+            $target->update(['target_pc'=>$request->target_pc]);
+            $target->update(['target_pf_pc'=>$request->target_pf_pc]);
+            $target->update(['target_mcc'=>$request->target_mcc]);
+            $target->update(['target_pf_mcc'=>$request->target_pf_mcc]);
 
-            /* Summary Target Add and/or Change */
-            $summary['user_id'] = $target->user_id;
-            $summary['store_id'] = $target->store_id;
-            $summary['groupproduct_id'] = $target->groupproduct_id;
-            $summary['targetOld'] = $targetOld;
-            $summary['target'] = $target->target;
-            $summary['type'] = $target->type;
+            /* Summary Target Add and/or Change */ // On Progress
+            $summary['user_id'] = $target->first()->user_id;
+            $summary['store_id'] = $target->first()->store_id;
+            $summary['targetOldDa'] = $targetOldDa;
+            $summary['targetOldPfDa'] = $targetOldPfDa;
+            $summary['targetOldPc'] = $targetOldPc;
+            $summary['targetOldPfPc'] = $targetOldPfPc;
+            $summary['targetOldMcc'] = $targetOldMcc;
+            $summary['targetOldPfMcc'] = $targetOldPfMcc;
+            $summary['target_da'] = $target->first()->target_da;
+            $summary['target_pf_da'] = $target->first()->target_pf_da;
+            $summary['target_pc'] = $target->first()->target_pc;
+            $summary['target_pf_pc'] = $target->first()->target_pf_pc;
+            $summary['target_mcc'] = $target->first()->target_mcc;
+            $summary['target_pf_mcc'] = $target->first()->target_pf_mcc;
+            $summary['sell_type'] = $target->first()->sell_type;
 
             $this->changeTarget($summary, 'change');
+
+            return response()->json(['url' => url('/target'), 'method' => 'PATCH']);
 
         }else{
             $target = Target::create($request->all());
 
-            /* Summary Target Add and/or Change */
+            /* Summary Target Add and/or Change */ // On Progress
             $summary['user_id'] = $target->user_id;
             $summary['store_id'] = $target->store_id;
-            $summary['groupproduct_id'] = $target->groupproduct_id;
-            $summary['target'] = $target->target;
-            $summary['type'] = $target->type;
+            $summary['target_da'] = $target->target_da;
+            $summary['target_pf_da'] = $target->target_pf_da;
+            $summary['target_pc'] = $target->target_pc;
+            $summary['target_pf_pc'] = $target->target_pf_pc;
+            $summary['target_mcc'] = $target->target_mcc;
+            $summary['target_pf_mcc'] = $target->target_pf_mcc;
+            $summary['sell_type'] = $target->sell_type;
 
             $this->changeTarget($summary, 'change');
         }
@@ -148,7 +176,7 @@ class TargetController extends Controller
      */
     public function edit($id)
     {
-        $data = Target::with('user', 'store', 'groupProduct')->where('id', $id)->first();
+        $data = Target::with('user', 'store')->where('id', $id)->first();
 
         return response()->json($data);
     }
@@ -165,24 +193,42 @@ class TargetController extends Controller
         $this->validate($request, [
             'user_id' => 'required',
             'store_id' => 'required',
-            'groupproduct_id' => 'required',
-            'type' => 'required',
-            'target' => 'required|numeric'
+            'sell_type' => 'required',
+            'target_da' => 'numeric',
+            'target_pf_da' => 'numeric',
+            'target_pc' => 'numeric',
+            'target_pf_pc' => 'numeric',
+            'target_mcc' => 'numeric',
+            'target_pf_mcc' => 'numeric',
             ]);
 
         $target = Target::find($id);
 
-        $targetOld = $target->target;
+        $targetOldDa = $target->first()->target_da;
+        $targetOldPfDa = $target->first()->target_pf_da;
+        $targetOldPc = $target->first()->target_pc;
+        $targetOldPfPc = $target->first()->target_pf_pc;
+        $targetOldMcc = $target->first()->target_mcc;
+        $targetOldPfMcc = $target->first()->target_pf_mcc;
 
         $target->update($request->all());
 
         /* Summary Target Add and/or Change */
         $summary['user_id'] = $target->user_id;
         $summary['store_id'] = $target->store_id;
-        $summary['groupproduct_id'] = $target->groupproduct_id;
-        $summary['targetOld'] = $targetOld;
-        $summary['target'] = $target->target;
-        $summary['type'] = $target->type;
+        $summary['targetOldDa'] = $targetOldDa;
+        $summary['targetOldPfDa'] = $targetOldPfDa;
+        $summary['targetOldPc'] = $targetOldPc;
+        $summary['targetOldPfPc'] = $targetOldPfPc;
+        $summary['targetOldMcc'] = $targetOldMcc;
+        $summary['targetOldPfMcc'] = $targetOldPfMcc;
+        $summary['target_da'] = $target->target_da;
+        $summary['target_pf_da'] = $target->target_pf_da;
+        $summary['target_pc'] = $target->target_pc;
+        $summary['target_pf_pc'] = $target->target_pf_pc;
+        $summary['target_mcc'] = $target->target_mcc;
+        $summary['target_pf_mcc'] = $target->target_pf_mcc;
+        $summary['sell_type'] = $target->sell_type;
 
         $this->changeTarget($summary, 'change');
 
@@ -203,16 +249,20 @@ class TargetController extends Controller
         /* Summary Target Delete */
         $summary['user_id'] = $target->user_id;
         $summary['store_id'] = $target->store_id;
-        $summary['groupproduct_id'] = $target->groupproduct_id;
-        $summary['target'] = $target->target;
-        $summary['type'] = $target->type;
+        $summary['target_da'] = $target->target_da;
+        $summary['target_pf_da'] = $target->target_pf_da;
+        $summary['target_pc'] = $target->target_pc;
+        $summary['target_pf_pc'] = $target->target_pf_pc;
+        $summary['target_mcc'] = $target->target_mcc;
+        $summary['target_pf_mcc'] = $target->target_pf_mcc;
+        $summary['sell_type'] = $target->sell_type;
 
         $this->changeTarget($summary, 'delete');
 
-        $target->delete();
-
         /* Chage promoter title from Hybrid to One Dedicate */
-        $this->changePromoterTitle($summary['user_id'], $summary['store_id']);
+        $this->changePromoterTitle($summary['user_id'], $summary['store_id'], $summary['sell_type']);
+
+        $target->delete();
 
         return response()->json($id);
     }

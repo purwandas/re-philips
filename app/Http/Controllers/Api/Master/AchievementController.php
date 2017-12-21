@@ -23,7 +23,7 @@ class AchievementController extends Controller
 {
 
     // Default summarize for total achievement
-    public function achievement($id){
+    public function achievement($id, $param){
 
         $totalTarget = 0;
         $totalActual = 0;
@@ -50,7 +50,11 @@ class AchievementController extends Controller
         $totalTargetW5 = 0;
         $totalActualW5 = 0;
 
-        $data = SummaryTargetActual::where('user_id', $id)->get();
+        $data = SummaryTargetActual::where('user_id', $id)->where('sell_type', 'Sell In')->get();
+
+        if($param == 2){
+            $data = SummaryTargetActual::where('user_id', $id)->where('sell_type', 'Sell Out')->get();
+        }
 
         foreach ($data as $detail){
             $totalTarget += $detail['target_da'];
@@ -121,68 +125,68 @@ class AchievementController extends Controller
 
     }
 
-    public function getAchievement(){
+    public function getAchievement($param){
 
         $user = JWTAuth::parseToken()->authenticate();
 
         return response()->json([
-            'target' => $this->achievement($user->id)[0],
-            'actual' => $this->achievement($user->id)[1],
-            'target_da' => $this->achievement($user->id)[2],
-            'actual_da' => $this->achievement($user->id)[3],
-            'target_pc' => $this->achievement($user->id)[4],
-            'actual_pc' => $this->achievement($user->id)[5],
-            'target_mcc' => $this->achievement($user->id)[6],
-            'actual_mcc' => $this->achievement($user->id)[7],
-            'target_pf_da' => $this->achievement($user->id)[8],
-            'actual_pf_da' => $this->achievement($user->id)[9],
-            'target_pf_pc' => $this->achievement($user->id)[10],
-            'actual_pf_pc' => $this->achievement($user->id)[11],
-            'target_pf_mcc' => $this->achievement($user->id)[12],
-            'actual_pf_mcc' => $this->achievement($user->id)[13],
-            'target_week1' => $this->achievement($user->id)[14],
-            'actual_week1' => $this->achievement($user->id)[15],
-            'target_week2' => $this->achievement($user->id)[16],
-            'actual_week2' => $this->achievement($user->id)[17],
-            'target_week3' => $this->achievement($user->id)[18],
-            'actual_week3' => $this->achievement($user->id)[19],
-            'target_week4' => $this->achievement($user->id)[20],
-            'actual_week4' => $this->achievement($user->id)[21],
-            'target_week5' => $this->achievement($user->id)[22],
-            'actual_week5' => $this->achievement($user->id)[23],
+            'target' => $this->achievement($user->id, $param)[0],
+            'actual' => $this->achievement($user->id, $param)[1],
+            'target_da' => $this->achievement($user->id, $param)[2],
+            'actual_da' => $this->achievement($user->id, $param)[3],
+            'target_pc' => $this->achievement($user->id, $param)[4],
+            'actual_pc' => $this->achievement($user->id, $param)[5],
+            'target_mcc' => $this->achievement($user->id, $param)[6],
+            'actual_mcc' => $this->achievement($user->id, $param)[7],
+            'target_pf_da' => $this->achievement($user->id, $param)[8],
+            'actual_pf_da' => $this->achievement($user->id, $param)[9],
+            'target_pf_pc' => $this->achievement($user->id, $param)[10],
+            'actual_pf_pc' => $this->achievement($user->id, $param)[11],
+            'target_pf_mcc' => $this->achievement($user->id, $param)[12],
+            'actual_pf_mcc' => $this->achievement($user->id, $param)[13],
+            'target_week1' => $this->achievement($user->id, $param)[14],
+            'actual_week1' => $this->achievement($user->id, $param)[15],
+            'target_week2' => $this->achievement($user->id, $param)[16],
+            'actual_week2' => $this->achievement($user->id, $param)[17],
+            'target_week3' => $this->achievement($user->id, $param)[18],
+            'actual_week3' => $this->achievement($user->id, $param)[19],
+            'target_week4' => $this->achievement($user->id, $param)[20],
+            'actual_week4' => $this->achievement($user->id, $param)[21],
+            'target_week5' => $this->achievement($user->id, $param)[22],
+            'actual_week5' => $this->achievement($user->id, $param)[23],
             'working_days' => $this->getTotalHK($user->id)
         ]);
     }
 
-    public function getAchievementWithParam($id){
+    public function getAchievementWithParam($param, $id){
 
         $user = User::where('id', $id)->first();
 
         return response()->json([
-            'target' => $this->achievement($user->id)[0],
-            'actual' => $this->achievement($user->id)[1],
-            'target_da' => $this->achievement($user->id)[2],
-            'actual_da' => $this->achievement($user->id)[3],
-            'target_pc' => $this->achievement($user->id)[4],
-            'actual_pc' => $this->achievement($user->id)[5],
-            'target_mcc' => $this->achievement($user->id)[6],
-            'actual_mcc' => $this->achievement($user->id)[7],
-            'target_pf_da' => $this->achievement($user->id)[8],
-            'actual_pf_da' => $this->achievement($user->id)[9],
-            'target_pf_pc' => $this->achievement($user->id)[10],
-            'actual_pf_pc' => $this->achievement($user->id)[11],
-            'target_pf_mcc' => $this->achievement($user->id)[12],
-            'actual_pf_mcc' => $this->achievement($user->id)[13],
-            'target_week1' => $this->achievement($user->id)[14],
-            'actual_week1' => $this->achievement($user->id)[15],
-            'target_week2' => $this->achievement($user->id)[16],
-            'actual_week2' => $this->achievement($user->id)[17],
-            'target_week3' => $this->achievement($user->id)[18],
-            'actual_week3' => $this->achievement($user->id)[19],
-            'target_week4' => $this->achievement($user->id)[20],
-            'actual_week4' => $this->achievement($user->id)[21],
-            'target_week5' => $this->achievement($user->id)[22],
-            'actual_week5' => $this->achievement($user->id)[23],
+            'target' => $this->achievement($user->id, $param)[0],
+            'actual' => $this->achievement($user->id, $param)[1],
+            'target_da' => $this->achievement($user->id, $param)[2],
+            'actual_da' => $this->achievement($user->id, $param)[3],
+            'target_pc' => $this->achievement($user->id, $param)[4],
+            'actual_pc' => $this->achievement($user->id, $param)[5],
+            'target_mcc' => $this->achievement($user->id, $param)[6],
+            'actual_mcc' => $this->achievement($user->id, $param)[7],
+            'target_pf_da' => $this->achievement($user->id, $param)[8],
+            'actual_pf_da' => $this->achievement($user->id, $param)[9],
+            'target_pf_pc' => $this->achievement($user->id, $param)[10],
+            'actual_pf_pc' => $this->achievement($user->id, $param)[11],
+            'target_pf_mcc' => $this->achievement($user->id, $param)[12],
+            'actual_pf_mcc' => $this->achievement($user->id, $param)[13],
+            'target_week1' => $this->achievement($user->id, $param)[14],
+            'actual_week1' => $this->achievement($user->id, $param)[15],
+            'target_week2' => $this->achievement($user->id, $param)[16],
+            'actual_week2' => $this->achievement($user->id, $param)[17],
+            'target_week3' => $this->achievement($user->id, $param)[18],
+            'actual_week3' => $this->achievement($user->id, $param)[19],
+            'target_week4' => $this->achievement($user->id, $param)[20],
+            'actual_week4' => $this->achievement($user->id, $param)[21],
+            'target_week5' => $this->achievement($user->id, $param)[22],
+            'actual_week5' => $this->achievement($user->id, $param)[23],
             'working_days' => $this->getTotalHK($user->id)
         ]);
     }
@@ -205,7 +209,7 @@ class AchievementController extends Controller
 
     }
 
-    public function getAchievementForSupervisor(){
+    public function getAchievementForSupervisor($param){
 
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -215,15 +219,15 @@ class AchievementController extends Controller
 
         foreach($promoters as $promoter){
 
-            $promoter['target'] =  $this->achievement($promoter['id'])[0];
-            $promoter['actual'] =  $this->achievement($promoter['id'])[1];
+            $promoter['target'] =  $this->achievement($promoter['id'], $param)[0];
+            $promoter['actual'] =  $this->achievement($promoter['id'], $param)[1];
 
         }
 
         return response()->json($promoters);
     }
 
-    public function getAchievementForSupervisorWithParam($id){
+    public function getAchievementForSupervisorWithParam($param, $id){
 
         $user = User::where('id', $id)->first();
 
@@ -233,15 +237,15 @@ class AchievementController extends Controller
 
         foreach($promoters as $promoter){
 
-            $promoter['target'] =  $this->achievement($promoter['id'])[0];
-            $promoter['actual'] =  $this->achievement($promoter['id'])[1];
+            $promoter['target'] =  $this->achievement($promoter['id'], $param)[0];
+            $promoter['actual'] =  $this->achievement($promoter['id'], $param)[1];
 
         }
 
         return response()->json($promoters);
     }
 
-    public function getSupervisorAchievement($param){
+    public function getSupervisorAchievement($param, $sell_param){
 
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -262,7 +266,12 @@ class AchievementController extends Controller
 
                 foreach ($stores as $data) {
 
-                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->first();
+                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->where('sell_type', 'Sell In')->first();
+
+                    if($sell_param == 2){
+                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->where('sell_type', 'Sell Out')->first();
+                    }
+
                     if($summary){
                         $target += $summary->sum_target_store;
                         $actual += $summary->sum_actual_store;
@@ -299,7 +308,12 @@ class AchievementController extends Controller
 
                 foreach ($stores as $data) {
 
-                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->first();
+                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->where('sell_type', 'Sell In')->first();
+
+                    if($sell_param == 2){
+                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->where('sell_type', 'Sell Out')->first();
+                    }
+
                     if($summary){
                         $target += $summary->sum_target_store;
                         $actual += $summary->sum_actual_store;
@@ -336,7 +350,12 @@ class AchievementController extends Controller
 
                 foreach ($stores as $data) {
 
-                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->first();
+                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->where('sell_type', 'Sell In')->first();
+
+                    if($sell_param == 2){
+                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])->where('sell_type', 'Sell Out')->first();
+                    }
+
                     if($summary){
                         $target += $summary->sum_target_store;
                         $actual += $summary->sum_actual_store;
@@ -404,7 +423,7 @@ class AchievementController extends Controller
         return $result;
     }
 
-    public function getTotalAchievementSupervisor()
+    public function getTotalAchievementSupervisor($param)
     {
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -416,7 +435,11 @@ class AchievementController extends Controller
 
         foreach ($store as $data) {
 
-            $summary = SummaryTargetActual::where('storeId', $data['id'])->first();
+            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell In')->first();
+
+            if($param == 2){
+                $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell Out')->first();
+            }
 
             if($summary) {
                 $totalTarget += $summary->sum_target_store;
@@ -427,7 +450,7 @@ class AchievementController extends Controller
         return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
     }
 
-    public function getTotalAchievementArea()
+    public function getTotalAchievementArea($param)
     {
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -439,7 +462,11 @@ class AchievementController extends Controller
 
         foreach ($area as $data) {
 
-            $summary = SummaryTargetActual::where('area_id', $data['id'])->first();
+            $summary = SummaryTargetActual::where('area_id', $data['id'])->where('sell_type', 'Sell In')->first();
+
+            if($param == 2){
+                    $summary = SummaryTargetActual::where('area_id', $data['id'])->where('sell_type', 'Sell Out')->first();
+            }
 
             if($summary) {
                 $totalTarget += $summary->sum_target_area;
@@ -450,7 +477,7 @@ class AchievementController extends Controller
         return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
     }
 
-    public function getTotalAchievementRegion()
+    public function getTotalAchievementRegion($param)
     {
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -462,7 +489,11 @@ class AchievementController extends Controller
 
         foreach ($region as $data) {
 
-            $summary = SummaryTargetActual::where('region_id', $data['id'])->first();
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell In')->first();
+
+            if($param == 2){
+                $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell Out')->first();
+            }
 
             if($summary) {
                 $totalTarget += $summary->sum_target_region;
@@ -473,7 +504,7 @@ class AchievementController extends Controller
         return response()->json(['total_target' => $totalTarget, 'total_actual' => $totalActual]);
     }
 
-    public function getTotalAchievementNational()
+    public function getTotalAchievementNational($param)
     {
         $region = Region::whereIn('id', [1, 2, 3, 4])->get();
 
@@ -482,7 +513,11 @@ class AchievementController extends Controller
 
         foreach ($region as $data) {
 
-            $summary = SummaryTargetActual::where('region_id', $data['id'])->first();
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell In')->first();
+
+            if($param == 2){
+                $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell Out')->first();
+            }
 
             if($summary) {
                 $totalTarget += $summary->sum_target_region;
