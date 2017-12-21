@@ -175,7 +175,7 @@ class QuizController extends Controller
         }
 
         $request->merge(array('target'=> $allTarget));
-        
+
         $quiz = Quiz::find($id);
     	$quiz->update($request->all());        
 

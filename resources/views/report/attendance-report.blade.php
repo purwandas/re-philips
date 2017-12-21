@@ -99,7 +99,7 @@
                                 <th> NIK </th>
                                 <th> Name </th>
                                 <th> Total HK </th>
-                                <th> Action </th>
+                                <th> Attendance Detail </th>
                             </tr>
                             </thead>
                         </table>
@@ -110,6 +110,7 @@
 
             </div>
             <!-- END EXAMPLE TABLE PORTLET-->
+            @include('partial.util.attendance-detail-modal')
         </div>
     </div>
 @endsection
@@ -120,6 +121,9 @@
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
+    <!-- BEGIN TEXT MODAL SCRIPTS -->
+    <script src="{{ asset('js/text-modal/popup.js') }}" type="text/javascript"></script>
+    <!-- END TEXT MODAL SCRIPTS -->
 
     <script>
         /*
@@ -134,7 +138,7 @@
                             {data: 'user_nik', name: 'user_nik'},
                             {data: 'user_name', name: 'user_name'},
                             {data: 'total_hk', name: 'total_hk'},
-                            {data: 'action', name: 'action'},
+                            {data: 'attendance_details', name: 'attendance_details'},
                             ];
 
         var exportButton = '#export';
@@ -152,18 +156,27 @@
             });
 
             // Set data for Data Table
-            {{--var table = $('#AttendanceReport').dataTable({--}}
-                {{--"processing": true,--}}
-                {{--"serverSide": true,--}}
-                {{--"ajax": {--}}
-                    {{--url: "{{ route('datatable.attendancereport') }}",--}}
-                    {{--type: 'POST',--}}
-                {{--},--}}
-                {{--"rowId": "id",--}}
-                {{--"columns": tableColumns,--}}
-                {{--"columnDefs": columnDefs,--}}
-                {{--"order": order,--}}
-            {{--});--}}
+            // {{--var table = $('#AttendanceReport').dataTable({--}}
+            //     {{--"scrollY":        "300px", --}}
+            //     {{--"scrollX":        true, --}}
+            //     {{--"scrollCollapse": true, --}}
+            //     {{--"paging":         false, --}}
+            //     {{--"fixedColumns":   { --}}
+            //         {{--"leftColumns": "1", --}}
+            //         // {{--"rightColumns": 1 --}}
+            //     {{-- }, --}}
+            //     {{--"processing": true,--}}
+            //     {{--"serverSide": true,--}}
+            //     {{--"ajax": {--}}
+            //         {{--url: "{{ route('datatable.attendancereport') }}",--}}
+            //         {{--type: 'POST',--}}
+            //     {{--},--}}
+                
+            //     {{--"rowId": "id",--}}
+            //     {{--"columns": tableColumns,--}}
+            //     {{--"columnDefs": columnDefs,--}}
+            //     {{--"order": order,--}}
+            // {{--});--}}
 
             initSelect2();
             initDateTimePicker();
