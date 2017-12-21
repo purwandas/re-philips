@@ -39,6 +39,13 @@ class ReportTbatFilters extends QueryFilters
         });
     }
 
+    // Ordering by store destination
+    public function byStore2($value) {
+        return $this->builder->whereHas('tbat.store', function ($query) use ($value) {
+            return $query->where('stores.id',$value);
+        });
+    }
+    
     // Ordering by employee
     public function byEmployee($value) {
         return $this->builder->whereHas('tbat.user', function ($query) use ($value) {

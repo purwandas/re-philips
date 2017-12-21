@@ -95,6 +95,24 @@ class QuizController extends Controller
         // Date
         $request['date'] = Carbon::now();
 
+        $allTarget = '';
+        $counTarget=0;
+
+        foreach ($request['target'] as $key => $value) {
+            if ($counTarget == 0) {
+                $allTarget .= $value;
+                if ($value!='') {
+                    $counTarget++;
+                }
+            }else{
+                $allTarget .= ','.$value;
+            }            
+        }
+
+        $request->merge(array('target'=> $allTarget));
+
+        // return $request->all();
+
         // dd($request->all());
         $quiz = Quiz::create($request->all());
         
@@ -142,6 +160,22 @@ class QuizController extends Controller
             'target' => 'required',
             ]);  
 
+        $allTarget = '';
+        $counTarget=0;
+        
+        foreach ($request['target'] as $key => $value) {
+            if ($counTarget == 0) {
+                $allTarget .= $value;
+                if ($value!='') {
+                    $counTarget++;
+                }
+            }else{
+                $allTarget .= ','.$value;
+            }            
+        }
+
+        $request->merge(array('target'=> $allTarget));
+        
         $quiz = Quiz::find($id);
     	$quiz->update($request->all());        
 

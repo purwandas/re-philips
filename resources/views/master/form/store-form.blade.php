@@ -101,7 +101,7 @@
 				          </div>
 				        </div>
 
-				        <div class="form-group">
+				        <div class="form-group" id="store_name_1_div">
 				          <label class="col-sm-2 control-label">Store Name 1</label>
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
@@ -111,7 +111,7 @@
 				          </div>
 				        </div>
 
-				        <div class="form-group">
+				        <div class="form-group" id="store_name_2_div">
 				          <label class="col-sm-2 control-label">Store Name 2</label>
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
@@ -140,143 +140,124 @@
 				          </div>
 				        </div>			
 
-				        <div class="caption padding-caption">
-                        	<span class="caption-subject font-dark bold uppercase">Longitude & Latitude</span>
-                        	<hr>
-                        </div>
+				        <div id="latitude_longitude_div">
+					        <div class="caption padding-caption">
+	                        	<span class="caption-subject font-dark bold uppercase">Longitude & Latitude</span>
+	                        	<hr>
+	                        </div>
 
-                        <div class="form-group">
-				          <label class="col-sm-2 control-label">Longitude</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<input type="text" id="longitude" name="longitude" class="form-control" value="{{ @$data->longitude }}" disabled />
-				            </div>
-				          </div>
+	                        <div class="form-group">
+					          <label class="col-sm-2 control-label">Longitude</label>
+					          <div class="col-sm-9">
+					          	<div class="input-icon right">
+					          		<i class="fa"></i>
+					            	<input type="text" id="longitude" name="longitude" class="form-control" value="{{ @$data->longitude }}" disabled />
+					            </div>
+					          </div>
+					        </div>
+
+					        <div class="form-group">
+					          <label class="col-sm-2 control-label">Latitude</label>
+					          <div class="col-sm-9">
+					          	<div class="input-icon right">
+					          		<i class="fa"></i>
+					            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->latitude }}" disabled />
+					            </div>
+					          </div>
+					        </div>
+
+							<div class="form-group">
+					          <label class="col-sm-2 control-label">Address</label>
+					          <div class="col-sm-9">
+					          	<div class="input-icon right">
+					          		<i class="fa"></i>
+					            	<input type="text" id="address" name="address" class="form-control" value="{{ @$data->address }}" disabled />
+					            </div>
+					          </div>
+					        </div>
 				        </div>
 
-				        <div class="form-group">
-				          <label class="col-sm-2 control-label">Latitude</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->latitude }}" disabled />
-				            </div>
-				          </div>
-				        </div>
+				        <div id="area_div">
+					        <div class="caption padding-caption">
+	                        	<span class="caption-subject font-dark bold uppercase">Distributor, Channel, District (Area)</span>
+	                        	<hr>
+	                        </div>
 
-						<div class="form-group">
-				          <label class="col-sm-2 control-label">Address</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->address }}" disabled />
-				            </div>
-				          </div>
-				        </div>
+							<div class="form-group">
+					          <label class="col-sm-2 control-label">Classification</label>
+					          <div class="col-sm-9">
 
-				        <div class="caption padding-caption">
-                        	<span class="caption-subject font-dark bold uppercase">Distributor, Channel, District (Area)</span>
-                        	<hr>
-                        </div>
+					          <div class="input-group" style="width: 100%;">
 
-						<div class="form-group">
-				          <label class="col-sm-2 control-label">Classification</label>
-				          <div class="col-sm-9">
+	                                <select class="select2select" name="classification" id="classification" required>
+										<option value="New Store" {{ (@$data->role == 'New Store') ? "selected" : "" }}>New Store</option>
+										<option value="Gold" {{ (@$data->role == 'Gold') ? "selected" : "" }}>Gold</option>
+										<option value="Platinum" {{ (@$data->role == 'Platinum') ? "selected" : "" }}>Platinum</option>
+										<option value="Silver" {{ (@$data->role == 'Silver') ? "selected" : "" }}>Silver</option>
+										<option value="Don`t have any classification" {{ (@$data->role == 'Don`t have any classification') ? "selected" : "" }}>Don`t have any classification</option>
+	                                </select>
 
-				          <div class="input-group" style="width: 100%;">
+	                                <span class="input-group-addon display-hide">
+	                                	<i class="fa"></i>
+	                                </span>
 
-                                <select class="select2select" name="classification" id="classification" required>
-									<option value="New Store" {{ (@$data->role == 'New Store') ? "selected" : "" }}>New Store</option>
-									<option value="Gold" {{ (@$data->role == 'Gold') ? "selected" : "" }}>Gold</option>
-									<option value="Platinum" {{ (@$data->role == 'Platinum') ? "selected" : "" }}>Platinum</option>
-									<option value="Silver" {{ (@$data->role == 'Silver') ? "selected" : "" }}>Silver</option>
-									<option value="Don`t have any classification" {{ (@$data->role == 'Don`t have any classification') ? "selected" : "" }}>Don`t have any classification</option>
-                                </select>
+	              				</div>
 
-                                <span class="input-group-addon display-hide">
-                                	<i class="fa"></i>
-                                </span>
+					          </div>
+					        </div>
 
-              				</div>
+							<div class="form-group">
+							  <label class="col-sm-2 control-label">Distributor</label>
+							  <div class="col-sm-9">
 
-				          </div>
-				        </div>
+							  <div class="input-group" style="width: 100%;">
 
-						<div class="form-group">
-						  <label class="col-sm-2 control-label">Distributor</label>
-						  <div class="col-sm-9">
+									<select class="select2select" name="distributor_ids[]" id="distributors" multiple="multiple" required></select>
 
-						  <div class="input-group" style="width: 100%;">
+									<span class="input-group-addon display-hide">
+										<i class="fa"></i>
+									</span>
 
-								<select class="select2select" name="distributor_ids[]" id="distributors" multiple="multiple" required="required"></select>
+								</div>
 
-								<span class="input-group-addon display-hide">
-									<i class="fa"></i>
-								</span>
-
+							  </div>
 							</div>
 
-						  </div>
-						</div>
+	                        <div class="form-group">
+	                          <label class="col-sm-2 control-label">Sub Channel</label>
+	                          <div class="col-sm-9">
 
-                        <div class="form-group">
-                          <label class="col-sm-2 control-label">Sub Channel</label>
-                          <div class="col-sm-9">
+	                          <div class="input-group" style="width: 100%;">
+	     
+	                                <select class="select2select" name="subchannel_id" id="subchannel" required></select>
+	                                
+	                                <span class="input-group-addon display-hide">
+	                                    <i class="fa"></i>
+	                                </span>
 
-                          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="subchannel_id" id="subchannel" required></select>
-                                
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
+	                            </div>
+	                            
+	                          </div>
+	                        </div>
 
-                            </div>
-                            
-                          </div>
-                        </div>
+	                        <div class="form-group">
+	                          <label class="col-sm-2 control-label">District</label>
+	                          <div class="col-sm-9">
 
-                        <div class="form-group">
-                          <label class="col-sm-2 control-label">District</label>
-                          <div class="col-sm-9">
+	                          <div class="input-group" style="width: 100%;">
+	     
+	                                <select class="select2select" name="district_id" id="district" required></select>
+	                                
+	                                <span class="input-group-addon display-hide">
+	                                    <i class="fa"></i>
+	                                </span>
 
-                          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="district_id" id="district" required></select>
-                                
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
+	                            </div>
+	                            
+	                          </div>
+	                        </div>
+	                    </div>
 
-                            </div>
-                            
-                          </div>
-                        </div>
-
-                        <!-- <div class="caption padding-caption">
-                        	<span class="caption-subject font-dark bold uppercase">Supervisor</span>
-                        	<hr>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="col-sm-2 control-label">Supervisor</label>
-                          <div class="col-sm-9">
-
-                          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="user_id" id="user"></select>
-                                
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
-
-                            </div>
-                            
-                          </div>
-                        </div>                         -->
-				        
-		        
 				        <div class="form-group" style="padding-top: 15pt;">
 				          <div class="col-sm-9 col-sm-offset-2">
 				            <button type="submit" class="btn btn-primary green">Save</button>
@@ -321,11 +302,11 @@
 	        });
 
 	        $('#old_store_id').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
-	            return filterData('name', params.term);
+	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.store_id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
 	                })
 	            }
 	        }));
@@ -414,10 +395,34 @@
 		$('input[type=radio][name=store_status]').change(function() {
 	        if (this.value == 'old') {
 	            $('#new_store').addClass('display-hide');
+	            $('#store_name_1_div').addClass('display-hide');
+	            $('#store_name_2_div').addClass('display-hide');
+	            $('#latitude_longitude_div').addClass('display-hide');
+	            $('#area_div').addClass('display-hide');
+	            
+	            $('#store_name_1').val('null');
+	            $('#dedicate').prop('required',false);
+	            $('#classification').prop('required',false);
+	            $('#distributors').prop('required',false);
+	            $("#subchannel").empty().append('<option value="id">- select Sub Channel -</option>').val('id').trigger('change');
+	            $("#district").empty().append('<option value="id">- select District -</option>').val('id').trigger('change');
+
+
 	            $('#old_store').removeClass('display-hide');
 	        }
 	        else if (this.value == 'new') {
 	            $('#old_store').addClass('display-hide');
+
+	            $('#store_name_1_div').removeClass('display-hide');
+	            $('#store_name_2_div').removeClass('display-hide');
+	            $('#latitude_longitude_div').removeClass('display-hide');
+	            $('#area_div').removeClass('display-hide');
+	            
+	            $('#store_name_1').prop('aria-required',true);
+	            $('#dedicate').prop('required',true);
+	            $('#classification').prop('required',true);
+	            $('#distributors').prop('required',true);
+
 	            $('#new_store').removeClass('display-hide');
 	        }
 	    });
