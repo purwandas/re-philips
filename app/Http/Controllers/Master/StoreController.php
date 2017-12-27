@@ -15,7 +15,7 @@ use App\EmployeeStore;
 use App\User;
 
 class StoreController extends Controller
-{    
+{
     use StringTrait;
     /**
      * Display a listing of the resource.
@@ -65,8 +65,8 @@ class StoreController extends Controller
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(StoreFilters $filters){        
-        $data = Store::filter($filters)->get();        
+    public function getDataWithFilters(StoreFilters $filters){
+        $data = Store::filter($filters)->get();
 
         return $data;
     }
@@ -86,10 +86,10 @@ class StoreController extends Controller
                 })
                 ->addColumn('action', function ($item) {
 
-                    return 
+                    return
                     "<a href='".url('store/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
-                    
+
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -147,7 +147,7 @@ class StoreController extends Controller
                 $subchannel_id = $value->subchannel_id;
                 $district_id = $value->district_id;
             }
-            
+
             // return response()->json($storeData);
             foreach ($dedicate as $key => $value) {
                 if ($value == $request->dedicate) { //redudant
@@ -227,7 +227,7 @@ class StoreController extends Controller
                 ]);
             }
         }
-        
+
         return response()->json(['url' => url('/store')]);
     }
 
@@ -269,12 +269,12 @@ class StoreController extends Controller
             // return $request->old_store_id;
             $storeData = Store::
             where('stores.store_id', $request->store_id)
-            ->where('stores.id', '!=', $request->id)
+            ->where('stores.id', '!=', $id)
             ->get();
             $count = 0;
             foreach ($storeData as $key => $value) {
                 $count = 1;
-                $dedicate[] = 
+                $dedicate[] =
                 $value->dedicate;
             }
             if ($count>0) {
@@ -351,7 +351,7 @@ class StoreController extends Controller
         }
 
         return response()->json(
-            ['url' => url('/store'), 'method' => $request->_method]); 
+            ['url' => url('/store'), 'method' => $request->_method]);
     }
 
     /**

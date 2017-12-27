@@ -32,6 +32,8 @@ use App\ProductFocuses;
 
 trait SummaryTrait {
 
+    use ActualTrait;
+
     public function changeSummary($data, $change){
 
         $this->changeSummarySellIn($data, $change);
@@ -97,6 +99,9 @@ trait SummaryTrait {
 
                 }
 
+                /* Reset Actual */
+                $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
+
             }
 
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
@@ -160,6 +165,9 @@ trait SummaryTrait {
                     ]);
                 }
 
+                /* Reset Actual */
+                $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
+
             }
 
         }
@@ -217,6 +225,9 @@ trait SummaryTrait {
                     }
 
                 }
+
+                /* Reset Actual */
+                $this->resetActual($summary->user_id, $summary->storeId, 'Sell Out');
 
             }
 
@@ -280,6 +291,9 @@ trait SummaryTrait {
                         'value_pf_ppe' => 0,
                     ]);
                 }
+
+                /* Reset Actual */
+                $this->resetActual($summary->user_id, $summary->storeId, 'Sell Out');
 
             }
 

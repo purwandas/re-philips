@@ -127,15 +127,17 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      * Sales Achievement Module(s)
      */
 
-    Route::get('/achievement', 'Api\Master\AchievementController@getAchievement');
-    Route::get('/achievement/{param}', 'Api\Master\AchievementController@getAchievementWithParam');
-    Route::get('/promoter-achievement', 'Api\Master\AchievementController@getAchievementForSupervisor');
-    Route::get('/promoter-achievement/{param}', 'Api\Master\AchievementController@getAchievementForSupervisorWithParam');
-    Route::get('/supervisor-achievement/{param}', 'Api\Master\AchievementController@getSupervisorAchievement');
-    Route::get('/achievement-by-supervisor', 'Api\Master\AchievementController@getTotalAchievementSupervisor');
-    Route::get('/achievement-by-area', 'Api\Master\AchievementController@getTotalAchievementArea');
-    Route::get('/achievement-by-region', 'Api\Master\AchievementController@getTotalAchievementRegion');
-    Route::get('/achievement-by-national', 'Api\Master\AchievementController@getTotalAchievementNational');
+    Route::get('/achievement/{param}', 'Api\Master\AchievementController@getAchievement');
+    Route::get('/achievement/{param}/{id}', 'Api\Master\AchievementController@getAchievementWithParam');
+    Route::get('/promoter-achievement/{param}', 'Api\Master\AchievementController@getAchievementForSupervisor');
+    Route::get('/promoter-achievement/{param}/{id}', 'Api\Master\AchievementController@getAchievementForSupervisorWithParam');
+    Route::get('/supervisor-achievement/{param}/{sell_param}', 'Api\Master\AchievementController@getSupervisorAchievement');
+    Route::get('/achievement-by-supervisor/{param}', 'Api\Master\AchievementController@getTotalAchievementSupervisor');
+    Route::get('/achievement-by-area/{param}', 'Api\Master\AchievementController@getTotalAchievementArea');
+    Route::get('/achievement-by-region/{param}', 'Api\Master\AchievementController@getTotalAchievementRegion');
+    Route::get('/achievement-by-national/{param}', 'Api\Master\AchievementController@getTotalAchievementNational');
+    Route::get('/achievement-by-store/{param}', 'Api\Master\AchievementController@getAchievementByStore');
+    Route::get('/achievement-by-store/{param}/{id}', 'Api\Master\AchievementController@getAchievementByStoreWithParam');
 
     /**
      * Promoter Feedback Module(s)
@@ -143,7 +145,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/promoter-feedback-list', 'Api\Master\FeedbackController@getListPromoterFeedback');
     Route::get('/promoter-feedback-list/{param}', 'Api\Master\FeedbackController@getListPromoterFeedbackWithParam');
-    Route::get('/category-feedback-list/{param}', 'Api\Master\FeedbackController@getListCategoryFeedback');
+    Route::post('/category-feedback-list/{param}', 'Api\Master\FeedbackController@getListCategoryFeedback');
     Route::get('/question-feedback-list/{param}', 'Api\Master\FeedbackController@getListQuestionFeedback');
     Route::post('/promoter-feedback-send', 'Api\Master\FeedbackController@feedbackSend');
 

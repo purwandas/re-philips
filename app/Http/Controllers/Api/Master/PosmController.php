@@ -328,6 +328,7 @@ class PosmController extends Controller
                                 'posmactivity_id' => $transaction->id,
                                 'posm_id' => $request->posm_id[$i],
                                 'quantity' => $request->quantity[$i],
+                                'photo' => $photo_url
                             ]);
 
                         }
