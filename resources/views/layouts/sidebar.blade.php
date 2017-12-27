@@ -187,7 +187,7 @@
             </a>
             </li>
 
-            <li class="nav-item {{ Request::is('feedbackCategory*') ? 'active open' : '' }} {{ Request::is('feedbackAnswer*') ? 'active open' : '' }} {{ Request::is('product') ? 'active open' : '' }}">
+            <li class="nav-item {{ Request::is('feedback*') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-commenting-o"></i>
                     <span class="title">Feedback</span>

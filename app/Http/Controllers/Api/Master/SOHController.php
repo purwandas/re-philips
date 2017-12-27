@@ -78,6 +78,7 @@ class SOHController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sohHeader->store_id)->first();
+                                $spvName = $store->user->name ?? '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -182,7 +183,7 @@ class SOHController extends Controller
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
                                     'role' => $user->role,
-                                    'spv_name' => $store->user->name,
+                                    'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
                                 ]);
@@ -225,6 +226,7 @@ class SOHController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
+                            $spvName = $store->user->name ?? '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -329,7 +331,7 @@ class SOHController extends Controller
                                 'value_pf_tr' => $value_pf_tr,
                                 'value_pf_ppe' => $value_pf_ppe,
                                 'role' => $user->role,
-                                'spv_name' => $store->user->name,
+                                'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
                             ]);

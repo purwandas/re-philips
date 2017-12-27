@@ -138,6 +138,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/existemailuser', ['uses'=>'UtilController@existEmailUser']);    
     Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
     Route::get('util/empstore/{id}', ['uses'=>'UtilController@getStoreForEmployee']);
+    Route::get('util/spvstore/{id}', ['uses'=>'UtilController@getStoreForSpvEmployee']);
     Route::get('util/storedist/{id}', ['uses'=>'UtilController@getDistributorForStore']);
     Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
     Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
@@ -146,7 +147,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     Route::get('util/user-online', ['uses'=>'UtilController@getUserOnline']);
     Route::get('util/get-store-id', ['uses'=>'UtilController@getStoreId']);
-
+    Route::get('util/attendancedetail/{id}', ['uses'=>'UtilController@getAttendanceDetail']);
 
     /**
      * Export
@@ -164,6 +165,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-maintenancerequest', ['uses'=>'Master\ExportController@exportMaintenanceRequest']);
     Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
     Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
+    Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
     
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 

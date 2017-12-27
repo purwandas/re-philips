@@ -80,6 +80,19 @@ class UserController extends Controller
     //     //     ->make(true);
 
         return Datatables::of($filter->get())
+                ->editColumn('role',function ($item) {
+                    $dedicate = '';
+                    $dmarea = DmArea::where('user_id', $item->id)->get();
+                    foreach ($dmarea as $key => $value) {
+                        $dedicate = $value->dedicate;
+                    }
+                    if ($item->role == 'DM') {
+                        return $item->role.' - '.$dedicate;
+                    }
+
+                    return $item->role;                    
+                    
+                })
                 ->addColumn('action', function ($item) {
 
                     return 
@@ -169,28 +182,45 @@ class UserController extends Controller
 
         $user = User::create($request->all());
 
-        /* Employee One Store */
-        if($request['store_id']){
-            EmployeeStore::create([
-                'user_id' => $user->id,
-                'store_id' => $request['store_id'],
-            ]);
-        }
+        /* Insert user relation */
+        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+            /* Employee One Store */
+            if($request['store_id']){
+                $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
+            }
 
-        /* Employee Multiple Store */
-        if($request['store_ids']){
-            foreach ($request['store_ids'] as $storeId) {
+            /* Employee Multiple Store */
+            if($request['store_ids']){
+                foreach ($request['store_ids'] as $storeId) {
+                    $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+                }
+            }
+        }else{
+            /* Employee One Store */
+            if($request['store_id']){
+                // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
                 EmployeeStore::create([
                     'user_id' => $user->id,
-                    'store_id' => $storeId,
+                    'store_id' => $request['store_id'],
                 ]);
+            }
+
+            /* Employee Multiple Store */
+            if($request['store_ids']){
+                foreach ($request['store_ids'] as $storeId) {
+                    // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+                    EmployeeStore::create([
+                        'user_id' => $user->id,
+                        'store_id' => $storeId,
+                    ]);
+                }
             }
         }
 
         // If DM or Trainer
         if(isset($request->area)){
             if($request['role'] == 'DM') {
-                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
             }elseif($request['role'] == 'Trainer') {
                 $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
             }
@@ -364,10 +394,25 @@ class UserController extends Controller
         }
 
         /* Delete if any relation exist in employee store */
-        $empStore = EmployeeStore::where('user_id', $user->id);
-        if($empStore->count() > 0){
-            $empStore->delete();
+        // $empStore = EmployeeStore::where('user_id', $user->id);
+        // if($empStore->count() > 0){
+        //     $empStore->delete();
+        // }
+
+        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+            /* SPV Multiple Store */
+            if($request['store_ids']){
+                foreach ($request['store_ids'] as $storeId) {
+                    $store = Store::find($storeId)->update(['user_id'=>null]);
+                }
+            }
+        }else{
+            $empStore = Store::where('user_id', $user->id);
+            if($empStore->count() > 0){
+                $empStore->update(['user_id'=>null]);
+            }
         }
+        
 
         // DM AREA 
         $dmArea = DmArea::where('user_id', $user->id);
@@ -427,21 +472,39 @@ class UserController extends Controller
 
         $user->update($requestNew->all()); 
 
-        /* Employee One Store */
-        if($request['store_id']){
-            EmployeeStore::create([
-                'user_id' => $user->id,
-                'store_id' => $request['store_id'],
-            ]);
-        }
+        /* Insert user relation */
+        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+            /* Employee One Store */
+            if($request['store_id']){
+                $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
+            }
 
-        /* Employee Multiple Store */
-        if($request['store_ids']){
-            foreach ($request['store_ids'] as $storeId) {
+            /* Employee Multiple Store */
+            if($request['store_ids']){
+                foreach ($request['store_ids'] as $storeId) {
+                    $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+                }
+            }
+        }else{
+            /* Employee One Store */
+            if($request['store_id']){
+                // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
                 EmployeeStore::create([
                     'user_id' => $user->id,
-                    'store_id' => $storeId,
+                    'store_id' => $request['store_id'],
                 ]);
+            }
+
+
+            /* Employee Multiple Store */
+            if($request['store_ids']){
+                foreach ($request['store_ids'] as $storeId) {
+                    // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+                    EmployeeStore::create([
+                        'user_id' => $user->id,
+                        'store_id' => $storeId,
+                    ]);
+                }
             }
         }
 
@@ -451,8 +514,9 @@ class UserController extends Controller
                 $dmArea = DmArea::where('user_id', $user->id);
                 if($dmArea->count() > 0){
                     $dmArea->first()->update(['area_id' => $request->area]);
+                    $dmArea->first()->update(['dedicate' => $request->dedicate]);
                 }else{
-                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
                 }
             }elseif($request['role'] == 'Trainer') {
                 $trainerArea = TrainerArea::where('user_id', $user->id);

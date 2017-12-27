@@ -167,7 +167,6 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
-
         
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
@@ -222,6 +221,13 @@ class ReportController extends Controller
                 $filter = $data->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -260,6 +266,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -286,7 +293,6 @@ class ReportController extends Controller
 
             }
 
-//            $historyData->where('nik', 787);
             $filter = $historyData;
 
             /* If filter */
@@ -332,8 +338,6 @@ class ReportController extends Controller
             }
 
 
-
-//            return $historyData;
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -442,6 +446,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -619,6 +624,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -791,6 +797,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -975,6 +982,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['store_destination_name_1'] = $detail->store_destination_name_1;
                         $collection['store_destination_name_2'] = $detail->store_destination_name_2;
                         $collection['store_destination_id'] = $detail->store_destination_id;
@@ -1154,6 +1162,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -1328,6 +1337,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -1498,6 +1508,7 @@ class ReportController extends Controller
                         $collection['district'] = $detail->district;
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['store_id'] = $detail->store_id;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
@@ -1675,6 +1686,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
+                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -1764,7 +1776,7 @@ class ReportController extends Controller
                     ->join('stores', 'maintenance_requests.store_id', '=', 'stores.id')
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('users', 'maintenance_requests.user_id', '=', 'users.id')
-                    ->select('maintenance_requests.*', 'maintenance_requests.photo as photo2', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.district_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
+                    ->select('maintenance_requests.*', 'maintenance_requests.photo as photo2', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.district_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name')
                     ->get();
 
             $filter = $data;
@@ -1864,7 +1876,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'competitor_activities.user_id', '=', 'users.id')
                     ->join('group_competitors', 'competitor_activities.groupcompetitor_id', '=', 'group_competitors.id')
-                    ->select('competitor_activities.*', 'competitor_activities.photo as photo2','regions.name as region_name', 'regions.id as region_id', 'areas.name as area_name', 'areas.id as area_id', 'districts.name as district_name', 'stores.district_id','stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'group_competitors.name as group_competitor')
+                    ->select('competitor_activities.*', 'competitor_activities.photo as photo2','regions.name as region_name', 'regions.id as region_id', 'areas.name as area_name', 'areas.id as area_id', 'districts.name as district_name', 'stores.district_id','stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'group_competitors.name as group_competitor')
                     ->get();
 
             $filter = $data;
@@ -1970,7 +1982,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'promo_activities.user_id', '=', 'users.id')
                     ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
-                    ->select('promo_activities.*', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
+                    ->select('promo_activities.*', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
                     ->get();
 
             $filter = $data;
@@ -2076,7 +2088,7 @@ class ReportController extends Controller
                     ->join('users', 'posm_activities.user_id', '=', 'users.id')
                     ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
                     ->join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
-                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'posms.name as posm_name', 'group_products.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
+                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'posms.name as posm_name', 'group_products.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
                     ->get();
 
             $filter = $data;
@@ -2182,8 +2194,8 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'attendances.user_id', '=', 'users.id')
                     ->groupBy('attendances.user_id')
-                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name',DB::raw('count(*) as total_hk'))
-                    ->where('attendances.status', '!=', 'Off')
+                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'users.nik as user_nik', 'users.role as user_role')//,DB::raw('count(*) as total_hk'))
+                    // ->where('attendances.status', '!=', 'Off')
                     ->get();
 
             $filter = $data;
@@ -2242,86 +2254,143 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->addColumn('action', function ($item) {
-
-                return 
-                "
-                <a href='".url('attendancereport/detail/'.$item->id)."' class='btn btn-sm btn-info'>
-                    <i class='fa fa-industry'> Detail</i>
-                </a>
-                ";
-                
-            })
-            ->addColumn('attendance_details', function ($item) {
+            ->addColumn('total_hk', function ($item) {
                 $month = Carbon::parse($item->date)->format('m');
                 $year = Carbon::parse($item->date)->format('Y');
                 $minDate = "$year-$month-01";
                 $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
                 $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
-                    $status = ['Alpha','Masuk','Sakit','Izin','Pending Sakit','Pending Izin','Off'];
-                    $warna = ['#34495e','#3498db','#f1c40f','#f1c40f','#2980b9','#f39c12','#c0392b'];
+                $maxDate = date('Y-m-d');
+
+                $dataD = Attendance::
+                        select(DB::raw('count(*) as total_hk'))
+                        ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.status', '!=', 'Sakit')
+                        ->where('attendances.status', '!=', 'Izin')
+                        ->where('attendances.status', '!=', 'Pending Sakit')
+                        ->where('attendances.status', '!=', 'Pending Izin')
+                        ->where('attendances.status', '!=', 'Alpha')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->get()->all();
+                $hk = 0;
+                foreach ($dataD as $key => $value) {
+                    $hk = $value->total_hk;
+                }
+
+                return "$hk";
+                
+            })
+            ->addColumn('attendance_details', function ($item) {
+                // return 'kampret';
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
+                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
+                // return $minDate.' / '.$maxDate;
 
                     /* Get data from attendanceDetails then convert them into colored table */
                     // return $item->user_id;
-                    $dataD = Attendance::
+                    $dataDetail = Attendance::
                         select('attendances.*')
                         ->where('attendances.date','>=',$minDate)
                         ->where('attendances.date','<=',$maxDate)
-                        ->where('attendances.id',$item->id)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
                         ->get()->all();
-                    foreach ($dataD as $key => $value) {
+                    foreach ($dataDetail as $key => $value) {
                         $statusAttendance[] = $value->status;
                     }
                     // return $statusAttendance;
-                    // GATAU ITU HARUSNYA GET KEMANA
                     $report = '<table><tr>';
 
                     /* Repeat as much as max day in month */
+                    
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
                     for ($i=1; $i <= $totalDay ; $i++) { 
+
+                        $index = 0;
                         $bgColor = $warna[0];
+                        $textColor = $text[0];
                         foreach ($status as $key => $value) {
-                            if (isset($statusAttendance[$i-1])) {
+                            // $index = $key;
+                            // if (isset($statusAttendance[$i-1])) {
                                 if ($value == $statusAttendance[$i-1]) {
                                     $bgColor = $warna[$key];
+                                    $textColor = $text[$key];
+                                    $index = $key;
                                     break;
                                 }
-                            }
+                            // }
                         }
 
                         $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateNow = explode('-', $dateNow);
                         $dateI = date("$year-$month-$i");
+                        $dateI = explode('-', $dateI);
 
-                        $kampret ='kosong';
-                        if ($dateI > $dateNow) {
-                            $kampret ='yup';
-                            $bgColor = $tomorrowColor;
+
+                        if ($dateI[2] > $dateNow[2]) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
                         }
 
                         if (!isset($bgColor)) {
-                            $bgColor="#7f8c8d";
+                            $bgColor="#34495e";
                         }
 
-                        $report .= "<td style='
-                            background-color: $bgColor
-                        '>";
+                        if ($index == 1) {
+                            $report .= "<td 
+                            class='col-md-12 text-center open-attendance-detail-modal btn btn-primary' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$item->id."'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }else{
+                            $report .= "<td 
+                            class='col-md-12 text-center'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }
                         
-
-
-                        
-                        $report .= "$kampret<td>";
+                        $report .= "<b>$i</b><br>".$status[$index]."<td>";
                     }
+
                     $report .= '</tr></table>';
                     return $report;
-                    return "
-                        <span class='active' style='
-                            background-color: $bgColor
-                        '>
-                            $item->status
-                        </span>";
                 })
-            ->rawColumns(['action','attendance_details'])
+            ->addColumn('attendance_detail_excell', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d');
+
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+
+                    /* Get data from attendanceDetails then convert them into colored table */
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+                        $statusAttendance = '';
+                    foreach ($dataDetail as $key => $value) {
+                        if ($key==0) {
+                            $statusAttendance .= $value->status;
+                        }else{
+                            $statusAttendance .= ','.$value->status;
+                        }
+                    }
+
+                    return $statusAttendance;
+                })
+            ->rawColumns(['attendance_details'])
             ->make(true);
 
     }
