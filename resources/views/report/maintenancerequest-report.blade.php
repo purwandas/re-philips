@@ -107,6 +107,7 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
+                                <th> Dedicate </th>
                                 <th> Category </th>
                                 <th> Channel </th>
                                 <th> Type </th>
@@ -151,6 +152,7 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
+                            {data: 'dedicate', name: 'dedicate'},
                             {data: 'category', name: 'category'},
                             {data: 'channel', name: 'channel'},
                             {data: 'type', name: 'type'},
