@@ -11,7 +11,8 @@ class MaintenanceRequest extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'region_id', 'area_id', 'store_id', 'category', 'channel', 'type', 'date', 'photo', 'report', 'month', 'year'
+        'user_id', 'region_id', 'area_id', 'store_id', 'category', 'channel', 'type', 'date', 'photo', 'report'
+        // , 'month', 'year'
     ];
 
     /**

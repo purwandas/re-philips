@@ -43,8 +43,8 @@ class MaintenanceRequestController extends Controller
                     'channel' => $content->channel,
                     'type' => $content->type,
                     'report' => $content->report,
-                    'month' => (integer)Carbon::now()->format('m'),
-                    'year' => (integer)Carbon::now()->format('Y'),
+                    // 'month' => (integer)Carbon::now()->format('m'),
+                    // 'year' => (integer)Carbon::now()->format('Y'),
                     'date' => Carbon::now(),
                     'photo' => $folderPath
                 ]);

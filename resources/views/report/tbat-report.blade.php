@@ -106,9 +106,11 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
+                                <th> Dedicate </th>
                                 <th> Store Destination Name 1 </th>
                                 <th> Store Destination Name 2 </th>
                                 <th> Store Destination ID </th>
+                                <th> Destination Dedicate </th>
                                 <th> NIK </th>
                                 <th> Promoter Name </th>
                                 <th> Date </th>
@@ -167,9 +169,11 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'store_id', name: 'store_id'},
+                            {data: 'dedicate', name: 'dedicate'},
                             {data: 'store_destination_name_1', name: 'store_destination_name_1'},
                             {data: 'store_destination_name_2', name: 'store_destination_name_2'},
                             {data: 'store_destination_id', name: 'store_destination_id'},
+                            {data: 'destination_dedicate', name: 'destination_dedicate'},
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
                             {data: 'date', name: 'date'},
