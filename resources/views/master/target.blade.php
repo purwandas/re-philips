@@ -202,8 +202,10 @@
         $('#target_pf_pc').val('0');
         $('#target_mcc').val('0');
         $('#target_pf_mcc').val('0');
+//        $('#sell_type').val('Sell In');
         select2Reset($("#promoter"));
         select2Reset($("#store"));
+        select2Reset($("#sell_type"));
 
         // Set action url form for add
         var postDataUrl = "{{ url('target') }}";
@@ -249,6 +251,7 @@
                     $('#target_pf_pc').val(data.target_pf_pc);
                     $('#target_mcc').val(data.target_mcc);
                     $('#target_pf_mcc').val(data.target_pf_mcc);
+                    setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
                     setSelect2IfPatchModal($("#promoter"), data.user_id, data.user.name);
                     setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")" + " - " + data.store.dedicate);
 

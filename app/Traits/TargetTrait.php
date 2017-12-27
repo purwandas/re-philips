@@ -2,24 +2,19 @@
 
 namespace App\Traits;
 
+use App\Attendance;
 use App\GroupProduct;
 use App\Reports\SummaryTargetActual;
 use App\Store;
 use App\TrainerArea;
 use App\User;
+use Carbon\Carbon;
 
 trait TargetTrait {
 
-    use PromoterTrait;
+    use ActualTrait;
 
-    public function changePromoterTitle($userId, $storeId, $sellType){
-
-        $target = SummaryTargetActual::where('user_id',$userId)->where('storeId', $storeId)->where('sell_type', $sellType)->first();
-        $target->update(['title_of_promoter' => $this->getPromoterTitle($userId, $storeId, $sellType)]);
-
-    }
-
-    public function changeTarget($data, $change){
+    public function setHeader($data){
 
         /* Check header exist or not, if doesn't, make it */
         $target = SummaryTargetActual::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
@@ -70,10 +65,136 @@ trait TargetTrait {
         }else{
 
             /* Override title of promoter */
-//            $target->update(['title_of_promoter' => $this->getPromoterTitle($user->id, $store->id)]);
             $this->changePromoterTitle($user->id, $store->id, $data['sell_type']);
 
         }
+
+        return $target;
+
+    }
+
+    public function changePromoterTitle($userId, $storeId, $sellType){
+
+        $target = SummaryTargetActual::where('user_id',$userId)->where('storeId', $storeId)->where('sell_type', $sellType)->first();
+        $target->update(['title_of_promoter' => $this->getPromoterTitle($userId, $storeId, $sellType)]);
+
+    }
+
+    public function changeWeekly($target, $total){
+
+        $attendance = Attendance::where('user_id', $target->user_id)
+                        ->whereMonth('attendances.date', '=', Carbon::now()->month)
+                        ->whereYear('attendances.date', '=', Carbon::now()->year)->get();
+//        $attendance = Attendance::where('user_id', $target)->get();
+
+        if($attendance){ // JIKA ADA DATA ABSENSI NYA
+
+            $hkWeek1 = 0;
+            $hkWeek2 = 0;
+            $hkWeek3 = 0;
+            $hkWeek4 = 0;
+            $hkWeek5 = 0;
+            $hkLimit = 0;
+
+            foreach ($attendance as $data){
+
+                $week = Carbon::parse($data['date'])->weekOfMonth;
+
+                if($week == 1){
+                    if($data['status'] != 'Off'){
+                        if($hkLimit < 26) {
+                            $hkWeek1 += 1;
+                            $hkLimit += 1;
+                        }
+                    }
+                }else if($week == 2){
+                    if($data['status'] != 'Off'){
+                        if($hkLimit < 26) {
+                            $hkWeek2 += 1;
+                            $hkLimit += 1;
+                        }
+                    }
+                }else if($week == 3){
+                    if($data['status'] != 'Off'){
+                        if($hkLimit < 26) {
+                            $hkWeek3 += 1;
+                            $hkLimit += 1;
+                        }
+                    }
+                }else if($week == 4){
+                    if($data['status'] != 'Off'){
+                        if($hkLimit < 26) {
+                            $hkWeek4 += 1;
+                            $hkLimit += 1;
+                        }
+                    }
+                }else if($week == 5){
+                    if($data['status'] != 'Off'){
+                        if($hkLimit < 26) {
+                            $hkWeek5 += 1;
+                            $hkLimit += 1;
+                        }
+                    }
+                }
+
+            }
+
+            /* DA */
+            $targetPerWeek1 = ($total['da']/26) * $hkWeek1;
+            $targetPerWeek2 = ($total['da']/26) * $hkWeek2;
+            $targetPerWeek3 = ($total['da']/26) * $hkWeek3;
+            $targetPerWeek4 = ($total['da']/26) * $hkWeek4;
+            $targetPerWeek5 = ($total['da']/26) * $hkWeek5;
+
+//            return $targetPerWeek1 . ' - ' . $targetPerWeek2 . ' - ' . $targetPerWeek3 . ' - ' . $targetPerWeek4 . ' - ' . $targetPerWeek5;
+
+            $target->update([
+                'target_da_w1' => $targetPerWeek1,
+                'target_da_w2' => $targetPerWeek2,
+                'target_da_w3' => $targetPerWeek3,
+                'target_da_w4' => $targetPerWeek4,
+                'target_da_w5' => $targetPerWeek5,
+            ]);
+
+            /* PC */
+            $targetPerWeek1 = ($total['pc']/26) * $hkWeek1;
+            $targetPerWeek2 = ($total['pc']/26) * $hkWeek2;
+            $targetPerWeek3 = ($total['pc']/26) * $hkWeek3;
+            $targetPerWeek4 = ($total['pc']/26) * $hkWeek4;
+            $targetPerWeek5 = ($total['pc']/26) * $hkWeek5;
+
+            $target->update([
+                'target_pc_w1' => $targetPerWeek1,
+                'target_pc_w2' => $targetPerWeek2,
+                'target_pc_w3' => $targetPerWeek3,
+                'target_pc_w4' => $targetPerWeek4,
+                'target_pc_w5' => $targetPerWeek5,
+            ]);
+
+            /* MCC */
+            $targetPerWeek1 = ($total['mcc']/26) * $hkWeek1;
+            $targetPerWeek2 = ($total['mcc']/26) * $hkWeek2;
+            $targetPerWeek3 = ($total['mcc']/26) * $hkWeek3;
+            $targetPerWeek4 = ($total['mcc']/26) * $hkWeek4;
+            $targetPerWeek5 = ($total['mcc']/26) * $hkWeek5;
+
+            $target->update([
+                'target_mcc_w1' => $targetPerWeek1,
+                'target_mcc_w2' => $targetPerWeek2,
+                'target_mcc_w3' => $targetPerWeek3,
+                'target_mcc_w4' => $targetPerWeek4,
+                'target_mcc_w5' => $targetPerWeek5,
+            ]);
+
+//            return $targetPerWeek1 . ' - ' . $targetPerWeek2 . ' - ' . $targetPerWeek3 . ' - ' . $targetPerWeek4 . ' - ' . $targetPerWeek5;
+
+        }
+
+    }
+
+    public function changeTarget($data, $change){
+
+        $target = $this->setHeader($data);
 
         /* Target Add and/or Sum */
         $targetAfter = SummaryTargetActual::where('id', $target->id)->first();
@@ -360,6 +481,16 @@ trait TargetTrait {
             }
 
         }
+
+        /* Create Weekly Target */
+        $total['da'] = $targetAfter->target_da;
+        $total['pc'] = $targetAfter->target_pc;
+        $total['mcc'] = $targetAfter->target_mcc;
+
+        $this->changeWeekly($targetAfter, $total);
+
+        /* Reset Actual */
+        $this->resetActual($data['user_id'], $data['store_id'], $data['sell_type']);
 //
 ////                if($change == 'change') {
 ////

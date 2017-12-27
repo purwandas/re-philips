@@ -15,6 +15,7 @@ use App\Reports\SummaryRetConsument;
 use App\Reports\SummaryRetDistributor;
 use App\Reports\SummaryFreeProduct;
 use App\Reports\SummaryTbat;
+use App\Traits\ActualTrait;
 use App\Traits\PromoterTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -40,7 +41,7 @@ use App\TrainerArea;
 
 class SalesController extends Controller
 {
-    use PromoterTrait;
+    use ActualTrait;
 
     public function store(Request $request, $param){
 
@@ -74,6 +75,8 @@ class SalesController extends Controller
 
                                 $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
 
+                                $value_old = $summary->value;
+
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
                                 ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
@@ -87,6 +90,18 @@ class SalesController extends Controller
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['week'] = $sellInHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+
+                                $this->changeActual($summary_ta, 'change');
 
                             } else { // If data didn't exist -> create
 
@@ -210,6 +225,17 @@ class SalesController extends Controller
                                     'trainer_name' => $trainer_name,
                                 ]);
 
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['week'] = $sellInHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+
+                                $this->changeActual($summary_ta, 'change');
+
                             }
 
                         }
@@ -320,7 +346,7 @@ class SalesController extends Controller
                                 }
                             }
 
-                            SummarySellIn::create([
+                            $summary = SummarySellIn::create([
                                 'sellin_detail_id' => $detail->id,
                                 'region_id' => $store->district->area->region->id,
                                 'area_id' => $store->district->area->id,
@@ -357,6 +383,17 @@ class SalesController extends Controller
                                 'trainer_name' => $trainer_name,
                             ]);
 
+                            // Actual Summary
+                            $summary_ta['user_id'] = $transaction->user_id;
+                            $summary_ta['store_id'] = $transaction->store_id;
+                            $summary_ta['week'] = $transaction->week;
+                            $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                            $summary_ta['value'] = $summary->value;
+                            $summary_ta['group'] = $summary->group;
+                            $summary_ta['sell_type'] = 'Sell In';
+
+                            $this->changeActual($summary_ta, 'change');
+
                         }
 
                     });
@@ -373,7 +410,7 @@ class SalesController extends Controller
 
         } else if($param == 2) { /* SELL OUT */
 
-            return response()->json($this->getPromoterTitle($user->id, $content['id']));
+//            return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell out header
             $sellOutHeader = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -397,6 +434,8 @@ class SalesController extends Controller
 
                                 $summary = SummarySellOut::where('sellout_detail_id', $sellOutDetail->id)->first();
 
+                                $value_old = $summary->value;
+
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
                                 ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
@@ -410,6 +449,18 @@ class SalesController extends Controller
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellOutHeader->user_id;
+                                $summary_ta['store_id'] = $sellOutHeader->store_id;
+                                $summary_ta['week'] = $sellOutHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell Out';
+
+                                $this->changeActual($summary_ta, 'change');
 
                             } else { // If data didn't exist -> create
 
@@ -496,7 +547,7 @@ class SalesController extends Controller
                                     }
                                 }
 
-                                SummarySellOut::create([
+                                $summary = SummarySellOut::create([
                                     'sellout_detail_id' => $detail->id,
                                     'region_id' => $store->district->area->region->id,
                                     'area_id' => $store->district->area->id,
@@ -532,6 +583,17 @@ class SalesController extends Controller
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellOutHeader->user_id;
+                                $summary_ta['store_id'] = $sellOutHeader->store_id;
+                                $summary_ta['week'] = $sellOutHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell Out';
+
+                                $this->changeActual($summary_ta, 'change');
 
                             }
 
@@ -643,7 +705,7 @@ class SalesController extends Controller
                                 }
                             }
 
-                            SummarySellOut::create([
+                            $summary = SummarySellOut::create([
                                 'sellout_detail_id' => $detail->id,
                                 'region_id' => $store->district->area->region->id,
                                 'area_id' => $store->district->area->id,
@@ -679,6 +741,17 @@ class SalesController extends Controller
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
                             ]);
+
+                            // Actual Summary
+                            $summary_ta['user_id'] = $transaction->user_id;
+                            $summary_ta['store_id'] = $transaction->store_id;
+                            $summary_ta['week'] = $transaction->week;
+                            $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                            $summary_ta['value'] = $summary->value;
+                            $summary_ta['group'] = $summary->group;
+                            $summary_ta['sell_type'] = 'Sell Out';
+
+                            $this->changeActual($summary_ta, 'change');
 
                         }
 

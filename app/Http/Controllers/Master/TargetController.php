@@ -38,7 +38,7 @@ class TargetController extends Controller
         $data = Target::where('targets.deleted_at', null)
         			->join('users', 'targets.user_id', '=', 'users.id')
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
-                    ->select('targets.*', 'users.name as promoter_name', 'stores.store_id as store_name')->get();
+                    ->select('targets.*', 'users.name as promoter_name', DB::raw('CONCAT(stores.store_id, " - ", stores.store_name_1, " (", stores.store_name_2, ") - ", stores.dedicate) AS store_name'))->get();
 
         return $this->makeTable($data);
     }
@@ -202,14 +202,14 @@ class TargetController extends Controller
             'target_pf_mcc' => 'numeric',
             ]);
 
-        $target = Target::find($id);
+        $target = Target::where('id', $id)->first();
 
-        $targetOldDa = $target->first()->target_da;
-        $targetOldPfDa = $target->first()->target_pf_da;
-        $targetOldPc = $target->first()->target_pc;
-        $targetOldPfPc = $target->first()->target_pf_pc;
-        $targetOldMcc = $target->first()->target_mcc;
-        $targetOldPfMcc = $target->first()->target_pf_mcc;
+        $targetOldDa = $target->target_da;
+        $targetOldPfDa = $target->target_pf_da;
+        $targetOldPc = $target->target_pc;
+        $targetOldPfPc = $target->target_pf_pc;
+        $targetOldMcc = $target->target_mcc;
+        $targetOldPfMcc = $target->target_pf_mcc;
 
         $target->update($request->all());
 
