@@ -1,18 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Reports;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class MaintenanceRequest extends Model
+class HistoryEmployeeStore extends Model
 {
     use SoftDeletes;
 
+    //
     protected $fillable = [
-        'user_id', 'region_id', 'area_id', 'store_id', 'category', 'channel', 'type', 'date', 'photo', 'report'
-        // , 'month', 'year'
+        'user_id', 'month', 'year', 'details'
     ];
 
     /**
@@ -22,34 +22,19 @@ class MaintenanceRequest extends Model
      */
     protected $dates = ['deleted_at'];
 
-    /* Metode tambahan untuk model. */
+	/* Metode tambahan untuk model Branch Sport. */
 
-    /**
+	/**
      * Relation Method(s).
      *
      */
 
-    public function user()
+	public function user()
     {
         return $this->belongsTo('App\User', 'user_id');
     }
 
-    public function region()
-    {
-        return $this->belongsTo('App\Region', 'region_id');
-    }
-
-    public function area()
-    {
-        return $this->belongsTo('App\Area', 'area_id');
-    }
-
-    public function store()
-    {
-        return $this->belongsTo('App\Store', 'store_id');
-    }
-
-    /**
+	/**
      * Filtering Berdasarakan Request User
      * @param $query
      * @param QueryFilters $filters

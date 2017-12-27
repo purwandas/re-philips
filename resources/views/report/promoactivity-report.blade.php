@@ -107,6 +107,7 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
+                                <th> Dedicate </th>
                                 <th> Week </th>
                                 <th> Promo Type </th>
                                 <th> Information </th>
@@ -155,6 +156,7 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
+                            {data: 'dedicate', name: 'dedicate'},
                             {data: 'week', name: 'week'},
                             {data: 'promo_type', name: 'promo_type'},
                             {data: 'information', name: 'information'},
