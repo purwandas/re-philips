@@ -70,6 +70,7 @@
                         
                         <div class="caption padding-caption">
                         	<span class="caption-subject font-dark bold uppercase">DETAILS</span>
+                        	<input type="hidden" name="penampungUserId" id="penampungUserId">
                         	<hr>
                         </div>
 
@@ -231,6 +232,25 @@
 	                          </div>
 	                        </div>
 	                    </div>
+
+				        <div id="dmContent2" class="display-hide form-group">
+				          <label class="col-sm-2 control-label">Dedicate</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<select class="select2select" name="dedicate" id="dedicate" required>
+									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
+									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
+									<option value="MCC" {{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>MCC</option>
+									<option value="HYBRID" {{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>HYBRID</option>
+                                </select>
+
+                                <span class="input-group-addon display-hide">
+                                	<i class="fa"></i>
+                                </span>
+				            </div>
+				          </div>
+				        </div>			
                         <!-- END DM DETAILS -->
 
                         <!-- BEGIN RSM DETAILS -->				       
@@ -365,6 +385,8 @@
 	            }
 	        });
 
+			$('#penampungUserId').val(userId);
+
 	    	$('#area').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {            
 	            return filterData('name', params.term);
 	        }, function (data, params) {
@@ -395,7 +417,10 @@
 	            }
 	        }));
 
-	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
+	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
+		        	filters['bySpv'] = $('#penampungUserId').val();;
+		        }
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
@@ -408,7 +433,12 @@
 	       	$('#role').select2({
                 width: '100%',
                 placeholder: 'Role'
-            })
+            });
+
+            $('#dedicate').select2({
+                width: '100%',
+                placeholder: 'Dedicate'
+            });
 
             setForm($('#role').val());
 
@@ -450,6 +480,10 @@
 				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
+
+				$('#dedicate').attr('required', 'required');
+				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				$('#dmContent2').removeClass('display-hide');
 			}
 
 			if(role == 'Trainer'){
@@ -562,7 +596,7 @@
 
 		function updateStoreSpv(){
 			var oldStatus = "{{ @$data->status }}";
-			var getDataUrl = "{{ url('util/empstore/') }}";
+			var getDataUrl = "{{ url('util/spvstore/') }}";
 			var status = $('input[type=radio][name=status]:checked').val();
 
 			$.get(getDataUrl + '/' + userId, function (data) {

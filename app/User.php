@@ -130,6 +130,10 @@ class User extends Authenticatable
         return $this->hasMany('App\PromoActivity', 'user_id');
     }
 
+    public function attendance(){
+        return $this->hasMany('App\Attendance', 'user_id');
+    }    
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query

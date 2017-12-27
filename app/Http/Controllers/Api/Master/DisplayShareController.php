@@ -71,6 +71,7 @@ class DisplayShareController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $displayShareHeader->store_id)->first();
+                                $spvName = $store->user->name ?? '';
 
                                 /* Category */
                                 $category = Category::where('id', $data['category_id'])->first();
@@ -145,7 +146,7 @@ class DisplayShareController extends Controller
                                     'all' => $data['all'],
                                     'percentage' => ($data['philips'] / $data['all'] * 100),
                                     'role' => $user->role,
-                                    'spv_name' => $store->user->name,
+                                    'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
                                 ]);
@@ -190,6 +191,7 @@ class DisplayShareController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
+                            $spvName = $store->user->name ?? '';
 
                             /* Category */
                             $category = Category::where('id', $detail->category_id)->first();
@@ -262,7 +264,7 @@ class DisplayShareController extends Controller
                                 'all' => $data['all'],
                                 'percentage' => ($data['all'] / $data['all'] * 100),
                                 'role' => $user->role,
-                                'spv_name' => $store->user->name,
+                                'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
                             ]);

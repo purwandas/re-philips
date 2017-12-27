@@ -107,6 +107,7 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
+                                <th> Dedicate </th>
                                 <th> Week </th>
                                 <th> SKU </th>
                                 <th> Group Competitor </th>
@@ -154,6 +155,7 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
+                            {data: 'dedicate', name: 'dedicate'},
                             {data: 'week', name: 'week'},
                             {data: 'sku', name: 'sku'},
                             {data: 'group_competitor', name: 'group_competitor'},
