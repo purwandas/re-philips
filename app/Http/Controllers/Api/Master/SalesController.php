@@ -1872,7 +1872,6 @@ class SalesController extends Controller
                                             'week' => Carbon::now()->weekOfMonth,
                                             'date' => Carbon::now()
                                         ]);
-
                         foreach ($content['data'] as $data) {
 
                             // DETAILS
@@ -1887,7 +1886,10 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                                $spvName='';
+                                if (isset($store->user->name)) {
+                                    $spvName=$store->user->name;
+                                }
 
                             /* Store Destination */
                             $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
