@@ -189,7 +189,7 @@ class ReportController extends Controller
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummarySellIn::where('store_id', $value->store_id)->get();
                 }
@@ -331,7 +331,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -376,7 +376,7 @@ class ReportController extends Controller
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummarySellOut::where('store_id', $value->store_id)->get();
                 }
@@ -511,7 +511,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -553,7 +553,7 @@ class ReportController extends Controller
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummaryRetConsument::where('store_id', $value->store_id)->get();
                 }
@@ -689,7 +689,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -727,7 +727,7 @@ class ReportController extends Controller
                 }
             }
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummaryRetDistributor::where('store_id', $value->store_id)->get();
                 }
@@ -862,7 +862,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -904,7 +904,7 @@ class ReportController extends Controller
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummaryTbat::where('store_id', $value->store_id)->get();
                 }
@@ -1054,7 +1054,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1092,7 +1092,7 @@ class ReportController extends Controller
                 }
             }
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummaryFreeProduct::where('store_id', $value->store_id)->get();
                 }
@@ -1227,7 +1227,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1266,7 +1266,7 @@ class ReportController extends Controller
                 }
             }
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummarySoh::where('store_id', $value->store_id)->get();
                 }
@@ -1402,7 +1402,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1439,7 +1439,7 @@ class ReportController extends Controller
                 }
             }
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummarySos::where('store_id', $value->store_id)->get();
                 }
@@ -1574,7 +1574,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1616,7 +1616,7 @@ class ReportController extends Controller
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $data = SummaryDisplayShare::where('store_id', $value->store_id)->get();
                 }
@@ -1745,7 +1745,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1767,6 +1767,8 @@ class ReportController extends Controller
         $yearNow = Carbon::now()->format('Y');
 
         
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
             // $withFilter = MaintenanceRequest::filter($filters)->get();
 
 
@@ -1828,7 +1830,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1869,6 +1871,9 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
             $data = CompetitorActivity::
                       join('stores', 'competitor_activities.store_id', '=', 'stores.id')
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -1933,7 +1938,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -1973,6 +1978,10 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = PromoActivity::
                     join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
@@ -2038,7 +2047,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -2078,6 +2087,9 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = PosmActivity::
                     join('posm_activity_details', 'posm_activity_details.posmactivity_id', '=', 'posm_activities.id')
@@ -2145,7 +2157,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
@@ -2186,6 +2198,9 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+        
             $data = Attendance::
                     join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
                     ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
@@ -2247,7 +2262,7 @@ class ReportController extends Controller
             }
             
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = EmployeeStore::where('user_id', $userId)->get();
+                $store = Store::where('user_id', $userId)->get();
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }

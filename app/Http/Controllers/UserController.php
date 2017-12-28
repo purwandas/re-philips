@@ -242,28 +242,6 @@ class UserController extends Controller
 
         }
 
-        // $userid = User::where('users.name', $request->name)->select('users.*');
-
-        // if($request['store_id']){
-        //     $newEmStore = $request->store_id;
-        //     HistoryEmployeeStore::create([
-        //                     'user_id' => $userId->id,
-        //                     'month' => Carbon::now()->format('m'),
-        //                     'year' => Carbon::now()->format('Y'),
-        //                     'details' => $newEmStore,
-        //             ]);
-        // }
-        // /* Employee Multiple Store */
-        // if($request['store_ids']){
-        //     $newEmStore = $request->store_ids;
-        //     $newEmStore2 = implode(",",$newEmStore);
-        //     HistoryEmployeeStore::create([
-        //                     'user_id' => $userId->id,
-        //                     'month' => Carbon::now()->format('m'),
-        //                     'year' => Carbon::now()->format('Y'),
-        //                     'details' => $newEmStore2,
-        //             ]);
-        // }
 
         /*
          * Generate attendance from day promoter works till end of month
@@ -276,6 +254,30 @@ class UserController extends Controller
             $this->generateAttendace($user->id);
         }
         
+        $userId = User::where('email', $request->email)->first();
+        // echo response()->json($userId);
+
+        if($request['store_id']){
+            $newEmStore = $request->store_id;
+            HistoryEmployeeStore::create([
+                            'user_id' => $userId->id,
+                            'month' => Carbon::now()->format('m'),
+                            'year' => Carbon::now()->format('Y'),
+                            'details' => $newEmStore,
+                    ]);
+        }
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            $newEmStore = $request->store_ids;
+            $newEmStore2 = implode(",",$newEmStore);
+            HistoryEmployeeStore::create([
+                            'user_id' => $userId->id,
+                            'month' => Carbon::now()->format('m'),
+                            'year' => Carbon::now()->format('Y'),
+                            'details' => $newEmStore2,
+                    ]);
+        }
+
         return response()->json(['url' => url('user')]);
     }
 
@@ -321,70 +323,7 @@ class UserController extends Controller
 
         $user = User::find($id);
         $oldPhoto = "";
-
-
         
-        if($request['store_id']){
-            $newEmStore = $request->store_id;
-            HistoryEmployeeStore::create([
-                            'user_id' => $user->id,
-                            'month' => Carbon::now()->format('m'),
-                            'year' => Carbon::now()->format('Y'),
-                            'details' => $newEmStore,
-                    ]);
-        }
-        /* Employee Multiple Store */
-        if($request['store_ids']){
-            $newEmStore = $request->store_ids;
-            $newEmStore2 = implode(",",$newEmStore);
-            HistoryEmployeeStore::create([
-                            'user_id' => $user->id,
-                            'month' => Carbon::now()->format('m'),
-                            'year' => Carbon::now()->format('Y'),
-                            'details' => $newEmStore2,
-                    ]);
-        }
-
-
-                    // foreach ($emStore2 as $key => $value) {
-                    //     foreach ($newEmStore as $key2 => $value2) {
-                    //         if ($value == $value2) {
-                    //             $stay[] = $value;
-                    //             $c = deleteElement($value2,$c);
-                    //             $d = deleteElement($value2,$d);
-                    //         }
-                    //     }
-                    // }
-                    // if (isset($stay)) {
-                    // foreach ($c as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-                    // foreach ($stay as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-                    // foreach ($d as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-
-                    // EmployeeStore::create([
-                    //         'id' => $user->id,
-                    //         'name' => $user->name,
-                    //         'month' => $dateUser->month,
-                    //         'year' => $dateUser->year,
-                    //         'details' => $headerDetails,
-                    // ]);
-                    // }
-
-                    // function deleteElement( $item, $array ) {
-                    //     $index = array_search($item, $array);
-                    //     if ( $index !== false ) {
-                    //         unset( $array[$index] );
-                    //     }
-
-                    //     return $array;
-                    // }
-        
-
 
 
 
@@ -558,6 +497,77 @@ class UserController extends Controller
 
             $this->upload($request->photo_file, $imageFolder, $imageName);
         }
+
+        $emStore = HistoryEmployeeStore::where('user_id', $user->id)->orderBy('id', 'desc')->first();
+        // $emStore2 = $emStore->details;
+        $emStore2='';
+            if (isset($emStore->details)) {
+                $emStore2 = $emStore->details;
+            }
+        // $newEmStore = $request 'store_id';
+        // $newEmStore2 = implode(",",$newEmStore);
+        // echo response()->json($user);
+        // echo response()->json($emStore2);
+        // echo response()->json($newEmStore);
+
+        // foreach ($emStore as $key => $value) {
+        //     foreach ($newEmStore as $key2 => $value2) {
+        //         if ($value == $value2) {
+        //             $stay[] = $value;
+        //             $c = deleteElement($value2,$c);
+        //             $d = deleteElement($value2,$d);
+        //         }
+        //     }
+        // }
+        // if (isset($stay)) {
+        
+            if($request['store_id']){
+                $newEmStore = $request->store_id;
+                if ($newEmStore != $emStore2) {
+                HistoryEmployeeStore::create([
+                                'user_id' => $user->id,
+                                'month' => Carbon::now()->format('m'),
+                                'year' => Carbon::now()->format('Y'),
+                                'details' => $newEmStore,
+                        ]);
+                }
+            }
+            /* Employee Multiple Store */
+            if($request['store_ids']){
+                $newEmStore = $request->store_ids;
+                $newEmStore2 = implode(",",$newEmStore);
+                if ($newEmStore2 != $emStore2) {
+                HistoryEmployeeStore::create([
+                                'user_id' => $user->id,
+                                'month' => Carbon::now()->format('m'),
+                                'year' => Carbon::now()->format('Y'),
+                                'details' => $newEmStore2,
+                        ]);
+                }
+            }
+        // }
+
+
+        // if (isset($stay)) {
+        //     foreach ($c as $key => $value) {
+        //             $headerDetails->push($value);
+        //     }
+        //     foreach ($stay as $key => $value) {
+        //             $headerDetails->push($value);
+        //     }
+        //     foreach ($d as $key => $value) {
+        //             $headerDetails->push($value);
+        //     }
+        // }
+
+        // function deleteElement( $item, $array ) {
+        //     $index = array_search($item, $array);
+        //     if ( $index !== false ) {
+        //         unset( $array[$index] );
+        // }
+        //     return $array;
+        // }
+        
 
         return response()->json(
             [
