@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\Master;
 
 use App\AttendanceDetail;
+use App\Reports\SummaryTargetActual;
 use App\Store;
 use App\Place;
+use App\Traits\TargetTrait;
 use App\VisitPlan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,6 +22,8 @@ use DB;
 
 class AttendanceController extends Controller
 {
+    use TargetTrait;
+
     public function attendance(Request $request, $param){
 
         // Decode buat inputan raw body
@@ -291,6 +295,24 @@ class AttendanceController extends Controller
                 });
             } catch (\Exception $e) {
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+            }
+
+            /* Change Weekly Target */
+            $target = SummaryTargetActual::where('user_id', $user->id)->get();
+
+            if($target){ // If Had
+
+                foreach ($target as $data){
+
+                    /* Change Weekly Target */
+                    $total['da'] = $data['target_da'];
+                    $total['pc'] = $data['target_pc'];
+                    $total['mcc'] = $data['target_mcc'];
+
+                    $this->changeWeekly($data, $total);
+
+                }
+
             }
 
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off)']);

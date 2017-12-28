@@ -39,7 +39,10 @@ class FeedbackController extends Controller
         return response()->json($promoters);
     }
 
-    public function getListCategoryFeedback($param){
+    public function getListCategoryFeedback(Request $request, $param){
+
+        $assessor = JWTAuth::parseToken()->authenticate();
+        $promoter = $request->promoter_id;
 
         $type = 'PK';
 
@@ -54,6 +57,33 @@ class FeedbackController extends Controller
         $category = FeedbackCategory::where('type', $type)
                     ->select('id', 'name', 'type')
                     ->get();
+
+        foreach ($category as $detail) {
+
+            $count = 0;
+
+            $feedbackQuestion = FeedbackQuestion::where('feedbackCategory_id', $detail->id);
+
+            if($feedbackQuestion->count() > 0){
+
+                foreach ($feedbackQuestion->get() as $data){
+                    $feedbackAnswer = FeedbackAnswer::where('assessor_id', $assessor->id)->where('promoter_id', $promoter)
+                                        ->where('feedbackQuestion_id', $data->id);
+
+                    if($feedbackAnswer->count() > 0){
+                        $count += 1;
+                    }
+                }
+
+            }
+
+            if($count > 0){
+                $detail['status'] = 1;
+            }else{
+                $detail['status'] = 0;
+            }
+
+        }
 
         return response()->json($category);
     }

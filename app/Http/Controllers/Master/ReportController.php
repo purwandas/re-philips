@@ -104,12 +104,12 @@ class ReportController extends Controller
 
     public function retConsumentIndex()
     {
-        return view('report.retConsument-report');
+        return view('report.retconsument-report');
     }
 
     public function retDistributorIndex()
     {
-        return view('report.retDistributor-report');
+        return view('report.retdistributor-report');
     }
 
     public function tbatIndex()
@@ -117,7 +117,7 @@ class ReportController extends Controller
         return view('report.tbat-report');
     }
 
-    public function freeproductIndex()
+    public function freeProductIndex()
     {
         return view('report.freeproduct-report');
     }
@@ -171,8 +171,6 @@ class ReportController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
-
-
 
             if ($userRole == 'RSM') {
                 $region = RsmRegion::where('user_id', $userId)->get();
@@ -635,9 +633,6 @@ class ReportController extends Controller
                         $collection['quantity'] = $transaction->quantity;
                         $collection['unit_price'] = $transaction->unit_price;
                         $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
                         $collection['role'] = $detail->role;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
@@ -808,9 +803,6 @@ class ReportController extends Controller
                         $collection['quantity'] = $transaction->quantity;
                         $collection['unit_price'] = $transaction->unit_price;
                         $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
                         $collection['role'] = $detail->role;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
@@ -996,9 +988,6 @@ class ReportController extends Controller
                         $collection['quantity'] = $transaction->quantity;
                         $collection['unit_price'] = $transaction->unit_price;
                         $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
                         $collection['role'] = $detail->role;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
@@ -1173,9 +1162,6 @@ class ReportController extends Controller
                         $collection['quantity'] = $transaction->quantity;
                         $collection['unit_price'] = $transaction->unit_price;
                         $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
                         $collection['role'] = $detail->role;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
@@ -1348,9 +1334,6 @@ class ReportController extends Controller
                         $collection['quantity'] = $transaction->quantity;
                         $collection['unit_price'] = $transaction->unit_price;
                         $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
                         $collection['role'] = $detail->role;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;

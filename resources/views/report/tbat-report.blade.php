@@ -121,9 +121,9 @@
                                 <th> Quantity </th>
                                 <th> Unit Price </th>
                                 <th> Value </th>
-                                <th> Value PF MR </th>
+                                <!-- <th> Value PF MR </th>
                                 <th> Value PF TR </th>
-                                <th> Value PF PPE </th>
+                                <th> Value PF PPE </th> -->
                                 <th> Role </th>
                                 <th> SPV/ARO Name </th>
                                 <th> DM Name </th>
@@ -184,9 +184,9 @@
                             {data: 'quantity', name: 'quantity'},
                             {data: 'unit_price', name: 'unit_price'},
                             {data: 'value', name: 'value'},
-                            {data: 'value_pf_mr', name: 'value_pf_mr'},
-                            {data: 'value_pf_tr', name: 'value_pf_tr'},
-                            {data: 'value_pf_ppe', name: 'value_pf_ppe'},
+                            // {data: 'value_pf_mr', name: 'value_pf_mr'},
+                            // {data: 'value_pf_tr', name: 'value_pf_tr'},
+                            // {data: 'value_pf_ppe', name: 'value_pf_ppe'},
                             {data: 'role', name: 'role'},
                             {data: 'spv_name', name: 'spv_name'},
                             {data: 'dm_name', name: 'dm_name'},

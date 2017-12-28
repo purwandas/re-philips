@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\ProductFocuses;
+use App\Traits\ActualTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -106,6 +107,7 @@ class PriceController extends Controller
             $summary['globalchannel_id'] = $request['globalchannel_id'];
             $summary['price'] = $request['price'];
             $this->changeSummary($summary, 'change');
+
         }else{
             $price = Price::create($request->all());
 
