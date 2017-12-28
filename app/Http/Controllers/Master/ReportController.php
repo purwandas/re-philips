@@ -69,6 +69,10 @@ use App\PromoActivity;
 use App\PromoActivityDetail;
 use App\Attendance;
 use App\AttendanceDetail;
+use App\EmployeeStore;
+use App\District;
+use App\Store;
+use App\Area;
 use App\RsmRegion;
 use App\Filters\ReportFilters;
 use App\Filters\ReportPosmActivityFilters;
@@ -163,15 +167,34 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
-
+        
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
-
-        // return response()->json($userRole);
-
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummarySellIn::all();
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummarySellIn::where('region_id', $value->region_id)->get();
+                }
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummarySellIn::where('area_id', $value->area_id)->get();
+                }
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummarySellIn::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummarySellIn::all();
+            }
 
             $filter = $data;
 
@@ -298,6 +321,21 @@ class ReportController extends Controller
                 }
             }
 
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
+
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -314,9 +352,36 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummarySellOut::all();
+
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummarySellOut::where('region_id', $value->region_id)->get();
+                }
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummarySellOut::where('area_id', $value->area_id)->get();
+                }
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummarySellOut::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummarySellOut::all();
+            }
 
             $filter = $data;
 
@@ -429,6 +494,26 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -444,9 +529,37 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummaryRetConsument::all();
+
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummaryRetConsument::where('region_id', $value->region_id)->get();
+                }
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummaryRetConsument::where('area_id', $value->area_id)->get();
+                }
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummaryRetConsument::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummaryRetConsument::all();
+            }
+
 
             $filter = $data;
 
@@ -556,6 +669,26 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            } 
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -571,9 +704,32 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummaryRetDistributor::all();
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummaryRetDistributor::where('region_id', $value->region_id)->get();
+                }
+            }
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummaryRetDistributor::where('area_id', $value->area_id)->get();
+                }
+            }
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummaryRetDistributor::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummaryRetDistributor::all();
+            }
 
             $filter = $data;
 
@@ -682,6 +838,27 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
+        
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -697,10 +874,37 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
-
+        
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummaryTbat::all();
+
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummaryTbat::where('region_id', $value->region_id)->get();
+                }
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummaryTbat::where('area_id', $value->area_id)->get();
+                }
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummaryTbat::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummaryTbat::all();
+            }
+            
 
             $filter = $data;
 
@@ -728,6 +932,8 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $data->where('user_id', $request['byEmployee']);
             }
+
+
 
             return Datatables::of($filter->all())
             ->make(true);
@@ -822,6 +1028,27 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -837,9 +1064,31 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummaryFreeProduct::all();
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummaryFreeProduct::where('region_id', $value->region_id)->get();
+                }
+            }
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummaryFreeProduct::where('area_id', $value->area_id)->get();
+                }
+            }
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummaryFreeProduct::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummaryFreeProduct::all();
+            }
 
             $filter = $data;
 
@@ -949,6 +1198,27 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -964,9 +1234,33 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummarySoh::all();
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummarySoh::where('region_id', $value->region_id)->get();
+                }
+            }
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummarySoh::where('area_id', $value->area_id)->get();
+                }
+            }
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummarySoh::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummarySoh::all();
+            }
+
 
             $filter = $data;
 
@@ -1076,6 +1370,26 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -1091,9 +1405,31 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummarySos::all();
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummarySos::where('region_id', $value->region_id)->get();
+                }
+            }
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummarySos::where('area_id', $value->area_id)->get();
+                }
+            }
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummarySos::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummarySos::all();
+            }
 
             $filter = $data;
 
@@ -1206,6 +1542,27 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -1221,9 +1578,35 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummaryDisplayShare::all();            
+
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $data = SummaryDisplayShare::where('region_id', $value->region_id)->get();
+                }
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $data = SummaryDisplayShare::where('area_id', $value->area_id)->get();
+                }
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $data = SummaryDisplayShare::where('store_id', $value->store_id)->get();
+                }
+            }
+            else{
+                $data = SummaryDisplayShare::all();
+            }          
 
             $filter = $data;
 
@@ -1330,6 +1713,27 @@ class ReportController extends Controller
                 $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->make(true);
 
@@ -1390,6 +1794,27 @@ class ReportController extends Controller
 
             if($request['byEmployee']){
                 $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
             }
 
             return Datatables::of($filter->all())
@@ -1475,6 +1900,28 @@ class ReportController extends Controller
                 $filter = $data->where('groupcompetitor_id', $request['byGroupCompetitor']);
             }
 
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
                 // $folderPath = explode('/', $item->photo);
@@ -1557,6 +2004,27 @@ class ReportController extends Controller
 
             if($request['byProduct']){
                 $filter = $data->where('product_id', $request['byProduct']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
             }
 
             return Datatables::of($filter->all())
@@ -1644,6 +2112,28 @@ class ReportController extends Controller
                 $filter = $data->where('product_id', $request['byProduct']);
             }
 
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
+            }
+
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
                 // $folderPath = explode('/', $item->photo);
@@ -1723,6 +2213,27 @@ class ReportController extends Controller
 
             if($request['byEmployee']){
                 $filter = $data->where('user_id', $request['byEmployee']);
+            }
+            
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $data->where('region_id', $value->region_id);
+                }
+            }
+
+            if ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)->get();
+                foreach ($area as $key => $value) {
+                    $filter = $data->where('area_id', $value->area_id);
+                }
+            }
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = EmployeeStore::where('user_id', $userId)->get();
+                foreach ($store as $key => $value) {
+                    $filter = $data->where('store_id', $value->store_id);
+                }
             }
 
             return Datatables::of($filter->all())

@@ -279,7 +279,7 @@
 
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'RSM' || Auth::user()->role == 'DM' || Auth::user()->role == 'Supervisor')
 
             <li class="heading">
                 <h3 class="uppercase">REPORTING</h3>

@@ -24,15 +24,37 @@ var FormValidation = function () {
                     store_id:{
                         required: true,
                     },
-                    groupproduct_id:{
+                    sell_type:{
                         required: true,
                     },
-                    type:{
-                        required: true,
-                    },
-                    target: {
+                    target_da: {
                         number: true,
-                        min: 1,
+                        min: 0,
+                        required: true,
+                    },
+                    target_pf_da: {
+                        number: true,
+                        min: 0,
+                        required: true,
+                    },
+                    target_pc: {
+                        number: true,
+                        min: 0,
+                        required: true,
+                    },
+                    target_pf_pc: {
+                        number: true,
+                        min: 0,
+                        required: true,
+                    },
+                    target_mcc: {
+                        number: true,
+                        min: 0,
+                        required: true,
+                    },
+                    target_pf_mcc: {
+                        number: true,
+                        min: 0,
                         required: true,
                     },
 
@@ -44,11 +66,8 @@ var FormValidation = function () {
                     store_id:{
                         required: "Please select a Store!"
                     },
-                    groupproduct_id:{
-                        required: "Please select a Group Product!"
-                    },
-                    type:{
-                        required: "Please select a Target Type!"
+                    sell_type:{
+                        required: "Please select a Sell Type!"
                     },
                 },
 
