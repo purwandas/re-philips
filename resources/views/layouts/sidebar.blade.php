@@ -73,12 +73,30 @@
                     <span class="title">Distributor</span>
                 </a>
             </li>
-            <li class="nav-item {{ Request::is('user*') ? 'active open' : '' }}">
-                <a href="{{ url('user') }}" class="nav-link nav-toggle">
+            <li class="nav-item 
+            {{ Request::is('user*') ? 'active open' : '' }} 
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-group"></i>
                     <span class="title">Employee</span>
+                    <span class="arrow 
+                    {{ Request::is('user*') ? 'open' : '' }} 
+                    "></span>
                 </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('usernon*') ? 'active open' : '' }}">
+                        <a href="{{ url('usernon') }}" class="nav-link nav-toggle">
+                            <span class="title">Non-Promoter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('userpromoter*') ? 'active open' : '' }}">
+                        <a href="{{ url('userpromoter') }}" class="nav-link nav-toggle">
+                            <span class="title">Promoter</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
+            
             <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-shopping-cart"></i>
@@ -180,6 +198,10 @@
             </a>
             </li>
 
+            <li class="heading">
+                <h3 class="uppercase">REPORTING ????????????????</h3>
+            </li>
+
             <li class="nav-item {{ Request::is('fanspage') ? 'active open' : '' }}">
             <a href="{{ url('fanspage') }}" class="nav-link nav-toggle">
                 <i class="fa fa-chain"></i>
@@ -236,6 +258,25 @@
                 </a>
             </li>
 
+
+            <li class="heading">
+                <h3 class="uppercase">REPORTING ????????????????</h3>
+            </li>
+
+            <li class="nav-item {{ Request::is('editretdistributor') ? 'active open' : '' }}">
+            <a href="{{ url('editretdistributor') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update Return Distributor</span>
+            </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('editretconsument') ? 'active open' : '' }}">
+            <a href="{{ url('editretconsument') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update Return Consument</span>
+            </a>
+            </li>
+
             @endif
 
             @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
@@ -276,15 +317,15 @@
                         </a>
                     </li>
 
-                    <li class="nav-item {{ Request::is('retconsumentreport') ? 'active open' : '' }}">
-                        <a href="{{ url('retconsumentreport') }}" class="nav-link nav-toggle">
-                            <span class="title">Return Consument</span>
-                        </a>
-                    </li>
-
                     <li class="nav-item {{ Request::is('retdistributorreport') ? 'active open' : '' }}">
                         <a href="{{ url('retdistributorreport') }}" class="nav-link nav-toggle">
                             <span class="title">Return Distributor</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('retconsumentreport') ? 'active open' : '' }}">
+                        <a href="{{ url('retconsumentreport') }}" class="nav-link nav-toggle">
+                            <span class="title">Return Consument</span>
                         </a>
                     </li>
 
