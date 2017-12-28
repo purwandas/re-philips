@@ -20,7 +20,7 @@ use File;
 use App\NewsRead;
 use App\ProductKnowledgeRead;
 
-class UserController extends Controller
+class UserPromoterController extends Controller
 {
     use UploadTrait;
     use StringTrait;
@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('master.user');
+        return view('master.userpromoter');
     }
 
      /**
@@ -45,7 +45,8 @@ class UserController extends Controller
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::
             where('id', '<>', Auth::user()->id)
-            ->whereNotIn('role',$roles);
+            ->whereIn('role',$roles);
+
 //        $data = User::all();
 
         $filter = $data;
@@ -78,12 +79,13 @@ class UserController extends Controller
 
         return Datatables::of($filter->get())
                 ->editColumn('role',function ($item) {
-                    $dedicate = '';
-                    $dmarea = DmArea::where('user_id', $item->id)->get();
-                    foreach ($dmarea as $key => $value) {
-                        $dedicate = $value->dedicate;
-                    }
+                    
                     if ($item->role == 'DM') {
+                        $dedicate = '';
+                        $dmarea = DmArea::where('user_id', $item->id)->get();
+                        foreach ($dmarea as $key => $value) {
+                            $dedicate = $value->dedicate;
+                        }
                         return $item->role.' - '.$dedicate;
                     }
 
@@ -93,7 +95,7 @@ class UserController extends Controller
                 ->addColumn('action', function ($item) {
 
                     return 
-                    "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
@@ -146,7 +148,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('master.form.user-form');
+        return view('master.form.userpromoter-form');
     }
 
     /**
@@ -248,7 +250,7 @@ class UserController extends Controller
             $this->generateAttendace($user->id);
         }
         
-        return response()->json(['url' => url('usernon')]);
+        return response()->json(['url' => url('userpromoter')]);
     }
 
     /**
@@ -272,7 +274,7 @@ class UserController extends Controller
     {
         $data = User::where('id', $id)->first();
 
-        return view('master.form.user-form', compact('data'));
+        return view('master.form.userpromoter-form', compact('data'));
     }
 
     /**
@@ -393,6 +395,7 @@ class UserController extends Controller
             }
         }else{
             EmployeeStore::where('user_id',$user->id)->delete();
+
             /* Employee One Store */
             if($request['store_id']){
                 // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
@@ -467,7 +470,7 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'url' => url('usernon'),
+                'url' => url('userpromoter'),
                 'method' => $request->_method
             ]);
     }
