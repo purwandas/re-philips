@@ -12,7 +12,7 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Employee
+        <h1>Promoter
             <small>manage employee</small>
         </h1>
     </div>
@@ -24,7 +24,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Employee Management</span>
+        <span class="active">Promoter Management</span>
     </li>
 </ul>
 @endsection
@@ -38,7 +38,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-map-o font-blue"></i>
-                        <span class="caption-subject font-blue bold uppercase">FILTER Employee</span>
+                        <span class="caption-subject font-blue bold uppercase">FILTER Promoter</span>
                     </div>
                 </div>
 
@@ -60,7 +60,7 @@
                     <div class="col-md-4">
                         <select id="filterRole" class="select2select" >
                             <option value=""></option>
-                            <!-- <option value="Promoter">Promoter</option>
+                            <option value="Promoter">Promoter</option>
                             <option value="Promoter Additional">Promoter Additional</option>
                             <option value="Promoter Event">Promoter Event</option>
                             <option value="Demonstrator MCC">Demonstrator MCC</option>
@@ -74,9 +74,9 @@
                             <option value="HIC">HIC</option>
                             <option value="HIE">HIE</option>
                             <option value="SMD Additional">SMD Additional</option>
-                            <option value="ASC">ASC</option> -->
+                            <option value="ASC">ASC</option>
                             
-                            <option value="Driver">Driver</option>
+                            <!-- <option value="Driver">Driver</option>
                             <option value="Helper">Helper</option>
                             <option value="PCE">PCE</option>
                             <option value="RE Executive">RE Executive</option>
@@ -88,7 +88,7 @@
                             <option value="DM">DM</option>
                             <option value="RSM">RSM</option>
                             <option value="Admin">Admin</option>
-                            <option value="Master">Master</option>
+                            <option value="Master">Master</option> -->
                         </select>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                 	<div class="row">
                     	<div class="col-md-6">
                         	<div class="btn-group">
-                             	<a class="btn green" href="{{ url('usernon/create') }}"><i
+                             	<a class="btn green" href="{{ url('userpromoter/create') }}"><i
 									class="fa fa-plus"></i> Add Employee </a>
                                 
                             </div>
@@ -169,7 +169,7 @@
 
 <script>
         var filterId = ['#filterNik', '#filterName', '#filterRole'];
-        var url = 'datatable/user';
+        var url = 'datatable/userpromoter';
         var order = [ [0, 'desc'] ];
         var columnDefs = [
                 {"className": "dt-center", "targets": [0]},
@@ -226,7 +226,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.user') }}",
+                    url: "{{ route('datatable.userpromoter') }}",
                     type: 'POST',
                 },
                 "rowId": "id",
@@ -268,7 +268,7 @@
                         $.ajax({
 
                             type: "DELETE",
-                            url:  'usernon/' + id,
+                            url:  'userpromoter/' + id,
                             success: function (data) {
                                 console.log(data);
 

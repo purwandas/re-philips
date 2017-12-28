@@ -14,18 +14,13 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Traits\AttendanceTrait;
-use Illuminate\Support\Collection;
 use Auth;
 use App\Filters\UserFilters;
 use File;
 use App\NewsRead;
 use App\ProductKnowledgeRead;
-use App\Reports\HistoryEmployeeStore;
-use Carbon\Carbon;
-use DB;
 
-
-class UserController extends Controller
+class UserPromoterController extends Controller
 {
     use UploadTrait;
     use StringTrait;
@@ -38,7 +33,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('master.user');
+        return view('master.userpromoter');
     }
 
      /**
@@ -50,7 +45,8 @@ class UserController extends Controller
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::
             where('id', '<>', Auth::user()->id)
-            ->whereNotIn('role',$roles);
+            ->whereIn('role',$roles);
+
 //        $data = User::all();
 
         $filter = $data;
@@ -83,12 +79,13 @@ class UserController extends Controller
 
         return Datatables::of($filter->get())
                 ->editColumn('role',function ($item) {
-                    $dedicate = '';
-                    $dmarea = DmArea::where('user_id', $item->id)->get();
-                    foreach ($dmarea as $key => $value) {
-                        $dedicate = $value->dedicate;
-                    }
+                    
                     if ($item->role == 'DM') {
+                        $dedicate = '';
+                        $dmarea = DmArea::where('user_id', $item->id)->get();
+                        foreach ($dmarea as $key => $value) {
+                            $dedicate = $value->dedicate;
+                        }
                         return $item->role.' - '.$dedicate;
                     }
 
@@ -98,7 +95,7 @@ class UserController extends Controller
                 ->addColumn('action', function ($item) {
 
                     return 
-                    "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
@@ -151,7 +148,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('master.form.user-form');
+        return view('master.form.userpromoter-form');
     }
 
     /**
@@ -169,8 +166,6 @@ class UserController extends Controller
             'role' => 'required|string',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
-
-
 
         $request['password'] = bcrypt($request['password']);
 
@@ -244,29 +239,6 @@ class UserController extends Controller
 
         }
 
-        // $userid = User::where('users.name', $request->name)->select('users.*');
-
-        // if($request['store_id']){
-        //     $newEmStore = $request->store_id;
-        //     HistoryEmployeeStore::create([
-        //                     'user_id' => $userId->id,
-        //                     'month' => Carbon::now()->format('m'),
-        //                     'year' => Carbon::now()->format('Y'),
-        //                     'details' => $newEmStore,
-        //             ]);
-        // }
-        // /* Employee Multiple Store */
-        // if($request['store_ids']){
-        //     $newEmStore = $request->store_ids;
-        //     $newEmStore2 = implode(",",$newEmStore);
-        //     HistoryEmployeeStore::create([
-        //                     'user_id' => $userId->id,
-        //                     'month' => Carbon::now()->format('m'),
-        //                     'year' => Carbon::now()->format('Y'),
-        //                     'details' => $newEmStore2,
-        //             ]);
-        // }
-
         /*
          * Generate attendance from day promoter works till end of month
          * (Just work for promoter group)
@@ -278,7 +250,7 @@ class UserController extends Controller
             $this->generateAttendace($user->id);
         }
         
-        return response()->json(['url' => url('usernon')]);
+        return response()->json(['url' => url('userpromoter')]);
     }
 
     /**
@@ -302,7 +274,7 @@ class UserController extends Controller
     {
         $data = User::where('id', $id)->first();
 
-        return view('master.form.user-form', compact('data'));
+        return view('master.form.userpromoter-form', compact('data'));
     }
 
     /**
@@ -323,72 +295,6 @@ class UserController extends Controller
 
         $user = User::find($id);
         $oldPhoto = "";
-
-
-        
-        if($request['store_id']){
-            $newEmStore = $request->store_id;
-            HistoryEmployeeStore::create([
-                            'user_id' => $user->id,
-                            'month' => Carbon::now()->format('m'),
-                            'year' => Carbon::now()->format('Y'),
-                            'details' => $newEmStore,
-                    ]);
-        }
-        /* Employee Multiple Store */
-        if($request['store_ids']){
-            $newEmStore = $request->store_ids;
-            $newEmStore2 = implode(",",$newEmStore);
-            HistoryEmployeeStore::create([
-                            'user_id' => $user->id,
-                            'month' => Carbon::now()->format('m'),
-                            'year' => Carbon::now()->format('Y'),
-                            'details' => $newEmStore2,
-                    ]);
-        }
-
-
-                    // foreach ($emStore2 as $key => $value) {
-                    //     foreach ($newEmStore as $key2 => $value2) {
-                    //         if ($value == $value2) {
-                    //             $stay[] = $value;
-                    //             $c = deleteElement($value2,$c);
-                    //             $d = deleteElement($value2,$d);
-                    //         }
-                    //     }
-                    // }
-                    // if (isset($stay)) {
-                    // foreach ($c as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-                    // foreach ($stay as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-                    // foreach ($d as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-
-                    // EmployeeStore::create([
-                    //         'id' => $user->id,
-                    //         'name' => $user->name,
-                    //         'month' => $dateUser->month,
-                    //         'year' => $dateUser->year,
-                    //         'details' => $headerDetails,
-                    // ]);
-                    // }
-
-                    // function deleteElement( $item, $array ) {
-                    //     $index = array_search($item, $array);
-                    //     if ( $index !== false ) {
-                    //         unset( $array[$index] );
-                    //     }
-
-                    //     return $array;
-                    // }
-        
-
-
-
 
         if($user->photo != null && $request->photo_file != null) {
             /* Save old photo path */
@@ -489,6 +395,7 @@ class UserController extends Controller
             }
         }else{
             EmployeeStore::where('user_id',$user->id)->delete();
+
             /* Employee One Store */
             if($request['store_id']){
                 // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
@@ -497,7 +404,6 @@ class UserController extends Controller
                     'store_id' => $request['store_id'],
                 ]);
             }
-
 
             /* Employee Multiple Store */
             if($request['store_ids']){
@@ -564,7 +470,7 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'url' => url('usernon'),
+                'url' => url('userpromoter'),
                 'method' => $request->_method
             ]);
     }

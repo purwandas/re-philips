@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <a href="{{ url('usernon') }}">Employee Management</a>
+        <a href="{{ url('userpromoter') }}">Employee Management</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>
@@ -50,14 +50,14 @@
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md green" href="{{ url('usernon') }}">
+                	<a class="btn btn-md green" href="{{ url('userpromoter') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_user" class="form-horizontal" action="{{ url('usernon', @$data->id) }}" method="POST">	        	
+	        	<form id="form_user" class="form-horizontal" action="{{ url('userpromoter', @$data->id) }}" method="POST">	        	
 			        {{ csrf_field() }}
 			        @if (!empty($data))
 			          {{ method_field('PATCH') }}
@@ -81,8 +81,8 @@
 				          <div class="input-group" style="width: 100%;">
      
                                 <select class="select2select" name="role" id="role" required>
-
-                                	<!-- <option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
+                                	
+                                	<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
                                 	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? 
                                 	"selected" : "" }}>Promoter Additional</option>
                                 	<option value="Promoter Event" {{ (@$data->role == 'Promoter Event') ? "selected" : "" }}>Promoter Event</option>
@@ -97,9 +97,9 @@
                                 	<option value="HIC" {{ (@$data->role == 'HIC') ? "selected" : "" }}>HIC</option>
                                 	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
                                 	<option value="SMD Additional" {{ (@$data->role == 'SMD Additional') ? "selected" : "" }}>SMD Additional</option>
-                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option> -->
+                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option>
 
-                                	<option value="Driver" {{ (@$data->role == 'Driver') ? "selected" : "" }}>Driver</option>
+                                	<!-- <option value="Driver" {{ (@$data->role == 'Driver') ? "selected" : "" }}>Driver</option>
                                 	<option value="Helper" {{ (@$data->role == 'Helper') ? "selected" : "" }}>Helper</option>
                                 	<option value="PCE" {{ (@$data->role == 'PCE') ? "selected" : "" }}>PCE</option>
                                 	<option value="RE Executive" {{ (@$data->role == 'RE Executive') ? "selected" : "" }}>RE Executive</option>
@@ -110,7 +110,7 @@
                                 	<option value="Supervisor Hybrid" {{ (@$data->role == 'Supervisor Hybrid') ? "selected" : "" }}>Supervisor Hybrid</option>
                                 	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
                                 	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>Admin</option>                                	
+                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>Admin</option>                                	 -->
                                 </select>
                                	
                                 <span class="input-group-addon display-hide">
