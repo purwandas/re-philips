@@ -19,23 +19,6 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Group Product</label>
-                          <div class="col-sm-8">
-
-                          <div class="input-group" style="width: 100%;">
-
-                                <select class="select2select" name="groupproduct_id" id="groupproduct" required></select>
-
-                                <span class="input-group-addon display-hide">
-                                    <i class="fa"></i>
-                                </span>
-
-                            </div>
-
-                          </div>
-                        </div>
-
-                        <div class="form-group">
                           <label class="col-sm-3 control-label">Store</label>
                           <div class="col-sm-8">
 
@@ -70,14 +53,14 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Target Type</label>
+                          <label class="col-sm-3 control-label">Sell Type</label>
                           <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">
 
-                                <select class="select2select" name="type" id="type" required>
-                                    <option value="Total Dedicate" {{ (@$data->role == 'Total Dedicate') ? "selected" : "" }}>Total Dedicate</option>
-                                    <option value="Product Focus" {{ (@$data->role == 'Product Focus') ? "selected" : "" }}>Product Focus</option>
+                                <select class="select2select" name="sell_type" id="sell_type" required>
+                                    <option value="Sell In" {{ (@$data->sell_type == 'Sell In') ? "selected" : "" }}>Sell In</option>
+                                    <option value="Sell Out" {{ (@$data->sell_type == 'Sell Out') ? "selected" : "" }}>Sell Out</option>
                                 </select>
 
                                 <span class="input-group-addon display-hide">
@@ -90,11 +73,61 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Target</label>
+                          <label class="col-sm-3 control-label">Target DA</label>
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="targets" name="target" class="form-control" placeholder="Input Target" data-tooltip="true" />
+                                <input type="text" id="target_da" name="target_da" class="form-control" placeholder="Input Target DA" data-tooltip="true" value="0" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Target PF DA</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="target_pf_da" name="target_pf_da" class="form-control" placeholder="Input Target PF DA" data-tooltip="true" value="0" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Target PC</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="target_pc" name="target_pc" class="form-control" placeholder="Input Target PC" data-tooltip="true" value="0" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Target PF PC</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="target_pf_pc" name="target_pf_pc" class="form-control" placeholder="Input Target PF PC" data-tooltip="true" value="0" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Target MCC</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="target_mcc" name="target_mcc" class="form-control" placeholder="Input Target MCC" data-tooltip="true" value="0" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Target PF MCC</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="target_pf_mcc" name="target_pf_mcc" class="form-control" placeholder="Input Target PF MCC" data-tooltip="true" value="0" />
                             </div>
                           </div>
                         </div>

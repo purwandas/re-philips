@@ -59,6 +59,20 @@ class AuthController extends Controller
             $access = "Promoter";
         }
 
+        // Get Promoter KPI
+        $kpi = '';
+        if(count($storeIds) > 0){
+
+            $channel = Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name;
+
+            if($channel == 'Traditional Retail'){
+                $kpi = 'Sell In';
+            }else{
+                $kpi = 'Sell Out';
+            }
+
+        }
+
         if($user->role == 'Salesman Explorer') $access = "Salesman";
         if($user->role == 'Supervisor') $access = "Supervisor";
         if($user->role == 'DM') $access = "DM";
@@ -66,7 +80,7 @@ class AuthController extends Controller
         if($user->role == 'REM') $access = "REM";
 
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){

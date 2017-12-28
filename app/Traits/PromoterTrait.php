@@ -8,32 +8,22 @@ use App\Target;
 
 trait PromoterTrait {
 
-    public function getPromoterTitle($user_id, $store_id){
+    public function getPromoterTitle($user_id, $store_id, $sell_type){
 
-        $target = Target::where('user_id', $user_id)->where('store_id', $store_id)->get();
+        $target = Target::where('user_id', $user_id)->where('store_id', $store_id)->where('sell_type', $sell_type)->first();
 
         $result = '';
 
-        if(count($target) > 0){
+        if($target->target_da > 0){
+            $result = 'DA';
+        }else if($target->target_pc > 0){
+            $result = 'PC';
+        }else if($target->target_mcc > 0){
+            $result = 'MCC';
+        }
 
-            $group = [];
-
-            foreach ($target as $data) {
-
-                if (!in_array($data->groupProduct->name, $group)) {
-                    array_push($group, $data->groupProduct->name);
-                }
-
-            }
-
-            if(count($group) > 1){
-                $result = 'Hybrid';
-            }else if(count($group) == 1){
-                $result = $group[0];
-            }
-
-        }else{
-            $result = 'No Target';
+        if($target->target_da > 0 && $target->target_pc > 0){
+            $result = 'HYBRID';
         }
 
         return $result;

@@ -14,11 +14,16 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Traits\AttendanceTrait;
+use Illuminate\Support\Collection;
 use Auth;
 use App\Filters\UserFilters;
 use File;
 use App\NewsRead;
 use App\ProductKnowledgeRead;
+use App\Reports\HistoryEmployeeStore;
+use Carbon\Carbon;
+use DB;
+
 
 class UserController extends Controller
 {
@@ -163,6 +168,8 @@ class UserController extends Controller
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
+
+
         $request['password'] = bcrypt($request['password']);
 
         // dd(public_path());        
@@ -235,6 +242,29 @@ class UserController extends Controller
 
         }
 
+        // $userid = User::where('users.name', $request->name)->select('users.*');
+
+        // if($request['store_id']){
+        //     $newEmStore = $request->store_id;
+        //     HistoryEmployeeStore::create([
+        //                     'user_id' => $userId->id,
+        //                     'month' => Carbon::now()->format('m'),
+        //                     'year' => Carbon::now()->format('Y'),
+        //                     'details' => $newEmStore,
+        //             ]);
+        // }
+        // /* Employee Multiple Store */
+        // if($request['store_ids']){
+        //     $newEmStore = $request->store_ids;
+        //     $newEmStore2 = implode(",",$newEmStore);
+        //     HistoryEmployeeStore::create([
+        //                     'user_id' => $userId->id,
+        //                     'month' => Carbon::now()->format('m'),
+        //                     'year' => Carbon::now()->format('Y'),
+        //                     'details' => $newEmStore2,
+        //             ]);
+        // }
+
         /*
          * Generate attendance from day promoter works till end of month
          * (Just work for promoter group)
@@ -291,6 +321,72 @@ class UserController extends Controller
 
         $user = User::find($id);
         $oldPhoto = "";
+
+
+        
+        if($request['store_id']){
+            $newEmStore = $request->store_id;
+            HistoryEmployeeStore::create([
+                            'user_id' => $user->id,
+                            'month' => Carbon::now()->format('m'),
+                            'year' => Carbon::now()->format('Y'),
+                            'details' => $newEmStore,
+                    ]);
+        }
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            $newEmStore = $request->store_ids;
+            $newEmStore2 = implode(",",$newEmStore);
+            HistoryEmployeeStore::create([
+                            'user_id' => $user->id,
+                            'month' => Carbon::now()->format('m'),
+                            'year' => Carbon::now()->format('Y'),
+                            'details' => $newEmStore2,
+                    ]);
+        }
+
+
+                    // foreach ($emStore2 as $key => $value) {
+                    //     foreach ($newEmStore as $key2 => $value2) {
+                    //         if ($value == $value2) {
+                    //             $stay[] = $value;
+                    //             $c = deleteElement($value2,$c);
+                    //             $d = deleteElement($value2,$d);
+                    //         }
+                    //     }
+                    // }
+                    // if (isset($stay)) {
+                    // foreach ($c as $key => $value) {
+                    //         $headerDetails->push($value);
+                    // }
+                    // foreach ($stay as $key => $value) {
+                    //         $headerDetails->push($value);
+                    // }
+                    // foreach ($d as $key => $value) {
+                    //         $headerDetails->push($value);
+                    // }
+
+                    // EmployeeStore::create([
+                    //         'id' => $user->id,
+                    //         'name' => $user->name,
+                    //         'month' => $dateUser->month,
+                    //         'year' => $dateUser->year,
+                    //         'details' => $headerDetails,
+                    // ]);
+                    // }
+
+                    // function deleteElement( $item, $array ) {
+                    //     $index = array_search($item, $array);
+                    //     if ( $index !== false ) {
+                    //         unset( $array[$index] );
+                    //     }
+
+                    //     return $array;
+                    // }
+        
+
+
+
 
         if($user->photo != null && $request->photo_file != null) {
             /* Save old photo path */
@@ -398,6 +494,7 @@ class UserController extends Controller
                     'store_id' => $request['store_id'],
                 ]);
             }
+
 
             /* Employee Multiple Store */
             if($request['store_ids']){
