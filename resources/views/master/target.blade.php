@@ -54,11 +54,15 @@
                         <thead>
                             <tr>
                                 <th> No. </th>
-                                <th> Group Product </th>
                                 <th> Promoter </th>
                                 <th> Store </th>
-                                <th> Target Type </th>
-                                <th> Target </th>
+                                <th> Sell Type </th>
+                                <th> Target DA </th>
+                                <th> Target PF DA </th>
+                                <th> Target PC </th>
+                                <th> Target PF PC </th>
+                                <th> Target MCC </th>
+                                <th> Target PF MCC </th>
                                 <th> Options </th>
                             </tr>
                         </thead>
@@ -112,11 +116,15 @@
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
-                {data: 'groupproduct_name', name: 'groupproduct_name'},
                 {data: 'promoter_name', name: 'promoter_name'},
                 {data: 'store_name', name: 'store_name'},
-                {data: 'type', name: 'type'},
-                {data: 'target', name: 'target'},
+                {data: 'sell_type', name: 'sell_type'},
+                {data: 'target_da', name: 'target_da'},
+                {data: 'target_pf_da', name: 'target_pf_da'},
+                {data: 'target_pc', name: 'target_pc'},
+                {data: 'target_pf_pc', name: 'target_pf_pc'},
+                {data: 'target_mcc', name: 'target_mcc'},
+                {data: 'target_pf_mcc', name: 'target_pf_mcc'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
@@ -188,10 +196,16 @@
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
-        $('#targets').val('');
+        $('#target_da').val('0');
+        $('#target_pf_da').val('0');
+        $('#target_pc').val('0');
+        $('#target_pf_pc').val('0');
+        $('#target_mcc').val('0');
+        $('#target_pf_mcc').val('0');
+//        $('#sell_type').val('Sell In');
         select2Reset($("#promoter"));
         select2Reset($("#store"));
-        select2Reset($("#groupproduct"));
+        select2Reset($("#sell_type"));
 
         // Set action url form for add
         var postDataUrl = "{{ url('target') }}";
@@ -231,10 +245,15 @@
 
         $.get(getDataUrl + '/' + id, function (data) {
 
-                    $('#targets').val(data.target);
+                    $('#target_da').val(data.target_da);
+                    $('#target_pf_da').val(data.target_pf_da);
+                    $('#target_pc').val(data.target_pc);
+                    $('#target_pf_pc').val(data.target_pf_pc);
+                    $('#target_mcc').val(data.target_mcc);
+                    $('#target_pf_mcc').val(data.target_pf_mcc);
+                    setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
                     setSelect2IfPatchModal($("#promoter"), data.user_id, data.user.name);
                     setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")" + " - " + data.store.dedicate);
-                    setSelect2IfPatchModal($("#groupproduct"), data.groupproduct_id, data.group_product.name);
 
                     // Set filters
                     self.selected('byEmployee', $('#promoter').val());
@@ -278,19 +297,9 @@
                 self.selected('byStore', $('#store').val());
         });
 
-        $('#groupproduct').select2(setOptions('{{ route("data.groupproduct") }}', 'Group Product', function (params) {
-            return filterData('name', params.term);
-        }, function (data, params) {
-            return {
-                results: $.map(data, function (obj) {
-                    return {id: obj.id, text: obj.name}
-                })
-            }
-        }));
-
-        $('#type').select2({
+        $('#sell_type').select2({
             width: '100%',
-            placeholder: 'Target Type'
+            placeholder: 'Sell Type'
         });
 
     }

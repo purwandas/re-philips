@@ -6,9 +6,9 @@
 var FormValidation = function () {
 
     // Master Validation
-    var targetValidation = function() {
+    var channelValidation = function() {
 
-            var form = $('#form_target');
+            var form = $('#form_editretdistributor');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
@@ -18,57 +18,19 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
                 rules: {
-                    user_id:{
+                    quantity: {
+                        minlength: 1,
                         required: true,
                     },
-                    store_id:{
-                        required: true,
-                    },
-                    sell_type:{
-                        required: true,
-                    },
-                    target_da: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_pf_da: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_pc: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_pf_pc: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_mcc: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_pf_mcc: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
+                    // globalchannel:{
+                    //     required: true,
+                    // },
 
                 },
                 messages:{
-                    user_id:{
-                        required: "Please select a Promoter!"
-                    },
-                    store_id:{
-                        required: "Please select a Store!"
-                    },
-                    sell_type:{
-                        required: "Please select a Sell Type!"
-                    },
+                    // globalchannel_id:{
+                    //     required: "Please select a Global Channel!"
+                    // }
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit
@@ -236,10 +198,10 @@ var FormValidation = function () {
                                     // window.location.href = data.url;
                                     // console.log(data);
 
-                                    $('#targetTable').DataTable().search('').draw();
-                                    $('#targetTable').DataTable().ajax.reload();
+                                    $('#retDistributorTable').DataTable().search('').draw();
+                                    $('#retDistributorTable').DataTable().ajax.reload();
 
-                                    $('#target').modal('hide');
+                                    $('#editretdistributor').modal('hide');
                                 }
                             )
                             // console.log(data.method);
@@ -261,7 +223,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            targetValidation();
+            channelValidation();
 
         }
 
@@ -278,24 +240,13 @@ jQuery(document).ready(function() {
     FormValidation.init();
 });
 
-/*
- * Select2 validation
- *
- */
-
-$(document.body).on("change",".select2select",function(){
-
-    select2Change($(this), $('#form_target'));
-
-});
-
 // Reset Validation
 function resetValidation(){
-    $('#form_target').each(function(){
+    $('#form_editretdistributor').each(function(){
         $(this).find('.form-group').removeClass('has-error').removeClass('has-success');
         $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
     });
 
-    $('.alert-danger', $('#form_target')).hide();
-    $('.alert-success', $('#form_target')).hide();
+    $('.alert-danger', $('#form_editretdistributor')).hide();
+    $('.alert-success', $('#form_editretdistributor')).hide();
 }

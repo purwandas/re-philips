@@ -15,6 +15,7 @@ use App\Reports\SummaryRetConsument;
 use App\Reports\SummaryRetDistributor;
 use App\Reports\SummaryFreeProduct;
 use App\Reports\SummaryTbat;
+use App\Traits\ActualTrait;
 use App\Traits\PromoterTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -40,7 +41,7 @@ use App\TrainerArea;
 
 class SalesController extends Controller
 {
-    use PromoterTrait;
+    use ActualTrait;
 
     public function store(Request $request, $param){
 
@@ -74,6 +75,8 @@ class SalesController extends Controller
 
                                 $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
 
+                                $value_old = $summary->value;
+
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
                                 ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
@@ -87,6 +90,18 @@ class SalesController extends Controller
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['week'] = $sellInHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+
+                                $this->changeActual($summary_ta, 'change');
 
                             } else { // If data didn't exist -> create
 
@@ -212,6 +227,17 @@ class SalesController extends Controller
                                     'trainer_name' => $trainer_name,
                                 ]);
 
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['week'] = $sellInHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+
+                                $this->changeActual($summary_ta, 'change');
+
                             }
 
                         }
@@ -323,7 +349,7 @@ class SalesController extends Controller
                                 }
                             }
 
-                            SummarySellIn::create([
+                            $summary = SummarySellIn::create([
                                 'sellin_detail_id' => $detail->id,
                                 'region_id' => $store->district->area->region->id,
                                 'area_id' => $store->district->area->id,
@@ -360,6 +386,17 @@ class SalesController extends Controller
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
                             ]);
+
+                            // Actual Summary
+                            $summary_ta['user_id'] = $transaction->user_id;
+                            $summary_ta['store_id'] = $transaction->store_id;
+                            $summary_ta['week'] = $transaction->week;
+                            $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                            $summary_ta['value'] = $summary->value;
+                            $summary_ta['group'] = $summary->group;
+                            $summary_ta['sell_type'] = 'Sell In';
+
+                            $this->changeActual($summary_ta, 'change');
 
                         }
 
@@ -401,6 +438,8 @@ class SalesController extends Controller
 
                                 $summary = SummarySellOut::where('sellout_detail_id', $sellOutDetail->id)->first();
 
+                                $value_old = $summary->value;
+
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
                                 ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
@@ -414,6 +453,18 @@ class SalesController extends Controller
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellOutHeader->user_id;
+                                $summary_ta['store_id'] = $sellOutHeader->store_id;
+                                $summary_ta['week'] = $sellOutHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell Out';
+
+                                $this->changeActual($summary_ta, 'change');
 
                             } else { // If data didn't exist -> create
 
@@ -501,7 +552,7 @@ class SalesController extends Controller
                                     }
                                 }
 
-                                SummarySellOut::create([
+                                $summary = SummarySellOut::create([
                                     'sellout_detail_id' => $detail->id,
                                     'region_id' => $store->district->area->region->id,
                                     'area_id' => $store->district->area->id,
@@ -538,6 +589,17 @@ class SalesController extends Controller
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellOutHeader->user_id;
+                                $summary_ta['store_id'] = $sellOutHeader->store_id;
+                                $summary_ta['week'] = $sellOutHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell Out';
+
+                                $this->changeActual($summary_ta, 'change');
 
                             }
 
@@ -650,7 +712,7 @@ class SalesController extends Controller
                                 }
                             }
 
-                            SummarySellOut::create([
+                            $summary = SummarySellOut::create([
                                 'sellout_detail_id' => $detail->id,
                                 'region_id' => $store->district->area->region->id,
                                 'area_id' => $store->district->area->id,
@@ -687,6 +749,17 @@ class SalesController extends Controller
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
                             ]);
+
+                            // Actual Summary
+                            $summary_ta['user_id'] = $transaction->user_id;
+                            $summary_ta['store_id'] = $transaction->store_id;
+                            $summary_ta['week'] = $transaction->week;
+                            $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                            $summary_ta['value'] = $summary->value;
+                            $summary_ta['group'] = $summary->group;
+                            $summary_ta['sell_type'] = 'Sell Out';
+
+                            $this->changeActual($summary_ta, 'change');
 
                         }
 
@@ -728,16 +801,9 @@ class SalesController extends Controller
 
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
-
                                 $summary->update([
                                     'quantity' => $summary->quantity + $data['quantity'],
                                     'value' => $value,
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -781,22 +847,6 @@ class SalesController extends Controller
                                     if ($distDetail->id != $dist->last()->id) {
                                         $distributor_code .= ', ';
                                         $distributor_name .= ', ';
-                                    }
-                                }
-
-                                /* Value - Product Focus */
-                                $value_pf_mr = 0;
-                                $value_pf_tr = 0;
-                                $value_pf_ppe = 0;
-
-                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                                foreach ($productFocus as $productFocusDetail) {
-                                    if ($productFocusDetail->type == 'Modern Retail') {
-                                        $value_pf_mr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                        $value_pf_tr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'PPE') {
-                                        $value_pf_ppe = $realPrice * $data['quantity'];
                                     }
                                 }
 
@@ -855,9 +905,9 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'value_pf_mr' => 0,
+                                    'value_pf_tr' => 0,
+                                    'value_pf_ppe' => 0,
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -933,22 +983,6 @@ class SalesController extends Controller
                                 }
                             }
 
-                            /* Value - Product Focus */
-                            $value_pf_mr = 0;
-                            $value_pf_tr = 0;
-                            $value_pf_ppe = 0;
-
-                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                            foreach ($productFocus as $productFocusDetail) {
-                                if ($productFocusDetail->type == 'Modern Retail') {
-                                    $value_pf_mr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                    $value_pf_tr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'PPE') {
-                                    $value_pf_ppe = $realPrice * $detail->quantity;
-                                }
-                            }
-
                             /* DM */
                             $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
                             $dm = User::whereIn('id', $dmIds)->get();
@@ -1004,9 +1038,9 @@ class SalesController extends Controller
                                 'quantity' => $detail->quantity,
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
-                                'value_pf_mr' => $value_pf_mr,
-                                'value_pf_tr' => $value_pf_tr,
-                                'value_pf_ppe' => $value_pf_ppe,
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
@@ -1053,16 +1087,9 @@ class SalesController extends Controller
 
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
-
                                 $summary->update([
                                     'quantity' => $summary->quantity + $data['quantity'],
                                     'value' => $value,
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -1106,22 +1133,6 @@ class SalesController extends Controller
                                     if ($distDetail->id != $dist->last()->id) {
                                         $distributor_code .= ', ';
                                         $distributor_name .= ', ';
-                                    }
-                                }
-
-                                /* Value - Product Focus */
-                                $value_pf_mr = 0;
-                                $value_pf_tr = 0;
-                                $value_pf_ppe = 0;
-
-                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                                foreach ($productFocus as $productFocusDetail) {
-                                    if ($productFocusDetail->type == 'Modern Retail') {
-                                        $value_pf_mr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                        $value_pf_tr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'PPE') {
-                                        $value_pf_ppe = $realPrice * $data['quantity'];
                                     }
                                 }
 
@@ -1180,9 +1191,9 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'value_pf_mr' => 0,
+                                    'value_pf_tr' => 0,
+                                    'value_pf_ppe' => 0,
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -1258,22 +1269,6 @@ class SalesController extends Controller
                                 }
                             }
 
-                            /* Value - Product Focus */
-                            $value_pf_mr = 0;
-                            $value_pf_tr = 0;
-                            $value_pf_ppe = 0;
-
-                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                            foreach ($productFocus as $productFocusDetail) {
-                                if ($productFocusDetail->type == 'Modern Retail') {
-                                    $value_pf_mr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                    $value_pf_tr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'PPE') {
-                                    $value_pf_ppe = $realPrice * $detail->quantity;
-                                }
-                            }
-
                             /* DM */
                             $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
                             $dm = User::whereIn('id', $dmIds)->get();
@@ -1329,9 +1324,9 @@ class SalesController extends Controller
                                 'quantity' => $detail->quantity,
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
-                                'value_pf_mr' => $value_pf_mr,
-                                'value_pf_tr' => $value_pf_tr,
-                                'value_pf_ppe' => $value_pf_ppe,
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
@@ -1378,16 +1373,9 @@ class SalesController extends Controller
 
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
-
                                 $summary->update([
                                     'quantity' => $summary->quantity + $data['quantity'],
                                     'value' => $value,
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -1431,22 +1419,6 @@ class SalesController extends Controller
                                     if ($distDetail->id != $dist->last()->id) {
                                         $distributor_code .= ', ';
                                         $distributor_name .= ', ';
-                                    }
-                                }
-
-                                /* Value - Product Focus */
-                                $value_pf_mr = 0;
-                                $value_pf_tr = 0;
-                                $value_pf_ppe = 0;
-
-                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                                foreach ($productFocus as $productFocusDetail) {
-                                    if ($productFocusDetail->type == 'Modern Retail') {
-                                        $value_pf_mr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                        $value_pf_tr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'PPE') {
-                                        $value_pf_ppe = $realPrice * $data['quantity'];
                                     }
                                 }
 
@@ -1505,9 +1477,9 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'value_pf_mr' => 0,
+                                    'value_pf_tr' => 0,
+                                    'value_pf_ppe' => 0,
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -1583,22 +1555,6 @@ class SalesController extends Controller
                                 }
                             }
 
-                            /* Value - Product Focus */
-                            $value_pf_mr = 0;
-                            $value_pf_tr = 0;
-                            $value_pf_ppe = 0;
-
-                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                            foreach ($productFocus as $productFocusDetail) {
-                                if ($productFocusDetail->type == 'Modern Retail') {
-                                    $value_pf_mr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                    $value_pf_tr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'PPE') {
-                                    $value_pf_ppe = $realPrice * $detail->quantity;
-                                }
-                            }
-
                             /* DM */
                             $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
                             $dm = User::whereIn('id', $dmIds)->get();
@@ -1654,9 +1610,9 @@ class SalesController extends Controller
                                 'quantity' => $detail->quantity,
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
-                                'value_pf_mr' => $value_pf_mr,
-                                'value_pf_tr' => $value_pf_tr,
-                                'value_pf_ppe' => $value_pf_ppe,
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
@@ -1703,16 +1659,9 @@ class SalesController extends Controller
 
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
-
                                 $summary->update([
                                     'quantity' => $summary->quantity + $data['quantity'],
                                     'value' => $value,
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -1760,22 +1709,6 @@ class SalesController extends Controller
                                     if ($distDetail->id != $dist->last()->id) {
                                         $distributor_code .= ', ';
                                         $distributor_name .= ', ';
-                                    }
-                                }
-
-                                /* Value - Product Focus */
-                                $value_pf_mr = 0;
-                                $value_pf_tr = 0;
-                                $value_pf_ppe = 0;
-
-                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                                foreach ($productFocus as $productFocusDetail) {
-                                    if ($productFocusDetail->type == 'Modern Retail') {
-                                        $value_pf_mr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                        $value_pf_tr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'PPE') {
-                                        $value_pf_ppe = $realPrice * $data['quantity'];
                                     }
                                 }
 
@@ -1839,9 +1772,9 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'value_pf_mr' => 0,
+                                    'value_pf_tr' => 0,
+                                    'value_pf_ppe' => 0,
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -1924,22 +1857,6 @@ class SalesController extends Controller
                                 }
                             }
 
-                            /* Value - Product Focus */
-                            $value_pf_mr = 0;
-                            $value_pf_tr = 0;
-                            $value_pf_ppe = 0;
-
-                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                            foreach ($productFocus as $productFocusDetail) {
-                                if ($productFocusDetail->type == 'Modern Retail') {
-                                    $value_pf_mr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                    $value_pf_tr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'PPE') {
-                                    $value_pf_ppe = $realPrice * $detail->quantity;
-                                }
-                            }
-
                             /* DM */
                             $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
                             $dm = User::whereIn('id', $dmIds)->get();
@@ -2000,9 +1917,9 @@ class SalesController extends Controller
                                 'quantity' => $detail->quantity,
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
-                                'value_pf_mr' => $value_pf_mr,
-                                'value_pf_tr' => $value_pf_tr,
-                                'value_pf_ppe' => $value_pf_ppe,
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,

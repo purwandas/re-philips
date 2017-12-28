@@ -11,7 +11,7 @@ class Target extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'store_id', 'groupproduct_id', 'target', 'type'
+        'user_id', 'store_id', 'sell_type','target_da', 'target_pf_da', 'target_pc', 'target_pf_pc', 'target_mcc', 'target_pf_mcc'
     ];
 
     /**
@@ -36,11 +36,6 @@ class Target extends Model
     public function store()
     {
         return $this->belongsTo('App\Store', 'store_id');
-    }
-
-    public function groupProduct()
-    {
-        return $this->belongsTo('App\GroupProduct', 'groupproduct_id');
     }
 
     /**
