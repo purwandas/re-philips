@@ -1197,7 +1197,7 @@ class ReportController extends Controller
 
     }
 
-    public function displayShareData(Request $request, SellinFilters $filters){
+    public function displayShareData(Request $request, DisplayShareFilters $filters){
 
         // Check data summary atau history
         $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
@@ -1207,7 +1207,7 @@ class ReportController extends Controller
 
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            $data = SummaryDisplayShare::all();
+            $data = SummaryDisplayShare::all();            
 
             $filter = $data;
 
@@ -1232,7 +1232,7 @@ class ReportController extends Controller
                 $filter = $data->where('user_id', $request['byEmployee']);
             }
 
-            return Datatables::of($filter->all())
+            return Datatables::of($filter)
             ->make(true);
 
         }else{ // Fetch data from history

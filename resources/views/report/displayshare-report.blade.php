@@ -82,7 +82,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Sell In</span>
+                            <span class="caption-subject font-blue bold uppercase">Display Share</span>
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
@@ -179,7 +179,7 @@
 
         var exportButton = '#export';
 
-        var paramFilter = ['DisplayShareReport', $('#displayShareReport'), url, tableColumns, columnDefs, order, exportButton];
+        var paramFilter = ['displayShareReport', $('#displayShareReport'), url, tableColumns, columnDefs, order, exportButton];
 
         var paramReset = [filterId, 'displayShareReport', $('#displayShareReport'), url, tableColumns, columnDefs, order];
 

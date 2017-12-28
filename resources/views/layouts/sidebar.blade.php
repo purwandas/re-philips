@@ -247,7 +247,7 @@
                 </a>
             </li>
 
-            <li class="nav-item {{ Request::is('sosreport') ? 'active open' : '' }}">
+            <li class="nav-item {{ Request::is('displaysharereport') ? 'active open' : '' }}">
                 <a href="{{ url('displaysharereport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
                     <span class="title">Display Share Report</span>                    
