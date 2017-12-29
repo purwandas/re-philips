@@ -16,6 +16,7 @@ Route::group(['middleware' => ['auth']], function () {
      */
 
     Route::post('datatable/user', ['as'=> 'datatable.user','uses'=>'UserController@masterDataTable']);
+    Route::post('datatable/userpromoter', ['as'=> 'datatable.userpromoter','uses'=>'UserPromoterController@masterDataTable']);
     Route::post('datatable/area', ['as'=> 'datatable.area','uses'=>'Master\AreaController@masterDataTable']);
     Route::post('datatable/district', ['as'=> 'datatable.district','uses'=>'Master\DistrictController@masterDataTable']);
     Route::post('datatable/channel', ['as'=> 'datatable.channel','uses'=>'Master\ChannelController@masterDataTable']);
@@ -43,6 +44,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/feedbackCategory', ['as'=> 'datatable.feedbackCategory','uses'=>'Master\FeedbackCategoryController@masterDataTable']);
     Route::post('datatable/feedbackQuestion', ['as'=> 'datatable.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@masterDataTable']);
     Route::post('datatable/feedbackAnswer', ['as'=> 'datatable.feedbackAnswer','uses'=>'Master\FeedbackAnswerController@masterDataTable']);
+
+    /**
+     * Edit Sales
+     */
+
+    Route::post('datatable/editretdistributor', ['as'=> 'datatable.editretdistributor','uses'=>'Master\EditRetDistributorController@masterDataTable']);
+    Route::post('datatable/editretconsument', ['as'=> 'datatable.editretconsument','uses'=>'Master\EditRetConsumentController@masterDataTable']);
+    Route::post('datatable/editfreeproduct', ['as'=> 'datatable.editfreeproduct','uses'=>'Master\EditFreeProductController@masterDataTable']);
+    Route::post('datatable/edittbat', ['as'=> 'datatable.edittbat','uses'=>'Master\EditTbatController@masterDataTable']);
+    Route::post('datatable/editsoh', ['as'=> 'datatable.editsoh','uses'=>'Master\EditSohController@masterDataTable']);
+    Route::post('datatable/editdisplayshare', ['as'=> 'datatable.editdisplayshare','uses'=>'Master\EditDisplayShareController@masterDataTable']);
+    Route::post('datatable/editposmactivity', ['as'=> 'datatable.editposmactivity','uses'=>'Master\EditPosmActivityController@masterDataTable']);
+
     
     /**
      * Report
@@ -79,6 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/district', ['as'=> 'data.district','uses'=>'Master\DistrictController@getDataWithFilters']);
     Route::post('data/employee', ['as'=> 'data.employee','uses'=>'UserController@getDataWithFilters']);
     Route::post('data/promoter', ['as'=> 'data.promoter','uses'=>'UserController@getDataPromoterWithFilters']);
+    Route::post('data/userpromoter', ['as'=> 'data.userpromoter','uses'=>'UserPromoterController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/product', ['as'=> 'data.product','uses'=>'Master\ProductController@getDataWithFilters']);
     
