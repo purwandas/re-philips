@@ -57,7 +57,7 @@ trait TargetTrait {
                             'store_id' => $store->store_id,
                             'store_name_1' => $store->store_name_1,
                             'store_name_2' => $store->store_name_2,
-                            'spv_name' => $store->user->name,
+                            'spv_name' => ($store->user->name != '') ? $store->user->name : '',
                             'trainer' => $trainer_name,
                             'sell_type' => $data['sell_type'],
                         ]);

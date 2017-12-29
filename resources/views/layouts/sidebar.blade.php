@@ -153,9 +153,19 @@
                             <span class="title">Promoter Target</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
+                        <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
+                            <span class="title">Salesman Target</span>
+                        </a>
+                    </li>
                     <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
                         <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
                             <span class="title">Product Focus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('productfocussalesman') ? 'active open' : '' }}">
+                        <a href="{{ url('productfocussalesman') }}" class="nav-link nav-toggle">
+                            <span class="title">Product Focus (Salesman)</span>
                         </a>
                     </li>
                     <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">

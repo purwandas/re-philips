@@ -22,6 +22,13 @@ class PromoActivityController extends Controller
 
     public function store(Request $request){
 
+        $start_period = str_replace('"', '', $request->start_period);
+        $end_period = str_replace('"', '', $request->end_period);
+
+        // // $date = Carbon::parse($request->);
+
+        // return response()->json(['status' => true, 'message' => $start_period]);
+
         $user = JWTAuth::parseToken()->authenticate();
 
         if(!isset($request->promo_type) || $request->promo_type == null){
@@ -46,15 +53,15 @@ class PromoActivityController extends Controller
                                 ->where('date', date('Y-m-d'))
                                 ->where('promo_type', $request->promo_type)
                                 ->where('information', $request->information)
-                                ->where('start_period', Carbon::parse($request->start_period)->format('Y-m-d'))
-                                ->where('end_period', Carbon::parse($request->end_period)->format('Y-m-d'))
+                                ->where('start_period', Carbon::parse($start_period)->format('Y-m-d'))
+                                ->where('end_period', Carbon::parse($end_period)->format('Y-m-d'))
                                 ->first();
 
         // Get how many data
         $dataLength = count($request->product_id);
 
-        $startPeriod = Carbon::parse($request->start_period);//->format('d F Y'); Year - Month - Day
-        $endPeriod = Carbon::parse($request->end_period);//->format('d F Y');
+        $startPeriod = Carbon::parse($start_period);//->format('d F Y'); Year - Month - Day
+        $endPeriod = Carbon::parse($end_period);//->format('d F Y');
 
         if($promoActivityHeader){
 
@@ -159,8 +166,8 @@ class PromoActivityController extends Controller
                                     ->where('date', date('Y-m-d'))
                                     ->where('promo_type', $request->promo_type)
                                     ->where('information', $request->information)
-                                    ->where('start_period', Carbon::parse($request->start_period)->format('Y-m-d'))
-                                    ->where('end_period', Carbon::parse($request->end_period)->format('Y-m-d'))
+                                    ->where('start_period', Carbon::parse($start_period)->format('Y-m-d'))
+                                    ->where('end_period', Carbon::parse($end_period)->format('Y-m-d'))
                                     ->first();
 
             // Upload image process

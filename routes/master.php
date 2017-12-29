@@ -144,12 +144,26 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('target/{id}', 'Master\TargetController@update');
         Route::delete('target/{id}', 'Master\TargetController@destroy');
 
+        /** Target Salesman **/
+        Route::get('targetsalesman', 'Master\TargetSalesmanController@index');
+        Route::post('targetsalesman', 'Master\TargetSalesmanController@store');
+        Route::get('targetsalesman/edit/{id}', 'Master\TargetSalesmanController@edit');
+        Route::patch('targetsalesman/{id}', 'Master\TargetSalesmanController@update');
+        Route::delete('targetsalesman/{id}', 'Master\TargetSalesmanController@destroy');
+
         /** Product Focus **/
         Route::get('productfocus', 'Master\ProductFocusController@index');
         Route::post('productfocus', 'Master\ProductFocusController@store');
         Route::get('productfocus/edit/{id}', 'Master\ProductFocusController@edit');
         Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
         Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
+
+        /** Product Focus Salesman **/
+        Route::get('productfocussalesman', 'Master\ProductFocusSalesmanController@index');
+        Route::post('productfocussalesman', 'Master\ProductFocusSalesmanController@store');
+        Route::get('productfocussalesman/edit/{id}', 'Master\ProductFocusSalesmanController@edit');
+        Route::patch('productfocussalesman/{id}', 'Master\ProductFocusSalesmanController@update');
+        Route::delete('productfocussalesman/{id}', 'Master\ProductFocusSalesmanController@destroy');
 
         /** Fanspage **/
         // Route::resource('fanspage', 'Master\FanspageController');

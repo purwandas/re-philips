@@ -55,7 +55,7 @@ class AuthController extends Controller
 		// Generate access for mobile
         $access = "";
 
-        if($user->role == 'Promoter' || $user->role == 'Promoter Additional' || $user->role == 'Promoter Event' || $user->role == 'Demonstrator MCC' || $user->role == 'Demonstrator DA' || $user->role == 'ACT'  || $user->role == 'PPE' || $user->role == 'BDT' || $user->role == 'Salesman Explorer' || $user->role == 'SMD' || $user->role == 'SMD Coordinator' || $user->role == 'HIC' || $user->role == 'HIE' || $user->role == 'SMD Additional' || $user->role == 'ASC'){
+        if($user->role == 'Promoter' || $user->role == 'Promoter Additional' || $user->role == 'Promoter Event' || $user->role == 'Demonstrator MCC' || $user->role == 'Demonstrator DA' || $user->role == 'ACT'  || $user->role == 'PPE' || $user->role == 'BDT' || $user->role == 'SMD' || $user->role == 'SMD Coordinator' || $user->role == 'HIC' || $user->role == 'HIE' || $user->role == 'SMD Additional' || $user->role == 'ASC'){
             $access = "Promoter";
         }
 
@@ -70,7 +70,10 @@ class AuthController extends Controller
             }else{
                 $kpi = 'Sell Out';
             }
+        }
 
+        if($user->role == 'Salesman Explorer'){
+            $kpi = 'Sell In';
         }
 
         if($user->role == 'Salesman Explorer') $access = "Salesman";

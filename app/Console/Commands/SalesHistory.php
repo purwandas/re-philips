@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Reports\HistoryTargetActual;
+use App\Reports\SummaryTargetActual;
 use App\SellIn;
 use App\SellInDetail;
 use App\Reports\SummarySellIn;
@@ -94,6 +96,7 @@ class SalesHistory extends Command
         $this->tbat();
         $this->displayshare();
         $this->soh();
+        $this->targetActual();
         
         // $this->sos();
     }
@@ -137,7 +140,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -341,7 +344,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -544,7 +547,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -747,7 +750,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -950,7 +953,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1153,7 +1156,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1357,7 +1360,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1538,7 +1541,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1742,7 +1745,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = $store->user->name ?? '';
+                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1903,6 +1906,136 @@ class SalesHistory extends Command
         }
 
         $this->info('History SOS berhasil dibuat');
+
+    }
+
+    /**
+     * History Sales : Target Actual
+     *
+     */
+    public function targetActual(){
+
+        /* Init */
+        $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+        $users = User::whereIn('role', $role)->get();
+
+        foreach ($users as $user){
+
+            $dateByUser = SummaryTargetActual::where('user_id', $user->id)
+                ->whereMonth('summary_target_actuals.created_at', '<', Carbon::now()->format('m'))
+                ->whereYear('summary_target_actuals.created_at', '<', Carbon::now()->format('Y'), 'or')
+                ->groupBy(DB::raw("YEAR(summary_target_actuals.created_at)"), DB::raw("MONTH(summary_target_actuals.created_at)"))->orderBy(DB::raw("YEAR(summary_target_actuals.created_at)"), DB::raw("MONTH(summary_target_actuals.created_at)"))
+                ->select('summary_target_actuals.user_id', DB::raw("YEAR(summary_target_actuals.created_at) as year"), DB::raw("MONTH(summary_target_actuals.created_at) as month"))->get();
+
+            foreach ($dateByUser as $dateUser) {
+
+                $details = new Collection();
+
+                $data = SummaryTargetActual::where('user_id', $user->id)
+                                ->whereMonth('summary_target_actuals.created_at', '=', $dateUser->month)
+                                ->whereYear('summary_target_actuals.created_at', '=', $dateUser->year)->get();
+
+                foreach ($data as $detail) {
+
+                    /* Details */
+                    $detailsData = ([
+                        'region_id' => $detail->region_id,
+                        'area_id' => $detail->area_id,
+                        'district_id' => $detail->district_id,
+                        'storeId' => $detail->storeId,
+                        'user_id' => $detail->user_id,
+                        'region' => $detail->region,
+                        'area' => $detail->area,
+                        'district' => $detail->district,
+                        'nik' => $detail->nik,
+                        'promoter_name' => $detail->promoter_name,
+                        'account_type' => $detail->account_type,
+                        'title_of_promoter' => $detail->title_of_promoter,
+                        'classification_store' => $detail->classification_store,
+                        'account' => $detail->account,
+                        'store_id' => $detail->store_id,
+                        'store_name_1' => $detail->store_name_1,
+                        'store_name_2' => $detail->store_name_2,
+                        'spv_name' => $detail->spv_name,
+                        'trainer' => $detail->trainer,
+                        'sell_type' => $detail->sell_type,
+                        'target_dapc' => $detail->target_dapc,
+                        'actual_dapc' => $detail->actual_dapc,
+                        'target_da' => $detail->target_da,
+                        'actual_da' => $detail->actual_da,
+                        'target_pc' => $detail->target_pc,
+                        'actual_pc' => $detail->actual_pc,
+                        'target_mcc' => $detail->target_mcc,
+                        'actual_mcc' => $detail->actual_mcc,
+                        'target_pf_da' => $detail->target_pf_da,
+                        'actual_pf_da' => $detail->actual_pf_da,
+                        'target_pf_pc' => $detail->target_pf_pc,
+                        'actual_pf_pc' => $detail->actual_pf_pc,
+                        'target_pf_mcc' => $detail->target_pf_mcc,
+                        'actual_pf_mcc' => $detail->actual_pf_mcc,
+                        'target_da_w1' => $detail->target_da_w1,
+                        'actual_da_w1' => $detail->actual_da_w1,
+                        'target_da_w2' => $detail->target_da_w2,
+                        'actual_da_w2' => $detail->actual_da_w2,
+                        'target_da_w3' => $detail->target_da_w3,
+                        'actual_da_w3' => $detail->actual_da_w3,
+                        'target_da_w4' => $detail->target_da_w4,
+                        'actual_da_w4' => $detail->actual_da_w4,
+                        'target_da_w5' => $detail->target_da_w5,
+                        'actual_da_w5' => $detail->actual_da_w5,
+                        'target_pc_w1' => $detail->target_pc_w1,
+                        'actual_pc_w1' => $detail->actual_pc_w1,
+                        'target_pc_w2' => $detail->target_pc_w2,
+                        'actual_pc_w2' => $detail->actual_pc_w2,
+                        'target_pc_w3' => $detail->target_pc_w3,
+                        'actual_pc_w3' => $detail->actual_pc_w3,
+                        'target_pc_w4' => $detail->target_pc_w4,
+                        'actual_pc_w4' => $detail->actual_pc_w4,
+                        'target_pc_w5' => $detail->target_pc_w5,
+                        'actual_pc_w5' => $detail->actual_pc_w5,
+                        'target_mcc_w1' => $detail->target_mcc_w1,
+                        'actual_mcc_w1' => $detail->actual_mcc_w1,
+                        'target_mcc_w2' => $detail->target_mcc_w2,
+                        'actual_mcc_w2' => $detail->actual_mcc_w2,
+                        'target_mcc_w3' => $detail->target_mcc_w3,
+                        'actual_mcc_w3' => $detail->actual_mcc_w3,
+                        'target_mcc_w4' => $detail->target_mcc_w4,
+                        'actual_mcc_w4' => $detail->actual_mcc_w4,
+                        'target_mcc_w5' => $detail->target_mcc_w5,
+                        'actual_mcc_w5' => $detail->actual_mcc_w5,
+                        'sum_target_store' => $detail->sum_target_store,
+                        'sum_actual_store' => $detail->sum_actual_store,
+                        'sum_target_area' => $detail->sum_target_area,
+                        'sum_actual_area' => $detail->sum_actual_area,
+                        'sum_target_region' => $detail->sum_target_region,
+                        'sum_actual_region' => $detail->sum_actual_region,
+                    ]);
+                    $details->push($detailsData);
+
+                    /* Delete summary table */
+                    $summary = SummaryTargetActual::where('id', $detail->id);
+                    $summary->delete();
+
+                }
+
+                if($dateByUser->count() > 0){
+
+                    /* Insert Data */
+                    $h = new HistoryTargetActual();
+                    $h->user_id = $user->id;
+                    $h->month = $dateUser->month;
+                    $h->year = $dateUser->year;
+                    $h->details = $details;
+                    $h->save();
+
+                }
+
+            }
+
+        }
+
+        $this->info('History Target Actual berhasil dibuat');
 
     }
 
