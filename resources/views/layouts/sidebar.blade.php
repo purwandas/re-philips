@@ -277,6 +277,41 @@
             </a>
             </li>
 
+            <li class="nav-item {{ Request::is('editfreeproduct') ? 'active open' : '' }}">
+            <a href="{{ url('editfreeproduct') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update Free Product</span>
+            </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('edittbat') ? 'active open' : '' }}">
+            <a href="{{ url('edittbat') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update TBAT</span>
+            </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('editsoh') ? 'active open' : '' }}">
+            <a href="{{ url('editsoh') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update SOH</span>
+            </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('editdisplayshare') ? 'active open' : '' }}">
+            <a href="{{ url('editdisplayshare') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update Display Share</span>
+            </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('editposmactivity') ? 'active open' : '' }}">
+            <a href="{{ url('editposmactivity') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update POSM Activity</span>
+            </a>
+            </li>
+
             @endif
 
             @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'RSM' || Auth::user()->role == 'DM' || Auth::user()->role == 'Supervisor')

@@ -216,6 +216,36 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('editretconsument/{id}', 'Master\EditRetConsumentController@update');
         Route::delete('editretconsument/{id}', 'Master\EditRetConsumentController@destroy');
 
+        /** Free Product **/
+        Route::get('editfreeproduct', 'Master\EditFreeProductController@index');
+        Route::get('editfreeproduct/edit/{id}', 'Master\EditFreeProductController@edit');
+        Route::patch('editfreeproduct/{id}', 'Master\EditFreeProductController@update');
+        Route::delete('editfreeproduct/{id}', 'Master\EditFreeProductController@destroy');
+
+        /** TBAT **/
+        Route::get('edittbat', 'Master\EditTbatController@index');
+        Route::get('edittbat/edit/{id}', 'Master\EditTbatController@edit');
+        Route::patch('edittbat/{id}', 'Master\EditTbatController@update');
+        Route::delete('edittbat/{id}', 'Master\EditTbatController@destroy');
+
+        /** SOH **/
+        Route::get('editsoh', 'Master\EditSohController@index');
+        Route::get('editsoh/edit/{id}', 'Master\EditSohController@edit');
+        Route::patch('editsoh/{id}', 'Master\EditSohController@update');
+        Route::delete('editsoh/{id}', 'Master\EditSohController@destroy');
+
+        /** Display Share **/
+        Route::get('editdisplayshare', 'Master\EditDisplayShareController@index');
+        Route::get('editdisplayshare/edit/{id}', 'Master\EditDisplayShareController@edit');
+        Route::patch('editdisplayshare/{id}', 'Master\EditDisplayShareController@update');
+        Route::delete('editdisplayshare/{id}', 'Master\EditDisplayShareController@destroy');
+
+        /** POSM Activity **/
+        Route::get('editposmactivity', 'Master\EditPosmActivityController@index');
+        Route::get('editposmactivity/edit/{id}', 'Master\EditPosmActivityController@edit');
+        Route::patch('editposmactivity/{id}', 'Master\EditPosmActivityController@update');
+        Route::delete('editposmactivity/{id}', 'Master\EditPosmActivityController@destroy');
+
         
     });
 
