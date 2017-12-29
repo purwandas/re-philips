@@ -71,7 +71,7 @@ class DisplayShareController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $displayShareHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Category */
                                 $category = Category::where('id', $data['category_id'])->first();
@@ -191,7 +191,7 @@ class DisplayShareController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Category */
                             $category = Category::where('id', $detail->category_id)->first();

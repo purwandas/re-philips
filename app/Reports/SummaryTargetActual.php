@@ -3,9 +3,13 @@
 namespace App\Reports;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Filters\QueryFilters;
 
 class SummaryTargetActual extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'region_id', 'area_id', 'district_id', 'storeId', 'user_id', 'region', 'area', 'district', 'nik',
         'promoter_name', 'account_type', 'title_of_promoter', 'classification_store', 'account', 'store_id', 'store_name_1',
