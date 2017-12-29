@@ -49,6 +49,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('datatable/editretdistributor', ['as'=> 'datatable.editretdistributor','uses'=>'Master\EditRetDistributorController@masterDataTable']);
     Route::post('datatable/editretconsument', ['as'=> 'datatable.editretconsument','uses'=>'Master\EditRetConsumentController@masterDataTable']);
+    Route::post('datatable/editfreeproduct', ['as'=> 'datatable.editfreeproduct','uses'=>'Master\EditFreeProductController@masterDataTable']);
+    Route::post('datatable/edittbat', ['as'=> 'datatable.edittbat','uses'=>'Master\EditTbatController@masterDataTable']);
+    Route::post('datatable/editsoh', ['as'=> 'datatable.editsoh','uses'=>'Master\EditSohController@masterDataTable']);
+    Route::post('datatable/editdisplayshare', ['as'=> 'datatable.editdisplayshare','uses'=>'Master\EditDisplayShareController@masterDataTable']);
+    Route::post('datatable/editposmactivity', ['as'=> 'datatable.editposmactivity','uses'=>'Master\EditPosmActivityController@masterDataTable']);
 
     
     /**

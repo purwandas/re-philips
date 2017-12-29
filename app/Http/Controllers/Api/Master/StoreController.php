@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Filters\StoreFilters;
 use App\Traits\StringTrait;
+use App\Traits\StoreTrait;
 use Carbon\Carbon;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -18,6 +19,8 @@ use App\Store;
 
 class StoreController extends Controller
 {
+    use StoreTrait;
+
     public function all(){
     	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
@@ -140,4 +143,37 @@ class StoreController extends Controller
 
     }
 
+    public function create(Request $request){
+        // $content = json_decode($request->getContent(),true);
+        $user = JWTAuth::parseToken()->authenticate();
+
+                try {
+                    $storeID = $this->traitGetStoreId();
+                    // return response()->json($storeID);
+                    DB::transaction(function () use ($request, $storeID) {
+                        $store = Store::create(
+                            [
+                                'store_id' => $storeID,
+                                'store_name_1' => $request['store_name_1'],
+                                'store_name_2' => $request['store_name_2'],
+                                'longitude' => $request['longitude'],
+                                'latitude' => $request['latitude'],
+                                'subchannel_id' => $request['subchannel_id'],
+                                'district_id' => $request['district_id'],
+                            ]
+                            );
+                    });
+
+                    // Check store after insert
+                    $storeData = Store::where('store_id', $storeID)
+                    ->where("store_name_1", $request['store_name_1'])
+                    ->where("store_name_2", $request['store_name_2'])
+                    ->first();
+                    return response()->json(['status' => true, 'id_store' => $storeData->id, 'message' => 'Data berhasil di input']);
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Data gagal di input']);
+                }
+
+
+    }
 }

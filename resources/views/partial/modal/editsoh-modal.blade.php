@@ -1,12 +1,12 @@
 <!-- BEGIN MODAL POPUP -->
-<div id="editretconsument" class="modal container fade" tabindex="false" data-width="760" role="dialog">
+<div id="editsoh" class="modal container fade" tabindex="false" data-width="760" role="dialog">
     <div class="modal-header" style="margin-top: 30px;margin-left: 30px;margin-right: 30px;">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><b><span id="title"></span> Return Consument</b></h4>
+        <h4 class="modal-title"><b><span id="title"></span> SOH </b></h4>
     </div>
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
 
-        <form id="form_editretconsument" class="form-horizontal" action="{{ url('editretconsument') }}" method="POST">
+        <form id="form_editsoh" class="form-horizontal" action="{{ url('editsoh') }}" method="POST">
                     {{ csrf_field() }}
                     @if (!empty($data))
                       {{ method_field('PATCH') }}

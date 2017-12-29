@@ -1,12 +1,12 @@
 <!-- BEGIN MODAL POPUP -->
-<div id="editretconsument" class="modal container fade" tabindex="false" data-width="760" role="dialog">
+<div id="editdisplayshare" class="modal container fade" tabindex="false" data-width="760" role="dialog">
     <div class="modal-header" style="margin-top: 30px;margin-left: 30px;margin-right: 30px;">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><b><span id="title"></span> Return Consument</b></h4>
+        <h4 class="modal-title"><b><span id="title"></span> Display Share </b></h4>
     </div>
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
 
-        <form id="form_editretconsument" class="form-horizontal" action="{{ url('editretconsument') }}" method="POST">
+        <form id="form_editdisplayshare" class="form-horizontal" action="{{ url('editdisplayshare') }}" method="POST">
                     {{ csrf_field() }}
                     @if (!empty($data))
                       {{ method_field('PATCH') }}
@@ -19,11 +19,21 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Quantity</label>
+                          <label class="col-sm-3 control-label">Philips</label>
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="quantity" name="quantity" class="form-control" placeholder="Quantity" />
+                                <input type="text" id="philips" name="philips" class="form-control" placeholder="Philips Quantity" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">All</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="all" name="all" class="form-control" placeholder="All Quantity" />
                             </div>
                           </div>
                         </div>
