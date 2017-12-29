@@ -21,12 +21,19 @@ Route::group(['middleware' => ['auth']], function () {
          */
 
         /** User (Include Employee) **/
-        Route::get('user', 'UserController@index');
-        Route::get('user/create', 'UserController@create');
-        Route::post('user', 'UserController@store');
-        Route::get('user/edit/{id}', 'UserController@edit');
-        Route::patch('user/{id}', 'UserController@update');
-        Route::delete('user/{id}', 'UserController@destroy');
+        Route::get('usernon', 'UserController@index');
+        Route::get('usernon/create', 'UserController@create');
+        Route::post('usernon', 'UserController@store');
+        Route::get('usernon/edit/{id}', 'UserController@edit');
+        Route::patch('usernon/{id}', 'UserController@update');
+        Route::delete('usernon/{id}', 'UserController@destroy');
+
+        Route::get('userpromoter', 'UserPromoterController@index');
+        Route::get('userpromoter/create', 'UserPromoterController@create');
+        Route::post('userpromoter', 'UserPromoterController@store');
+        Route::get('userpromoter/edit/{id}', 'UserPromoterController@edit');
+        Route::patch('userpromoter/{id}', 'UserPromoterController@update');
+        Route::delete('userpromoter/{id}', 'UserPromoterController@destroy');
 
         /** Area **/
         Route::get('area', 'Master\AreaController@index');
@@ -191,6 +198,55 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('feedbackAnswer/edit/{id}', 'Master\FeedbackAnswerController@edit');
         Route::patch('feedbackAnswer/{id}', 'Master\FeedbackAnswerController@update');
         Route::delete('feedbackAnswer/{id}', 'Master\FeedbackAnswerController@destroy');
+
+
+        /*
+            Sales Edit & Delete (Input by API)
+        */
+
+        /** Ret. Distributor **/
+        Route::get('editretdistributor', 'Master\EditRetDistributorController@index');
+        Route::get('editretdistributor/edit/{id}', 'Master\EditRetDistributorController@edit');
+        Route::patch('editretdistributor/{id}', 'Master\EditRetDistributorController@update');
+        Route::delete('editretdistributor/{id}', 'Master\EditRetDistributorController@destroy');
+
+        /** Ret. Consument **/
+        Route::get('editretconsument', 'Master\EditRetConsumentController@index');
+        Route::get('editretconsument/edit/{id}', 'Master\EditRetConsumentController@edit');
+        Route::patch('editretconsument/{id}', 'Master\EditRetConsumentController@update');
+        Route::delete('editretconsument/{id}', 'Master\EditRetConsumentController@destroy');
+
+        /** Free Product **/
+        Route::get('editfreeproduct', 'Master\EditFreeProductController@index');
+        Route::get('editfreeproduct/edit/{id}', 'Master\EditFreeProductController@edit');
+        Route::patch('editfreeproduct/{id}', 'Master\EditFreeProductController@update');
+        Route::delete('editfreeproduct/{id}', 'Master\EditFreeProductController@destroy');
+
+        /** TBAT **/
+        Route::get('edittbat', 'Master\EditTbatController@index');
+        Route::get('edittbat/edit/{id}', 'Master\EditTbatController@edit');
+        Route::patch('edittbat/{id}', 'Master\EditTbatController@update');
+        Route::delete('edittbat/{id}', 'Master\EditTbatController@destroy');
+
+        /** SOH **/
+        Route::get('editsoh', 'Master\EditSohController@index');
+        Route::get('editsoh/edit/{id}', 'Master\EditSohController@edit');
+        Route::patch('editsoh/{id}', 'Master\EditSohController@update');
+        Route::delete('editsoh/{id}', 'Master\EditSohController@destroy');
+
+        /** Display Share **/
+        Route::get('editdisplayshare', 'Master\EditDisplayShareController@index');
+        Route::get('editdisplayshare/edit/{id}', 'Master\EditDisplayShareController@edit');
+        Route::patch('editdisplayshare/{id}', 'Master\EditDisplayShareController@update');
+        Route::delete('editdisplayshare/{id}', 'Master\EditDisplayShareController@destroy');
+
+        /** POSM Activity **/
+        Route::get('editposmactivity', 'Master\EditPosmActivityController@index');
+        Route::get('editposmactivity/edit/{id}', 'Master\EditPosmActivityController@edit');
+        Route::patch('editposmactivity/{id}', 'Master\EditPosmActivityController@update');
+        Route::delete('editposmactivity/{id}', 'Master\EditPosmActivityController@destroy');
+
+        
     });
 
     /**
@@ -234,7 +290,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('selloutreport', 'Master\ReportController@sellOutIndex');
     Route::get('retconsumentreport', 'Master\ReportController@retConsumentIndex');
     Route::get('retdistributorreport', 'Master\ReportController@retDistributorIndex');
-    Route::get('freeproductreport', 'Master\ReportController@freeproductIndex');
+    Route::get('freeproductreport', 'Master\ReportController@freeProductIndex');
     Route::get('tbatreport', 'Master\ReportController@tbatIndex');
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');

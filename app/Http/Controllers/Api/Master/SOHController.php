@@ -53,16 +53,9 @@ class SOHController extends Controller
 
                                 $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
-
                                 $summary->update([
                                     'quantity' => $summary->quantity + $data['quantity'],
                                     'value' => $value,
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -106,22 +99,6 @@ class SOHController extends Controller
                                     if ($distDetail->id != $dist->last()->id) {
                                         $distributor_code .= ', ';
                                         $distributor_name .= ', ';
-                                    }
-                                }
-
-                                /* Value - Product Focus */
-                                $value_pf_mr = 0;
-                                $value_pf_tr = 0;
-                                $value_pf_ppe = 0;
-
-                                $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                                foreach ($productFocus as $productFocusDetail) {
-                                    if ($productFocusDetail->type == 'Modern Retail') {
-                                        $value_pf_mr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                        $value_pf_tr = $realPrice * $data['quantity'];
-                                    } else if ($productFocusDetail->type == 'PPE') {
-                                        $value_pf_ppe = $realPrice * $data['quantity'];
                                     }
                                 }
 
@@ -179,9 +156,9 @@ class SOHController extends Controller
                                     'quantity' => $data['quantity'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'value_pf_mr' => 0,
+                                    'value_pf_tr' => 0,
+                                    'value_pf_ppe' => 0,
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -257,22 +234,6 @@ class SOHController extends Controller
                                 }
                             }
 
-                            /* Value - Product Focus */
-                            $value_pf_mr = 0;
-                            $value_pf_tr = 0;
-                            $value_pf_ppe = 0;
-
-                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
-                            foreach ($productFocus as $productFocusDetail) {
-                                if ($productFocusDetail->type == 'Modern Retail') {
-                                    $value_pf_mr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'Traditional Retail') {
-                                    $value_pf_tr = $realPrice * $detail->quantity;
-                                } else if ($productFocusDetail->type == 'PPE') {
-                                    $value_pf_ppe = $realPrice * $detail->quantity;
-                                }
-                            }
-
                             /* DM */
                             $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
                             $dm = User::whereIn('id', $dmIds)->get();
@@ -327,9 +288,9 @@ class SOHController extends Controller
                                 'quantity' => $detail->quantity,
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
-                                'value_pf_mr' => $value_pf_mr,
-                                'value_pf_tr' => $value_pf_tr,
-                                'value_pf_ppe' => $value_pf_ppe,
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
