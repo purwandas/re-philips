@@ -69,6 +69,7 @@ use App\PromoActivity;
 use App\PromoActivityDetail;
 use App\Attendance;
 use App\AttendanceDetail;
+use App\VisitPlan;
 use App\EmployeeStore;
 use App\District;
 use App\Store;
@@ -158,6 +159,10 @@ class ReportController extends Controller
     
     public function attendanceForm(){
         return view('report.form.attendance-form');
+    }
+
+    public function visitPlanIndex(){
+        return view('report.visitplan');
     }
 
     public function sellInData(Request $request, SellinFilters $filters){
@@ -1749,7 +1754,8 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
             // $withFilter = MaintenanceRequest::filter($filters)->get();
 
         $userRole = Auth::user()->role;
@@ -2175,10 +2181,8 @@ class ReportController extends Controller
 
     public function attendanceData(Request $request){
 
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
-        $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
-        $yearNow = Carbon::now()->format('Y');
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
@@ -2191,7 +2195,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'attendances.user_id', '=', 'users.id')
                     ->groupBy('attendances.user_id')
-                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'users.nik as user_nik', 'users.role as user_role')//,DB::raw('count(*) as total_hk'))
+                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'users.role as user_role')//,DB::raw('count(*) as total_hk'))
                     // ->where('attendances.status', '!=', 'Off')
                     ->get();
 
@@ -2391,5 +2395,75 @@ class ReportController extends Controller
             ->make(true);
 
     }
+    
+    public function visitPlanData(Request $request){
 
+
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+
+            $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'users.role as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $data->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+
+            if($request['byNik']){
+                $filter = $data->where('user_id', $request['byNik']);
+            }
+
+            if($request['byRole'] != ''){
+                $filter = $data->where('users.role', $request['byRole']);
+            }
+            
+            // if ($userRole == 'RSM') {
+            //     $region = RsmRegion::where('user_id', $userId)->get();
+            //     foreach ($region as $key => $value) {
+            //         $filter = $data->where('region_id', $value->region_id);
+            //     }
+            // }
+
+            // if ($userRole == 'DM') {
+            //     $area = DmArea::where('user_id', $userId)->get();
+            //     foreach ($area as $key => $value) {
+            //         $filter = $data->where('area_id', $value->area_id);
+            //     }
+            // }
+            
+            // if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            //     $store = EmployeeStore::where('user_id', $userId)->get();
+            //     foreach ($store as $key => $value) {
+            //         $filter = $data->where('store_id', $value->store_id);
+            //     }
+            // }
+
+            return Datatables::of($filter->all())
+            ->editColumn('visit_status', function ($item) {
+                if ($item->visit_status == 0) {
+                    return "Not Visited";
+                }else{
+                    return "Visited";
+                }
+                
+            })
+            ->make(true);
+
+    }
+    
 }
