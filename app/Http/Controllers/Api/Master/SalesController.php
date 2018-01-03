@@ -138,7 +138,8 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellInHeader->store_id)->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
+                                
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -345,7 +346,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = ($store->user->name != '') ? $store->user->name : '';
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -595,7 +596,8 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellOutHeader->store_id)->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -755,7 +757,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = ($store->user->name != '') ? $store->user->name : '';
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -935,7 +937,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $retDistributorHeader->store_id)->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -1072,7 +1074,7 @@ class SalesController extends Controller
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
                                         ->where('id', $detail->product_id)->first();
-                            $spvName = ($store->user->name != '') ? $store->user->name : '';
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                             /* Price */
                             $realPrice = 0;
@@ -1225,7 +1227,7 @@ class SalesController extends Controller
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
                                             ->where('id', $data['product_id'])->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                                 /* Price */
                                 $realPrice = 0;
@@ -1354,7 +1356,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = ($store->user->name != '') ? $store->user->name : '';
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1507,7 +1509,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $freeProductHeader->store_id)->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -1640,7 +1642,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = ($store->user->name != '') ? $store->user->name : '';
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1793,7 +1795,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $tbatHeader->store_id)->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                                 /* Store Destination */
                                 $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
