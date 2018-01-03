@@ -1752,6 +1752,8 @@ class ReportController extends Controller
         
             // $withFilter = MaintenanceRequest::filter($filters)->get();
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = MaintenanceRequest::filter($filters)
                     ->join('regions', 'maintenance_requests.region_id', '=', 'regions.id')
@@ -1851,6 +1853,9 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = CompetitorActivity::
                       join('stores', 'competitor_activities.store_id', '=', 'stores.id')
@@ -1957,6 +1962,9 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+
             $data = PromoActivity::
                     join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
                     ->join('stores', 'promo_activities.store_id', '=', 'stores.id')
@@ -2061,6 +2069,9 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = PosmActivity::
                     join('posm_activity_details', 'posm_activity_details.posmactivity_id', '=', 'posm_activities.id')
@@ -2168,6 +2179,9 @@ class ReportController extends Controller
         $monthNow = Carbon::now()->format('m');
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = Attendance::
                     join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')

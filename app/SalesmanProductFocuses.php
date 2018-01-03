@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Reports;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Filters\QueryFilters;
 
-class HistoryTargetActual extends Model
+class SalesmanProductFocuses extends Model
 {
     use SoftDeletes;
 
-    //
+    protected $table = 'salesman_product_focuses';
+
     protected $fillable = [
-        'user_id', 'month', 'year', 'details'
+        'product_id'
     ];
 
     /**
@@ -21,19 +23,19 @@ class HistoryTargetActual extends Model
      */
     protected $dates = ['deleted_at'];
 
-	/* Metode tambahan untuk model Branch Sport. */
+    /* Metode tambahan untuk model. */
 
-	/**
+    /**
      * Relation Method(s).
      *
      */
 
-	public function user()
+    public function product()
     {
-        return $this->belongsTo('App\User', 'user_id');
+        return $this->belongsTo('App\Product', 'product_id');
     }
 
-	/**
+    /**
      * Filtering Berdasarakan Request User
      * @param $query
      * @param QueryFilters $filters

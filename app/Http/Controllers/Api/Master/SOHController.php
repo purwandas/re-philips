@@ -71,7 +71,7 @@ class SOHController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sohHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -203,7 +203,7 @@ class SOHController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
