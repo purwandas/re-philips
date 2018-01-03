@@ -108,9 +108,12 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 
-				          		<select class="select2select" multiple="multiple" name="target[]" id="target">
+				          		<select class="select2select" name="target" id="target">
 				          			<option></option>
-                                	<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
+				          			<option value="All" {{ (@$data->role == 'All') ? "selected" : "" }}>All</option>
+				          			<option value="Demonstrator" {{ (@$data->role == 'Demonstrator') ? "selected" : "" }}>Demonstrator</option>
+				          			<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
+                                	<!-- <option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
                                 	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? "selected" : "" }}>Promoter Additional</option>
                                 	<option value="Promoter Event" {{ (@$data->role == 'Promoter Event') ? "selected" : "" }}>Promoter Event</option>
                                 	<option value="Demonstrator MCC" {{ (@$data->role == 'Demonstrator MCC') ? "selected" : "" }}>Demonstrator MCC</option>
@@ -125,7 +128,7 @@
                                 	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
                                 	<option value="SMD" {{ (@$data->role == 'SMD') ? "selected" : "" }}>SMD</option>
                                 	<option value="Additional" {{ (@$data->role == 'Additional') ? "selected" : "" }}>Additional</option>
-                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option>
+                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option> -->
                                 </select>
 				            	<span class="input-group-addon display-hide">
                                     <i class="fa"></i>
