@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Master;
 
 use App\Price;
 use App\Product;
+use App\Reports\SalesmanSummarySales;
+use App\SalesmanProductFocuses;
 use App\Store;
 use App\StoreDistributor;
 use App\Distributor;
@@ -73,35 +75,55 @@ class SalesController extends Controller
 
                                 /** Update Summary **/
 
-                                $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
+                                if($user->role != 'Salesman Explorer') {
 
-                                $value_old = $summary->value;
+                                    $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
 
-                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+                                    $value_old = $summary->value;
 
-                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
-                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
-                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+                                    $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
 
-                                $summary->update([
-                                    'quantity' => $summary->quantity + $data['quantity'],
-                                    'value' => $value,
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
-                                ]);
+                                    ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                    ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                    ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
 
-                                // Actual Summary
-                                $summary_ta['user_id'] = $sellInHeader->user_id;
-                                $summary_ta['store_id'] = $sellInHeader->store_id;
-                                $summary_ta['week'] = $sellInHeader->week;
-                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
-                                $summary_ta['value_old'] = $value_old;
-                                $summary_ta['value'] = $summary->value;
-                                $summary_ta['group'] = $summary->group;
-                                $summary_ta['sell_type'] = 'Sell In';
+                                    $summary->update([
+                                        'quantity' => $summary->quantity + $data['quantity'],
+                                        'value' => $value,
+                                        'value_pf_mr' => $value_pf_mr,
+                                        'value_pf_tr' => $value_pf_tr,
+                                        'value_pf_ppe' => $value_pf_ppe,
+                                    ]);
 
-                                $this->changeActual($summary_ta, 'change');
+                                    // Actual Summary
+                                    $summary_ta['user_id'] = $sellInHeader->user_id;
+                                    $summary_ta['store_id'] = $sellInHeader->store_id;
+                                    $summary_ta['week'] = $sellInHeader->week;
+                                    $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                    $summary_ta['value_old'] = $value_old;
+                                    $summary_ta['value'] = $summary->value;
+                                    $summary_ta['group'] = $summary->group;
+                                    $summary_ta['sell_type'] = 'Sell In';
+
+                                    $this->changeActual($summary_ta, 'change');
+
+                                }else{ // SEE (Salesman Explorer)
+
+                                    $summary = SalesmanSummarySales::where('sellin_detail_id', $sellInDetail->id)->first();
+
+                                    $value_old = $summary->value; // Buat reset actual salesman
+
+                                    $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                    ($summary->value_pf > 0) ? $value_pf = $value : $value_pf = 0;
+
+                                    $summary->update([
+                                        'quantity' => $summary->quantity + $data['quantity'],
+                                        'value' => $value,
+                                        'value_pf' => $value_pf
+                                    ]);
+
+                                }
 
                             } else { // If data didn't exist -> create
 
@@ -116,7 +138,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellInHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -189,54 +211,101 @@ class SalesController extends Controller
                                     }
                                 }
 
-                                SummarySellIn::create([
-                                    'sellin_detail_id' => $detail->id,
-                                    'region_id' => $store->district->area->region->id,
-                                    'area_id' => $store->district->area->id,
-                                    'district_id' => $store->district->id,
-                                    'storeId' => $sellInHeader->store_id,
-                                    'user_id' => $sellInHeader->user_id,
-                                    'week' => $sellInHeader->week,
-                                    'distributor_code' => $distributor_code,
-                                    'distributor_name' => $distributor_name,
-                                    'region' => $store->district->area->region->name,
-                                    'channel' => $store->subChannel->channel->name,
-                                    'sub_channel' => $store->subChannel->name,
-                                    'area' => $store->district->area->name,
-                                    'district' => $store->district->name,
-                                    'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
-                                    'store_id' => $store->store_id,
-                                    'dedicate' => $store->dedicate,
-                                    'nik' => $user->nik,
-                                    'promoter_name' => $user->name,
-                                    'date' => $sellInHeader->date,
-                                    'model' => $product->model . '/' . $product->variants,
-                                    'group' => $product->category->group->groupProduct->name,
-                                    'category' => $product->category->name,
-                                    'product_name' => $product->name,
-                                    'quantity' => $data['quantity'],
-                                    'unit_price' => $realPrice,
-                                    'value' => $realPrice * $data['quantity'],
-                                    'value_pf_mr' => $value_pf_mr,
-                                    'value_pf_tr' => $value_pf_tr,
-                                    'value_pf_ppe' => $value_pf_ppe,
-                                    'role' => $user->role,
-                                    'spv_name' => $spvName,
-                                    'dm_name' => $dm_name,
-                                    'trainer_name' => $trainer_name,
-                                ]);
+                                if($user->role != 'Salesman Explorer') {
 
-                                // Actual Summary
-                                $summary_ta['user_id'] = $sellInHeader->user_id;
-                                $summary_ta['store_id'] = $sellInHeader->store_id;
-                                $summary_ta['week'] = $sellInHeader->week;
-                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
-                                $summary_ta['value'] = $summary->value;
-                                $summary_ta['group'] = $summary->group;
-                                $summary_ta['sell_type'] = 'Sell In';
+                                    $summary = SummarySellIn::create([
+                                        'sellin_detail_id' => $detail->id,
+                                        'region_id' => $store->district->area->region->id,
+                                        'area_id' => $store->district->area->id,
+                                        'district_id' => $store->district->id,
+                                        'storeId' => $sellInHeader->store_id,
+                                        'user_id' => $sellInHeader->user_id,
+                                        'week' => $sellInHeader->week,
+                                        'distributor_code' => $distributor_code,
+                                        'distributor_name' => $distributor_name,
+                                        'region' => $store->district->area->region->name,
+                                        'channel' => $store->subChannel->channel->name,
+                                        'sub_channel' => $store->subChannel->name,
+                                        'area' => $store->district->area->name,
+                                        'district' => $store->district->name,
+                                        'store_name_1' => $store->store_name_1,
+                                        'store_name_2' => $store->store_name_2,
+                                        'store_id' => $store->store_id,
+                                        'dedicate' => $store->dedicate,
+                                        'nik' => $user->nik,
+                                        'promoter_name' => $user->name,
+                                        'date' => $sellInHeader->date,
+                                        'model' => $product->model . '/' . $product->variants,
+                                        'group' => $product->category->group->groupProduct->name,
+                                        'category' => $product->category->name,
+                                        'product_name' => $product->name,
+                                        'quantity' => $data['quantity'],
+                                        'unit_price' => $realPrice,
+                                        'value' => $realPrice * $data['quantity'],
+                                        'value_pf_mr' => $value_pf_mr,
+                                        'value_pf_tr' => $value_pf_tr,
+                                        'value_pf_ppe' => $value_pf_ppe,
+                                        'role' => $user->role,
+                                        'spv_name' => $spvName,
+                                        'dm_name' => $dm_name,
+                                        'trainer_name' => $trainer_name,
+                                    ]);
 
-                                $this->changeActual($summary_ta, 'change');
+                                    // Actual Summary
+                                    $summary_ta['user_id'] = $sellInHeader->user_id;
+                                    $summary_ta['store_id'] = $sellInHeader->store_id;
+                                    $summary_ta['week'] = $sellInHeader->week;
+                                    $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                    $summary_ta['value'] = $summary->value;
+                                    $summary_ta['group'] = $summary->group;
+                                    $summary_ta['sell_type'] = 'Sell In';
+
+                                    $this->changeActual($summary_ta, 'change');
+
+                                }else{ // Buat SEE (Salesman Explorer)
+
+                                    $value_pf = 0;
+
+                                    $productFocus = SalesmanProductFocuses::where('product_id', $product->id)->first();
+
+                                    if($productFocus){
+                                        $value_pf = $realPrice * $detail->quantity;
+                                    }
+
+                                    $summary = SalesmanSummarySales::create([
+                                        'sellin_detail_id' => $detail->id,
+                                        'region_id' => $store->district->area->region->id,
+                                        'area_id' => $store->district->area->id,
+                                        'district_id' => $store->district->id,
+                                        'storeId' => $sellInHeader->store_id,
+                                        'user_id' => $sellInHeader->user_id,
+                                        'week' => $sellInHeader->week,
+                                        'distributor_code' => $distributor_code,
+                                        'distributor_name' => $distributor_name,
+                                        'region' => $store->district->area->region->name,
+                                        'channel' => $store->subChannel->channel->name,
+                                        'sub_channel' => $store->subChannel->name,
+                                        'area' => $store->district->area->name,
+                                        'district' => $store->district->name,
+                                        'store_name_1' => $store->store_name_1,
+                                        'store_name_2' => $store->store_name_2,
+                                        'store_id' => $store->store_id,
+                                        'dedicate' => $store->dedicate,
+                                        'nik' => $user->nik,
+                                        'promoter_name' => $user->name,
+                                        'date' => $sellInHeader->date,
+                                        'model' => $product->model . '/' . $product->variants,
+                                        'group' => $product->category->group->groupProduct->name,
+                                        'category' => $product->category->name,
+                                        'product_name' => $product->name,
+                                        'quantity' => $detail->quantity,
+                                        'unit_price' => $realPrice,
+                                        'value' => $realPrice * $detail->quantity,
+                                        'value_pf' => $value_pf,
+                                        'role' => $user->role,
+                                    ]);
+
+                                }
 
                             }
 
@@ -276,7 +345,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -349,54 +418,101 @@ class SalesController extends Controller
                                 }
                             }
 
-                            $summary = SummarySellIn::create([
-                                'sellin_detail_id' => $detail->id,
-                                'region_id' => $store->district->area->region->id,
-                                'area_id' => $store->district->area->id,
-                                'district_id' => $store->district->id,
-                                'storeId' => $transaction->store_id,
-                                'user_id' => $transaction->user_id,
-                                'week' => $transaction->week,
-                                'distributor_code' => $distributor_code,
-                                'distributor_name' => $distributor_name,
-                                'region' => $store->district->area->region->name,
-                                'channel' => $store->subChannel->channel->name,
-                                'sub_channel' => $store->subChannel->name,
-                                'area' => $store->district->area->name,
-                                'district' => $store->district->name,
-                                'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
-                                'store_id' => $store->store_id,
-                                'dedicate' => $store->dedicate,
-                                'nik' => $user->nik,
-                                'promoter_name' => $user->name,
-                                'date' => $transaction->date,
-                                'model' => $product->model . '/' . $product->variants,
-                                'group' => $product->category->group->groupProduct->name,
-                                'category' => $product->category->name,
-                                'product_name' => $product->name,
-                                'quantity' => $detail->quantity,
-                                'unit_price' => $realPrice,
-                                'value' => $realPrice * $detail->quantity,
-                                'value_pf_mr' => $value_pf_mr,
-                                'value_pf_tr' => $value_pf_tr,
-                                'value_pf_ppe' => $value_pf_ppe,
-                                'role' => $user->role,
-                                'spv_name' => $spvName,
-                                'dm_name' => $dm_name,
-                                'trainer_name' => $trainer_name,
-                            ]);
+                            if($user->role != 'Salesman Explorer') {
 
-                            // Actual Summary
-                            $summary_ta['user_id'] = $transaction->user_id;
-                            $summary_ta['store_id'] = $transaction->store_id;
-                            $summary_ta['week'] = $transaction->week;
-                            $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
-                            $summary_ta['value'] = $summary->value;
-                            $summary_ta['group'] = $summary->group;
-                            $summary_ta['sell_type'] = 'Sell In';
+                                $summary = SummarySellIn::create([
+                                    'sellin_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $transaction->store_id,
+                                    'user_id' => $transaction->user_id,
+                                    'week' => $transaction->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'dedicate' => $store->dedicate,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $transaction->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $detail->quantity,
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $detail->quantity,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role,
+                                    'spv_name' => $spvName,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
+                                ]);
 
-                            $this->changeActual($summary_ta, 'change');
+                                // Actual Summary
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['week'] = $transaction->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+
+                                $this->changeActual($summary_ta, 'change');
+
+                            }else{ // Buat SEE (Salesman Explorer)
+
+                                $value_pf = 0;
+
+                                $productFocus = SalesmanProductFocuses::where('product_id', $product->id)->first();
+
+                                if($productFocus){
+                                    $value_pf = $realPrice * $detail->quantity;
+                                }
+
+                                $summary = SalesmanSummarySales::create([
+                                    'sellin_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $transaction->store_id,
+                                    'user_id' => $transaction->user_id,
+                                    'week' => $transaction->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $store->store_name_2,
+                                    'store_id' => $store->store_id,
+                                    'dedicate' => $store->dedicate,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $transaction->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $detail->quantity,
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $detail->quantity,
+                                    'value_pf' => $value_pf,
+                                    'role' => $user->role,
+                                ]);
+
+                            }
 
                         }
 
@@ -479,7 +595,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellOutHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -639,7 +755,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -819,7 +935,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $retDistributorHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -956,7 +1072,7 @@ class SalesController extends Controller
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
                                         ->where('id', $detail->product_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Price */
                             $realPrice = 0;
@@ -1109,7 +1225,7 @@ class SalesController extends Controller
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
                                             ->where('id', $data['product_id'])->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Price */
                                 $realPrice = 0;
@@ -1238,7 +1354,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1391,7 +1507,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $freeProductHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -1524,7 +1640,7 @@ class SalesController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1677,7 +1793,7 @@ class SalesController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $tbatHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Store Destination */
                                 $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')

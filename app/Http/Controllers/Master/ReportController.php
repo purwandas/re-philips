@@ -1758,6 +1758,8 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
             // $withFilter = MaintenanceRequest::filter($filters)->get();
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
             $data = MaintenanceRequest::filter($filters)
                     ->join('regions', 'maintenance_requests.region_id', '=', 'regions.id')
@@ -2178,6 +2180,9 @@ class ReportController extends Controller
     }
 
     public function attendanceData(Request $request){
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;

@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Target
-            <small>manage target</small>
+        <h1>Target Salesman
+            <small>manage target salesman</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Target Management</span>
+        <span class="active">Target Salesman Management</span>
     </li>
 </ul>
 @endsection
@@ -30,7 +30,7 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-line-chart font-blue"></i>
-                    <span class="caption-subject font-blue bold uppercase">TARGET</span>
+                    <span class="caption-subject font-blue bold uppercase">TARGET SALESMAN</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
@@ -42,27 +42,24 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="btn-group">
-                                    <a id="add-target" class="btn green" data-toggle="modal" href="#target"><i
-                                        class="fa fa-plus"></i> Add Target </a>
+                                    <a id="add-targetsalesman" class="btn green" data-toggle="modal" href="#targetsalesman"><i
+                                        class="fa fa-plus"></i> Add Target Salesman</a>
 
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <table class="table table-striped table-hover table-bordered" id="targetTable" style="white-space: nowrap;">
+                    <table class="table table-striped table-hover table-bordered" id="targetsalesmanTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
                                 <th> No. </th>
-                                <th> Promoter </th>
-                                <th> Store </th>
-                                <th> Sell Type </th>
-                                <th> Target DA </th>
-                                <th> Target PF DA </th>
-                                <th> Target PC </th>
-                                <th> Target PF PC </th>
-                                <th> Target MCC </th>
-                                <th> Target PF MCC </th>
+                                <th> Salesman </th>
+                                <th> Target Call </th>
+                                <th> Target Active Outlet </th>
+                                <th> Target Effective Call </th>
+                                <th> Target Sales </th>
+                                <th> Target Sales PF </th>
                                 <th> Options </th>
                             </tr>
                         </thead>
@@ -70,7 +67,7 @@
 
                 </div>
 
-                @include('partial.modal.target-modal')
+                @include('partial.modal.targetsalesman-modal')
 
                 <!-- END MAIN CONTENT -->
             </div>
@@ -89,7 +86,7 @@
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
-<script src="{{ asset('js/handler/target-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/handler/targetsalesman-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
@@ -106,37 +103,34 @@
         });
 
         // Set data for Data Table
-        var table = $('#targetTable').dataTable({
+        var table = $('#targetsalesmanTable').dataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: "{{ route('datatable.target') }}",
+                url: "{{ route('datatable.targetsalesman') }}",
                 type: 'POST',
             },
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
-                {data: 'promoter_name', name: 'promoter_name'},
-                {data: 'store_name', name: 'store_name'},
-                {data: 'sell_type', name: 'sell_type'},
-                {data: 'target_da', name: 'target_da'},
-                {data: 'target_pf_da', name: 'target_pf_da'},
-                {data: 'target_pc', name: 'target_pc'},
-                {data: 'target_pf_pc', name: 'target_pf_pc'},
-                {data: 'target_mcc', name: 'target_mcc'},
-                {data: 'target_pf_mcc', name: 'target_pf_mcc'},
+                {data: 'salesman_name', name: 'salesman_name'},
+                {data: 'target_call', name: 'target_call'},
+                {data: 'target_active_outlet', name: 'target_active_outlet'},
+                {data: 'target_effective_call', name: 'target_effective_call'},
+                {data: 'target_sales', name: 'target_sales'},
+                {data: 'target_sales_pf', name: 'target_sales_pf'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [6]},
+                {"className": "dt-center", "targets": [7]},
             ],
             "order": [ [0, 'desc'] ],
         });
 
 
         // Delete data with sweet alert
-        $('#targetTable').on('click', 'tr td button.deleteButton', function () {
+        $('#targetsalesmanTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
 //                if(productRelation(id)){
@@ -167,7 +161,7 @@
                         $.ajax({
 
                             type: "DELETE",
-                            url:  'target/' + id,
+                            url:  'targetsalesman/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
                             },
@@ -189,42 +183,36 @@
     });
 
     // Init add form
-    $(document).on("click", "#add-target", function () {
+    $(document).on("click", "#add-targetsalesman", function () {
 
         resetValidation();
 
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
-        $('#target_da').val('0');
-        $('#target_pf_da').val('0');
-        $('#target_pc').val('0');
-        $('#target_pf_pc').val('0');
-        $('#target_mcc').val('0');
-        $('#target_pf_mcc').val('0');
+        $('#target_call').val('0');
+        $('#target_active_outlet').val('0');
+        $('#target_effective_call').val('0');
+        $('#target_sales').val('0');
+        $('#target_sales_pf').val('0');
+
 //        $('#sell_type').val('Sell In');
         select2Reset($("#promoter"));
-        select2Reset($("#store"));
-        select2Reset($("#sell_type"));
 
         // Set action url form for add
-        var postDataUrl = "{{ url('target') }}";
-        $("#form_target").attr("action", postDataUrl);
+        var postDataUrl = "{{ url('targetsalesman') }}";
+        $("#form_targetsalesman").attr("action", postDataUrl);
 
         // Delete Patch Method if Exist
         if($('input[name=_method]').length){
             $('input[name=_method]').remove();
         }
 
-        // Clear filters
-        delete filters['byEmployee'];
-        delete filters['byStore'];
-
     });
 
 
     // For editing data
-    $(document).on("click", ".edit-target", function () {
+    $(document).on("click", ".edit-targetsalesman", function () {
 
         resetValidation();
 
@@ -232,32 +220,25 @@
         modalTitle.innerHTML = "EDIT";
 
         var id = $(this).data('id');
-        var getDataUrl = "{{ url('target/edit/') }}";
-        var postDataUrl = "{{ url('target') }}"+"/"+id;
+        var getDataUrl = "{{ url('targetsalesman/edit/') }}";
+        var postDataUrl = "{{ url('targetsalesman') }}"+"/"+id;
 
         // Set action url form for update
-        $("#form_target").attr("action", postDataUrl);
+        $("#form_targetsalesman").attr("action", postDataUrl);
 
         // Set Patch Method
         if(!$('input[name=_method]').length){
-            $("#form_target").append("<input type='hidden' name='_method' value='PATCH'>");
+            $("#form_targetsalesman").append("<input type='hidden' name='_method' value='PATCH'>");
         }
 
         $.get(getDataUrl + '/' + id, function (data) {
 
-                    $('#target_da').val(data.target_da);
-                    $('#target_pf_da').val(data.target_pf_da);
-                    $('#target_pc').val(data.target_pc);
-                    $('#target_pf_pc').val(data.target_pf_pc);
-                    $('#target_mcc').val(data.target_mcc);
-                    $('#target_pf_mcc').val(data.target_pf_mcc);
-                    setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
+                    $('#target_call').val(data.target_call);
+                    $('#target_active_outlet').val(data.target_active_outlet);
+                    $('#target_effective_call').val(data.target_effective_call);
+                    $('#target_sales').val(data.target_sales);
+                    $('#target_sales_pf').val(data.target_sales_pf);
                     setSelect2IfPatchModal($("#promoter"), data.user_id, data.user.name);
-                    setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")" + " - " + data.store.dedicate);
-
-                    // Set filters
-                    self.selected('byEmployee', $('#promoter').val());
-                    self.selected('byStore', $('#store').val());
 
         })
 
@@ -271,7 +252,7 @@
          */
 
         $('#promoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+	        	filters['roleGroup'] = ['Salesman Explorer'];
 	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {
@@ -284,23 +265,6 @@
                 self.selected('byEmployee', $('#promoter').val());
         });
 
-        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
-	            return filterData('store', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
-	                })
-	            }
-	        }));
-        $('#store').on('select2:select', function () {
-                self.selected('byStore', $('#store').val());
-        });
-
-        $('#sell_type').select2({
-            width: '100%',
-            placeholder: 'Sell Type'
-        });
 
     }
 
