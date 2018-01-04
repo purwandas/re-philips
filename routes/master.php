@@ -218,6 +218,18 @@ Route::group(['middleware' => ['auth']], function () {
             Sales Edit & Delete (Input by API)
         */
 
+        /** Sell In **/
+        Route::get('editsellin', 'Master\EditSellInController@index');
+        Route::get('editsellin/edit/{id}', 'Master\EditSellInController@edit');
+        Route::patch('editsellin/{id}', 'Master\EditSellInController@update');
+        Route::delete('editsellin/{id}', 'Master\EditSellInController@destroy');
+
+        /** Sell Out **/
+        Route::get('editsellout', 'Master\EditSellOutController@index');
+        Route::get('editsellout/edit/{id}', 'Master\EditSellOutController@edit');
+        Route::patch('editsellout/{id}', 'Master\EditSellOutController@update');
+        Route::delete('editsellout/{id}', 'Master\EditSellOutController@destroy');
+
         /** Ret. Distributor **/
         Route::get('editretdistributor', 'Master\EditRetDistributorController@index');
         Route::get('editretdistributor/edit/{id}', 'Master\EditRetDistributorController@edit');
@@ -315,6 +327,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
+    Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
 
     
 

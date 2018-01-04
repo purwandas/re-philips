@@ -273,6 +273,20 @@
                 <h3 class="uppercase">REPORTING ????????????????</h3>
             </li>
 
+            <li class="nav-item {{ Request::is('editsellin') ? 'active open' : '' }}">
+            <a href="{{ url('editsellin') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update Sell In</span>
+            </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('editsellout') ? 'active open' : '' }}">
+            <a href="{{ url('editsellout') }}" class="nav-link nav-toggle">
+                <i class="fa fa-edit"></i>
+                <span class="title">Update Sell Out</span>
+            </a>
+            </li>
+
             <li class="nav-item {{ Request::is('editretdistributor') ? 'active open' : '' }}">
             <a href="{{ url('editretdistributor') }}" class="nav-link nav-toggle">
                 <i class="fa fa-edit"></i>
@@ -447,7 +461,14 @@
                     <i class="fa fa-cog"></i>
                     <span class="title"> Attendance </span>                    
                 </a>
-            </li>            
+            </li>
+
+            <li class="nav-item {{ Request::is('visitplan') ? 'active open' : '' }}">
+                <a href="{{ url('visitplan') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title"> Visit Plan </span>                    
+                </a>
+            </li>
             
             @endif
 
