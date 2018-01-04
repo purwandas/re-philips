@@ -2,11 +2,18 @@
 
 namespace App\Traits;
 
+use App\Attendance;
+use App\AttendanceDetail;
+use App\EmployeeStore;
 use App\Product;
 use App\ProductFocuses;
+use App\Reports\SalesmanSummarySales;
+use App\Reports\SalesmanSummaryTargetActual;
 use App\Reports\SummarySellIn;
 use App\Reports\SummarySellOut;
 use App\Reports\SummaryTargetActual;
+use Carbon\Carbon;
+use App\Store;
 
 trait ActualTrait {
 
@@ -633,11 +640,15 @@ trait ActualTrait {
 
         if($summary_ta) {
 
+            $sumActualStore = SummaryTargetActual::where('storeId', $summary_ta->storeId)->where('sell_type', $sellType)->where('id', '!=', $summary_ta->id)->first();
+            $sumActualArea = SummaryTargetActual::where('area_id', $summary_ta->area_id)->where('sell_type', $sellType)->where('id', '!=', $summary_ta->id)->first();
+            $sumActualRegion = SummaryTargetActual::where('region_id', $summary_ta->region_id)->where('sell_type', $sellType)->where('id', '!=', $summary_ta->id)->first();
+
             $totalActual = $summary_ta->actual_da + $summary_ta->actual_pc + $summary_ta->actual_mcc;
 
-            $sumActualStore = $summary_ta->sum_actual_store - $totalActual;
-            $sumActualArea = $summary_ta->sum_actual_area - $totalActual;
-            $sumActualRegion = $summary_ta->sum_actual_region - $totalActual;
+            $sumActualStore = ($sumActualStore) ? $sumActualStore->sum_actual_store - $totalActual : 0;
+            $sumActualArea = ($sumActualArea) ? $sumActualArea->sum_actual_area - $totalActual : 0;
+            $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
 
             /* Delete Actual Data */
             $summary_ta->update([
@@ -709,6 +720,283 @@ trait ActualTrait {
                 }
 
             }
+
+        }
+
+    }
+
+    public function changeActualSalesman($data, $change)
+    {
+
+        $summary = SalesmanSummaryTargetActual::where('user_id', $data['user_id'])->first();
+
+        if ($summary) {
+
+            /* Target Add and/or Sum */
+            $targetOther = SalesmanSummaryTargetActual::where('id', '!=', $summary->id);
+            $sumNationalActualActiveOutlet = SalesmanSummaryTargetActual::first()->sum_national_actual_active_outlet;
+            $sumNationalActualEffectiveCall = SalesmanSummaryTargetActual::first()->sum_national_actual_effective_call;
+            $sumNationalActualSales = SalesmanSummaryTargetActual::first()->sum_national_actual_sales;
+            $sumNationalActualSalesPf = SalesmanSummaryTargetActual::first()->sum_national_actual_sales_pf;
+
+            /* Add / Sum All Target */
+            if ($change == 'change') { // INSERT / UPDATE
+
+                if ($summary->target_sales > 0) {
+
+                    if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
+
+                        $summary->update([ // SUBSTRACT OLD VALUE
+                            'actual_sales' => $summary->actual_sales - $data['value_old'],
+                            'sum_national_actual_sales' => $sumNationalActualSales - $data['value_old'],
+                        ]);
+
+                        $summary->update([ // ADD NEW VALUE
+                            'actual_sales' => $summary->actual_sales + $data['value'],
+                            'sum_national_actual_sales' => $summary->sum_national_actual_sales + $data['value'],
+                        ]);
+
+                    } else { // INSERT
+
+                        $summary->update([ // ADD NEW VALUE
+                            'actual_sales' => $summary->actual_sales + $data['value'],
+                            'sum_national_actual_sales' => $sumNationalActualSales + $data['value'],
+                        ]);
+
+                    }
+
+                }
+
+                // PRODUCT FOCUS
+                if ($summary->target_sales_pf > 0) {
+
+                    if ($data['pf'] > 0) {
+
+                        if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
+
+                            $summary->update([ // SUBSTRACT OLD VALUE
+                                'actual_sales_pf' => $summary->actual_sales_pf - $data['value_old'],
+                                'sum_national_actual_sales_pf' => $sumNationalActualSalesPf - $data['value_old'],
+                            ]);
+
+                            $summary->update([ // ADD NEW VALUE
+                                'actual_sales_pf' => $summary->actual_sales_pf + $data['value'],
+                                'sum_national_actual_sales_pf' => $summary->sum_national_actual_sales_pf + $data['value'],
+                            ]);
+
+                        } else { // INSERT
+
+                            $summary->update([ // ADD NEW VALUE
+                                'actual_sales_pf' => $summary->actual_sales_pf + $data['value'],
+                                'sum_national_actual_sales_pf' => $sumNationalActualSalesPf + $data['value'],
+                            ]);
+
+                        }
+                    }
+                }
+
+                // EFFECTIVE CALL
+                $countEC = SalesmanSummarySales::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
+                    ->whereDate('date', Carbon::now()->format('Y-m-d'))->count();
+
+                if ($countEC == 1) { // 1 Count Per Transaction Per Day
+                    if (!isset($data['value_old'])) {
+                        $summary->update([ // ADD NEW VALUE
+                            'actual_effective_call' => $summary->actual_effective_call + 1,
+                            'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall + 1,
+                        ]);
+                    }
+                }
+
+                // ACTIVE OUTLET
+                $countAO = SalesmanSummarySales::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
+                    ->whereMonth('date', Carbon::now()->format('m'))->whereYear('date', Carbon::now()->format('Y'))->count();
+
+                if ($countAO == 1) { // 1 Count Per Transaction Per Month
+                    if (!isset($data['value_old'])) {
+                        $summary->update([ // ADD NEW VALUE
+                            'actual_active_outlet' => $summary->actual_active_outlet + 1,
+                            'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet + 1,
+                        ]);
+                    }
+                }
+
+
+            } else { // DELETE
+                // ON PROGRESS
+            }
+
+            // Update Sum Target Store to All Summary
+            $targetOther->update([
+                'sum_national_actual_call' => $summary->sum_national_actual_call,
+                'sum_national_actual_active_outlet' => $summary->sum_national_actual_active_outlet,
+                'sum_national_actual_effective_call' => $summary->sum_national_actual_effective_call,
+                'sum_national_actual_sales' => $summary->sum_national_actual_sales,
+                'sum_national_actual_sales_pf' => $summary->sum_national_actual_sales_pf,
+            ]);
+
+
+        }
+
+    }
+
+    public function resetActualSalesman($userId){
+
+        /* Delete Actual Data in Summary Target Actuals */
+        $summary_ta = SalesmanSummaryTargetActual::where('user_id', $userId)->first();
+
+        if($summary_ta) {
+
+            $sumNationalActualCall = SalesmanSummaryTargetActual::first()->sum_national_actual_call;
+            $sumNationalActualActiveOutlet = SalesmanSummaryTargetActual::first()->sum_national_actual_active_outlet;
+            $sumNationalActualEffectiveCall = SalesmanSummaryTargetActual::first()->sum_national_actual_effective_call;
+            $sumNationalActualSales = SalesmanSummaryTargetActual::first()->sum_national_actual_sales;
+            $sumNationalActualSalesPf = SalesmanSummaryTargetActual::first()->sum_national_actual_sales_pf;
+
+            $sumNationalActualCall = ($sumNationalActualCall) ? $sumNationalActualCall - $summary_ta->sum_national_actual_call : 0;
+            $sumNationalActualActiveOutlet = ($sumNationalActualActiveOutlet) ? $sumNationalActualActiveOutlet - $summary_ta->sum_national_actual_active_outlet : 0;
+            $sumNationalActualEffectiveCall = ($sumNationalActualEffectiveCall) ? $sumNationalActualEffectiveCall - $summary_ta->sum_national_actual_effective_call : 0;
+            $sumNationalActualSales = ($sumNationalActualSales) ? $sumNationalActualSales - $summary_ta->sum_national_actual_sales : 0;
+            $sumNationalActualSalesPf = ($sumNationalActualSalesPf) ? $sumNationalActualSalesPf - $summary_ta->sum_national_actual_sales_pf : 0;
+
+            /* Delete Actual Data */
+            $summary_ta->update([
+                'actual_call' => 0,
+                'actual_active_outlet' => 0,
+                'actual_effective_call' => 0,
+                'actual_sales' => 0,
+                'actual_sales_pf' => 0,
+                'sum_national_actual_call' => $sumNationalActualCall,
+                'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
+                'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
+                'sum_national_actual_sales' => $sumNationalActualSales,
+                'sum_national_actual_sales_pf' => $sumNationalActualSalesPf,
+            ]);
+
+            // Update Sum Target Store to All Summary
+            $targetOther = SalesmanSummaryTargetActual::where('id', '!=', $summary_ta->id);
+
+            $targetOther->update([
+                'sum_national_target_call' => $summary_ta->sum_national_target_call,
+                'sum_national_target_active_outlet' => $summary_ta->sum_national_target_active_outlet,
+                'sum_national_target_effective_call' => $summary_ta->sum_national_target_effective_call,
+                'sum_national_target_sales' => $summary_ta->sum_national_target_sales,
+                'sum_national_target_sales_pf' => $summary_ta->sum_national_target_sales_pf,
+            ]);
+
+            /* Add Summary from User */
+            $summaryData = SalesmanSummarySales::where('user_id', $userId)->get();
+
+            if ($summaryData) {
+
+                foreach ($summaryData as $data) {
+
+                    $detail['user_id'] = $userId;
+                    $detail['store_id'] = $data['storeId'];
+                    $detail['pf'] = $data['value_pf'];
+                    $detail['value'] = $data['value'];
+
+                    $this->changeActualSalesman($detail, 'change');
+
+                }
+
+            }
+
+            // CALL, EFFECTIVE CALL, ACTIVE OUTLET
+            $storeIds = EmployeeStore::where('user_id', $userId)->pluck('store_id');
+            $store = Store::whereIn('id', $storeIds)->get();
+
+            $call = 0;
+            $effectiveCall = 0;
+            $activeOutlet = 0;
+
+            $attendance = Attendance::where('user_id', $userId)->whereMonth('date', Carbon::now()->format('m'))
+                ->whereYear('date', Carbon::now()->format('Y'))->get();
+
+            if($attendance) {
+
+                foreach ($attendance as $header) {
+
+                    // CALL
+                    $attendanceDetailCount = AttendanceDetail::where('attendance_id', $header->id)->count();
+                    $call += $attendanceDetailCount;
+
+                    // EFFECTIVE CALL
+                    if ($store) { // If has store
+
+                        foreach ($store as $data){
+
+                            $transactionCount = SalesmanSummarySales::where('user_id',  $userId)->where('storeId', $data->id)
+                                ->whereDate('date', $header->date)->count();
+
+                            if($transactionCount >= 1){
+                                $effectiveCall += 1;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            // ACTIVE OUTLET
+            if($store){
+
+                foreach ($store as $data){
+
+                     $transactionCount = SalesmanSummarySales::where('user_id',  $userId)->where('storeId', $data->id)
+                                ->whereMonth('date', Carbon::now()->format('m'))->count();
+
+                    if($transactionCount >= 1){
+                        $activeOutlet += 1;
+                    }
+
+                }
+
+            }
+
+            // UPDATE CALL, EC, AO
+            $summary_ta->update([
+                'actual_call' => $summary_ta->actual_call + $call,
+                'actual_active_outlet' => $summary_ta->actual_active_outlet + $activeOutlet,
+                'actual_effective_call' => $summary_ta->effective_call + $effectiveCall,
+                'sum_national_actual_call' => $summary_ta->sum_national_actual_call + $call,
+                'sum_national_actual_active_outlet' => $summary_ta->sum_national_actual_active_outlet + $activeOutlet,
+                'sum_national_actual_effective_call' => $summary_ta->sum_national_actual_effective_call + $effectiveCall,
+            ]);
+
+            // Update Sum Target Store to All Summary
+            $targetOther = SalesmanSummaryTargetActual::where('id', '!=', $summary_ta->id);
+
+            $targetOther->update([
+                'sum_national_actual_call' => $summary_ta->sum_national_actual_call,
+                'sum_national_actual_active_outlet' => $summary_ta->sum_national_actual_active_outlet,
+                'sum_national_actual_effective_call' => $summary_ta->sum_national_actual_effective_call,
+            ]);
+
+        }
+
+    }
+
+    public function changeActualCall($userId){
+
+        $summary = SalesmanSummaryTargetActual::where('user_id', $userId)->first();
+
+        if($summary){
+
+            $summary->update([
+                'actual_call' => $summary->actual_call + 1,
+                'sum_national_actual_call' => $summary->sum_national_actual_call + 1,
+            ]);
+
+            // Update Sum Target Store to All Summary
+            $targetOther = SalesmanSummaryTargetActual::where('id', '!=', $summary->id);
+
+            $targetOther->update([
+                'sum_national_actual_call' => $summary->sum_national_actual_call,
+            ]);
 
         }
 

@@ -139,6 +139,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/achievement-by-national/{param}', 'Api\Master\AchievementController@getTotalAchievementNational');
     Route::get('/achievement-by-store/{param}', 'Api\Master\AchievementController@getAchievementByStore');
     Route::get('/achievement-by-store/{param}/{id}', 'Api\Master\AchievementController@getAchievementByStoreWithParam');
+    Route::get('/achievement-salesman/{param}', 'Api\Master\AchievementController@salesmanAchievement');
+    Route::get('/achievement-salesman-list', 'Api\Master\AchievementController@salesmanAchievementList');
+    Route::get('/achievement-salesman-by-national', 'Api\Master\AchievementController@salesmanAchievementByNational');
 
     /**
      * Promoter Feedback Module(s)
