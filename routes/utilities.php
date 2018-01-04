@@ -49,6 +49,8 @@ Route::group(['middleware' => ['auth']], function () {
      * Edit Sales
      */
 
+    Route::post('datatable/editsellin', ['as'=> 'datatable.editsellin','uses'=>'Master\EditSellInController@masterDataTable']);
+    Route::post('datatable/editsellout', ['as'=> 'datatable.editsellout','uses'=>'Master\EditSellOutController@masterDataTable']);
     Route::post('datatable/editretdistributor', ['as'=> 'datatable.editretdistributor','uses'=>'Master\EditRetDistributorController@masterDataTable']);
     Route::post('datatable/editretconsument', ['as'=> 'datatable.editretconsument','uses'=>'Master\EditRetConsumentController@masterDataTable']);
     Route::post('datatable/editfreeproduct', ['as'=> 'datatable.editfreeproduct','uses'=>'Master\EditFreeProductController@masterDataTable']);
@@ -76,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/promoactivityreport', ['as'=> 'datatable.promoactivityreport','uses'=>'Master\ReportController@promoActivityData']);
     Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
     Route::post('datatable/attendancereport', ['as'=> 'datatable.attendancereport','uses'=>'Master\ReportController@attendanceData']);
+    Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     
 
     

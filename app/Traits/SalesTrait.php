@@ -3,17 +3,19 @@
 namespace App\Traits;
 
 use Carbon\Carbon;
-use App\User;
-use App\SellIn;
-use App\SellInDetail;
-use App\SellOut;
-use App\SellOutDetail;
+use App\Reports\SummarySellIn;
+use App\Reports\SummarySellOut;
 use App\Reports\SummaryRetDistributor;
 use App\Reports\SummaryRetConsument;
 use App\Reports\SummaryFreeProduct;
 use App\Reports\SummaryTbat;
 use App\Reports\SummarySoh;
 use App\Reports\SummaryDisplayShare;
+use App\User;
+use App\SellIn;
+use App\SellInDetail;
+use App\SellOut;
+use App\SellOutDetail;
 use App\RetDistributor;
 use App\RetDistributorDetail;
 use App\RetConsument;
@@ -30,6 +32,96 @@ use App\PosmActivity;
 use App\PosmActivityDetail;
 
 trait SalesTrait {
+
+    public function deleteSellIn($detailId){
+
+        // Find Detail then delete
+        $sellInDetail = SellInDetail::where('id',$detailId)->first();
+
+            $sellIn_id = $sellInDetail->sellin_id;
+            
+        $sellInDetail->delete();
+        $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$detailId)->delete();
+
+            // Check if no detail exist delete header
+            $sellIn = SellIn::where('id',$sellIn_id)->first();
+            $sellInDetail = SellInDetail::where('sellin_id',$sellIn->id)->get();
+
+                if($sellInDetail->count() == 0){
+                    $sellIn->delete();
+                }
+
+        if ($sellInDetail) {
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function updateSellIn($id, $qty){
+
+        $sellInDetail = SellInDetail::where('id',$id)->update(['quantity'=> $qty]);
+
+        $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$id)
+            ->first();
+            $value = $summarySellInDetail->unit_price * $qty;
+            $summarySellInDetail->update([
+                        'quantity'=> $qty,
+                        'value'=> $value,
+                    ]);
+
+        if ($sellInDetail) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+public function deleteSellOut($detailId){
+
+        // Find Detail then delete
+        $sellOutDetail = SellOutDetail::where('id',$detailId)->first();
+
+            $sellOut_id = $sellOutDetail->sellout_id;
+            
+        $sellOutDetail->delete();
+        $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$detailId)->delete();
+
+            // Check if no detail exist delete header
+            $sellOut = SellOut::where('id',$sellOut_id)->first();
+            $sellOutDetail = SellOutDetail::where('sellout_id',$sellOut->id)->get();
+
+                if($sellOutDetail->count() == 0){
+                    $sellOut->delete();
+                }
+
+        if ($sellOutDetail) {
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function updateSellOut($id, $qty){
+
+        $sellOutDetail = SellOutDetail::where('id',$id)->update(['quantity'=> $qty]);
+
+        $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$id)
+            ->first();
+            $value = $summarySellOutDetail->unit_price * $qty;
+            $summarySellOutDetail->update([
+                        'quantity'=> $qty,
+                        'value'=> $value,
+                    ]);
+
+        if ($sellOutDetail) {
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public function deleteRetDistributor($detailId){
 
