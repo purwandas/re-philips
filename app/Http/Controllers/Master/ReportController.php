@@ -2087,7 +2087,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'posm_activities.user_id', '=', 'users.id')
                     ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
-                    ->join('group_products', 'posms.groupproduct_id', '=', 'group_products.id')
+                    ->join('group_products', 'posms.group_id', '=', 'group_products.id')
                     ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'posms.name as posm_name', 'group_products.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
                     ->get();
 
