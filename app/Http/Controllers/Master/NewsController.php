@@ -75,7 +75,7 @@ class NewsController extends Controller
                         foreach ($data as $dataSplit) { 
 
                             $store = Store::find(trim($dataSplit));
-                            $result .= "(" . $store->store_id . ") " . $store->store_name_1. " - " . $store->dedicate;
+                            $result .= "(" . $store->store_id . ") " . $store->store_name_1;
                             if($dataSplit != end($data)){
                                 $result .= ", ";
                             }

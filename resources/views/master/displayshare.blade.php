@@ -47,7 +47,6 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Store Dedicate </th>
                                 <th> Category Product </th>
                                 <th> Philips </th>
                                 <th> All </th>
@@ -110,7 +109,6 @@
                 {data: 'store_name_1', name: 'store_name_1'},
                 {data: 'store_name_2', name: 'store_name_2'},
                 {data: 'store_id', name: 'store_id'},
-                {data: 'dedicate', name: 'dedicate'},
                 {data: 'category', name: 'category'},
                 {data: 'philips', name: 'philips'},
                 {data: 'all', name: 'all'},
