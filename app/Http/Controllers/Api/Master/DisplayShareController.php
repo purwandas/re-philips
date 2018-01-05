@@ -50,11 +50,16 @@ class DisplayShareController extends Controller
 
                                 /** Update Summary **/
 
-                                $summary = SummaryDisplayShare::where('display_share_detail_id', $displayShareDetail->id)->first();
+                                $summary = SummaryDisplayShare::where('displayshare_detail_id', $displayShareDetail->id)->first();
 
                                 $summary->update([
-                                    'philips' => $summary->philips + $data['philips'],
-                                    'all' => $summary->all + $data['all']
+                                    'philips' => $data['philips'],
+                                    'all' => $data['all'],
+                                ]);
+
+                                // Update percentage
+                                $summary->update([
+                                    'percentage' => ($summary->philips / $summary->all ) * 100,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -144,7 +149,7 @@ class DisplayShareController extends Controller
                                     'category' => $category->name,
                                     'philips' => $data['philips'],
                                     'all' => $data['all'],
-                                    'percentage' => ($data['philips'] / $data['all'] * 100),
+                                    'percentage' => (($data['philips'] / $data['all']) * 100),
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -262,7 +267,7 @@ class DisplayShareController extends Controller
                                 'category' => $category->name,
                                 'philips' => $data['philips'],
                                 'all' => $data['all'],
-                                'percentage' => ($data['all'] / $data['all'] * 100),
+                                'percentage' => (($data['philips'] / $data['all']) * 100),
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
