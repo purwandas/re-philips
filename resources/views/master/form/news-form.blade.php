@@ -245,7 +245,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
 	        })); 
@@ -337,7 +337,7 @@
 					var getDataUrl = "{{ url('util/store/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
-					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")" + " - " + data.dedicate);
+					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
 					    })
 				    });
 
