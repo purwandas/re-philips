@@ -84,14 +84,14 @@
                     "></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('usernon*') ? 'active open' : '' }}">
-                        <a href="{{ url('usernon') }}" class="nav-link nav-toggle">
-                            <span class="title">Non-Promoter</span>
-                        </a>
-                    </li>
                     <li class="nav-item {{ Request::is('userpromoter*') ? 'active open' : '' }}">
                         <a href="{{ url('userpromoter') }}" class="nav-link nav-toggle">
                             <span class="title">Promoter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('usernon*') ? 'active open' : '' }}">
+                        <a href="{{ url('usernon') }}" class="nav-link nav-toggle">
+                            <span class="title">Non-Promoter</span>
                         </a>
                     </li>
                 </ul>

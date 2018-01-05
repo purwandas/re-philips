@@ -41,6 +41,15 @@ class StoreFilters extends QueryFilters
         return $this->builder->where('user_id',null)->orwhere('user_id',$value);
     }
 
+    // Ordering by dedicate
+    public function byDedicate($value) {
+        return $this->builder->where('dedicate',$value);//->orwhere('user_id',$value);
+    }
+
+    // Ordering by dedicate SPV
+    public function byDedicateSpv($value) {
+        return $this->builder->where('dedicate',null)->orwhere('dedicate',$value);
+    }
 
 
 //    // Ordering by area

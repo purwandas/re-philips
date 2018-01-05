@@ -121,25 +121,6 @@
 				          </div>
 				        </div>
 
-				        <div class="form-group">
-				          <label class="col-sm-2 control-label">Dedicate</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<select class="select2select" name="dedicate" id="dedicate" required>
-									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
-									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
-									<option value="MCC" {{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>MCC</option>
-									<option value="HYBRID" {{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>HYBRID</option>
-                                </select>
-
-                                <span class="input-group-addon display-hide">
-                                	<i class="fa"></i>
-                                </span>
-				            </div>
-				          </div>
-				        </div>			
-
 				        <div id="latitude_longitude_div">
 					        <div class="caption padding-caption">
 	                        	<span class="caption-subject font-dark bold uppercase">Longitude & Latitude</span>
@@ -306,7 +287,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
 	        }));
@@ -357,11 +338,6 @@
                 placeholder: 'Classification'
             });
 
-            $('#dedicate').select2({
-                width: '100%',
-                placeholder: 'Dedicate'
-            });
-
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
@@ -401,7 +377,6 @@
 	            $('#area_div').addClass('display-hide');
 	            
 	            $('#store_name_1').val('null');
-	            $('#dedicate').prop('required',false);
 	            $('#classification').prop('required',false);
 	            $('#distributors').prop('required',false);
 	            $("#subchannel").empty().append('<option value="id">- select Sub Channel -</option>').val('id').trigger('change');
@@ -419,7 +394,6 @@
 	            $('#area_div').removeClass('display-hide');
 	            
 	            $('#store_name_1').prop('aria-required',true);
-	            $('#dedicate').prop('required',true);
 	            $('#classification').prop('required',true);
 	            $('#distributors').prop('required',true);
 

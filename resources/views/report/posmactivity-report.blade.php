@@ -107,7 +107,6 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Dedicate </th>
                                 <th> Week </th>
                                 <th> POSM </th>
                                 <th> Group Product </th>
@@ -152,7 +151,6 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeid', name: 'storeid'},
-                            {data: 'dedicate', name: 'dedicate'},
                             {data: 'week', name: 'week'},
                             {data: 'posm_name', name: 'posm_name'},
                             {data: 'group_product_name', name: 'group_product_name'},
@@ -256,7 +254,7 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"+ " - " + obj.dedicate}
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                     })
                 }
             }));

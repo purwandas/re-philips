@@ -47,11 +47,9 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Store Dedicate </th>
                                 <th> Store Destination Name 1 </th>
                                 <th> Store Destination Name 2 </th>
                                 <th> Store Destination ID </th>
-                                <th> Store Destination Dedicate </th>
                                 <th> Product </th>
                                 <th> Quantity </th>
                                 <th> Action </th>
@@ -113,11 +111,9 @@
                 {data: 'store_name_1', name: 'store_name_1'},
                 {data: 'store_name_2', name: 'store_name_2'},
                 {data: 'store_id', name: 'store_id'},
-                {data: 'dedicate', name: 'dedicate'},
                 {data: 'storeD_name_1', name: 'storeD_name_1'},
                 {data: 'storeD_name_2', name: 'storeD_name_2'},
                 {data: 'storeD_id', name: 'storeD_id'},
-                {data: 'dedicateD', name: 'dedicateD'},
                 {data: 'product', name: 'product'},
                 {data: 'quantity', name: 'quantity'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
