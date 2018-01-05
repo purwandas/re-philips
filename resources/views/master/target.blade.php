@@ -253,7 +253,7 @@
                     $('#target_pf_mcc').val(data.target_pf_mcc);
                     setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
                     setSelect2IfPatchModal($("#promoter"), data.user_id, data.user.name);
-                    setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")" + " - " + data.store.dedicate);
+                    setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")");
 
                     // Set filters
                     self.selected('byEmployee', $('#promoter').val());
@@ -289,7 +289,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
 	        }));

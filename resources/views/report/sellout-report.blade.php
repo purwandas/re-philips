@@ -103,7 +103,6 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Dedicate </th>
                                 <th> NIK </th>
                                 <th> Promoter Name </th>
                                 <th> Date </th>
@@ -161,7 +160,6 @@
                             {data: 'district', name: 'district'},
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
-                            {data: 'dedicate', name: 'dedicate'},
                             {data: 'store_id', name: 'store_id'},
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
@@ -263,7 +261,7 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"+ " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
                 }
             }));

@@ -38,7 +38,7 @@ class TargetController extends Controller
         $data = Target::where('targets.deleted_at', null)
         			->join('users', 'targets.user_id', '=', 'users.id')
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
-                    ->select('targets.*', 'users.name as promoter_name', DB::raw('CONCAT(stores.store_id, " - ", stores.store_name_1, " (", stores.store_name_2, ") - ", stores.dedicate) AS store_name'))->get();
+                    ->select('targets.*', 'users.name as promoter_name', DB::raw('CONCAT(stores.store_id, " - ", stores.store_name_1, " (", stores.store_name_2, ")") AS store_name'))->get();
 
         return $this->makeTable($data);
     }

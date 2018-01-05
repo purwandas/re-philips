@@ -54,7 +54,6 @@
                             <th> Store ID </th>
                             <th> Store Name 1 </th>
                             <th> Store Name 2 </th>
-                            <th> Dedicate </th>
                             <th> Region </th>
                             <th> Area </th>
                             <th> District </th>
@@ -109,7 +108,6 @@
                 {data: 'store_id', name: 'store_id'},
                 {data: 'store_name_1', name: 'store_name_1'},
                 {data: 'store_name_2', name: 'store_name_2'},
-                {data: 'dedicate', name: 'dedicate'},
                 {data: 'region_name', name: 'region_name'},
                 {data: 'area_name', name: 'area_name'},
                 {data: 'district_name', name: 'district_name'},

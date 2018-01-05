@@ -66,9 +66,26 @@ trait SalesTrait {
         $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$id)
             ->first();
             $value = $summarySellInDetail->unit_price * $qty;
+            
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summarySellInDetail->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summarySellInDetail->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summarySellInDetail->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summarySellInDetail->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($sellInDetail) {
@@ -78,7 +95,7 @@ trait SalesTrait {
         }
     }
 
-public function deleteSellOut($detailId){
+    public function deleteSellOut($detailId){
 
         // Find Detail then delete
         $sellOutDetail = SellOutDetail::where('id',$detailId)->first();
@@ -111,9 +128,26 @@ public function deleteSellOut($detailId){
         $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$id)
             ->first();
             $value = $summarySellOutDetail->unit_price * $qty;
+
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summarySellOutDetail->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summarySellOutDetail->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summarySellOutDetail->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summarySellOutDetail->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($sellOutDetail) {
@@ -156,9 +190,26 @@ public function deleteSellOut($detailId){
         $summaryRetDistributorDetail = SummaryRetDistributor::where('retdistributor_detail_id',$id)
             ->first();
             $value = $summaryRetDistributorDetail->unit_price * $qty;
+
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summaryRetDistributorDetail->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summaryRetDistributorDetail->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summaryRetDistributorDetail->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summaryRetDistributorDetail->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($retDistributorDetail) {
@@ -203,9 +254,25 @@ public function deleteSellOut($detailId){
             ->first();
             $value = $summary->unit_price * $qty;
 
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summary->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summary->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summary->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summary->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($detail) {
@@ -249,9 +316,25 @@ public function deleteSellOut($detailId){
             ->first();
             $value = $summary->unit_price * $qty;
 
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summary->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summary->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summary->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summary->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($detail) {
@@ -295,9 +378,25 @@ public function deleteSellOut($detailId){
             ->first();
             $value = $summary->unit_price * $qty;
 
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summary->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summary->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summary->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summary->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($detail) {
@@ -341,9 +440,25 @@ public function deleteSellOut($detailId){
             ->first();
             $value = $summary->unit_price * $qty;
 
+            $pf_mr = 0;
+            $pf_tr = 0;
+            $pf_ppe = 0;
+            if ($summary->value_pf_mr > 0) {
+                $pf_mr = $value;
+            }
+            if ($summary->value_pf_tr > 0) {
+                $pf_tr = $value;
+            }
+            if ($summary->value_pf_ppe > 0) {
+                $pf_ppe = $value;
+            }
+
             $summary->update([
                         'quantity'=> $qty,
                         'value'=> $value,
+                        'value_pf_mr' => $pf_mr,
+                        'value_pf_te' => $pf_tr,
+                        'value_pf_ppe' => $pf_ppe,
                     ]);
 
         if ($detail) {
