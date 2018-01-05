@@ -99,7 +99,7 @@ class TargetSalesmanController extends Controller
             $targetOldActiveOutlet = $target->first()->target_active_outlet;
             $targetOldEffectiveCall = $target->first()->target_effective_call;
             $targetOldSales = $target->first()->target_sales;
-            $targetOldSalesPF = $target->first()->target_sales_pf;
+            $targetOldSalesPf = $target->first()->target_sales_pf;
 
             $target->update(['target_call'=>$request->target_call]);
             $target->update(['target_active_outlet'=>$request->target_active_outlet]);
@@ -108,19 +108,21 @@ class TargetSalesmanController extends Controller
             $target->update(['target_sales_pf'=>$request->target_sales_pf]);
 
             /* Summary Target Add and/or Change */ // On Progress
-//            $summary['user_id'] = $target->first()->user_id;
-//            $summary['targetOldCall'] = $targetOldCall;
-//            $summary['targetOldActiveOutlet'] = $targetOldActiveOutlet;
-//            $summary['targetOldEffectiveCall'] = $targetOldEffectiveCall;
-//            $summary['targetOldSales'] = $targetOldSales;
-//            $summary['targetOldSalesPF'] = $targetOldSalesPF;
-//            $summary['target_call'] = $target->first()->target_call;
-//            $summary['target_active_outlet'] = $target->first()->target_active_outlet;
-//            $summary['target_effective_call'] = $target->first()->target_effective_call;
-//            $summary['target_sales'] = $target->first()->target_sales;
-//            $summary['target_sales_pf'] = $target->first()->target_sales_pf;
+            $summary['user_id'] = $target->first()->user_id;
+            $summary['targetOldCall'] = $targetOldCall;
+            $summary['targetOldActiveOutlet'] = $targetOldActiveOutlet;
+            $summary['targetOldEffectiveCall'] = $targetOldEffectiveCall;
+            $summary['targetOldSales'] = $targetOldSales;
+            $summary['targetOldSalesPf'] = $targetOldSalesPf;
+            $summary['target_call'] = $target->first()->target_call;
+            $summary['target_active_outlet'] = $target->first()->target_active_outlet;
+            $summary['target_effective_call'] = $target->first()->target_effective_call;
+            $summary['target_sales'] = $target->first()->target_sales;
+            $summary['target_sales_pf'] = $target->first()->target_sales_pf;
 
-//            $this->changeTarget($summary, 'change');
+//            return $summary;
+
+            $this->changeTargetSalesman($summary, 'change');
 
             return response()->json(['url' => url('/targetsalesman'), 'method' => 'PATCH']);
 
@@ -128,14 +130,14 @@ class TargetSalesmanController extends Controller
             $target = SalesmanTarget::create($request->all());
 
             /* Summary Target Add and/or Change */ // On Progress
-//            $summary['user_id'] = $target->user_id;
-//            $summary['target_call'] = $target->target_call;
-//            $summary['target_active_outlet'] = $target->target_active_outlet;
-//            $summary['target_effective_call'] = $target->target_effective_call;
-//            $summary['target_sales'] = $target->target_sales;
-//            $summary['target_sales_pf'] = $target->target_sales_pf;
+            $summary['user_id'] = $target->user_id;
+            $summary['target_call'] = $target->target_call;
+            $summary['target_active_outlet'] = $target->target_active_outlet;
+            $summary['target_effective_call'] = $target->target_effective_call;
+            $summary['target_sales'] = $target->target_sales;
+            $summary['target_sales_pf'] = $target->target_sales_pf;
 
-//            $this->changeTarget($summary, 'change');
+            $this->changeTargetSalesman($summary, 'change');
         }
 
         return response()->json(['url' => url('/targetsalesman')]);
@@ -189,28 +191,24 @@ class TargetSalesmanController extends Controller
         $targetOldActiveOutlet = $target->target_active_outlet;
         $targetOldEffectiveCall = $target->target_effective_call;
         $targetOldSales = $target->target_sales;
-        $targetOldSalesPF = $target->target_sales_pf;
+        $targetOldSalesPf = $target->target_sales_pf;
 
         $target->update($request->all());
 
         /* Summary Target Add and/or Change */
-//        $summary['user_id'] = $target->user_id;
-//        $summary['store_id'] = $target->store_id;
-//        $summary['targetOldDa'] = $targetOldDa;
-//        $summary['targetOldPfDa'] = $targetOldPfDa;
-//        $summary['targetOldPc'] = $targetOldPc;
-//        $summary['targetOldPfPc'] = $targetOldPfPc;
-//        $summary['targetOldMcc'] = $targetOldMcc;
-//        $summary['targetOldPfMcc'] = $targetOldPfMcc;
-//        $summary['target_da'] = $target->target_da;
-//        $summary['target_pf_da'] = $target->target_pf_da;
-//        $summary['target_pc'] = $target->target_pc;
-//        $summary['target_pf_pc'] = $target->target_pf_pc;
-//        $summary['target_mcc'] = $target->target_mcc;
-//        $summary['target_pf_mcc'] = $target->target_pf_mcc;
-//        $summary['sell_type'] = $target->sell_type;
-//
-//        $this->changeTarget($summary, 'change');
+        $summary['user_id'] = $target->user_id;
+        $summary['targetOldCall'] = $targetOldCall;
+        $summary['targetOldActiveOutlet'] = $targetOldActiveOutlet;
+        $summary['targetOldEffectiveCall'] = $targetOldEffectiveCall;
+        $summary['targetOldSales'] = $targetOldSales;
+        $summary['targetOldSalesPf'] = $targetOldSalesPf;
+        $summary['target_call'] = $target->target_call;
+        $summary['target_active_outlet'] = $target->target_active_outlet;
+        $summary['target_effective_call'] = $target->target_effective_call;
+        $summary['target_sales'] = $target->target_sales;
+        $summary['target_sales_pf'] = $target->target_sales_pf;
+
+        $this->changeTargetSalesman($summary, 'change');
 
         return response()->json(
             ['url' => url('/targetsalesman'), 'method' => $request->_method]);
@@ -227,20 +225,14 @@ class TargetSalesmanController extends Controller
         $target = SalesmanTarget::where('id', $id)->first();
 
         /* Summary Target Delete */
-//        $summary['user_id'] = $target->user_id;
-//        $summary['store_id'] = $target->store_id;
-//        $summary['target_da'] = $target->target_da;
-//        $summary['target_pf_da'] = $target->target_pf_da;
-//        $summary['target_pc'] = $target->target_pc;
-//        $summary['target_pf_pc'] = $target->target_pf_pc;
-//        $summary['target_mcc'] = $target->target_mcc;
-//        $summary['target_pf_mcc'] = $target->target_pf_mcc;
-//        $summary['sell_type'] = $target->sell_type;
-//
-//        $this->changeTarget($summary, 'delete');
+        $summary['user_id'] = $target->first()->user_id;
+        $summary['target_call'] = $target->first()->target_call;
+        $summary['target_active_outlet'] = $target->first()->target_active_outlet;
+        $summary['target_effective_call'] = $target->first()->target_effective_call;
+        $summary['target_sales'] = $target->first()->target_sales;
+        $summary['target_sales_pf'] = $target->first()->target_sales_pf;
 
-        /* Chage promoter title from Hybrid to One Dedicate */
-//        $this->changePromoterTitle($summary['user_id'], $summary['store_id'], $summary['sell_type']);
+        $this->changeTargetSalesman($summary, 'delete');
 
         $target->delete();
 

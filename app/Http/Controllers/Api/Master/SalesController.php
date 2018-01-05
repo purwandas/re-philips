@@ -123,6 +123,15 @@ class SalesController extends Controller
                                         'value_pf' => $value_pf
                                     ]);
 
+                                    // Actual Summary
+                                    $summary_ta['user_id'] = $sellInHeader->user_id;
+                                    $summary_ta['store_id'] = $sellInHeader->store_id;
+                                    $summary_ta['pf'] = $summary->value_pf;
+                                    $summary_ta['value_old'] = $value_old;
+                                    $summary_ta['value'] = $summary->value;
+
+                                    $this->changeActualSalesman($summary_ta, 'change');
+
                                 }
 
                             } else { // If data didn't exist -> create
@@ -139,7 +148,6 @@ class SalesController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellInHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
-                                
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -306,6 +314,14 @@ class SalesController extends Controller
                                         'role' => $user->role,
                                     ]);
 
+                                    // Actual Summary
+                                    $summary_ta['user_id'] = $sellInHeader->user_id;
+                                    $summary_ta['store_id'] = $sellInHeader->store_id;
+                                    $summary_ta['pf'] = $summary->value_pf;
+                                    $summary_ta['value'] = $summary->value;
+
+                                    $this->changeActualSalesman($summary_ta, 'change');
+
                                 }
 
                             }
@@ -468,6 +484,8 @@ class SalesController extends Controller
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell In';
 
+//                                return $summary_ta;
+
                                 $this->changeActual($summary_ta, 'change');
 
                             }else{ // Buat SEE (Salesman Explorer)
@@ -512,6 +530,14 @@ class SalesController extends Controller
                                     'value_pf' => $value_pf,
                                     'role' => $user->role,
                                 ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['pf'] = $summary->value_pf;
+                                $summary_ta['value'] = $summary->value;
+
+                                $this->changeActualSalesman($summary_ta, 'change');
 
                             }
 
@@ -597,7 +623,6 @@ class SalesController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellOutHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
-
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
