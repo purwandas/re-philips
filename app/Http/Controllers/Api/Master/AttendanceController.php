@@ -107,7 +107,7 @@ class AttendanceController extends Controller
 
             // Add attendance detail
             try {
-                DB::transaction(function () use ($content, $attendanceHeader) {
+                DB::transaction(function () use ($content, $attendanceHeader, $user) {
 
                     // Attendance Header Update
                     $attendanceHeader->update([
@@ -128,6 +128,8 @@ class AttendanceController extends Controller
                         'detail' => $detail
                     ]);
 
+                    // Change Actual Call - SEE
+                    $this->changeActualCall($user->id);
 
                 });
             } catch (\Exception $e) {

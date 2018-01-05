@@ -3,7 +3,9 @@
 namespace App\Traits;
 
 use App\Attendance;
+use App\EmployeeStore;
 use App\GroupProduct;
+use App\Reports\SalesmanSummaryTargetActual;
 use App\Reports\SummaryTargetActual;
 use App\Store;
 use App\TrainerArea;
@@ -66,6 +68,50 @@ trait TargetTrait {
 
             /* Override title of promoter */
             $this->changePromoterTitle($user->id, $store->id, $data['sell_type']);
+
+        }
+
+        return $target;
+
+    }
+
+    public function setHeaderSalesman($data){
+
+        /* Check header exist or not, if doesn't, make it */
+        $target = SalesmanSummaryTargetActual::where('user_id', $data['user_id'])->first();
+        $user = User::where('id', $data['user_id'])->first();
+
+        // Fetch some data
+        $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+        $store = Store::whereIn('id', $storeIds)->get();
+
+        $area = '';
+
+        if($store){ // If SEE had store linked
+
+            $arr_area = [];
+
+            foreach ($store as $data) {
+                    array_push($arr_area, $data->district->area->name);
+            }
+
+            $area = implode(", ", array_unique($arr_area));
+        }
+
+        if(!$target){
+
+            $target = SalesmanSummaryTargetActual::create([
+                            'user_id' => $user->id,
+                            'nik' => $user->nik,
+                            'salesman_name' => $user->name,
+                            'area' => $area,
+                        ]);
+
+        }else{ // Override area (jika ada penambahan/perubahan toko)
+
+            $target->update([
+                'area' => $area
+            ]);
 
         }
 
@@ -491,258 +537,194 @@ trait TargetTrait {
 
         /* Reset Actual */
         $this->resetActual($data['user_id'], $data['store_id'], $data['sell_type']);
-//
-////                if($change == 'change') {
-////
-////                    if (isset($data['targetOld'])) { // Reduce sum total if target update
-////                        $targetAfter->update([
-////                            'target_dapc' => $targetAfter->target_dapc - $data['targetOld'],
-////                        ]);
-////                    }
-////
-////                    // Sum Target
-////                    $targetAfter->update([
-////                        'target_dapc' => $targetAfter->target_dapc + $data['target'],
-////                    ]);
-////
-////                }else{
-////                    // Delete Target
-////                    $targetAfter->update([
-////                        'target_dapc' => $targetAfter->target_dapc - $data['target'],
-////                    ]);
-////                }
-//
-//            }
 
+
+    }
+
+    public function changeTargetSalesman($data, $change){
+
+        $target = $this->setHeaderSalesman($data);
 
         /* Target Add and/or Sum */
-//        $targetAfter = SummaryTargetActual::where('id', $target->id)->first();
-//        $sumStore = SummaryTargetActual::where('storeId',$target->storeId);
-//        $sumArea = SummaryTargetActual::where('area_id', $target->area_id);
-//        $sumRegion = SummaryTargetActual::where('region_id', $target->region_id);
-//        $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->first()->sum_target_store;
-//        $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->first()->sum_target_area;
-//        $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->first()->sum_target_region;
-//
-////        return $data['targetOld'];
-//
-//        if($data['type'] == 'Total Dedicate'){ // If Type was Total Dedicate
-//
-//            /* Add / Sum total dedicate */
-//            $group = GroupProduct::where('id', $data['groupproduct_id'])->first();
-//
-//            /* Add to per total dedicate target */
-//            if($group->name == 'DA'){
-//
-//                if($change == 'change') {
-//
-//                    if (isset($data['targetOld'])) { // Reduce sum total if target update
-//                        $targetAfter->update([
-//                            'target_da' => $targetAfter->target_da - $data['targetOld'],
-//                            'sum_target_store' => $sumTargetStore - $data['targetOld'],
-//                            'sum_target_area' => $sumTargetArea - $data['targetOld'],
-//                            'sum_target_region' => $sumTargetRegion - $data['targetOld'],
-//                        ]);
-//
-//                        // Sum Target
-//                        $targetAfter->update([
-//                            'target_da' => $targetAfter->target_da + $data['target'],
-//                            'sum_target_store' => $targetAfter->sum_target_store + $data['target'],
-//                            'sum_target_area' => $targetAfter->sum_target_area + $data['target'],
-//                            'sum_target_region' => $targetAfter->sum_target_region + $data['target'],
-//                        ]);
-//
-//                    }else {
-//
-//                        // Sum Target
-//                        $targetAfter->update([
-//                            'target_da' => $targetAfter->target_da + $data['target'],
-//                            'sum_target_store' => $sumTargetStore + $data['target'],
-//                            'sum_target_area' => $sumTargetArea + $data['target'],
-//                            'sum_target_region' => $sumTargetRegion + $data['target'],
-//                        ]);
-//
-//                    }
-//
-//                }else{
-//
-//                    // Delete Target
-//                    $targetAfter->update([
-//                        'target_da' => $targetAfter->target_da - $data['target'],
-//                        'sum_target_store' => $targetAfter->sum_target_store - $data['target'],
-//                        'sum_target_area' => $targetAfter->sum_target_area - $data['target'],
-//                        'sum_target_region' => $targetAfter->sum_target_region - $data['target'],
-//                    ]);
-//
-//                }
-//
-//                // Update Sum Target Store to All Summary
-//                $sumStore->update([
-//                    'sum_target_store' => $targetAfter->sum_target_store,
-//                ]);
-//
-//                $sumArea->update([
-//                    'sum_target_area' => $targetAfter->sum_target_area,
-//                ]);
-//
-//                $sumRegion->update([
-//                    'sum_target_region' => $targetAfter->sum_target_region,
-//                ]);
-//
-//            }else if($group->name == 'PC'){
-//
-//                if($change == 'change') {
-//
-//                    if (isset($data['targetOld'])) { // Reduce sum total if target update
-//                        $targetAfter->update([
-//                            'target_pc' => $targetAfter->target_pc - $data['targetOld'],
-//                            'sum_target_store' => $sumTargetStore - $data['targetOld'],
-//                            'sum_target_area' => $sumTargetArea - $data['targetOld'],
-//                            'sum_target_region' => $sumTargetRegion - $data['targetOld'],
-//                        ]);
-//
-//                        // Sum Target
-//                        $targetAfter->update([
-//                            'target_pc' => $targetAfter->target_pc + $data['target'],
-//                            'sum_target_store' => $targetAfter->sum_target_store + $data['target'],
-//                            'sum_target_area' => $targetAfter->sum_target_area + $data['target'],
-//                            'sum_target_region' => $targetAfter->sum_target_region + $data['target'],
-//                        ]);
-//
-//                    }else {
-//
-//                        // Sum Target
-//                        $targetAfter->update([
-//                            'target_pc' => $targetAfter->target_pc + $data['target'],
-//                            'sum_target_store' => $sumTargetStore + $data['target'],
-//                            'sum_target_area' => $sumTargetArea + $data['target'],
-//                            'sum_target_region' => $sumTargetRegion + $data['target'],
-//                        ]);
-//
-//                    }
-//
-//                }else{
-//
-//                    // Delete Target
-//                    $targetAfter->update([
-//                        'target_pc' => $targetAfter->target_pc - $data['target'],
-//                        'sum_target_store' => $targetAfter->sum_target_store - $data['target'],
-//                        'sum_target_area' => $targetAfter->sum_target_area - $data['target'],
-//                        'sum_target_region' => $targetAfter->sum_target_region - $data['target'],
-//                    ]);
-//
-//                }
-//
-//                // Update Sum Target Store to All Summary
-//                $sumStore->update([
-//                    'sum_target_store' => $targetAfter->sum_target_store,
-//                ]);
-//
-//                $sumArea->update([
-//                    'sum_target_area' => $targetAfter->sum_target_area,
-//                ]);
-//
-//                $sumRegion->update([
-//                    'sum_target_region' => $targetAfter->sum_target_region,
-//                ]);
-//
-//            }else if($group->name == 'MCC'){
-//
-////                return $data['targetOld'];
-//
-//                if($change == 'change') {
-//
-//                    if (isset($data['targetOld'])) { // Reduce sum total if target update
-//
-//                        $targetAfter->update([
-//                            'target_mcc' => $targetAfter->target_mcc - $data['targetOld'],
-//                            'sum_target_store' => $sumTargetStore - $data['targetOld'],
-//                            'sum_target_area' => $sumTargetArea - $data['targetOld'],
-//                            'sum_target_region' => $sumTargetRegion - $data['targetOld'],
-//                        ]);
-//
-//                        // Sum Target
-//                        $targetAfter->update([
-//                            'target_mcc' => $targetAfter->target_mcc + $data['target'],
-//                            'sum_target_store' => $targetAfter->sum_target_store + $data['target'],
-//                            'sum_target_area' => $targetAfter->sum_target_area + $data['target'],
-//                            'sum_target_region' => $targetAfter->sum_target_region + $data['target'],
-//                        ]);
-//
-//                    }else {
-//
-//                        // Sum Target
-//                        $targetAfter->update([
-//                            'target_mcc' => $targetAfter->target_mcc + $data['target'],
-//                            'sum_target_store' => $sumTargetStore + $data['target'],
-//                            'sum_target_area' => $sumTargetArea + $data['target'],
-//                            'sum_target_region' => $sumTargetRegion + $data['target'],
-//                        ]);
-//
-//                    }
-//
-//                }else{
-//
-//                    // Delete Target
-//                    $targetAfter->update([
-//                        'target_mcc' => $targetAfter->target_mcc - $data['target'],
-//                        'sum_target_store' => $targetAfter->sum_target_store - $data['target'],
-//                        'sum_target_area' => $targetAfter->sum_target_area - $data['target'],
-//                        'sum_target_region' => $targetAfter->sum_target_region - $data['target'],
-//                    ]);
-//
-//                }
-//
-//                // Update Sum Target Store to All Summary
-//                $sumStore->update([
-//                    'sum_target_store' => $targetAfter->sum_target_store,
-//                ]);
-//
-//                $sumArea->update([
-//                    'sum_target_area' => $targetAfter->sum_target_area,
-//                ]);
-//
-//                $sumRegion->update([
-//                    'sum_target_region' => $targetAfter->sum_target_region,
-//                ]);
-//
-//            }
-//
-//            /* Check if Promoter was hybrid or not */
-//            if($targetAfter->title_of_promoter == 'Hybrid'){
-//
-//                $targetAfter->update([
-//                    'target_dapc' => $targetAfter->target_da + $targetAfter->target_pc
-//                ]);
-//
-////                if($change == 'change') {
-////
-////                    if (isset($data['targetOld'])) { // Reduce sum total if target update
-////                        $targetAfter->update([
-////                            'target_dapc' => $targetAfter->target_dapc - $data['targetOld'],
-////                        ]);
-////                    }
-////
-////                    // Sum Target
-////                    $targetAfter->update([
-////                        'target_dapc' => $targetAfter->target_dapc + $data['target'],
-////                    ]);
-////
-////                }else{
-////                    // Delete Target
-////                    $targetAfter->update([
-////                        'target_dapc' => $targetAfter->target_dapc - $data['target'],
-////                    ]);
-////                }
-//
-//            }
-//
-//
-//        }else if($data['type'] == 'Product Focus') { // If Type was Product Focus
-//
-//            //
-//
-//        }
+        $targetAfter = SalesmanSummaryTargetActual::where('id', $target->id)->first();
+        $targetOther = SalesmanSummaryTargetActual::where('id', '!=', $target->id);
+        $sumNationalTargetCall = SalesmanSummaryTargetActual::first()->sum_national_target_call;
+        $sumNationalTargetActiveOutlet = SalesmanSummaryTargetActual::first()->sum_national_target_active_outlet;
+        $sumNationalTargetEffectiveCall = SalesmanSummaryTargetActual::first()->sum_national_target_effective_call;
+        $sumNationalTargetSales = SalesmanSummaryTargetActual::first()->sum_national_target_sales;
+        $sumNationalTargetSalesPf = SalesmanSummaryTargetActual::first()->sum_national_target_sales_pf;
+
+        /* Add / Sum All Target */
+        if($change == 'change'){ // INSERT / UPDATE
+
+            // Call
+            if (isset($data['targetOldCall']) && $data['targetOldCall'] > 0) {
+                $targetAfter->update([
+                    'target_call' => $targetAfter->target_call - $data['targetOldCall'],
+                    'sum_national_target_call' => $sumNationalTargetCall - $data['targetOldCall'],
+                ]);
+
+                // Sum Target
+                $targetAfter->update([
+                    'target_call' => $targetAfter->target_call + $data['target_call'],
+                    'sum_national_target_call' => $targetAfter->sum_national_target_call + $data['target_call'],
+                ]);
+            }else{
+                 // Sum Target
+                $targetAfter->update([
+                    'target_call' => $targetAfter->target_call + $data['target_call'],
+                    'sum_national_target_call' => $sumNationalTargetCall + $data['target_call'],
+                ]);
+            }
+
+            // Active Outlet
+            if (isset($data['targetOldActiveOutlet']) && $data['targetOldActiveOutlet'] > 0) {
+                $targetAfter->update([
+                    'target_active_outlet' => $targetAfter->target_active_outlet - $data['targetOldActiveOutlet'],
+                    'sum_national_target_active_outlet' => $sumNationalTargetActiveOutlet - $data['targetOldActiveOutlet'],
+                ]);
+
+                // Sum Target
+                $targetAfter->update([
+                    'target_active_outlet' => $targetAfter->target_active_outlet + $data['target_active_outlet'],
+                    'sum_national_target_active_outlet' => $targetAfter->sum_national_target_active_outlet + $data['target_active_outlet'],
+                ]);
+            }else{
+                 // Sum Target
+                $targetAfter->update([
+                    'target_active_outlet' => $targetAfter->target_active_outlet + $data['target_active_outlet'],
+                    'sum_national_target_active_outlet' => $sumNationalTargetActiveOutlet + $data['target_active_outlet'],
+                ]);
+            }
+
+            // Effective Call
+            if (isset($data['targetOldEffectiveCall']) && $data['targetOldEffectiveCall'] > 0) {
+                $targetAfter->update([
+                    'target_effective_call' => $targetAfter->target_effective_call - $data['targetOldEffectiveCall'],
+                    'sum_national_target_effective_call' => $sumNationalTargetEffectiveCall - $data['targetOldEffectiveCall'],
+                ]);
+
+                // Sum Target
+                $targetAfter->update([
+                    'target_effective_call' => $targetAfter->target_effective_call + $data['target_effective_call'],
+                    'sum_national_target_effective_call' => $targetAfter->sum_national_target_effective_call + $data['target_effective_call'],
+                ]);
+            }else{
+                 // Sum Target
+                $targetAfter->update([
+                    'target_effective_call' => $targetAfter->target_effective_call + $data['target_effective_call'],
+                    'sum_national_target_effective_call' => $sumNationalTargetEffectiveCall + $data['target_effective_call'],
+                ]);
+            }
+
+            // Sales
+            if (isset($data['targetOldSales']) && $data['targetOldSales'] > 0) {
+                $targetAfter->update([
+                    'target_sales' => $targetAfter->target_sales - $data['targetOldSales'],
+                    'sum_national_target_sales' => $sumNationalTargetSales - $data['targetOldSales'],
+                ]);
+
+                // Sum Target
+                $targetAfter->update([
+                    'target_sales' => $targetAfter->target_sales + $data['target_sales'],
+                    'sum_national_target_sales' => $targetAfter->sum_national_target_sales + $data['target_sales'],
+                ]);
+            }else{
+                 // Sum Target
+                $targetAfter->update([
+                    'target_sales' => $targetAfter->target_sales + $data['target_sales'],
+                    'sum_national_target_sales' => $sumNationalTargetSales + $data['target_sales'],
+                ]);
+            }
+
+            // Product Focus Sales
+            if (isset($data['targetOldSalesPf']) && $data['targetOldSalesPf'] > 0) {
+                $targetAfter->update([
+                    'target_sales_pf' => $targetAfter->target_sales_pf - $data['targetOldSalesPf'],
+                    'sum_national_target_sales_pf' => $sumNationalTargetSalesPf - $data['targetOldSalesPf'],
+                ]);
+
+                $targetAfter->update([
+                    'target_sales_pf' => $targetAfter->target_sales_pf + $data['target_sales_pf'],
+                    'sum_national_target_sales_pf' => $targetAfter->sum_national_target_sales_pf + $data['target_sales_pf'],
+                ]);
+            }else{
+                $targetAfter->update([
+                    'target_sales_pf' => $targetAfter->target_sales_pf + $data['target_sales_pf'],
+                    'sum_national_target_sales_pf' => $sumNationalTargetSalesPf + $data['target_sales_pf'],
+                ]);
+            }
+
+            // Update Sum Target Store to All Summary
+            $targetOther->update([
+                'sum_national_target_call' => $targetAfter->sum_national_target_call,
+                'sum_national_target_active_outlet' => $targetAfter->sum_national_target_active_outlet,
+                'sum_national_target_effective_call' => $targetAfter->sum_national_target_effective_call,
+                'sum_national_target_sales' => $targetAfter->sum_national_target_sales,
+                'sum_national_target_sales_pf' => $targetAfter->sum_national_target_sales_pf,
+            ]);
+
+        }else{ // DELETE
+
+            // Call
+            if (isset($data['target_call']) && $data['target_call'] > 0) {
+                 // Delete target
+                $targetAfter->update([
+                    'target_call' => $targetAfter->target_call - $data['target_call'],
+                    'sum_national_target_call' => $sumNationalTargetCall - $data['target_call'],
+                ]);
+            }
+
+            // Active Outlet
+            if (isset($data['target_active_outlet']) && $data['target_active_outlet'] > 0) {
+                 // Delete Target
+                $targetAfter->update([
+                    'target_active_outlet' => $targetAfter->target_active_outlet - $data['target_active_outlet'],
+                    'sum_national_target_active_outlet' => $sumNationalTargetActiveOutlet - $data['target_active_outlet'],
+                ]);
+            }
+
+            // Effective Call
+            if (isset($data['target_effective_call']) && $data['target_effective_call'] > 0) {
+                // Delete Target
+                $targetAfter->update([
+                    'target_effective_call' => $targetAfter->target_effective_call - $data['target_effective_call'],
+                    'sum_national_target_effective_call' => $sumNationalTargetEffectiveCall - $data['target_effective_call'],
+                ]);
+            }
+
+            // Sales
+            if (isset($data['target_sales']) && $data['target_sales'] > 0) {
+                // Delete Target
+                $targetAfter->update([
+                    'target_sales' => $targetAfter->target_sales - $data['target_sales'],
+                    'sum_national_target_sales' => $sumNationalTargetSales - $data['target_sales'],
+                ]);
+            }
+
+            // Product Focus Sales
+            if (isset($data['target_sales_pf']) && $data['target_sales_pf'] > 0) {
+                // Delete Target
+                $targetAfter->update([
+                    'target_sales_pf' => $targetAfter->target_sales_pf - $data['target_sales_pf'],
+                    'sum_national_target_sales_pf' => $sumNationalTargetSalesPf - $data['target_sales_pf'],
+                ]);
+            }
+
+            // Update Sum Target Store to All Summary
+            $targetOther->update([
+                'sum_national_target_call' => $targetAfter->sum_national_target_call,
+                'sum_national_target_active_outlet' => $targetAfter->sum_national_target_active_outlet,
+                'sum_national_target_effective_call' => $targetAfter->sum_national_target_effective_call,
+                'sum_national_target_sales' => $targetAfter->sum_national_target_sales,
+                'sum_national_target_sales_pf' => $targetAfter->sum_national_target_sales_pf,
+            ]);
+
+        }
+
+
+        /* Reset Actual */
+        $this->resetActualSalesman($data['user_id']);
 
     }
 

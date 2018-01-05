@@ -64,46 +64,50 @@ trait SummaryTrait {
 
                 $summary = SummarySellIn::where('sellin_detail_id', $detail->id)->first();
 
-                if ($data['type'] == 'Modern Retail') {
+                if($summary) {
 
-                    if ($change == 'change') {
-                        $summary->update([
-                            'value_pf_mr' => $summary->value
-                        ]);
-                    } else if ($change == 'delete') {
-                        $summary->update([
-                            'value_pf_mr' => 0
-                        ]);
+                    if ($data['type'] == 'Modern Retail') {
+
+                        if ($change == 'change') {
+                            $summary->update([
+                                'value_pf_mr' => $summary->value
+                            ]);
+                        } else if ($change == 'delete') {
+                            $summary->update([
+                                'value_pf_mr' => 0
+                            ]);
+                        }
+
+                    } else if ($data['type'] == 'Traditional Retail') {
+
+                        if ($change == 'change') {
+                            $summary->update([
+                                'value_pf_tr' => $summary->value
+                            ]);
+                        } else if ($change == 'delete') {
+                            $summary->update([
+                                'value_pf_tr' => 0
+                            ]);
+                        }
+
+                    } else if ($data['type'] == 'PPE') {
+
+                        if ($change == 'change') {
+                            $summary->update([
+                                'value_pf_ppe' => $summary->value
+                            ]);
+                        } else if ($change == 'delete') {
+                            $summary->update([
+                                'value_pf_ppe' => 0
+                            ]);
+                        }
+
                     }
 
-                } else if ($data['type'] == 'Traditional Retail') {
-
-                    if ($change == 'change') {
-                        $summary->update([
-                            'value_pf_tr' => $summary->value
-                        ]);
-                    } else if ($change == 'delete') {
-                        $summary->update([
-                            'value_pf_tr' => 0
-                        ]);
-                    }
-
-                } else if ($data['type'] == 'PPE') {
-
-                    if ($change == 'change') {
-                        $summary->update([
-                            'value_pf_ppe' => $summary->value
-                        ]);
-                    } else if ($change == 'delete') {
-                        $summary->update([
-                            'value_pf_ppe' => 0
-                        ]);
-                    }
+                    /* Reset Actual */
+                    $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
 
                 }
-
-                /* Reset Actual */
-                $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
 
             }
 
@@ -126,88 +130,96 @@ trait SummaryTrait {
 
                     $summary = SummarySellIn::where('sellin_detail_id', $detail->id)->first();
 
-                    if($change == 'change'){
+                    if($summary) {
 
-                        $summary->update([
-                            'unit_price' => $data['price'],
-                            'value' => $summary->quantity * $data['price']
-                        ]);
+                        if ($change == 'change') {
 
-                        /* Product Focus */
-                        $productFocus = ProductFocuses::where('product_id', $data['product_id'])->get();
+                            $summary->update([
+                                'unit_price' => $data['price'],
+                                'value' => $summary->quantity * $data['price']
+                            ]);
 
-                        $summary->update([
-                            'value_pf_mr' => 0,
-                            'value_pf_tr' => 0,
-                            'value_pf_ppe' => 0,
-                        ]);
+                            /* Product Focus */
+                            $productFocus = ProductFocuses::where('product_id', $data['product_id'])->get();
 
-                        foreach ($productFocus as $focus){
+                            $summary->update([
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
+                            ]);
 
-                            if($focus->type == 'Modern Retail'){
-                                $summary->update([
-                                    'value_pf_mr' => $summary->quantity * $data['price']
-                                ]);
-                            }else if($focus->type == 'Traditional Retail'){
-                                $summary->update([
-                                    'value_pf_tr' => $summary->quantity * $data['price']
-                                ]);
-                            }else if($focus->type == 'PPE'){
-                                $summary->update([
-                                    'value_pf_ppe' => $summary->quantity * $data['price']
-                                ]);
+                            foreach ($productFocus as $focus) {
+
+                                if ($focus->type == 'Modern Retail') {
+                                    $summary->update([
+                                        'value_pf_mr' => $summary->quantity * $data['price']
+                                    ]);
+                                } else if ($focus->type == 'Traditional Retail') {
+                                    $summary->update([
+                                        'value_pf_tr' => $summary->quantity * $data['price']
+                                    ]);
+                                } else if ($focus->type == 'PPE') {
+                                    $summary->update([
+                                        'value_pf_ppe' => $summary->quantity * $data['price']
+                                    ]);
+                                }
+
                             }
 
-                        }
-
-                    }else if($change == 'delete'){
-                        $summary->update([
-                            'unit_price' => 0,
-                            'value' => 0,
-                            'value_pf_mr' => 0,
-                            'value_pf_tr' => 0,
-                            'value_pf_ppe' => 0,
-                        ]);
-                    }
-
-                    /* Reset Actual */
-                    $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
-
-                }else{ // SEE (Salesman Explorer)
-
-                    $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
-
-                    if($change == 'change'){
-
-                        $summary->update([
-                            'unit_price' => $data['price'],
-                            'value' => $summary->quantity * $data['price']
-                        ]);
-
-                        /* Product Focus */
-                        $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
-
-                        $summary->update([
-                            'value_pf' => 0,
-                        ]);
-
-                        if($productFocus){ // Jika ada product focus
+                        } else if ($change == 'delete') {
                             $summary->update([
-                                'value_pf' => $summary->quantity * $data['price']
+                                'unit_price' => 0,
+                                'value' => 0,
+                                'value_pf_mr' => 0,
+                                'value_pf_tr' => 0,
+                                'value_pf_ppe' => 0,
                             ]);
                         }
 
+                        /* Reset Actual */
+                        $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
 
-                    }else if($change == 'delete'){
-                        $summary->update([
-                            'unit_price' => 0,
-                            'value' => 0,
-                            'value_pf' => 0,
-                        ]);
                     }
 
-                    /* Reset Actual */
-//                    $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
+                }else { // SEE (Salesman Explorer)
+
+                    $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
+
+                    if ($summary) {
+
+                        if ($change == 'change') {
+
+                            $summary->update([
+                                'unit_price' => $data['price'],
+                                'value' => $summary->quantity * $data['price']
+                            ]);
+
+                            /* Product Focus */
+                            $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
+
+                            $summary->update([
+                                'value_pf' => 0,
+                            ]);
+
+                            if ($productFocus) { // Jika ada product focus
+                                $summary->update([
+                                    'value_pf' => $summary->quantity * $data['price']
+                                ]);
+                            }
+
+
+                        } else if ($change == 'delete') {
+                            $summary->update([
+                                'unit_price' => 0,
+                                'value' => 0,
+                                'value_pf' => 0,
+                            ]);
+                        }
+
+                        /* Reset Actual */
+                        $this->resetActualSalesman($summary->user_id);
+
+                    }
 
                 }
 
@@ -1084,22 +1096,26 @@ trait SummaryTrait {
 
                 $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
 
-                if ($change == 'change') {
-                    $summary->update([
-                        'value_pf' => $summary->value
-                    ]);
-                } else if ($change == 'delete') {
-                    $summary->update([
-                        'value_pf' => 0
-                    ]);
+                if($summary) {
+
+                    if ($change == 'change') {
+                        $summary->update([
+                            'value_pf' => $summary->value
+                        ]);
+                    } else if ($change == 'delete') {
+                        $summary->update([
+                            'value_pf' => 0
+                        ]);
+                    }
+
+                    /* Reset Actual */
+                    $this->resetActualSalesman($summary->user_id);
+
                 }
 
             }
 
         }
-
-                /* Reset Actual */
-//                $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
 
     }
 
