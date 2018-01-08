@@ -180,15 +180,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('fanspage/{id}', 'Master\FanspageController@update');
         Route::delete('fanspage/{id}', 'Master\FanspageController@destroy');
 
-        /** MessageToAdmin **/
-        // Route::resource('MessageToAdmin', 'Master\MessageToAdminController');
-        Route::get('messageToAdmin', 'MessageToAdminController@index');
-        Route::post('messageToAdmin', 'MessageToAdminController@store');
-        Route::get('messageToAdmin/show/{id}', 'MessageToAdminController@show');
-        Route::get('messageToAdmin/edit/{id}', 'MessageToAdminController@edit');
-        Route::patch('messageToAdmin/{id}', 'MessageToAdminController@update');
-        Route::delete('messageToAdmin/{id}', 'MessageToAdminController@destroy');
-
         /** Feedback Category **/
         // Route::resource('fanspage', 'Master\FanspageController');
         Route::get('feedbackCategory', 'Master\FeedbackCategoryController@index');
@@ -213,6 +204,43 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('feedbackAnswer/{id}', 'Master\FeedbackAnswerController@update');
         Route::delete('feedbackAnswer/{id}', 'Master\FeedbackAnswerController@destroy');
 
+        /** News **/
+        Route::get('news', 'Master\NewsController@index');
+        Route::get('news/create', 'Master\NewsController@create');
+        Route::post('news', 'Master\NewsController@store');
+        Route::get('news/edit/{id}', 'Master\NewsController@edit');
+        Route::patch('news/{id}', 'Master\NewsController@update');
+        Route::delete('news/{id}', 'Master\NewsController@destroy');
+
+        /** Product Knowledge **/
+        Route::get('product-knowledge', 'Master\ProductKnowledgeController@index');
+        Route::get('product-knowledge/create', 'Master\ProductKnowledgeController@create');
+        Route::post('product-knowledge', 'Master\ProductKnowledgeController@store');
+        Route::get('product-knowledge/edit/{id}', 'Master\ProductKnowledgeController@edit');
+        Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
+        Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
+
+        /** Quiz **/
+        Route::get('quiz', 'Master\QuizController@index');
+        Route::get('quiz/create', 'Master\QuizController@create');
+        Route::post('quiz', 'Master\QuizController@store');
+        Route::get('quiz/edit/{id}', 'Master\QuizController@edit');
+        Route::patch('quiz/{id}', 'Master\QuizController@update');
+        Route::delete('quiz/{id}', 'Master\QuizController@destroy');
+
+        /**
+         * Reporting Module(s) Just For Admin, Master, REM
+         */
+        Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
+
+        /**
+         * Salesman Module (Reporting)
+         */
+        Route::get('salesmanreport', 'Master\ReportController@salesmanIndex');
+
+    });
+
+    Route::group(['middleware' => ['supervisor']], function () {
 
         /*
             Sales Edit & Delete (Input by API)
@@ -272,41 +300,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('editposmactivity/{id}', 'Master\EditPosmActivityController@update');
         Route::delete('editposmactivity/{id}', 'Master\EditPosmActivityController@destroy');
 
-        
-    });
-
-    /**
-     * Master Admin & Admin Module(s)
-     */
-
-    Route::middleware(['admin'])->group(function () {
-
-        /** News **/
-        Route::get('news', 'Master\NewsController@index');
-        Route::get('news/create', 'Master\NewsController@create');
-        Route::post('news', 'Master\NewsController@store');
-        Route::get('news/edit/{id}', 'Master\NewsController@edit');
-        Route::patch('news/{id}', 'Master\NewsController@update');
-        Route::delete('news/{id}', 'Master\NewsController@destroy');
-
-        /** Product Knowledge **/
-        Route::get('product-knowledge', 'Master\ProductKnowledgeController@index');
-        Route::get('product-knowledge/create', 'Master\ProductKnowledgeController@create');
-        Route::post('product-knowledge', 'Master\ProductKnowledgeController@store');
-        Route::get('product-knowledge/edit/{id}', 'Master\ProductKnowledgeController@edit');
-        Route::patch('product-knowledge/{id}', 'Master\ProductKnowledgeController@update');
-        Route::delete('product-knowledge/{id}', 'Master\ProductKnowledgeController@destroy');
-
-        /** Quiz **/
-        Route::get('quiz', 'Master\QuizController@index');
-        Route::get('quiz/create', 'Master\QuizController@create');
-        Route::post('quiz', 'Master\QuizController@store');
-        Route::get('quiz/edit/{id}', 'Master\QuizController@edit');
-        Route::patch('quiz/{id}', 'Master\QuizController@update');
-        Route::delete('quiz/{id}', 'Master\QuizController@destroy');
-        
-
-
     });
 
     /**
@@ -327,16 +320,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
-    Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
-
-    /**
-     * Salesman Module (Reporting)
-     */
-    Route::get('salesmanreport', 'Master\ReportController@salesmanIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
     Route::post('profile', 'ProfileController@update');
+
+    /** MessageToAdmin **/
+    // Route::resource('MessageToAdmin', 'Master\MessageToAdminController');
+    Route::get('messageToAdmin', 'MessageToAdminController@index');
+    Route::post('messageToAdmin', 'MessageToAdminController@store');
+    Route::get('messageToAdmin/show/{id}', 'MessageToAdminController@show');
+    Route::get('messageToAdmin/edit/{id}', 'MessageToAdminController@edit');
+    Route::patch('messageToAdmin/{id}', 'MessageToAdminController@update');
+    Route::delete('messageToAdmin/{id}', 'MessageToAdminController@destroy');
         
 });
 
