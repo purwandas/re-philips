@@ -25,10 +25,6 @@
                 <h3 class="uppercase">MASTER DATA</h3>
             </li>
 
-            @endif
-
-            @if(Auth::user()->role == 'Master')
-
             <li class="nav-item {{ Request::is('area') ? 'active open' : '' }} {{ Request::is('district') ? 'active open' : '' }} {{ Request::is('areaapp') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="icon-map"></i>
@@ -48,11 +44,12 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('channel') ? 'active open' : '' }} {{ Request::is('subchannel') ? 'active open' : '' }}">
+
+            <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }} {{ Request::is('channel*') ? 'active open' : '' }} {{ Request::is('subchannel*') ? 'active open' : '' }} {{ Request::is('distributor*') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-share-alt"></i>
-                    <span class="title">Channel</span>
-                    <span class="arrow {{ Request::is('channel') ? 'open' : '' }} {{ Request::is('subchannel') ? 'open' : '' }}"></span>
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="title">Store(s)</span>
+                    <span class="arrow {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }} {{ Request::is('channel*') ? 'active open' : '' }} {{ Request::is('subchannel*') ? 'active open' : '' }} {{ Request::is('distributor*') ? 'active open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('channel') ? 'active open' : '' }}">
@@ -65,14 +62,19 @@
                             <span class="title">Sub Channel</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('distributor') ? 'active open' : '' }}">
+                        <a href="{{ url('distributor') }}" class="nav-link nav-toggle">
+                            <span class="title">Distributor</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }}">
+                        <a href="{{ url('store') }}" class="nav-link ">
+                            <span class="title">Store</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
-            <li class="nav-item {{ Request::is('distributor') ? 'active open' : '' }}">
-                <a href="{{ url('distributor') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-industry"></i>
-                    <span class="title">Distributor</span>
-                </a>
-            </li>
+
             <li class="nav-item 
             {{ Request::is('user*') ? 'active open' : '' }} 
             ">
@@ -96,31 +98,13 @@
                     </li>
                 </ul>
             </li>
-            
-            <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }}">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="title">Store</span>
-                    <span class="arrow {{ Request::is('store*') ? 'open' : '' }} {{ Request::is('place*') ? 'open' : '' }}"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }}">
-                        <a href="{{ url('store') }}" class="nav-link ">
-                            <span class="title">Store</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('place*') ? 'active open' : '' }}">
-                        <a href="{{ url('place') }}" class="nav-link ">
-                            <span class="title">Other Places</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+
             <li class="nav-item 
             {{ Request::is('group') ? 'active open' : '' }} 
             {{ Request::is('category') ? 'active open' : '' }} 
             {{ Request::is('product') ? 'active open' : '' }}
             {{ Request::is('groupproduct') ? 'active open' : '' }}
+            {{ Request::is('price') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
@@ -148,13 +132,19 @@
                             <span class="title">Product</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
+                        <a href="{{ url('price') }}" class="nav-link nav-toggle">
+                            <span class="title">Price</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
             <li class="nav-item 
                 {{ Request::is('target') ? 'active open' : '' }}
                 {{ Request::is('productfocus') ? 'active open' : '' }}
-                {{ Request::is('price') ? 'active open' : '' }}
+                {{ Request::is('targetsalesman') ? 'active open' : '' }}
+                {{ Request::is('productfocussalesman') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
@@ -162,7 +152,8 @@
                     <span class="arrow 
                         {{ Request::is('target') ? 'active open' : '' }}
                         {{ Request::is('productfocus') ? 'active open' : '' }}
-                        {{ Request::is('price') ? 'active open' : '' }}
+                        {{ Request::is('targetsalesman') ? 'active open' : '' }}
+                        {{ Request::is('productfocussalesman') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">
@@ -171,26 +162,22 @@
                             <span class="title">Promoter Target</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
-                        <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
-                            <span class="title">Salesman Target</span>
-                        </a>
-                    </li>
                     <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
                         <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
                             <span class="title">Product Focus</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
+                        <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
+                            <span class="title">Salesman Target</span>
+                        </a>
+                    </li>
                     <li class="nav-item {{ Request::is('productfocussalesman') ? 'active open' : '' }}">
                         <a href="{{ url('productfocussalesman') }}" class="nav-link nav-toggle">
-                            <span class="title">Product Focus (Salesman)</span>
+                            <span class="title">Salesman Product Focus</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
-                        <a href="{{ url('price') }}" class="nav-link nav-toggle">
-                            <span class="title">Price</span>
-                        </a>
-                    </li>
+
                 </ul>
             </li>
             
@@ -208,112 +195,82 @@
             </a>
             </li>
 
-            <li class="heading">
-                <h3 class="uppercase">REPORTING ????????????????</h3>
-            </li>
-
-            <li class="nav-item {{ Request::is('fanspage') ? 'active open' : '' }}">
-            <a href="{{ url('fanspage') }}" class="nav-link nav-toggle">
-                <i class="fa fa-chain"></i>
-                <span class="title">Fanspage</span>
-            </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('feedback*') ? 'active open' : '' }}">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-commenting-o"></i>
-                    <span class="title">Feedback</span>
-                    <span class="arrow {{ Request::is('feedbackCategory*') ? 'open' : '' }} {{ Request::is('feedbackAnswer*') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('feedbackCategory*') ? 'active open' : '' }}">
-                        <a href="{{ url('feedbackCategory') }}" class="nav-link ">
-                            <span class="title">Feedback Category</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('feedbackQuestion*') ? 'active open' : '' }}">
-                        <a href="{{ url('feedbackQuestion') }}" class="nav-link ">
-                            <span class="title">Feedback Question</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('feedbackAnswer*') ? 'active open' : '' }}">
-                        <a href="{{ url('feedbackAnswer') }}" class="nav-link ">
-                            <span class="title">Feedback Answer</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
-
-
-            </li>
-            <li class="nav-item {{ Request::is('news*') ? 'active open' : '' }}">
-                <a href="{{ url('news') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-newspaper-o"></i>
-                    <span class="title">News</span>
-                </a>
-            </li>
-            <li class="nav-item {{ Request::is('product-knowledge*') ? 'active open' : '' }}">
-                <a href="{{ url('product-knowledge') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-edit"></i>
-                    <span class="title">Product Knowledge</span>
-                </a>
-            </li>
-            <li class="nav-item {{ Request::is('quiz*') ? 'active open' : '' }}">
-                <a href="{{ url('quiz') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-edit"></i>
-                    <span class="title">Quiz</span>
-                </a>
-            </li>
-
+            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid')
 
             <li class="heading">
-                <h3 class="uppercase">REPORTING ????????????????</h3>
+                <h3 class="uppercase">EDIT/DELETE SALES DATA</h3>
             </li>
 
-            <li class="nav-item {{ Request::is('editsellin') ? 'active open' : '' }}">
-            <a href="{{ url('editsellin') }}" class="nav-link nav-toggle">
-                <i class="fa fa-edit"></i>
-                <span class="title">Update Sell In</span>
-            </a>
+            <li class="nav-item
+            {{ Request::is('sellinreport') ? 'active open' : '' }}
+            {{ Request::is('selloutreport') ? 'active open' : '' }}
+            {{ Request::is('retconsumentreport') ? 'active open' : '' }}
+            {{ Request::is('retdistributorreport') ? 'active open' : '' }}
+            {{ Request::is('freeproductreport') ? 'active open' : '' }}
+            {{ Request::is('tbatreport') ? 'active open' : '' }}
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Update Sales</span>
+                    <span class="arrow
+                    {{ Request::is('sellinreport') ? 'active open' : '' }}
+                    {{ Request::is('selloutreport') ? 'active open' : '' }}
+                    {{ Request::is('retconsumentreport') ? 'active open' : '' }}
+                    {{ Request::is('retdistributorreport') ? 'active open' : '' }}
+                    {{ Request::is('freeproductreport') ? 'active open' : '' }}
+                    {{ Request::is('tbatreport') ? 'active open' : '' }}
+                    "></span>
+                </a>
+                <ul class="sub-menu">
+
+                    <li class="nav-item {{ Request::is('editsellin') ? 'active open' : '' }}">
+                        <a href="{{ url('editsellin') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-edit"></i>
+                            <span class="title">Sell In</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('editsellout') ? 'active open' : '' }}">
+                        <a href="{{ url('editsellout') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-edit"></i>
+                            <span class="title">Sell Out</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('editretdistributor') ? 'active open' : '' }}">
+                        <a href="{{ url('editretdistributor') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-edit"></i>
+                            <span class="title">Return Distributor</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('editretconsument') ? 'active open' : '' }}">
+                        <a href="{{ url('editretconsument') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-edit"></i>
+                            <span class="title">Return Consument</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('editfreeproduct') ? 'active open' : '' }}">
+                        <a href="{{ url('editfreeproduct') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-edit"></i>
+                            <span class="title">Free Product</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('edittbat') ? 'active open' : '' }}">
+                        <a href="{{ url('edittbat') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-edit"></i>
+                            <span class="title">TBAT</span>
+                        </a>
+                    </li>
+
+                </ul>
             </li>
 
-            <li class="nav-item {{ Request::is('editsellout') ? 'active open' : '' }}">
-            <a href="{{ url('editsellout') }}" class="nav-link nav-toggle">
-                <i class="fa fa-edit"></i>
-                <span class="title">Update Sell Out</span>
-            </a>
-            </li>
 
-            <li class="nav-item {{ Request::is('editretdistributor') ? 'active open' : '' }}">
-            <a href="{{ url('editretdistributor') }}" class="nav-link nav-toggle">
-                <i class="fa fa-edit"></i>
-                <span class="title">Update Return Distributor</span>
-            </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('editretconsument') ? 'active open' : '' }}">
-            <a href="{{ url('editretconsument') }}" class="nav-link nav-toggle">
-                <i class="fa fa-edit"></i>
-                <span class="title">Update Return Consument</span>
-            </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('editfreeproduct') ? 'active open' : '' }}">
-            <a href="{{ url('editfreeproduct') }}" class="nav-link nav-toggle">
-                <i class="fa fa-edit"></i>
-                <span class="title">Update Free Product</span>
-            </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('edittbat') ? 'active open' : '' }}">
-            <a href="{{ url('edittbat') }}" class="nav-link nav-toggle">
-                <i class="fa fa-edit"></i>
-                <span class="title">Update TBAT</span>
-            </a>
-            </li>
 
             <li class="nav-item {{ Request::is('editsoh') ? 'active open' : '' }}">
             <a href="{{ url('editsoh') }}" class="nav-link nav-toggle">
@@ -338,7 +295,8 @@
 
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'RSM' || Auth::user()->role == 'DM' || Auth::user()->role == 'Supervisor')
+            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid'
+            || Auth::user()->role == 'DM' || Auth::user()->role == 'RSM')
 
             <li class="heading">
                 <h3 class="uppercase">REPORTING</h3>
@@ -408,14 +366,6 @@
                 </a>
             </li>
 
-
-            <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
-                <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Maintenance Request</span>                    
-                </a>
-            </li>
-
             <li class="nav-item {{ Request::is('competitoractivityreport') ? 'active open' : '' }}">
                 <a href="{{ url('competitoractivityreport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
@@ -456,6 +406,14 @@
                 </ul>
             </li>
 
+            <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
+                <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Maintenance Request</span>
+                </a>
+            </li>
+
+
             <li class="nav-item {{ Request::is('attendancereport') ? 'active open' : '' }}">
                 <a href="{{ url('attendancereport') }}" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
@@ -463,20 +421,84 @@
                 </a>
             </li>
 
-            <li class="nav-item {{ Request::is('visitplan') ? 'active open' : '' }}">
-                <a href="{{ url('visitplan') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title"> Visit Plan </span>                    
+                @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+
+                    <li class="nav-item {{ Request::is('visitplan') ? 'active open' : '' }}">
+                        <a href="{{ url('visitplan') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-cog"></i>
+                            <span class="title"> Visit Plan </span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('salesmanreport') ? 'active open' : '' }}">
+                    <a href="{{ url('salesmanreport') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-cog"></i>
+                        <span class="title"> Salesman Report </span>
+                    </a>
+                    </li>
+
+                @endif
+
+            @endif
+
+            @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+
+            <li class="heading">
+                <h3 class="uppercase">UTILITIES</h3>
+            </li>
+
+            <li class="nav-item {{ Request::is('news*') ? 'active open' : '' }}">
+                <a href="{{ url('news') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span class="title">News</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('product-knowledge*') ? 'active open' : '' }}">
+                <a href="{{ url('product-knowledge') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-edit"></i>
+                    <span class="title">Product Knowledge</span>
                 </a>
             </li>
 
-            <li class="nav-item {{ Request::is('salesmanreport') ? 'active open' : '' }}">
-            <a href="{{ url('salesmanreport') }}" class="nav-link nav-toggle">
-                <i class="fa fa-cog"></i>
-                <span class="title"> Salesman Report </span>
-            </a>
+            <li class="nav-item {{ Request::is('feedback*') ? 'active open' : '' }}">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-commenting-o"></i>
+                    <span class="title">Feedback</span>
+                    <span class="arrow {{ Request::is('feedbackCategory*') ? 'open' : '' }} {{ Request::is('feedbackAnswer*') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('feedbackCategory*') ? 'active open' : '' }}">
+                        <a href="{{ url('feedbackCategory') }}" class="nav-link ">
+                            <span class="title">Feedback Category</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('feedbackQuestion*') ? 'active open' : '' }}">
+                        <a href="{{ url('feedbackQuestion') }}" class="nav-link ">
+                            <span class="title">Feedback Question</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('feedbackAnswer*') ? 'active open' : '' }}">
+                        <a href="{{ url('feedbackAnswer') }}" class="nav-link ">
+                            <span class="title">Feedback Answer</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            
+
+            </li>
+            <li class="nav-item {{ Request::is('quiz*') ? 'active open' : '' }}">
+                <a href="{{ url('quiz') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-edit"></i>
+                    <span class="title">Quiz</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('fanspage') ? 'active open' : '' }}">
+                <a href="{{ url('fanspage') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-chain"></i>
+                    <span class="title">Fanspage</span>
+                </a>
+            </li>
+
             @endif
 
             <li class="heading">
