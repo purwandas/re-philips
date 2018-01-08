@@ -381,7 +381,7 @@ class ExportController extends Controller
             $excel->sheet('Display Share', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
-                $sheet->fromModel($this->excelHelper->mapForExport($data), null, 'A1', true, true);
+                $sheet->fromModel($this->excelHelper->mapForExportDisplayShare($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
