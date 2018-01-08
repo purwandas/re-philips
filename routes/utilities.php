@@ -79,6 +79,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
     Route::post('datatable/attendancereport', ['as'=> 'datatable.attendancereport','uses'=>'Master\ReportController@attendanceData']);
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
+    Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
     
 
     
@@ -186,7 +187,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
     Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
-    
+    Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
 

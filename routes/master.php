@@ -329,7 +329,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
     Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
 
-    
+    /**
+     * Salesman Module (Reporting)
+     */
+    Route::get('salesmanreport', 'Master\ReportController@salesmanIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');

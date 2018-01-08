@@ -19,12 +19,12 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Store</label>
+                          <label class="col-sm-3 control-label">Promoter</label>
                           <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">
 
-                                <select class="select2select" name="store_id" id="store" required></select>
+                                <select class="select2select" name="user_id" id="promoter" required></select>
 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -36,12 +36,12 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Promoter</label>
+                          <label class="col-sm-3 control-label">Store</label>
                           <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">
 
-                                <select class="select2select" name="user_id" id="promoter" required></select>
+                                <select class="select2select" name="store_id" id="store" required></select>
 
                                 <span class="input-group-addon display-hide">
                                     <i class="fa"></i>

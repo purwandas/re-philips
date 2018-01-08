@@ -33,6 +33,8 @@ use App\PosmActivityDetail;
 
 trait SalesTrait {
 
+    use ActualTrait;
+
     public function deleteSellIn($detailId){
 
         // Find Detail then delete
@@ -40,15 +42,28 @@ trait SalesTrait {
 
             $sellIn_id = $sellInDetail->sellin_id;
             
-        $sellInDetail->delete();
-        $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$detailId)->delete();
+        $sellInDetail->forceDelete();
+        $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$detailId)->first();
+
+        // Update Target Actuals
+        $summary_ta['user_id'] = $summarySellInDetail->user_id;
+        $summary_ta['store_id'] = $summarySellInDetail->storeId;
+        $summary_ta['week'] = $summarySellInDetail->week;
+        $summary_ta['pf'] = $summarySellInDetail->value_pf_mr + $summarySellInDetail->value_pf_tr + $summarySellInDetail->value_pf_ppe;
+        $summary_ta['value'] = $summarySellInDetail->value;
+        $summary_ta['group'] = $summarySellInDetail->group;
+        $summary_ta['sell_type'] = 'Sell In';
+
+        $this->changeActual($summary_ta, 'delete');
+
+        $summarySellInDetail->forceDelete();
 
             // Check if no detail exist delete header
             $sellIn = SellIn::where('id',$sellIn_id)->first();
             $sellInDetail = SellInDetail::where('sellin_id',$sellIn->id)->get();
 
                 if($sellInDetail->count() == 0){
-                    $sellIn->delete();
+                    $sellIn->forceDelete();
                 }
 
         if ($sellInDetail) {
@@ -65,6 +80,9 @@ trait SalesTrait {
 
         $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$id)
             ->first();
+
+            $value_old = $summarySellInDetail->value;
+
             $value = $summarySellInDetail->unit_price * $qty;
             
             $pf_mr = 0;
@@ -88,6 +106,18 @@ trait SalesTrait {
                         'value_pf_ppe' => $pf_ppe,
                     ]);
 
+            // Actual Summary
+            $summary_ta['user_id'] = $summarySellInDetail->user_id;
+            $summary_ta['store_id'] = $summarySellInDetail->storeId;
+            $summary_ta['week'] = $summarySellInDetail->week;
+            $summary_ta['pf'] = $summarySellInDetail->value_pf_mr + $summarySellInDetail->value_pf_tr + $summarySellInDetail->value_pf_ppe;
+            $summary_ta['value_old'] = $value_old;
+            $summary_ta['value'] = $summarySellInDetail->value;
+            $summary_ta['group'] = $summarySellInDetail->group;
+            $summary_ta['sell_type'] = 'Sell In';
+
+            $this->changeActual($summary_ta, 'change');
+
         if ($sellInDetail) {
             return true;
         }else{
@@ -102,15 +132,28 @@ trait SalesTrait {
 
             $sellOut_id = $sellOutDetail->sellout_id;
             
-        $sellOutDetail->delete();
-        $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$detailId)->delete();
+        $sellOutDetail->forceDelete();
+        $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$detailId)->first();
+
+        // Update Target Actuals
+        $summary_ta['user_id'] = $summarySellOutDetail->user_id;
+        $summary_ta['store_id'] = $summarySellOutDetail->storeId;
+        $summary_ta['week'] = $summarySellOutDetail->week;
+        $summary_ta['pf'] = $summarySellOutDetail->value_pf_mr + $summarySellOutDetail->value_pf_tr + $summarySellOutDetail->value_pf_ppe;
+        $summary_ta['value'] = $summarySellOutDetail->value;
+        $summary_ta['group'] = $summarySellOutDetail->group;
+        $summary_ta['sell_type'] = 'Sell Out';
+
+        $this->changeActual($summary_ta, 'delete');
+
+        $summarySellOutDetail->forceDelete();
 
             // Check if no detail exist delete header
             $sellOut = SellOut::where('id',$sellOut_id)->first();
             $sellOutDetail = SellOutDetail::where('sellout_id',$sellOut->id)->get();
 
                 if($sellOutDetail->count() == 0){
-                    $sellOut->delete();
+                    $sellOut->forceDelete();
                 }
 
         if ($sellOutDetail) {
@@ -127,6 +170,9 @@ trait SalesTrait {
 
         $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$id)
             ->first();
+
+            $value_old = $summarySellOutDetail->value;
+
             $value = $summarySellOutDetail->unit_price * $qty;
 
             $pf_mr = 0;
@@ -150,6 +196,18 @@ trait SalesTrait {
                         'value_pf_ppe' => $pf_ppe,
                     ]);
 
+            // Actual Summary
+            $summary_ta['user_id'] = $summarySellOutDetail->user_id;
+            $summary_ta['store_id'] = $summarySellOutDetail->storeId;
+            $summary_ta['week'] = $summarySellOutDetail->week;
+            $summary_ta['pf'] = $summarySellOutDetail->value_pf_mr + $summarySellOutDetail->value_pf_tr + $summarySellOutDetail->value_pf_ppe;
+            $summary_ta['value_old'] = $value_old;
+            $summary_ta['value'] = $summarySellOutDetail->value;
+            $summary_ta['group'] = $summarySellOutDetail->group;
+            $summary_ta['sell_type'] = 'Sell Out';
+
+            $this->changeActual($summary_ta, 'change');
+
         if ($sellOutDetail) {
             return true;
         }else{
@@ -164,15 +222,15 @@ trait SalesTrait {
 
             $retDistributor_id = $retDistributorDetail->retdistributor_id;
             
-        $retDistributorDetail->delete();
-        $summaryRetDistributorDetail = SummaryRetDistributor::where('retdistributor_detail_id',$detailId)->delete();
+        $retDistributorDetail->forceDelete();
+        $summaryRetDistributorDetail = SummaryRetDistributor::where('retdistributor_detail_id',$detailId)->forceDelete();
 
             // Check if no detail exist delete header
             $retDistributor = RetDistributor::where('id',$retDistributor_id)->first();
             $distributorDetail = RetDistributorDetail::where('retdistributor_id',$retDistributor->id)->get();
 
                 if($distributorDetail->count() == 0){
-                    $retDistributor->delete();
+                    $retDistributor->forceDelete();
                 }
 
         if ($retDistributorDetail) {
@@ -227,15 +285,15 @@ trait SalesTrait {
         // return response()->json($detail);
             $headerId = $detail->retconsument_id;
             
-        $detail->delete();
-        $summary = SummaryRetConsument::where('retconsument_detail_id',$id)->delete();
+        $detail->forceDelete();
+        $summary = SummaryRetConsument::where('retconsument_detail_id',$id)->forceDelete();
 
             // Check if no detail exist delete header
             $header = RetConsument::where('id',$headerId)->first();
             $details = RetConsumentDetail::where('retconsument_id',$header->id)->get();
 
                 if($details->count() == 0){
-                    $header->delete();
+                    $header->forceDelete();
                 }
 
         if ($detail) {
@@ -289,15 +347,15 @@ trait SalesTrait {
         // return response()->json($detail);
             $headerId = $detail->freeproduct_id;
             
-        $detail->delete();
-        $summary = SummaryFreeProduct::where('freeproduct_detail_id',$id)->delete();
+        $detail->forceDelete();
+        $summary = SummaryFreeProduct::where('freeproduct_detail_id',$id)->forceDelete();
 
             // Check if no detail exist delete header
             $header = FreeProduct::where('id',$headerId)->first();
             $details = FreeProductDetail::where('freeproduct_id',$header->id)->get();
 
                 if($details->count() == 0){
-                    $header->delete();
+                    $header->forceDelete();
                 }
 
         if ($detail) {
@@ -351,15 +409,15 @@ trait SalesTrait {
         // return response()->json($detail);
             $headerId = $detail->tbat_id;
             
-        $detail->delete();
-        $summary = SummaryTbat::where('tbat_detail_id',$id)->delete();
+        $detail->forceDelete();
+        $summary = SummaryTbat::where('tbat_detail_id',$id)->forceDelete();
 
             // Check if no detail exist delete header
             $header = Tbat::where('id',$headerId)->first();
             $details = TbatDetail::where('tbat_id',$header->id)->get();
 
                 if($details->count() == 0){
-                    $header->delete();
+                    $header->forceDelete();
                 }
 
         if ($detail) {
@@ -413,15 +471,15 @@ trait SalesTrait {
         // return response()->json($detail);
             $headerId = $detail->soh_id;
             
-        $detail->delete();
-        $summary = SummarySoh::where('soh_detail_id',$id)->delete();
+        $detail->forceDelete();
+        $summary = SummarySoh::where('soh_detail_id',$id)->forceDelete();
 
             // Check if no detail exist delete header
             $header = Soh::where('id',$headerId)->first();
             $details = SohDetail::where('soh_id',$header->id)->get();
 
                 if($details->count() == 0){
-                    $header->delete();
+                    $header->forceDelete();
                 }
 
         if ($detail) {
@@ -475,15 +533,15 @@ trait SalesTrait {
         // return response()->json($detail);
             $headerId = $detail->display_share_id;
             
-        $detail->delete();
-        $summary = SummaryDisplayShare::where('displayshare_detail_id',$id)->delete();
+        $detail->forceDelete();
+        $summary = SummaryDisplayShare::where('displayshare_detail_id',$id)->forceDelete();
 
             // Check if no detail exist delete header
             $header = DisplayShare::where('id',$headerId)->first();
             $details = DisplayShareDetail::where('display_share_id',$header->id)->get();
 
                 if($details->count() == 0){
-                    $header->delete();
+                    $header->forceDelete();
                 }
 
         if ($detail) {
@@ -520,14 +578,14 @@ trait SalesTrait {
         // return response()->json($detail);
             $headerId = $detail->posmactivity_id;
             
-        $detail->delete();
+        $detail->forceDelete();
 
             // Check if no detail exist delete header
             $header = PosmActivity::where('id',$headerId)->first();
             $details = PosmActivityDetail::where('posmactivity_id',$header->id)->get();
 
                 if($details->count() == 0){
-                    $header->delete();
+                    $header->forceDelete();
                 }
 
         if ($detail) {

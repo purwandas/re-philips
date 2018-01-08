@@ -469,6 +469,13 @@
                     <span class="title"> Visit Plan </span>                    
                 </a>
             </li>
+
+            <li class="nav-item {{ Request::is('salesmanreport') ? 'active open' : '' }}">
+            <a href="{{ url('salesmanreport') }}" class="nav-link nav-toggle">
+                <i class="fa fa-cog"></i>
+                <span class="title"> Salesman Report </span>
+            </a>
+            </li>
             
             @endif
 
