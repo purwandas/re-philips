@@ -190,7 +190,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
+    /**
+     * Dashboard
+     */
 
+    Route::get('chart/data-national', ['uses'=>'DashboardController@getDataNational']);
+    Route::get('chart/data-region', ['uses'=>'DashboardController@getDataRegion']);
+    Route::get('chart/data-area', ['uses'=>'DashboardController@getDataArea']);
+    Route::get('chart/data-supervisor', ['uses'=>'DashboardController@getDataSupervisor']);
     
 });
 

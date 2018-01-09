@@ -417,7 +417,8 @@ class SalesHistory extends Command
 
                         /* Price */
                         $realPrice = 0;
-                        $price = Price::where('product_id', $product->id)
+                        $price = Price::where('product_id',
+                            $product->id)
                                     ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
 
                         if($price){
