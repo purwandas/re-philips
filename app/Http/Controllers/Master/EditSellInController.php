@@ -32,7 +32,7 @@ class EditSellInController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $data = SellIn::
                     where('sell_ins.deleted_at', null)
@@ -42,8 +42,37 @@ class EditSellInController extends Controller
                     ->join('users', 'sell_ins.user_id', '=', 'users.id')
                     ->join('products', 'sell_in_details.product_id', '=', 'products.id')
                     ->select('sell_ins.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product')->get();
+        $filter = $data;
 
-        return $this->makeTable($data);
+            /* If filter */
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $filter = $filter->where('storeId', $request['byStore']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $filter->where('region_id', $value->region_id);
+                }
+            }
+
+        return $this->makeTable($filter);
     }
 
     // Data for select2 with Filters
@@ -55,8 +84,9 @@ class EditSellInController extends Controller
 
     // Datatable template
     public function makeTable($data){
+            
 
-           return Datatables::of($data)
+           return Datatables::of($data->all())
            		->addColumn('action', function ($item) {
 
                    return
