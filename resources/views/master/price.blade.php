@@ -141,6 +141,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'product_name', name: 'product_name'},
                 {data: 'globalchannel_name', name: 'globalchannel_name'},
+                {data: 'sell_type', name: 'sell_type'},
                 {data: 'price', name: 'price'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},            
             ];
