@@ -36,42 +36,97 @@
 	        <div class="portlet-body">
 
                     <div>
-                    	<div id="content" class="col-md-6">
-	                        <h3 id="titleSellinTotal"></h3>
-	                        <div class="demo-container col-md-12 align-middle">
-	                            <div id="chartSellinTotal" class="align-middle"></div>
-	                        </div>
-	                        <p id="descriptionSellinTotal"></p>
-	                        <p id="hoverSellinTotal"></p>
-	                    </div>
 
-	                    <div id="content2" class="col-md-6">
-	                        <h3 id="titleSelloutTotal"></h3>
-	                        <div class="demo-container col-md-12 align-middle">
-	                            <div id="chartSelloutTotal" class="align-middle"></div>
-	                        </div>
-	                        <p id="descriptionSelloutTotal"></p>
-	                        <p id="hoverSelloutTotal"></p>
-	                    </div>
+						<div class="row">
+							<div id="content" class="col-md-6">
+								<h3 id="titleSellinTotal" style="text-align: center;margin-right:50px;margin-bottom: 20px;"></h3>
+								<div class="demo-container col-md-12 align-middle">
+									<div id="chartSellinTotal" class="align-middle"></div>
+								</div>
+							</div>
+
+							<div id="content2" class="col-md-6">
+									<!-- BEGIN SAMPLE TABLE PORTLET-->
+									<div id="table2" class="portlet box blue" style="width: 75%">
+										<div class="portlet-title" style="text-align: center">
+											<div style="font-size: 11pt;padding-top: 10px;">
+												<i class="fa fa-line-chart"></i>
+												Total Achievement - Sell In </div>
+										</div>
+										<div id="portlet1" class="portlet-body" style="display: block;">
+												<div class="table-scrollable">
+												<table class="table table-striped">
+													<tbody>
+														<tr style="height: 45px;">
+															<td width="40%" style="padding-left: 15px;"> Target </td>
+															<td id="sellin1" width="60%"> - </td>
+														</tr>
+														<tr style="height: 45px;">
+															<td style="padding-left: 15px;"> Actual </td>
+															<td id="sellin2"> - </td>
+														</tr>
+														<tr style="height: 45px;">
+															<td style="padding-left: 15px;"> A/T % </td>
+															<td id="sellin3"> - </td>
+														</tr>
+														<tr style="height: 45px;">
+															<td style="padding-left: 15px;"> GAP </td>
+															<td id="sellin4"> - </td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<!-- END SAMPLE TABLE PORTLET-->
+							</div>
+						</div>
 
 
-	                    <div id="content3" class="col-md-6">
-	                        <h3 id="titleSellinDa"></h3>
-	                        <div class="demo-container col-md-12 align-middle">
-	                            <div id="chartSellinDa" class="align-middle"></div>
-	                        </div>
-	                        <p id="descriptionSellinDa"></p>
-	                        <p id="hoverSellinDa"></p>
-	                    </div>
+						<div class="row" style="margin-top: 30px;">
+							<div id="content3" class="col-md-6">
+								<h3 id="titleSelloutTotal" style="text-align: center;margin-right:50px;margin-bottom: 20px;"></h3>
+								<div class="demo-container col-md-12 align-middle">
+									<div id="chartSelloutTotal" class="align-middle"></div>
+								</div>
+							</div>
 
-	                    <div id="content4" class="col-md-6">
-	                        <h3 id="titleSelloutDa"></h3>
-	                        <div class="demo-container col-md-12 align-middle">
-	                            <div id="chartSelloutDa" class="align-middle"></div>
-	                        </div>
-	                        <p id="descriptionSelloutDa"></p>
-	                        <p id="hoverSelloutDa"></p>
-	                    </div>
+							<div id="content4" class="col-md-6">
+								<!-- BEGIN SAMPLE TABLE PORTLET-->
+									<div id="table2" class="portlet box blue" style="width: 75%">
+										<div class="portlet-title" style="text-align: center">
+											<div style="font-size: 11pt;padding-top: 10px;">
+												<i class="fa fa-line-chart"></i>
+												Total Achievement - Sell Out </div>
+										</div>
+										<div id="portlet2" class="portlet-body" style="display: block;">
+												<div class="table-scrollable">
+												<table class="table table-striped">
+													<tbody>
+														<tr style="height: 45px;">
+															<td width="40%" style="padding-left: 15px;"> Target </td>
+															<td id="sellout1" width="60%"> - </td>
+														</tr>
+														<tr style="height: 45px;">
+															<td style="padding-left: 15px;"> Actual </td>
+															<td id="sellout2"> - </td>
+														</tr>
+														<tr style="height: 45px;">
+															<td style="padding-left: 15px;"> A/T % </td>
+															<td id="sellout3"> - </td>
+														</tr>
+														<tr style="height: 45px;">
+															<td style="padding-left: 15px;"> GAP </td>
+															<td id="sellout4"> - </td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<!-- END SAMPLE TABLE PORTLET-->
+							</div>
+						</div>
                     </div>
 
 			</div><!-- 
@@ -105,34 +160,6 @@
         height: 100%;
     }
 
-    #chartSellinDa {
-        /*width: 550px;*/
-        width: 100%;
-        height: 100%;
-    }
-
-    #chartSelloutDa {
-        /*width: 550px;*/
-        width: 100%;
-        height: 100%;
-    }
-
-    #descriptionSellinTotal {
-        margin: 15px 10px 20px 10px;
-    }
-
-    #descriptionSelloutTotal {
-        margin: 15px 10px 20px 10px;
-    }
-
-    #descriptionSellinDa {
-        margin: 15px 10px 20px 10px;
-    }
-
-    #descriptionSelloutDa {
-        margin: 15px 10px 20px 10px;
-    }
-
     ul {
         font-size: 10pt;
     }
@@ -156,251 +183,136 @@
 
     $(function() {
 
-        // Example Data
+        var x = ($("#content").width()-$("#portlet1").width())/2;
+        var y = ($("#content").height()-$("#portlet1").height())/2;
 
-        // var data = [
-        //  { label: "Series1",  data: 10},
-        //  { label: "Series2",  data: 30},
-        //  { label: "Series3",  data: 90},
-        //  { label: "Series4",  data: 70},
-        //  { label: "Series5",  data: 80},
-        //  { label: "Series6",  data: 110}
-        // ];
+        document.getElementById('content2').setAttribute('style', 'padding-left:'+x+'px;padding-top:'+y+'px;');
 
-        //var data = [
-        //  { label: "Series1",  data: [[1,10]]},
-        //  { label: "Series2",  data: [[1,30]]},
-        //  { label: "Series3",  data: [[1,90]]},
-        //  { label: "Series4",  data: [[1,70]]},
-        //  { label: "Series5",  data: [[1,80]]},
-        //  { label: "Series6",  data: [[1,0]]}
-        //];
+        var x = ($("#content3").width()-$("#portlet2").width())/2;
+        var y = ($("#content3").height()-$("#portlet2").height())/2;
 
-        //var data = [
-        //  { label: "Series A",  data: 0.2063},
-        //  { label: "Series B",  data: 38888}
-        //];
-        var index = 0;
-        var dataSellinTotal = [];
-        var getDataUrl = 'achievement-by-national/1';
+        document.getElementById('content4').setAttribute('style', 'padding-left:'+x+'px;padding-top:'+y+'px;');
+
+		var options = {
+			series: {
+				pie: {
+					innerRadius: 0.5,
+					show: true,
+					radius: 1,
+					label: {
+						show: true,
+						radius: 3/4,
+						formatter: labelFormatter,
+						background: {
+							opacity: 0.5,
+							color: '#000'
+						}
+					}
+				}
+			},
+		};
+
+		var role = '{{ Auth::user()->role  }}';
+
+		var getDataUrl = "{{ url('chart/data-national') }}";
+
+		if(role == 'RSM'){
+		    getDataUrl = "{{ url('chart/data-region') }}";
+		}else if(role == 'DM'){
+		    getDataUrl = "{{ url('chart/data-area') }}";
+        }else if(role == 'Supervisor' || role == 'Supervisor Hybrid'){
+		    getDataUrl = "{{ url('chart/data-supervisor') }}";
+        }
+
+        console.log(getDataUrl);
+
+		// Create IDR currency formatter.
+		var formatter = new Intl.NumberFormat('id', {
+		  style: 'currency',
+		  currency: 'IDR',
+		  minimumFractionDigits: 2,
+		});
+
+		$.get(getDataUrl, function (data) {
+
+		    if(data){
+		        if(data.sell_in_target == '0') document.getElementById('sellin1').innerHTML = '-'
+		        else document.getElementById('sellin1').innerHTML = formatter.format(data.sell_in_target.toFixed(2)).replace("Rp", "Rp. ");
+		        if(data.sell_in_actual == '0') document.getElementById('sellin2').innerHTML = '-'
+		        else document.getElementById('sellin2').innerHTML = formatter.format(data.sell_in_actual.toFixed(2)).replace("Rp", "Rp. ");
+		        if(data.sell_in_at == '0') document.getElementById('sellin3').innerHTML = '-'
+		        else document.getElementById('sellin3').innerHTML = data.sell_in_at.toFixed(1)+'%';
+		        if(data.sell_in_gap == '0') document.getElementById('sellin4').innerHTML = '-'
+		        else document.getElementById('sellin4').innerHTML = formatter.format(data.sell_in_gap.toFixed(2)).replace("Rp", "Rp. ");
+
+		        if(data.sell_out_target == '0') document.getElementById('sellout1').innerHTML = '-'
+		        else document.getElementById('sellout1').innerHTML = formatter.format(data.sell_out_target.toFixed(2)).replace("Rp", "Rp. ");
+		        if(data.sell_out_actual == '0') document.getElementById('sellout2').innerHTML = '-'
+		        else document.getElementById('sellout2').innerHTML = formatter.format(data.sell_out_actual.toFixed(2)).replace("Rp", "Rp. ");
+		        if(data.sell_out_at == '0') document.getElementById('sellout3').innerHTML = '-'
+		        else document.getElementById('sellout3').innerHTML = data.sell_out_at.toFixed(1)+'%';
+		        if(data.sell_out_gap == '0') document.getElementById('sellout4').innerHTML = '-'
+		        else document.getElementById('sellout4').innerHTML = formatter.format(data.sell_out_gap.toFixed(2)).replace("Rp", "Rp. ");
+            }
+
+        });
+
+		//---------------------- SELL IN --------------------------------//
+
         $.get(getDataUrl, function (data) {
+
 	        if(data){
-	        	dataSellinTotal[index] = {
-	                label: "Series" + (index + 1),
-	                data: data.id
-	            }
-	            index++;
+	        	dataSellinTotal = [
+				  { label: "Total Actual",  data: [[1,(data.sell_in_actual)]], color: '#16E221'},
+				  { label: "GAP Target",  data: [[1,(data.sell_in_gap)]], color: '#FE0000'},
+				];
+
+	        	$.plot(chartSellinTotal, dataSellinTotal, options);
 	        }
 	    });
-        console.log(dataSellinTotal);
-        // Randomly Generated Data
 
-        var data = [],
-            series = Math.floor(Math.random() * 6) + 3;
-
-        for (var i = 0; i < series; i++) {
-            data[i] = {
-                label: "Series" + (i + 1),
-                data: Math.floor(Math.random() * 100) + 1
-            }
-        }
+        data = [
+				  { label: "Total Actual",  data: [[1,1]], color: '#16E221'},
+				  { label: "GAP Target",  data: [[1,1]], color: '#FE0000'},
+				];
 
         var chartSellinTotal = $("#chartSellinTotal");
 
-            chartSellinTotal.unbind();
+		chartSellinTotal.unbind();
 
-            $("#titleSellinTotal").text("Sell In TOTAL");
-            
-            $("#descriptionSellinTotal").text("The default pie chart with no options set.");
-            
+		$("#titleSellinTotal").text("ACTUAL vs TARGET (%) - SELL IN");
 
-            $.plot(chartSellinTotal, data, {
-                series: {
-                    pie: { 
-                        show: true
-                    }
-                },
-                grid: {
-                    hoverable: true,
-                    clickable: true
-                }
-            });
+		$.plot(chartSellinTotal, data, options);
 
-            chartSellinTotal.bind("plothover", function(event, pos, obj) {
+		//---------------------- SELL OUT --------------------------------//
 
-                if (!obj) {
-                    return;
-                }
+        $.get(getDataUrl, function (data) {
 
-                var percent = parseFloat(obj.series.percent).toFixed(2);
-                $("#hoverSellinTotal").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
-            });
+	        if(data){
+	        	dataSelloutTotal = [
+				  { label: "Total Actual",  data: [[1,(data.sell_out_actual)]], color: '#16E221'},
+				  { label: "GAP Target",  data: [[1,(data.sell_out_gap)]], color: '#FE0000'},
+				];
 
-            chartSellinTotal.bind("plotclick", function(event, pos, obj) {
+	        	$.plot(chartSelloutTotal, dataSelloutTotal, options);
+	        }
+	    });
 
-                if (!obj) {
-                    return;
-                }
 
-                percent = parseFloat(obj.series.percent).toFixed(2);
-                alert(""  + obj.series.label + ": " + percent + "%");
-            });
+        data = [
+				  { label: "Total Actual",  data: [[1,1]], color: '#16E221'},
+				  { label: "GAP Target",  data: [[1,1]], color: '#FE0000'},
+				];
 
-            //-----------------------
-            function labelFormatter(label, series) {
-            	var total = series.percent;
-			    return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>"    + label + "<br/>" +total.toFixed(1)+"% ("+ series.data[0][1] + ")</div>";
-			}
-            var chartSelloutTotal = $("#chartSelloutTotal");
-            chartSelloutTotal.unbind();
-            $("#titleSelloutTotal").text("Sell Out TOTAL");
-            $("#descriptionSelloutTotal").text("The default pie chart with no options set.");
-            $.plot(chartSelloutTotal, data, {
-                series: {
-                    pie: { 
-                        show: true,
-                        radius: 1,
-			            tilt: 0.5,
-			            label: {
-			                show: true,
-			                radius: 1,
-			                formatter: labelFormatter,
-			                background: {
-			                    opacity: 0.8
-			                }
-			            },
-			            combine: {
-			                color: '#999',
-			                threshold: 0.1
-			            }
-                    },
-	                valueLabels: {
-	                    show: true,
-	                    showAsHtml: true,
-	                    align: "center"
-	                }   
+        var chartSelloutTotal = $("#chartSelloutTotal");
 
-                },
-                grid: {
-                    hoverable: true,
-                    // clickable: true
-                },
-			    legend: {
-			        show: false
-			    }
-            });
-            chartSelloutTotal.bind("plothover", function(event, pos, obj) {
+		chartSellinTotal.unbind();
 
-                if (!obj) {
-                    return;
-                }
- 
-                var percent = parseFloat(obj.series.percent).toFixed(2);
-                $("#hoverSelloutTotal").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + obj.series.data[0][1] + ")</span>");
+		$("#titleSelloutTotal").text("ACTUAL vs TARGET (%) - SELL OUT");
 
-            });
+		$.plot(chartSelloutTotal, data, options);
 
-            // chartSelloutTotal.bind("plotclick", function(event, pos, obj) {
-
-            //     if (!obj) {
-            //         return;
-            //     }
-
-            //     percent = parseFloat(obj.series.percent).toFixed(2);
-            //     alert(""  + obj.series.label + ": " + percent + "%");
-            // });
-
-            //-------------------------------------------------------
-            var chartSellinDa = $("#chartSellinDa");
-
-            chartSellinDa.unbind();
-
-            $("#titleSellinDa").text("Sell In DA");
-            
-            $("#descriptionSellinDa").text("The default pie chart with no options set.");
-            
-
-            $.plot(chartSellinDa, data, {
-                series: {
-                    pie: { 
-                        show: true
-                    }
-                },
-                grid: {
-                    hoverable: true,
-                    clickable: true
-                }
-            });
-
-            chartSellinDa.bind("plothover", function(event, pos, obj) {
-
-                if (!obj) {
-                    return;
-                }
-
-                var percent = parseFloat(obj.series.percent).toFixed(2);
-                $("#hoverSellinDa").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
-            });
-
-            chartSellinDa.bind("plotclick", function(event, pos, obj) {
-
-                if (!obj) {
-                    return;
-                }
-
-                percent = parseFloat(obj.series.percent).toFixed(2);
-                alert(""  + obj.series.label + ": " + percent + "%");
-            });
-            //------------------------------------------------------------
-            var chartSelloutDa = $("#chartSelloutDa");
-            chartSelloutDa.unbind();
-            $("#titleSelloutDa").text("Sell Out DA");
-            $("#descriptionSelloutDa").text("The default pie chart with no options set.");
-            $.plot(chartSelloutDa, data, {
-                series: {
-                    pie: { 
-                        show: true,
-                        radius: 1,
-			            tilt: 0.5,
-			            label: {
-			                show: true,
-			                radius: 1,
-			                formatter: labelFormatter,
-			                background: {
-			                    opacity: 0.8
-			                }
-			            },
-			            combine: {
-			                color: '#999',
-			                threshold: 0.1
-			            }
-                    },
-	                valueLabels: {
-	                    show: true,
-	                    showAsHtml: true,
-	                    align: "center"
-	                }   
-
-                },
-                grid: {
-                    hoverable: true,
-                    // clickable: true
-                },
-			    legend: {
-			        show: false
-			    }
-            });
-            chartSelloutDa.bind("plothover", function(event, pos, obj) {
-
-                if (!obj) {
-                    return;
-                }
- 
-                var percent = parseFloat(obj.series.percent).toFixed(2);
-                $("#hoverSelloutDa").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + obj.series.data[0][1] + ")</span>");
-
-            });
-            //------------------------------------------------------------
+		//----------------------------------------------------------------//
 
         // Add the Flot version string to the footer
 
@@ -410,8 +322,17 @@
     // A custom label formatter used by several of the plots
 
     function labelFormatter(label, series) {
-        return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
-    }
+		var total = series.percent;
+
+		// Create IDR currency formatter.
+		var formatter = new Intl.NumberFormat('id', {
+		  style: 'currency',
+		  currency: 'IDR',
+		  minimumFractionDigits: 2,
+		});
+
+		return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>"    + label + "<br/>" +total.toFixed(1)+"% ( "+ formatter.format(series.data[0][1].toFixed(2)).replace("Rp", "Rp. ") + " )</div>";
+	}
 
     //
 

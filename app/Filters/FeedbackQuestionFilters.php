@@ -6,7 +6,7 @@ use App\FeedbackQuestion;
 use Illuminate\Http\Request;
 
 
-class FeedbackQuestionyFilters extends QueryFilters
+class FeedbackQuestionFilters extends QueryFilters
 {
 
     /**

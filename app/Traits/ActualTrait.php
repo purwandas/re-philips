@@ -593,7 +593,245 @@ trait ActualTrait {
                 }
 
             } else { // DELETE
-                // ON PROGRESS
+
+                /* DA */
+                if ($data['group'] == 'DA') {
+
+                    if ($summary->target_da > 0) {
+
+                        $summary->update([
+                            'actual_da' => $summary->actual_da - $data['value'],
+                            'sum_actual_store' => $sumActualStore - $data['value'],
+                            'sum_actual_area' => $sumActualArea - $data['value'],
+                            'sum_actual_region' => $sumActualRegion - $data['value'],
+                        ]);
+
+                    }
+
+                    // PRODUCT FOCUS
+                    if ($summary->target_pf_da > 0) {
+
+                        if ($data['pf'] > 0) {
+
+                            $summary->update([
+                                'actual_pf_da' => $summary->actual_pf_da - $data['value']
+                            ]);
+
+                        }
+                    }
+
+                    // WEEKLY PROCESS
+                    if ($data['week'] == 1) { // WEEK 1
+
+                        if ($summary->target_da_w1 > 0) {
+
+                            $summary->update([
+                                'actual_da_w1' => $summary->actual_da_w1 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 2) { // WEEK 2
+
+                        if ($summary->target_da_w2 > 0) {
+
+                            $summary->update([
+                                'actual_da_w2' => $summary->actual_da_w2 - $data['value']
+                            ]);
+
+
+                        }
+
+                    } else if ($data['week'] == 3) { // WEEK 3
+
+                        if ($summary->target_da_w3 > 0) {
+
+                            $summary->update([
+                                'actual_da_w3' => $summary->actual_da_w3 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 4) { // WEEK 4
+
+                        if ($summary->target_da_w4 > 0) {
+
+                            $summary->update([
+                                'actual_da_w4' => $summary->actual_da_w4 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 5) { // WEEK 5
+
+                        if ($summary->target_da_w5 > 0) {
+
+                            $summary->update([
+                                'actual_da_w5' => $summary->actual_da_w5 - $data['value']
+                            ]);
+
+                        }
+
+                    }
+
+                    /* PC */
+                } else if ($data['group'] == 'PC') {
+
+                    if ($summary->target_pc > 0) {
+
+                        $summary->update([
+                            'actual_pc' => $summary->actual_pc - $data['value'],
+                            'sum_actual_store' => $sumActualStore - $data['value'],
+                            'sum_actual_area' => $sumActualArea - $data['value'],
+                            'sum_actual_region' => $sumActualRegion - $data['value'],
+                        ]);
+
+                    }
+
+                    // PRODUCT FOCUS
+                    if ($summary->target_pf_pc > 0) {
+
+                        if ($data['pf'] > 0){
+                            $summary->update([
+                                'actual_pf_pc' => $summary->actual_pf_pc - $data['value']
+                            ]);
+                        }
+                    }
+
+                    // WEEKLY PROCESS
+                    if ($data['week'] == 1) { // WEEK 1
+
+                        if ($summary->target_pc_w1 > 0) {
+
+                            $summary->update([
+                                'actual_pc_w1' => $summary->actual_pc_w1 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 2) { // WEEK 2
+
+                        if ($summary->target_pc_w2 > 0) {
+
+                            $summary->update([
+                                'actual_pc_w2' => $summary->actual_pc_w2 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 3) { // WEEK 3
+
+                        if ($summary->target_pc_w3 > 0) {
+
+                            $summary->update([
+                                'actual_pc_w3' => $summary->actual_pc_w3 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 4) { // WEEK 4
+
+                        if ($summary->target_pc_w4 > 0) {
+
+                            $summary->update([
+                                'actual_pc_w4' => $summary->actual_pc_w4 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 5) { // WEEK 5
+
+                        if ($summary->target_pc_w5 > 0) {
+
+                            $summary->update([
+                                'actual_pc_w5' => $summary->actual_pc_w5 - $data['value']
+                            ]);
+
+                        }
+
+                    }
+
+                    /* MCC */
+                } else if ($data['group'] == 'MCC') {
+
+                    if ($summary->target_mcc > 0) {
+
+                        $summary->update([
+                            'actual_mcc' => $summary->actual_mcc - $data['value'],
+                            'sum_actual_store' => $sumActualStore - $data['value'],
+                            'sum_actual_area' => $sumActualArea - $data['value'],
+                            'sum_actual_region' => $sumActualRegion - $data['value'],
+                        ]);
+
+                    }
+
+                    // PRODUCT FOCUS
+                    if ($summary->target_pf_mcc > 0) {
+
+                        if ($data['pf'] > 0) {
+
+                            $summary->update([
+                                'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value']
+                            ]);
+
+                        }
+                    }
+
+                    // WEEKLY PROCESS
+                    if ($data['week'] == 1) { // WEEK 1
+
+                        if ($summary->target_mcc_w1 > 0) {
+
+                            $summary->update([
+                                'actual_mcc_w1' => $summary->actual_mcc_w1 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 2) { // WEEK 2
+
+                        if ($summary->target_mcc_w2 > 0) {
+
+                            $summary->update([
+                                'actual_mcc_w2' => $summary->actual_mcc_w2 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 3) { // WEEK 3
+
+                        if ($summary->target_mcc_w3 > 0) {
+
+                            $summary->update([
+                                'actual_mcc_w3' => $summary->actual_mcc_w3 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 4) { // WEEK 4
+
+                        if ($summary->target_mcc_w4 > 0) {
+
+                            $summary->update([
+                                'actual_mcc_w4' => $summary->actual_mcc_w4 - $data['value']
+                            ]);
+
+                        }
+
+                    } else if ($data['week'] == 5) { // WEEK 5
+
+                        if ($summary->target_mcc_w5 > 0) {
+
+                                $summary->update([
+                                    'actual_mcc_w5' => $summary->actual_mcc_w5 - $data['value']
+                                ]);
+
+                        }
+
+                    }
+
+                }
+
             }
 
             // Update Sum Target Store to All Summary

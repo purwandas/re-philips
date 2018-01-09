@@ -275,3 +275,79 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
     });
 
 });
+
+// Employee Store Detail Popup
+$(document).on("click", ".open-history-employee-store-modal", function () {
+        var title_modal = document.getElementById('title-modalhesm');
+    var title_list = document.getElementById('title-listhesm');
+    var content = document.getElementById('contenthesm');
+    var penampung = '';
+    title_modal.innerHTML = $(this).data('title');
+    title_list.innerHTML = "Promoter : "+$(this).data('promoter-name');
+
+    var getDataUrl = $(this).data('url');
+    var userId = $(this).data('id');
+    var bgAktif = 'style="background-color: cyan;"';
+    var storeAktif = '<p> << NOW </p>';
+    var cek = 0;
+    content.innerHTML = "";
+    // console.log('kampret: '+getDataUrl+'/'+userId);
+    $.get(getDataUrl + '/' + userId, function (data2) {
+        console.log(data2);
+        // if(data2) {
+            $.each(data2, function() {
+                    // console.log('kampret: serID ='+this.user_id);
+                    // content.innerHTML += this.year+'<br>';
+                    if (cek > 0) {
+                        bgAktif = '';
+                    };
+                    cek = 1;
+                    penampung  += '<div class="list-todo-line blue"></div>' +
+                    '<ul>' +
+                        '<li class="mt-list-item">' +
+                            '<div class="list-todo-icon bg-white font-blue">' +
+                                '<i class="fa fa-database"></i>' +
+                            '</div>' +
+                            '<div class="list-todo-item grey">' +
+                                '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.user_id + this.id + '"  aria-expanded="false">' +
+                                    '<div class="list-toggle done uppercase" '+ bgAktif +'>' +
+                                        '<div class="list-toggle-title bold">' + this.year + ' - ' + this.month +'</div>' +
+                                    '</div>' +
+                                '</a>' +
+                                '<div class="task-list panel-collapse collapse" id="' + this.user_id + this.id + '" aria-expanded="false" style="height: 0px;">' +
+                                    '<ul>' +
+                                        '<li class="task-list-item" >' +
+                                            '<div class="task-content">' +
+                                                '<ul>' +
+                                                    '<li>' +
+                                                        '<h5> Join Store : ' + '</h5>' ;
+                                                        var index_s = 0;
+                                                        // var storess = this.stores.store_id;
+                                                            // console.log('wowowowo');
+                                                         var myStore = this.stores;
+                                                          $.each(this.stores.store_id, function() {
+                                                            // console.log('poiuytrew');
+                                                            penampung += myStore.store_id[index_s] + ' - ' + myStore.store_name_1[index_s] + ' - ' + myStore.store_name_2[index_s] +' <br> ';  
+                                                            index_s++;
+                                                        });
+
+                        penampung +=                 
+                                                    '</li>' +
+                                                    
+                                                '</ul>' +
+                                            '</div>' +
+                                        '</li>' +
+                                    '</ul>' +
+                                '</div>' +
+                            '</div>' +
+                        '</li>' +
+                    '</ul>';
+
+                    content.innerHTML = penampung;
+
+
+            });
+        // }
+    });
+
+});

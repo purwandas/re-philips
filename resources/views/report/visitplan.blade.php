@@ -180,7 +180,7 @@
             });
 
             $('#filterRole').on('select2:select', function () {
-                self.selected('byArea', $('#filterRole').val());
+                self.selected('role', $('#filterRole').val());
             });
 
 
