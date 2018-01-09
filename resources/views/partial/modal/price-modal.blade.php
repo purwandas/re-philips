@@ -53,6 +53,26 @@
                         </div>
 
                         <div class="form-group">
+                          <label class="col-sm-3 control-label">Sell Type</label>
+                          <div class="col-sm-8">
+
+                          <div class="input-group" style="width: 100%;">
+
+                                <select class="select2select" name="sell_type" id="sell_type" required>
+                                    <option value="Sell In" {{ (@$data->sell_type == 'Sell In') ? "selected" : "" }}>Sell In</option>
+                                    <option value="Sell Out" {{ (@$data->sell_type == 'Sell Out') ? "selected" : "" }}>Sell Out</option>
+                                </select>
+
+                                <span class="input-group-addon display-hide">
+                                    <i class="fa"></i>
+                                </span>
+
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="form-group">
                           <label class="col-sm-3 control-label">Price</label>
                           <div class="col-sm-8">
                             <div class="input-icon right">
