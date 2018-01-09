@@ -423,14 +423,14 @@
 
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
-		        	filters['bySpv'] = $('#penampungUserId').val();
-		        	filters['byDedicateSpv'] = $('#dedicate').val();
+		        	filters['bySpvNew'] = $('#penampungUserId').val();
+		        	// filters['byDedicateSpv'] = $('#dedicate').val();
 		        }
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    return {id: obj.id+","+obj.store_id+","+obj.dedicate, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
 	        }));
@@ -614,7 +614,7 @@
                     select2Reset(element);
 
 	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+							setSelect2IfPatch(element, this.id+","+this.store_id+","+this.dedicate, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
 						});
 
             	}	
@@ -668,12 +668,19 @@
 		    
 		});
 
-		// On Change status
+
 		$(document).ready(function(){
+			// On Change status
 		    $('input[type=radio][name=status]').change(function() {
 		        resetStore();
 		        setStore(this.value);
 		    });
+
+		    // On Change Dedicate
+		    // $('#dedicate').change(function() {
+		    //     $("#store").val('').change();
+		    //     $("#stores").val('').change();
+		    // });
 		});
 
 	</script>	

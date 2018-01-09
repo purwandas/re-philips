@@ -50,6 +50,11 @@ class EditDisplayShareController extends Controller
     public function makeTable($data){
 
            return Datatables::of($data)
+               ->addColumn('percentage', function ($item) {
+
+                   return round(($item->philips/$item->all)*100,2).'%';
+
+                })
            		->addColumn('action', function ($item) {
 
                    return

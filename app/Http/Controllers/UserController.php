@@ -102,33 +102,7 @@ class UserController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
-                ->addColumn('store', function ($item) {
-
-//                    $storeIds = EmployeeStore::where('user_id', $item->id)->pluck('store_id');
-//                    $storeName = "";
-//
-//                    foreach ($storeIds as $storeId){
-//
-//                        $store = Store::find(trim($storeId));
-//                        $storeName .= $store->store_id." - ".$store->store_name_1." (".$store->store_name_2.")";
-//
-//                        if($storeId != $storeIds[count($storeIds)-1]){
-//                                $storeName .= ", ";
-//                        }
-//
-//                    }
-
-                    $countStore = $item->employeeStores()->count();
-
-                    if($countStore > 0){
-                        return
-                        "<a class='open-employee-store-modal btn btn-primary' data-target='#employee-store-modal' data-toggle='modal' data-url='util/empstore' data-title='List Store' data-promoter-name='".$item->name."' data-id='".$item->id."'> See Details </a>";
-                    }
-
-                    return;
-
-                })
-                ->rawColumns(['store', 'action'])
+                ->rawColumns(['action'])
                 ->make(true);
     }
 
@@ -191,35 +165,77 @@ class UserController extends Controller
 
         /* Insert user relation */
         if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
-            /* Employee One Store */
-            if($request['store_id']){
-                $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-            }
 
-            /* Employee Multiple Store */
+            /* SPV Multiple Store */
             if($request['store_ids']){
+                // return response()->json($request['store_ids']);
                 foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                }
-            }
-        }else{
-            /* Employee One Store */
-            if($request['store_id']){
-                // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-                EmployeeStore::create([
-                    'user_id' => $user->id,
-                    'store_id' => $request['store_id'],
-                ]);
-            }
+                    /*
+                    1. select all store with STORE ID selected
+                    */
+                    $stores = explode(',', $storeId); // id,store_id
+                    // return response()->json($stores[1]);
+                    $store = Store::where('deleted_at',null)
+                                ->where('store_id',$stores[1])->get();
+                    $status = false;
+                    $store_id   = '';
+                    $store_name_1   = '';
+                    $store_name_2   = '';
+                    $latitude   = '';
+                    $longitude  = '';
+                    $address    = '';
+                    $classification     = '';
+                    $subchannel_id  = '';
+                    $district_id    = '';
+                    // return response()->json($store);
+                    foreach ($store as $key => $value) {
+                        /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
+                        if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
+                        {
+                            Store::where('id',$stores[0])
+                            ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                            $status = true;
+                        }
+                        if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
+                        {
+                            if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                            {
+                                Store::where('id',$stores[0])
+                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                $status = true;
+                            }
+                        }
 
-            /* Employee Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                    EmployeeStore::create([
-                        'user_id' => $user->id,
-                        'store_id' => $storeId,
-                    ]);
+                        $store_id = $value->store_id;
+                        $store_name_1 = $value->store_name_1;
+                        $store_name_2 = $value->store_name_2;
+                        $latitude = $value->latitude;
+                        $longitude = $value->longitude;
+                        $address = $value->address;
+                        $classification = $value->classification;
+                        $subchannel_id = $value->subchannel_id;
+                        $district_id = $value->district_id;
+                    }
+
+                    if ($status == false) {
+                        Store::create([
+                            'store_id' => $store_id,
+                            'store_name_1' => $store_name_1,
+                            'store_name_2' => $store_name_2,
+                            'latitude' => $latitude,
+                            'longitude' => $longitude,
+                            'address' => $address,
+                            'classification' => $classification,
+                            'subchannel_id' => $subchannel_id,
+                            'district_id' => $district_id,
+                            'user_id' => $user->id,
+                            'dedicate' => $request['dedicate'],
+                        ]);
+                        $status = true;
+                    }
+                            
+                            // $store = Store::where('id',$storeId)
+                            // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                 }
             }
         }
@@ -399,37 +415,78 @@ class UserController extends Controller
 
         /* Insert user relation */
         if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
-            /* Employee One Store */
-            if($request['store_id']){
-                $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-            }
-
-            /* Employee Multiple Store */
-            if($request['store_ids']){
+            /* SPV Multiple Store */
+            if($request['store_ids'])
+            {
+                Store::where('user_id',$user->id)
+                            ->update(['user_id'=>null]);
                 foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                }
-            }
-        }else{
-            EmployeeStore::where('user_id',$user->id)->delete();
-            /* Employee One Store */
-            if($request['store_id']){
-                // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-                EmployeeStore::create([
-                    'user_id' => $user->id,
-                    'store_id' => $request['store_id'],
-                ]);
-            }
+                    /*
+                    1. select all store with STORE ID selected
+                    */
+                    $stores = explode(',', $storeId); // id,store_id
+                    $store = Store::where('deleted_at',null)
+                                ->where('store_id',$stores[1])->get();
+                    $status = false;
+                    $store_id   = '';
+                    $store_name_1   = '';
+                    $store_name_2   = '';
+                    $latitude   = '';
+                    $longitude  = '';
+                    $address    = '';
+                    $classification     = '';
+                    $subchannel_id  = '';
+                    $district_id    = '';
+                    foreach ($store as $key => $value) {
+                        /* ini masih perlu di cek */
+                        if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
+                        {
+                            Store::where('id',$value->id)
+                            ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                            
+                            $status = true;
+                        }
+                        
+                        if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
+                        {
+                            if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                            {
+                                Store::where('id',$value->id)
+                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                $status = true;
+                            }
+                        }
 
+                        $store_id = $value->store_id;
+                        $store_name_1 = $value->store_name_1;
+                        $store_name_2 = $value->store_name_2;
+                        $latitude = $value->latitude;
+                        $longitude = $value->longitude;
+                        $address = $value->address;
+                        $classification = $value->classification;
+                        $subchannel_id = $value->subchannel_id;
+                        $district_id = $value->district_id;
+                    }
 
-            /* Employee Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                    EmployeeStore::create([
-                        'user_id' => $user->id,
-                        'store_id' => $storeId,
-                    ]);
+                    if ($status == false) {
+                        Store::create([
+                            'store_id' => $store_id,
+                            'store_name_1' => $store_name_1,
+                            'store_name_2' => $store_name_2,
+                            'latitude' => $latitude,
+                            'longitude' => $longitude,
+                            'address' => $address,
+                            'classification' => $classification,
+                            'subchannel_id' => $subchannel_id,
+                            'district_id' => $district_id,
+                            'user_id' => $user->id,
+                            'dedicate' => $request['dedicate'],
+                        ]);
+                        $status = true;
+                    }
+                            
+                            // $store = Store::where('id',$storeId)
+                            // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                 }
             }
         }

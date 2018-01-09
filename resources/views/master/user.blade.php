@@ -136,8 +136,6 @@
                             <th> NIK </th>
                             <th> Name </th>
                         	<th> Role </th>
-                            <th> Status </th>
-                            <th> Store </th>
                             <th> Options </th>                             
                         </tr>
                     </thead>
@@ -164,7 +162,7 @@
     <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
 <!-- BEGIN TEXT MODAL SCRIPTS -->
-<script src="{{ asset('js/text-modal/popup.js') }}" type="text/javascript"></script>
+<!-- <script src="{{ asset('js/text-modal/popup.js') }}" type="text/javascript"></script> -->
 <!-- END TEXT MODAL SCRIPTS -->
 
 <script>
@@ -174,8 +172,6 @@
         var columnDefs = [
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [4]},
-                {"className": "dt-center", "targets": [5]},
-                {"className": "dt-center", "targets": [6]},
             ];
 
         var tableColumns = [
@@ -183,8 +179,6 @@
                 {data: 'nik', name: 'nik'},               
                 {data: 'name', name: 'name'},
                 {data: 'role', name: 'role'},
-                {data: 'status', name: 'status'},
-                {data: 'store', name: 'store'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ];
 
