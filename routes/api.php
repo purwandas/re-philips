@@ -36,9 +36,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/product/{param}', 'Api\Master\ProductController@all');
 	Route::get('/category-product', 'Api\Master\CategoryController@all');
 	Route::get('/category-product/{param}', 'Api\Master\CategoryController@allWithParam');
-	Route::get('/store', 'Api\Master\StoreController@all');
+    Route::get('/store', 'Api\Master\StoreController@all');
 	Route::get('/store-promoter', 'Api\Master\StoreController@byPromoter');
 	Route::post('/store-area', 'Api\Master\StoreController@byArea');
+    Route::post('/store-create', 'Api\Master\StoreController@create');
 	Route::get('/place', 'Api\Master\PlaceController@all');
 	Route::get('/competitor', 'Api\Master\GroupCompetitorController@allNoParam');
 	Route::get('/competitor/{param}', 'Api\Master\GroupCompetitorController@all');
@@ -72,6 +73,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/displayshare', 'Api\Master\DisplayShareController@store');
 	Route::post('/competitoractivity', 'Api\Master\CompetitorActivityController@store');
 	Route::post('/promoactivity', 'Api\Master\PromoActivityController@store');
+	Route::post('/sales-edit/{param}', 'Api\Master\EditSalesController@edit');
+	Route::post('/sales-delete/{param}', 'Api\Master\DeleteSalesController@delete');
 
 	/**
      * Attendance Module(s)
@@ -138,6 +141,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/achievement-by-national/{param}', 'Api\Master\AchievementController@getTotalAchievementNational');
     Route::get('/achievement-by-store/{param}', 'Api\Master\AchievementController@getAchievementByStore');
     Route::get('/achievement-by-store/{param}/{id}', 'Api\Master\AchievementController@getAchievementByStoreWithParam');
+    Route::get('/achievement-salesman/{param}', 'Api\Master\AchievementController@salesmanAchievement');
+    Route::get('/achievement-salesman-list', 'Api\Master\AchievementController@salesmanAchievementList');
+    Route::get('/achievement-salesman-by-national', 'Api\Master\AchievementController@salesmanAchievementByNational');
 
     /**
      * Promoter Feedback Module(s)

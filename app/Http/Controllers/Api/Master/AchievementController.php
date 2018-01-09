@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Master;
 
 use App\Area;
 use App\Region;
+use App\Reports\SalesmanSummaryTargetActual;
 use App\Reports\SummaryTargetActual;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -726,4 +727,118 @@ class AchievementController extends Controller
 
 
     }
+
+    public function salesmanAchievement($param){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $ta = SalesmanSummaryTargetActual::where('user_id', $user->id)->first();
+
+        if($param == 1){ // Sales & Sales PF
+
+            return response()->json([
+                'id' => $user->id,
+                'nik' => $user->nik,
+                'name' => $user->name,
+                'area' => (@$ta->area) ? $ta->area : '',
+                'target_sales' => (@$ta->target_sales) ? $ta->target_sales : 0,
+                'actual_sales' => (@$ta->actual_sales) ? $ta->actual_sales : 0,
+                'target_sales_pf' => (@$ta->target_sales_pf) ? $ta->target_sales_pf : 0,
+                'actual_sales_pf' => (@$ta->actual_sales_pf) ? $ta->actual_sales_pf : 0,
+            ]);
+
+        }else if($param == 2){ // CALL
+
+            return response()->json([
+                'id' => $user->id,
+                'nik' => $user->nik,
+                'name' => $user->name,
+                'area' => (@$ta->area) ? $ta->area : '',
+                'target_call' => (@$ta->target_call) ? $ta->target_call : 0,
+                'actual_call' => (@$ta->actual_call) ? $ta->actual_call : 0,
+            ]);
+
+        }else if($param == 3){ // ACTIVE OUTLET
+
+            return response()->json([
+                'id' => $user->id,
+                'nik' => $user->nik,
+                'name' => $user->name,
+                'area' => (@$ta->area) ? $ta->area : '',
+                'target_active_outlet' => (@$ta->target_active_outlet) ? $ta->target_active_outlet : 0,
+                'actual_active_outlet' => (@$ta->actual_active_outlet) ? $ta->actual_active_outlet : 0,
+            ]);
+
+        }else if($param == 4){ // EFFECTIVE CALL
+
+            return response()->json([
+                'id' => $user->id,
+                'nik' => $user->nik,
+                'name' => $user->name,
+                'area' => (@$ta->area) ? $ta->area : '',
+                'target_effective_call' => (@$ta->target_effective_call) ? $ta->target_effective_call : 0,
+                'actual_effective_call' => (@$ta->actual_effective_call) ? $ta->actual_effective_call : 0,
+            ]);
+
+        }
+
+    }
+
+    public function salesmanAchievementList(){
+
+        $user = User::where('role', 'Salesman Explorer')->get();
+
+        $result = new Collection();
+
+        if($user){
+
+            foreach ($user as $data){
+
+                $ta = SalesmanSummaryTargetActual::where('user_id', $data->id)->first();
+
+                $detailsData = ([
+                    'id' => $data->id,
+                    'nik' => $data->nik,
+                    'name' => $data->name,
+                    'area' => (@$ta->area) ? $ta->area : '',
+                    'target_call' => (@$ta->target_call) ? $ta->target_call : 0,
+                    'actual_call' => (@$ta->actual_call) ? $ta->actual_call : 0,
+                    'target_active_outlet' => (@$ta->target_active_outlet) ? $ta->target_active_outlet : 0,
+                    'actual_active_outlet' => (@$ta->actual_active_outlet) ? $ta->actual_active_outlet : 0,
+                    'target_effective_call' => (@$ta->target_effective_call) ? $ta->target_effective_call : 0,
+                    'actual_effective_call' => (@$ta->actual_effective_call) ? $ta->actual_effective_call : 0,
+                    'target_sales' => (@$ta->target_sales) ? $ta->target_sales : 0,
+                    'actual_sales' => (@$ta->actual_sales) ? $ta->actual_sales : 0,
+                    'target_sales_pf' => (@$ta->target_sales_pf) ? $ta->target_sales_pf : 0,
+                    'actual_sales_pf' => (@$ta->actual_sales_pf) ? $ta->actual_sales_pf : 0,
+                ]);
+                $result->push($detailsData);
+
+            }
+
+        }
+
+        return response()->json($result);
+
+    }
+
+    public function salesmanAchievementByNational(){
+
+        $ta = SalesmanSummaryTargetActual::first();
+
+        return response()->json([
+            'sum_national_target_call' => (@$ta->sum_national_target_call) ? $ta->sum_national_target_call : 0,
+            'sum_national_actual_call' => (@$ta->sum_national_actual_call) ? $ta->sum_national_actual_call : 0,
+            'sum_national_target_active_outlet' => (@$ta->sum_national_target_active_outlet) ? $ta->sum_national_target_active_outlet : 0,
+            'sum_national_actual_active_outlet' => (@$ta->sum_national_actual_active_outlet) ? $ta->sum_national_actual_active_outlet : 0,
+            'sum_national_target_effective_call' => (@$ta->sum_national_target_effective_call) ? $ta->sum_national_target_effective_call : 0,
+            'sum_national_actual_effective_call' => (@$ta->sum_national_actual_effective_call) ? $ta->sum_national_actual_effective_call : 0,
+            'sum_national_target_sales' => (@$ta->sum_national_target_sales) ? $ta->sum_national_target_sales : 0,
+            'sum_national_actual_sales' => (@$ta->sum_national_actual_sales) ? $ta->sum_national_actual_sales : 0,
+            'sum_national_target_sales_pf' => (@$ta->sum_national_target_sales_pf) ? $ta->sum_national_target_sales_pf : 0,
+            'sum_national_actual_sales_pf' => (@$ta->sum_national_actual_sales_pf) ? $ta->sum_national_actual_sales_pf : 0,
+        ]);
+
+    }
+
 }

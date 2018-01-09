@@ -81,7 +81,7 @@
 				          <div class="input-group" style="width: 100%;">
      
                                 <select class="select2select" name="role" id="role" required>
-                                	
+                                	<option></option>
                                 	<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
                                 	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? 
                                 	"selected" : "" }}>Promoter Additional</option>
@@ -143,7 +143,7 @@
 				        </div>
 
 				        <div id="statusContent" class="display-hide">
-					        <div class="form-group">
+					        <div class="form-group" style="margin-bottom: 0px;">
 	                            <label class="control-label col-md-2">Status                               
 	                            </label>
 	                            <div class="col-md-9">
@@ -158,6 +158,33 @@
 	                                    </label>
 	                                </div>
 	                                <div id="form_employee_status_error"> </div>
+	                            </div>
+	                        </div>
+
+	                        <div class="form-group">
+	                            <label class="control-label col-md-2">
+	                            Dedicate                     
+	                            </label>
+	                            <div class="col-md-9">
+	                                <div style="width: 100%;" class="input-group input-icon right">
+						          		<i class="fa"></i>
+	                                        <select class="select2select" name="dedicate" id="dedicate" required>
+	                                        	<option></option>
+			-									<option value="DA" 
+													{{ (@$data->dedicate == 'DA') ? "selected" : "" }}>
+												DA</option>
+			-									<option value="PC" 
+													{{ (@$data->dedicate == 'PC') ? "selected" : "" }}>
+												PC</option>
+			-									<option value="MCC" 
+													{{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>
+												MCC</option>
+			-									<option value="HYBRID" 
+													{{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>
+												HYBRID</option>
+			-                                </select>
+	                                        <span></span>
+	                                </div>
 	                            </div>
 	                        </div>
 	                    </div>
@@ -222,9 +249,7 @@
 	                          <div class="col-sm-9">
 
 	                          <div class="input-group" style="width: 100%;">
-	     
 	                                <select class="select2select" name="area" id="area"></select>
-	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
 	                                </span>
@@ -235,24 +260,6 @@
 	                        </div>
 	                    </div>
 
-				        <div id="dmContent2" class="display-hide form-group">
-				          <label class="col-sm-2 control-label">Dedicate</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<select class="select2select" name="dedicate" id="dedicate" required>
-									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
-									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
-									<option value="MCC" {{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>MCC</option>
-									<option value="HYBRID" {{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>HYBRID</option>
-                                </select>
-
-                                <span class="input-group-addon display-hide">
-                                	<i class="fa"></i>
-                                </span>
-				            </div>
-				          </div>
-				        </div>			
                         <!-- END DM DETAILS -->
 
                         <!-- BEGIN RSM DETAILS -->				       
@@ -410,24 +417,26 @@
 	        }));
 
 	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	            filters['byDedicate'] = $('#dedicate').val();
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
 	        }));
 
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
-		        	filters['bySpv'] = $('#penampungUserId').val();;
+		        	filters['bySpv'] = $('#penampungUserId').val();
 		        }
+		        filters['byDedicate'] = $('#dedicate').val();
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate}
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
 	                })
 	            }
 	        }));
@@ -477,17 +486,6 @@
 			resetForm();
 			resetStore();
 
-			if(role == 'DM'){
-				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
-				document.getElementById('areaTitle').innerHTML = "DM AREA";
-				$('#dmContent').removeClass('display-hide');
-
-				$('#dedicate').attr('required', 'required');
-				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
-				$('#dmContent2').removeClass('display-hide');
-			}
-
 			if(role == 'Trainer'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
@@ -521,8 +519,10 @@
 				if(role == 'Salesman Explorer'){
 					$('input[type=radio][name=status][value=mobile]').attr('checked', 'checked');
 //				    $('#statusContent').removeClass('display-hide');
+					$('#dedicate').prop('required',false);
 				}else{
 					$('#statusContent').removeClass('display-hide');
+					$('#dedicate').prop('required',true);
 				}
 
 
@@ -587,7 +587,7 @@
 
                     if(oldStatus == status){                    	
 	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")" + " - " + this.dedicate);
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
 						});
                 	}                	
 
@@ -608,7 +608,7 @@
                     select2Reset(element);
 
 	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")" + " - " + this.dedicate);
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
 						});
 
             	}	

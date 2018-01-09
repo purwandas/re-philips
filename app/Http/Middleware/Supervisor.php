@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
-class Admin
+class Supervisor
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && (Auth::user()->role == 'Admin' || Auth::user()->role == 'Master') )
+        if (Auth::check() && (Auth::user()->role == 'Admin' || Auth::user()->role == 'Master' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid') )
         {
             return $next($request);
         }

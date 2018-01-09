@@ -8,6 +8,8 @@ use App\User;
 use App\RsmRegion;
 use App\DmArea;
 use App\EmployeeStore;
+use App\Attendance;
+use App\AttendanceDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -95,8 +97,8 @@ class UserPromoterController extends Controller
                 ->addColumn('action', function ($item) {
 
                     return 
-                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
-                    <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>";
+                    // <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
                 ->addColumn('store', function ($item) {
@@ -518,6 +520,20 @@ class UserPromoterController extends Controller
         $productKnowledgeRead = ProductKnowledgeRead::where('user_id', $id);
         if($productKnowledgeRead->count() > 0){
             $productKnowledgeRead->delete();
+        }
+
+        // Attendance
+        $attendance = Attendance::where('user_id', $id);
+        $cek = [];
+            foreach ($attendance as $key => $value) {
+                $attendanceDetail = AttendanceDetail::where('attendance_id', $value->id);
+                $cek[] = $value;
+                if($attendanceDetail->count() > 0){
+                    $attendanceDetail->delete();
+                }            
+            }
+        if($attendance->count() > 0){
+            $attendance->delete();
         }
 
         $user = User::find($id);

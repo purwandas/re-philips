@@ -37,7 +37,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/quiz', ['as'=> 'datatable.quiz','uses'=>'Master\QuizController@masterDataTable']);
     Route::post('datatable/price', ['as'=> 'datatable.price','uses'=>'Master\PriceController@masterDataTable']);
     Route::post('datatable/target', ['as'=> 'datatable.target','uses'=>'Master\TargetController@masterDataTable']);
+    Route::post('datatable/targetsalesman', ['as'=> 'datatable.targetsalesman','uses'=>'Master\TargetSalesmanController@masterDataTable']);
     Route::post('datatable/productfocus', ['as'=> 'datatable.productfocus','uses'=>'Master\ProductFocusController@masterDataTable']);
+    Route::post('datatable/productfocussalesman', ['as'=> 'datatable.productfocussalesman','uses'=>'Master\ProductFocusSalesmanController@masterDataTable']);
     Route::post('datatable/messageToAdmin', ['as'=> 'datatable.messageToAdmin','uses'=>'MessageToAdminController@masterDataTable']);
     Route::post('datatable/feedbackCategory', ['as'=> 'datatable.feedbackCategory','uses'=>'Master\FeedbackCategoryController@masterDataTable']);
     Route::post('datatable/feedbackQuestion', ['as'=> 'datatable.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@masterDataTable']);
@@ -47,8 +49,15 @@ Route::group(['middleware' => ['auth']], function () {
      * Edit Sales
      */
 
+    Route::post('datatable/editsellin', ['as'=> 'datatable.editsellin','uses'=>'Master\EditSellInController@masterDataTable']);
+    Route::post('datatable/editsellout', ['as'=> 'datatable.editsellout','uses'=>'Master\EditSellOutController@masterDataTable']);
     Route::post('datatable/editretdistributor', ['as'=> 'datatable.editretdistributor','uses'=>'Master\EditRetDistributorController@masterDataTable']);
     Route::post('datatable/editretconsument', ['as'=> 'datatable.editretconsument','uses'=>'Master\EditRetConsumentController@masterDataTable']);
+    Route::post('datatable/editfreeproduct', ['as'=> 'datatable.editfreeproduct','uses'=>'Master\EditFreeProductController@masterDataTable']);
+    Route::post('datatable/edittbat', ['as'=> 'datatable.edittbat','uses'=>'Master\EditTbatController@masterDataTable']);
+    Route::post('datatable/editsoh', ['as'=> 'datatable.editsoh','uses'=>'Master\EditSohController@masterDataTable']);
+    Route::post('datatable/editdisplayshare', ['as'=> 'datatable.editdisplayshare','uses'=>'Master\EditDisplayShareController@masterDataTable']);
+    Route::post('datatable/editposmactivity', ['as'=> 'datatable.editposmactivity','uses'=>'Master\EditPosmActivityController@masterDataTable']);
 
     
     /**
@@ -69,6 +78,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/promoactivityreport', ['as'=> 'datatable.promoactivityreport','uses'=>'Master\ReportController@promoActivityData']);
     Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
     Route::post('datatable/attendancereport', ['as'=> 'datatable.attendancereport','uses'=>'Master\ReportController@attendanceData']);
+    Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
+    Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
     
 
     
@@ -176,10 +187,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
     Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
-    
+    Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
+    /**
+     * Dashboard
+     */
 
+    Route::get('chart/data-national', ['uses'=>'DashboardController@getDataNational']);
+    Route::get('chart/data-region', ['uses'=>'DashboardController@getDataRegion']);
+    Route::get('chart/data-area', ['uses'=>'DashboardController@getDataArea']);
+    Route::get('chart/data-supervisor', ['uses'=>'DashboardController@getDataSupervisor']);
     
 });
 

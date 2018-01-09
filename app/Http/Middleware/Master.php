@@ -16,7 +16,7 @@ class Master
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role == 'Master' )
+        if (Auth::check() && (Auth::user()->role == 'Admin' || Auth::user()->role == 'Master') )
         {
             return $next($request);
         }
