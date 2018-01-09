@@ -131,6 +131,32 @@ class UserPromoterController extends Controller
                     return;
 
                 })
+                ->addColumn('supervisor', function ($item) {
+                    $storeIds = EmployeeStore::
+                                        with('store.user')
+                                        // ->distinct('store.user.name')
+                                        ->where('user_id', $item->id)
+                                        // ->groupBy('user_id')
+                                        ->get();
+
+                    $storeSpv = [];
+                    foreach ($storeIds as $storeId){
+                        $storeSpv[] = $storeId->store->user->name;
+                    }
+
+                    $newStoreSpv = array_unique($storeSpv);
+
+                    $storeSpvName = '';
+                    foreach ($newStoreSpv as $key => $value) {
+                        if ($key > 0) {
+                            $storeSpvName .= ', ';
+                        }
+                        $storeSpvName .= $value;
+                    }
+
+                    return $storeSpvName;
+
+                })
                 ->addColumn('history', function ($item) {
 
 
@@ -202,23 +228,32 @@ class UserPromoterController extends Controller
             $photo_url = $this->getUploadPathName($request->photo_file, "user/".$this->getRandomPath(), 'USER') : $photo_url = "";
         
         if($request->photo_file != null) $request['photo'] = $photo_url;
-
+        /*
+        1. select store
+        2. get dedicate
+        3. replace or add by formula
+            3.a. sekarang cuma replace/UPDATE user id aja di stores
+                promoter savenya ke employeestore.user_id
+                supervisor savenya ke store.user_id
+                SE save ke employeestore, tanpa pilih dedicate
+        */
+            
         $user = User::create($request->all());
 
-        /* Insert user relation */
-        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
-            /* Employee One Store */
-            if($request['store_id']){
-                $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-            }
+        // /* Insert user relation */
+        // if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+        //     /* Employee One Store */
+        //     if($request['store_id']){
+        //         $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
+        //     }
 
-            /* Employee Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                }
-            }
-        }else{
+        //     /* Employee Multiple Store */
+        //     if($request['store_ids']){
+        //         foreach ($request['store_ids'] as $storeId) {
+        //             $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+        //         }
+        //     }
+        // }else{
             /* Employee One Store */
             if($request['store_id']){
                 // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
@@ -238,7 +273,7 @@ class UserPromoterController extends Controller
                     ]);
                 }
             }
-        }
+        // }
 
         // If DM or Trainer
         if(isset($request->area)){
@@ -428,19 +463,7 @@ class UserPromoterController extends Controller
         $user->update($requestNew->all()); 
 
         /* Insert user relation */
-        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
-            /* Employee One Store */
-            if($request['store_id']){
-                $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-            }
-
-            /* Employee Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                }
-            }
-        }else{
+        
             EmployeeStore::where('user_id',$user->id)->delete();
 
             /* Employee One Store */
@@ -462,7 +485,6 @@ class UserPromoterController extends Controller
                     ]);
                 }
             }
-        }
 
         // If DM
         if($request->area){
