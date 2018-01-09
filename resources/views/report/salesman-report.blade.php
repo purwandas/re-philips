@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>TBAT Report
-                <small>report transfer barang antar toko</small>
+            <h1>Salesman Report
+                <small>report salesman</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">TBAT Reporting</span>
+            <span class="active">Salesman Reporting</span>
         </li>
     </ul>
 @endsection
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="caption padding-caption">
-                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
+                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> FILTERS BY</span>
                 </div>
 
                 <div class="row filter" style="margin-top: 10px;">
@@ -52,9 +52,6 @@
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterStore" class="select2select"></select>
-                    </div>
-                    <div class="col-md-4">
-                        <select id="filterStore2" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
                         <select id="filterEmployee" class="select2select"></select>
@@ -80,18 +77,22 @@
 
                 </div>
 
-                <div class="portlet light display-hide bordered" id="dataContent">
+                <div class="portlet light bordered display-hide" id="dataContent">
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">TBAT</span>
+                            <span class="caption-subject font-blue bold uppercase">Salesman Sales</span>
+                        </div>
+                        <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
                         </div>
                     </div>
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="tbatReport" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="salesmanReport" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th> No. </th>
@@ -106,9 +107,6 @@
                                 <th> Store Name 1 </th>
                                 <th> Store Name 2 </th>
                                 <th> Store ID </th>
-                                <th> Store Destination Name 1 </th>
-                                <th> Store Destination Name 2 </th>
-                                <th> Store Destination ID </th>
                                 <th> NIK </th>
                                 <th> Promoter Name </th>
                                 <th> Date </th>
@@ -119,13 +117,8 @@
                                 <th> Quantity </th>
                                 <th> Unit Price </th>
                                 <th> Value </th>
-                                <!-- <th> Value PF MR </th>
-                                <th> Value PF TR </th>
-                                <th> Value PF PPE </th> -->
+                                <th> Value PF </th>
                                 <th> Role </th>
-                                <th> SPV/ARO Name </th>
-                                <th> DM Name </th>
-                                <th> Trainer </th>
                             </tr>
                             </thead>
                         </table>
@@ -144,6 +137,7 @@
 
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
@@ -151,8 +145,8 @@
          *
          *
          */
-        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterStore2', '#filterEmployee'];
-        var url = 'datatable/tbatreport';
+        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
+        var url = 'datatable/salesmanreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
@@ -167,9 +161,6 @@
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'store_id', name: 'store_id'},
-                            {data: 'store_destination_name_1', name: 'store_destination_name_1'},
-                            {data: 'store_destination_name_2', name: 'store_destination_name_2'},
-                            {data: 'store_destination_id', name: 'store_destination_id'},
                             {data: 'nik', name: 'nik'},
                             {data: 'promoter_name', name: 'promoter_name'},
                             {data: 'date', name: 'date'},
@@ -180,17 +171,15 @@
                             {data: 'quantity', name: 'quantity'},
                             {data: 'unit_price', name: 'unit_price'},
                             {data: 'value', name: 'value'},
-                            // {data: 'value_pf_mr', name: 'value_pf_mr'},
-                            // {data: 'value_pf_tr', name: 'value_pf_tr'},
-                            // {data: 'value_pf_ppe', name: 'value_pf_ppe'},
+                            {data: 'value_pf', name: 'value_pf'},
                             {data: 'role', name: 'role'},
-                            {data: 'spv_name', name: 'spv_name'},
-                            {data: 'dm_name', name: 'dm_name'},
-                            {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order];
+        var exportButton = '#export';
+
+        var paramFilter = ['salesmanReport', $('#salesmanReport'), url, tableColumns, columnDefs, order, exportButton];
+
+        var paramReset = [filterId, 'salesmanReport', $('#salesmanReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
 
@@ -201,18 +190,18 @@
             });
 
             // Set data for Data Table
-            var table = $('#tbatReport').dataTable({
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
-                    url: "{{ route('datatable.tbatreport') }}",
-                    type: 'POST',
-                },
-                "rowId": "id",
-                "columns": tableColumns,
-                "columnDefs": columnDefs,
-                "order": order,
-            });
+            {{--var table = $('#sellInReport').dataTable({--}}
+                {{--"processing": true,--}}
+                {{--"serverSide": true,--}}
+                {{--"ajax": {--}}
+                    {{--url: "{{ route('datatable.sellinreport') }}",--}}
+                    {{--type: 'POST',--}}
+                {{--},--}}
+                {{--"rowId": "id",--}}
+                {{--"columns": tableColumns,--}}
+                {{--"columnDefs": columnDefs,--}}
+                {{--"order": order,--}}
+            {{--});--}}
 
             initSelect2();
             initDateTimePicker();
@@ -278,21 +267,8 @@
                 self.selected('byStore', $('#filterStore').val());
             });
 
-            $('#filterStore2').select2(setOptions('{{ route("data.store") }}', 'Store Destination', function (params) {
-                return filterData('store', params.term);
-            }, function (data, params) {
-                return {
-                    results: $.map(data, function (obj) {
-                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
-                    })
-                }
-            }));
-            $('#filterStore2').on('select2:select', function () {
-                self.selected('byStore2', $('#filterStore2').val());
-            });
-
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+	        	filters['roleGroup'] = ['Salesman Explorer'];
 	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {
@@ -324,11 +300,11 @@
         }
 
         // On Change Search Date
-        $(document).ready(function() {
+		$(document).ready(function() {
 
             $('#filterMonth').change(function(){
-                filters['searchMonth'] = this.value;
-                console.log(filters);
+				filters['searchMonth'] = this.value;
+				console.log(filters);
             });
 
         });
@@ -360,7 +336,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-tbat',
+                    url: 'util/export-salesman',
                     dataType: 'json',
                     data: {data: data},
                     global: false,

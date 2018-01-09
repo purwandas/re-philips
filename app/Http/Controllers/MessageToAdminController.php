@@ -41,9 +41,24 @@ class MessageToAdminController extends Controller
      */
     public function masterDataTable(){
 
-        $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
-                    ->join('users', 'message_to_admin.user_id', '=', 'users.id')
-                    ->select('message_to_admin.*', 'users.email as user')->get();
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+
+        if (($userRole == 'Master') || ($userRole == 'Master')) {
+            $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
+                        ->join('users', 'message_to_admin.user_id', '=', 'users.id')
+                        ->select('message_to_admin.*', 'users.email as user')
+                        // ->orderBy('id', 'desc')
+                        ->get();
+        }
+        else {
+            $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
+                        ->where('message_to_admin.user_id', $userId)
+                        ->join('users', 'message_to_admin.user_id', '=', 'users.id')
+                        ->select('message_to_admin.*', 'users.email as user')
+                        // ->orderBy('id', 'desc')
+                        ->get();
+        }
 
 
         return $this->makeTable($data);
@@ -98,9 +113,10 @@ class MessageToAdminController extends Controller
         $user = User::find(Auth::user()->id);
 
         $request['user_id']= $user->id;
+        $request['date']= Carbon::now();
         $messageToAdmin = MessageToAdmin::create($request->all());
 
-        return response()->json(['url' => url('/messageToAdmin')]);
+        return response()->json(['url' => url('/messageToAdminNew')]);
     }
 
     /**
@@ -110,7 +126,10 @@ class MessageToAdminController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    {   
+        $input['status']='read';
+        $messageToAdmin = MessageToAdmin::find($id)->update($input);
+
         $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
                     ->join('users', 'message_to_admin.user_id', '=', 'users.id')
                     ->select('message_to_admin.*', 'users.email as user')->find($id);

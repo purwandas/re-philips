@@ -143,7 +143,12 @@ class UserController extends Controller
 
         return $data;
     }
+    public function getDataNonPromoterWithFilters(UserFilters $filters){ 
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        $data = User::filter($filters)->whereNotIn('role',$roles)->get();
 
+        return $data;
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -244,28 +249,6 @@ class UserController extends Controller
 
         }
 
-        // $userid = User::where('users.name', $request->name)->select('users.*');
-
-        // if($request['store_id']){
-        //     $newEmStore = $request->store_id;
-        //     HistoryEmployeeStore::create([
-        //                     'user_id' => $userId->id,
-        //                     'month' => Carbon::now()->format('m'),
-        //                     'year' => Carbon::now()->format('Y'),
-        //                     'details' => $newEmStore,
-        //             ]);
-        // }
-        // /* Employee Multiple Store */
-        // if($request['store_ids']){
-        //     $newEmStore = $request->store_ids;
-        //     $newEmStore2 = implode(",",$newEmStore);
-        //     HistoryEmployeeStore::create([
-        //                     'user_id' => $userId->id,
-        //                     'month' => Carbon::now()->format('m'),
-        //                     'year' => Carbon::now()->format('Y'),
-        //                     'details' => $newEmStore2,
-        //             ]);
-        // }
 
         /*
          * Generate attendance from day promoter works till end of month
@@ -278,6 +261,9 @@ class UserController extends Controller
             $this->generateAttendace($user->id);
         }
         
+        $userId = User::where('email', $request->email)->first();
+        // echo response()->json($userId);
+
         return response()->json(['url' => url('usernon')]);
     }
 
@@ -323,70 +309,7 @@ class UserController extends Controller
 
         $user = User::find($id);
         $oldPhoto = "";
-
-
         
-        if($request['store_id']){
-            $newEmStore = $request->store_id;
-            HistoryEmployeeStore::create([
-                            'user_id' => $user->id,
-                            'month' => Carbon::now()->format('m'),
-                            'year' => Carbon::now()->format('Y'),
-                            'details' => $newEmStore,
-                    ]);
-        }
-        /* Employee Multiple Store */
-        if($request['store_ids']){
-            $newEmStore = $request->store_ids;
-            $newEmStore2 = implode(",",$newEmStore);
-            HistoryEmployeeStore::create([
-                            'user_id' => $user->id,
-                            'month' => Carbon::now()->format('m'),
-                            'year' => Carbon::now()->format('Y'),
-                            'details' => $newEmStore2,
-                    ]);
-        }
-
-
-                    // foreach ($emStore2 as $key => $value) {
-                    //     foreach ($newEmStore as $key2 => $value2) {
-                    //         if ($value == $value2) {
-                    //             $stay[] = $value;
-                    //             $c = deleteElement($value2,$c);
-                    //             $d = deleteElement($value2,$d);
-                    //         }
-                    //     }
-                    // }
-                    // if (isset($stay)) {
-                    // foreach ($c as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-                    // foreach ($stay as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-                    // foreach ($d as $key => $value) {
-                    //         $headerDetails->push($value);
-                    // }
-
-                    // EmployeeStore::create([
-                    //         'id' => $user->id,
-                    //         'name' => $user->name,
-                    //         'month' => $dateUser->month,
-                    //         'year' => $dateUser->year,
-                    //         'details' => $headerDetails,
-                    // ]);
-                    // }
-
-                    // function deleteElement( $item, $array ) {
-                    //     $index = array_search($item, $array);
-                    //     if ( $index !== false ) {
-                    //         unset( $array[$index] );
-                    //     }
-
-                    //     return $array;
-                    // }
-        
-
 
 
 
@@ -561,6 +484,8 @@ class UserController extends Controller
 
             $this->upload($request->photo_file, $imageFolder, $imageName);
         }
+
+        
 
         return response()->json(
             [

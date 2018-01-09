@@ -185,7 +185,7 @@
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [2,4,5]},
             ],
-            "order": [ [0, 'asc'] ],
+            "order": [ [0, 'desc'] ],
         });
 
 
@@ -304,8 +304,8 @@
              *
              */
 
-            $('#assessor').select2(setOptions('{{ route("data.employee") }}', 'Assessor', function (params) {
-                return filterData('name', params.term);
+            $('#assessor').select2(setOptions('{{ route("data.nonPromoter") }}', 'Assessor', function (params) {
+                return filterData('employee', params.term);
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
@@ -314,8 +314,8 @@
                 }
             }));
 
-            $('#promoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-                return filterData('name', params.term);
+            $('#promoter').select2(setOptions('{{ route("data.groupPromoter") }}', 'Promoter', function (params) {
+                return filterData('employee', params.term);
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
@@ -338,7 +338,7 @@
                 width: '100%',
                 placeholder: 'answer'
             })    
-            $('#filterAssessor').select2(setOptions('{{ route("data.employee") }}', 'Assesssor', function (params) {
+            $('#filterAssessor').select2(setOptions('{{ route("data.nonPromoter") }}', 'Assesssor', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {
@@ -355,7 +355,7 @@
                 self.selected('byAssesssor', $('#assessor').val());
             });
 
-            $('#filterPromoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
+            $('#filterPromoter').select2(setOptions('{{ route("data.groupPromoter") }}', 'Promoter', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {

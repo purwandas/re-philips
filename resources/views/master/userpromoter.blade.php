@@ -138,6 +138,7 @@
                         	<th> Role </th>
                             <th> Status </th>
                             <th> Store </th>
+                            <th> History </th>
                             <th> Options </th>                             
                         </tr>
                     </thead>
@@ -149,6 +150,7 @@
 		<!-- END EXAMPLE TABLE PORTLET-->
 
         @include('partial.util.employee-store-modal')
+        @include('partial.util.history-employee-store-modal')
 
 	</div>
 </div>
@@ -185,6 +187,7 @@
                 {data: 'role', name: 'role'},
                 {data: 'status', name: 'status'},
                 {data: 'store', name: 'store'},
+                {data: 'history', name: 'history'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ];
 

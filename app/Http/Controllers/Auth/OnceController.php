@@ -264,7 +264,7 @@ class OnceController extends Controller
                 $this->createGroupCompetitor();
 //                $this->createAccountType();
 //                $this->createAccount();
-                $this->createPosm();
+//                $this->createPosm();
                 $this->createGlobalChannel();
             }
         }  
