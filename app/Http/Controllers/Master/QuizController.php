@@ -52,6 +52,24 @@ class QuizController extends Controller
                     return
                     "<a href='$item->link'>".$item->link."</a>";
                 })
+                ->editColumn('target', function ($item) {
+                    $result = '';
+                    if ($item->target == 'All') 
+                    {
+                        $result = "Promoter, Promoter Additional, Promoter Event, Demonstrator MCC, Demonstrator DA, ACT, PPE, BDT, Salesman Explorer, SMD, SMD Coordinator, HIC, HIE, SMD, Additional, ASC";
+                    }
+                    else if ($item->target == 'Demonstrator') 
+                    {
+                        $result = "Demonstrator MCC, Demonstrator DA";
+                    }
+                    else if ($item->target == 'Promoter') 
+                    {
+                        $result = "Promoter, Promoter Additional, Promoter Event, ACT, PPE, BDT, Salesman Explorer, SMD, SMD Coordinator, HIC, HIE, SMD, Additional, ASC";
+                    }
+                    return $result;
+                })
+
+                
                 ->addColumn('action', function ($item) {
 
                     return 
@@ -95,21 +113,21 @@ class QuizController extends Controller
         // Date
         $request['date'] = Carbon::now();
 
-        $allTarget = '';
-        $counTarget=0;
+        // $allTarget = '';
+        // $counTarget=0;
 
-        foreach ($request['target'] as $key => $value) {
-            if ($counTarget == 0) {
-                $allTarget .= $value;
-                if ($value!='') {
-                    $counTarget++;
-                }
-            }else{
-                $allTarget .= ','.$value;
-            }            
-        }
+        // foreach ($request['target'] as $key => $value) {
+        //     if ($counTarget == 0) {
+        //         $allTarget .= $value;
+        //         if ($value!='') {
+        //             $counTarget++;
+        //         }
+        //     }else{
+        //         $allTarget .= ','.$value;
+        //     }            
+        // }
 
-        $request->merge(array('target'=> $allTarget));
+        // $request->merge(array('target'=> $allTarget));
 
         // return $request->all();
 
@@ -160,21 +178,21 @@ class QuizController extends Controller
             'target' => 'required',
             ]);  
 
-        $allTarget = '';
-        $counTarget=0;
+        // $allTarget = '';
+        // $counTarget=0;
         
-        foreach ($request['target'] as $key => $value) {
-            if ($counTarget == 0) {
-                $allTarget .= $value;
-                if ($value!='') {
-                    $counTarget++;
-                }
-            }else{
-                $allTarget .= ','.$value;
-            }            
-        }
+        // foreach ($request['target'] as $key => $value) {
+        //     if ($counTarget == 0) {
+        //         $allTarget .= $value;
+        //         if ($value!='') {
+        //             $counTarget++;
+        //         }
+        //     }else{
+        //         $allTarget .= ','.$value;
+        //     }            
+        // }
 
-        $request->merge(array('target'=> $allTarget));
+        // $request->merge(array('target'=> $allTarget));
 
         $quiz = Quiz::find($id);
     	$quiz->update($request->all());        

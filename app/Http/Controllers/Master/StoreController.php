@@ -122,12 +122,11 @@ class StoreController extends Controller
 
             $this->validate($request, [
                 'old_store_id' => 'required',
-                'dedicate' => 'required',
             ]);
 
             // return $request->old_store_id;
             $storeData = Store::where('stores.id', $request->old_store_id)->get();
-            $dedicate = [];
+            // $dedicate = [];
             $store_id = '';
             $store_name_1 = '';
             $store_name_2 = '';
@@ -139,7 +138,7 @@ class StoreController extends Controller
             $district_id = '';
 
             foreach ($storeData as $key => $value) {
-                $dedicate[] = $value->dedicate;
+                $dedicate[] = '';
                 $store_id = $value->store_id;
                 $store_name_1 = $value->store_name_1;
                 $store_name_2 = $value->store_name_2;
@@ -152,31 +151,31 @@ class StoreController extends Controller
             }
 
             // return response()->json($storeData);
-            foreach ($dedicate as $key => $value) {
-                if ($value == $request->dedicate) { //redudant
-                    $error = "Dedicate: Duplicate Entry for ".$value;
-                }
-                if ($value == 'DA' && $request->dedicate == 'PC') {
-                    $error = "Dedicate: PC cannot be Added, You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
-                if ($value == 'PC' && $request->dedicate == 'DA') {
-                    $error = "Dedicate: DA cannot be Added, You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
-                if ($value == 'HYBRID' && $request->dedicate == 'PC') {
-                    $error = "Dedicate: PC cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be PC";
-                }
-                if ($value == 'HYBRID' && $request->dedicate == 'DA') {
-                    $error = "Dedicate: DA cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be DA";
-                }
-                if ($value == 'DA' && $request->dedicate == 'HYBRID') {
-                    $error = "Dedicate: HYBRID cannot be Added, You already have DA. You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
-                if ($value == 'PC' && $request->dedicate == 'HYBRID') {
-                    $error = "Dedicate: HYBRID cannot be Added, You already have PC. You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                }
+            // foreach ($dedicate as $key => $value) {
+            //     if ($value == $request->dedicate) { //redudant
+            //         $error = "Dedicate: Duplicate Entry for ".$value;
+            //     }
+            //     if ($value == 'DA' && $request->dedicate == 'PC') {
+            //         $error = "Dedicate: PC cannot be Added, You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
+            //     }
+            //     if ($value == 'PC' && $request->dedicate == 'DA') {
+            //         $error = "Dedicate: DA cannot be Added, You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+            //     }
+            //     if ($value == 'HYBRID' && $request->dedicate == 'PC') {
+            //         $error = "Dedicate: PC cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be PC";
+            //     }
+            //     if ($value == 'HYBRID' && $request->dedicate == 'DA') {
+            //         $error = "Dedicate: DA cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be DA";
+            //     }
+            //     if ($value == 'DA' && $request->dedicate == 'HYBRID') {
+            //         $error = "Dedicate: HYBRID cannot be Added, You already have DA. You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
+            //     }
+            //     if ($value == 'PC' && $request->dedicate == 'HYBRID') {
+            //         $error = "Dedicate: HYBRID cannot be Added, You already have PC. You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+            //     }
 
-                // return error json, di store-handler.js success: if data.error -> message
-            }
+            //     // return error json, di store-handler.js success: if data.error -> message
+            // }
 
             if ($error == '') {
                 // $request->store_id = $request->old_store_id;
@@ -200,7 +199,6 @@ class StoreController extends Controller
             $this->validate($request, [
                 'store_name_1' => 'required|string|max:255',
                 'store_name_2' => 'string|max:255',
-                'dedicate' => 'required',
                 'longitude' => 'number',
                 'latitude' => 'number',
                 'subchannel_id' => 'required',
@@ -275,39 +273,39 @@ class StoreController extends Controller
             ->where('stores.id', '!=', $id)
             ->get();
             $count = 0;
-            foreach ($storeData as $key => $value) {
-                $count = 1;
-                $dedicate[] =
-                $value->dedicate;
-            }
+            // foreach ($storeData as $key => $value) {
+            //     $count = 1;
+            //     $dedicate[] =
+            //     $value->dedicate;
+            // }
             if ($count>0) {
             
                 // return response()->json($storeData);
-                foreach ($dedicate as $key => $value) {
-                    if ($value == $request->dedicate) { //redudant
-                        $error = "Dedicate: Duplicate Entry for ".$value;
-                    }
-                    if ($value == 'DA' && $request->dedicate == 'PC') {
-                        $error = "Dedicate: PC cannot be Added, You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                    }
-                    if ($value == 'PC' && $request->dedicate == 'DA') {
-                        $error = "Dedicate: DA cannot be Added, You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                    }
-                    if ($value == 'HYBRID' && $request->dedicate == 'PC') {
-                        $error = "Dedicate: PC cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be PC";
-                    }
-                    if ($value == 'HYBRID' && $request->dedicate == 'DA') {
-                        $error = "Dedicate: DA cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be DA";
-                    }
-                    if ($value == 'DA' && $request->dedicate == 'HYBRID') {
-                        $error = "Dedicate: HYBRID cannot be Added, You already have DA. You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                    }
-                    if ($value == 'PC' && $request->dedicate == 'HYBRID') {
-                        $error = "Dedicate: HYBRID cannot be Added, You already have PC. You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
-                    }
+                // foreach ($dedicate as $key => $value) {
+                //     if ($value == $request->dedicate) { //redudant
+                //         $error = "Dedicate: Duplicate Entry for ".$value;
+                //     }
+                //     if ($value == 'DA' && $request->dedicate == 'PC') {
+                //         $error = "Dedicate: PC cannot be Added, You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                //     }
+                //     if ($value == 'PC' && $request->dedicate == 'DA') {
+                //         $error = "Dedicate: DA cannot be Added, You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                //     }
+                //     if ($value == 'HYBRID' && $request->dedicate == 'PC') {
+                //         $error = "Dedicate: PC cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be PC";
+                //     }
+                //     if ($value == 'HYBRID' && $request->dedicate == 'DA') {
+                //         $error = "Dedicate: DA cannot be Added, You already have HYBRID. You can change your HYBRID Store (".$request->store_id.'-'.$value.") to be DA";
+                //     }
+                //     if ($value == 'DA' && $request->dedicate == 'HYBRID') {
+                //         $error = "Dedicate: HYBRID cannot be Added, You already have DA. You can change your DA Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                //     }
+                //     if ($value == 'PC' && $request->dedicate == 'HYBRID') {
+                //         $error = "Dedicate: HYBRID cannot be Added, You already have PC. You can change your PC Store (".$request->store_id.'-'.$value.") to be HYBRID";
+                //     }
 
-                    // return error json, di store-handler.js success: if data.error -> message
-                }
+                //     // return error json, di store-handler.js success: if data.error -> message
+                // }
 
                 if ($error == '') {
                     // $request->store_id = $request->old_store_id;

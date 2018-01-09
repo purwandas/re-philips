@@ -50,11 +50,16 @@ class DisplayShareController extends Controller
 
                                 /** Update Summary **/
 
-                                $summary = SummaryDisplayShare::where('display_share_detail_id', $displayShareDetail->id)->first();
+                                $summary = SummaryDisplayShare::where('displayshare_detail_id', $displayShareDetail->id)->first();
 
                                 $summary->update([
-                                    'philips' => $summary->philips + $data['philips'],
-                                    'all' => $summary->all + $data['all']
+                                    'philips' => $data['philips'],
+                                    'all' => $data['all'],
+                                ]);
+
+                                // Update percentage
+                                $summary->update([
+                                    'percentage' => ($summary->philips / $summary->all ) * 100,
                                 ]);
 
                             } else { // If data didn't exist -> create
@@ -71,7 +76,7 @@ class DisplayShareController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $displayShareHeader->store_id)->first();
-                                $spvName = $store->user->name ?? '';
+                                $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                                 /* Category */
                                 $category = Category::where('id', $data['category_id'])->first();
@@ -144,7 +149,7 @@ class DisplayShareController extends Controller
                                     'category' => $category->name,
                                     'philips' => $data['philips'],
                                     'all' => $data['all'],
-                                    'percentage' => ($data['philips'] / $data['all'] * 100),
+                                    'percentage' => (($data['philips'] / $data['all']) * 100),
                                     'role' => $user->role,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
@@ -191,7 +196,7 @@ class DisplayShareController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = $store->user->name ?? '';
+                            $spvName = ($store->user->name != '') ? $store->user->name : '';
 
                             /* Category */
                             $category = Category::where('id', $detail->category_id)->first();
@@ -262,7 +267,7 @@ class DisplayShareController extends Controller
                                 'category' => $category->name,
                                 'philips' => $data['philips'],
                                 'all' => $data['all'],
-                                'percentage' => ($data['all'] / $data['all'] * 100),
+                                'percentage' => (($data['philips'] / $data['all']) * 100),
                                 'role' => $user->role,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,

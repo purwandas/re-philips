@@ -618,4 +618,46 @@ class ExportController extends Controller
         }
 
     }
+
+    public function exportSalesman(Request $request){
+
+        $filename = 'Philips Retail Report Salesman Sales ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Salesman');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Salesman Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('SALESMAN REPORT', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportSalesman($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:W1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:W1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
 }
