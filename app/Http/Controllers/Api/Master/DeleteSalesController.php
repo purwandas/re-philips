@@ -12,6 +12,7 @@ use App\Reports\SummaryDisplayShare;
 use App\Reports\SummaryFreeProduct;
 use App\Reports\SummaryRetConsument;
 use App\Reports\SummaryRetDistributor;
+use App\Reports\SummarySellIn;
 use App\Reports\SummarySellOut;
 use App\Reports\SummarySoh;
 use App\Reports\SummaryTbat;

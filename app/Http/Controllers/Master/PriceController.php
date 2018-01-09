@@ -91,13 +91,15 @@ class PriceController extends Controller
         $this->validate($request, [
             'product_id' => 'required',
             'globalchannel_id' => 'required',
+            'sell_type' => 'required',
             'price' => 'required|numeric'
             ]);
 
 //        return $this->changeSellInSummary($request['product_id'], $request['globalchannel_id'], $request['price']);
 
         $price = Price::where('product_id', $request['product_id'])
-                    ->where('globalchannel_id', $request['globalchannel_id']);
+                    ->where('globalchannel_id', $request['globalchannel_id'])
+                    ->where('sell_type', $request['sell_type']);
 
         if($price->count() > 0){
             $price->update(['price'=>$request->price]);
@@ -105,6 +107,7 @@ class PriceController extends Controller
             /* Summary Change */
             $summary['product_id'] = $request['product_id'];
             $summary['globalchannel_id'] = $request['globalchannel_id'];
+            $summary['sell_type'] = $request['sell_type'];
             $summary['price'] = $request['price'];
             $this->changeSummary($summary, 'change');
 
@@ -114,6 +117,7 @@ class PriceController extends Controller
             /* Summary Change */
             $summary['product_id'] = $price->product_id;
             $summary['globalchannel_id'] = $price->globalchannel_id;
+            $summary['sell_type'] = $request['sell_type'];
             $summary['price'] = $price->price;
             $this->changeSummary($summary, 'change');
         }
@@ -157,6 +161,7 @@ class PriceController extends Controller
         $this->validate($request, [
             'product_id' => 'required',
             'globalchannel_id' => 'required',
+            'sell_type' => 'required',
             'price' => 'required|numeric'
             ]);
 
@@ -164,6 +169,7 @@ class PriceController extends Controller
 
         $priceCount = Price::where('product_id', $request['product_id'])
                     ->where('globalchannel_id', $request['globalchannel_id'])
+                    ->where('sell_type', $request['sell_type'])
                     ->where('id', '<>', $id)
                     ->count();
 
@@ -176,6 +182,7 @@ class PriceController extends Controller
         /* Summary Change */
         $summary['product_id'] = $request['product_id'];
         $summary['globalchannel_id'] = $request['globalchannel_id'];
+        $summary['sell_type'] = $request['sell_type'];
         $summary['price'] = $request['price'];
         $this->changeSummary($summary, 'change');
 
@@ -196,6 +203,7 @@ class PriceController extends Controller
         /* Summary Delete */
         $summary['product_id'] = $price->product_id;
         $summary['globalchannel_id'] = $price->globalchannel_id;
+        $summary['sell_type'] = $price['sell_type'];
         $summary['price'] = $price->price;
         $this->changeSummary($summary, 'delete');
 

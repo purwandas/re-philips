@@ -56,6 +56,7 @@
                                 <th> No. </th>
                                 <th> Product's </th>
                                 <th> Global Channel </th>
+                                <th> Sell Type</th>
                                 <th> Price </th>
                                 <th> Options </th>
                             </tr>
@@ -112,6 +113,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'product_name', name: 'product_name'},
                 {data: 'globalchannel_name', name: 'globalchannel_name'},
+                {data: 'sell_type', name: 'sell_type'},
                 {data: 'price', name: 'price'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
@@ -187,6 +189,7 @@
         $('#prices').val('');
         select2Reset($("#product"));
         select2Reset($("#globalchannel"));
+        select2Reset($("#sell_type"));
 
         // Set action url form for add
         var postDataUrl = "{{ url('price') }}";
@@ -225,6 +228,7 @@
                     $('#prices').val(data.price);
                     setSelect2IfPatchModal($("#product"), data.product_id, data.product.name);
                     setSelect2IfPatchModal($("#globalchannel"), data.globalchannel_id, data.global_channel.name);
+                    setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
 
         })
 
@@ -256,6 +260,11 @@
                 })
             }
         }));
+
+        $('#sell_type').select2({
+            width: '100%',
+            placeholder: 'Sell Type'
+        });
 
     }
 
