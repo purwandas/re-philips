@@ -189,10 +189,16 @@
                 </a>
             </li>
             <li class="nav-item {{ Request::is('groupcompetitor') ? 'active open' : '' }}">
-            <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
-                <i class="fa fa-street-view"></i>
-                <span class="title">Group Competitor</span>
-            </a>
+                <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-street-view"></i>
+                    <span class="title">Group Competitor</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('achievement') ? 'active open' : '' }}">
+                <a href="{{ url('achievement') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-trophy"></i>
+                    <span class="title">Achievement</span>
+                </a>
             </li>
 
             @endif
