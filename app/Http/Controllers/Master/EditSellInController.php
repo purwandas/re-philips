@@ -9,6 +9,7 @@ use App\Filters\SellinFilters;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
 use App\SellIn;
 use App\SellInDetail;
 
@@ -33,6 +34,8 @@ class EditSellInController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function masterDataTable(Request $request){
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         $data = SellIn::
                     where('sell_ins.deleted_at', null)

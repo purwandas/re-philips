@@ -210,65 +210,59 @@
             </li>
 
             <li class="nav-item
-            {{ Request::is('sellinreport') ? 'active open' : '' }}
-            {{ Request::is('selloutreport') ? 'active open' : '' }}
-            {{ Request::is('retconsumentreport') ? 'active open' : '' }}
-            {{ Request::is('retdistributorreport') ? 'active open' : '' }}
-            {{ Request::is('freeproductreport') ? 'active open' : '' }}
-            {{ Request::is('tbatreport') ? 'active open' : '' }}
+            {{ Request::is('editsellin') ? 'active open' : '' }}
+            {{ Request::is('editsellout') ? 'active open' : '' }}
+            {{ Request::is('editretdistributor') ? 'active open' : '' }}
+            {{ Request::is('editretconsument') ? 'active open' : '' }}
+            {{ Request::is('editfreeproduct') ? 'active open' : '' }}
+            {{ Request::is('edittbat') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-edit"></i>
                     <span class="title">Update Sales</span>
                     <span class="arrow
-                    {{ Request::is('sellinreport') ? 'active open' : '' }}
-                    {{ Request::is('selloutreport') ? 'active open' : '' }}
-                    {{ Request::is('retconsumentreport') ? 'active open' : '' }}
-                    {{ Request::is('retdistributorreport') ? 'active open' : '' }}
-                    {{ Request::is('freeproductreport') ? 'active open' : '' }}
-                    {{ Request::is('tbatreport') ? 'active open' : '' }}
+                        {{ Request::is('editsellin') ? 'active open' : '' }}
+                        {{ Request::is('editsellout') ? 'active open' : '' }}
+                        {{ Request::is('editretdistributor') ? 'active open' : '' }}
+                        {{ Request::is('editretconsument') ? 'active open' : '' }}
+                        {{ Request::is('editfreeproduct') ? 'active open' : '' }}
+                        {{ Request::is('edittbat') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">
 
                     <li class="nav-item {{ Request::is('editsellin') ? 'active open' : '' }}">
                         <a href="{{ url('editsellin') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-edit"></i>
                             <span class="title">Sell In</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ Request::is('editsellout') ? 'active open' : '' }}">
                         <a href="{{ url('editsellout') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-edit"></i>
                             <span class="title">Sell Out</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ Request::is('editretdistributor') ? 'active open' : '' }}">
                         <a href="{{ url('editretdistributor') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-edit"></i>
                             <span class="title">Return Distributor</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ Request::is('editretconsument') ? 'active open' : '' }}">
                         <a href="{{ url('editretconsument') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-edit"></i>
                             <span class="title">Return Consument</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ Request::is('editfreeproduct') ? 'active open' : '' }}">
                         <a href="{{ url('editfreeproduct') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-edit"></i>
                             <span class="title">Free Product</span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ Request::is('edittbat') ? 'active open' : '' }}">
                         <a href="{{ url('edittbat') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-edit"></i>
                             <span class="title">TBAT</span>
                         </a>
                     </li>
