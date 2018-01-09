@@ -166,14 +166,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('fanspage/{id}', 'Master\FanspageController@update');
         Route::delete('fanspage/{id}', 'Master\FanspageController@destroy');
 
-        /** MessageToAdmin **/
-        // Route::resource('MessageToAdmin', 'Master\MessageToAdminController');
-        Route::get('messageToAdmin', 'MessageToAdminController@index');
-        Route::post('messageToAdmin', 'MessageToAdminController@store');
-        Route::get('messageToAdmin/show/{id}', 'MessageToAdminController@show');
-        Route::get('messageToAdmin/edit/{id}', 'MessageToAdminController@edit');
-        Route::patch('messageToAdmin/{id}', 'MessageToAdminController@update');
-        Route::delete('messageToAdmin/{id}', 'MessageToAdminController@destroy');
 
         /** Feedback Category **/
         // Route::resource('fanspage', 'Master\FanspageController');
@@ -271,12 +263,21 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
+    Route::get('achievement', 'Master\AchievementController@achievementIndex');
 
     
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
     Route::post('profile', 'ProfileController@update');
+
+    /** MessageToAdmin **/
+    Route::get('messageToAdmin', 'MessageToAdminController@index');
+    Route::post('messageToAdmin', 'MessageToAdminController@store');
+    Route::get('messageToAdmin/show/{id}', 'MessageToAdminController@show');
+    Route::get('messageToAdmin/edit/{id}', 'MessageToAdminController@edit');
+    Route::patch('messageToAdmin/{id}', 'MessageToAdminController@update');
+    Route::delete('messageToAdmin/{id}', 'MessageToAdminController@destroy');
         
 });
 

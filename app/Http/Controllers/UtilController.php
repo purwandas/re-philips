@@ -12,6 +12,7 @@ use App\Store;
 use App\AreaApp;
 use App\EmployeeStore;
 use App\AttendanceDetail;
+use App\Reports\HistoryEmployeeStore;
 use DB;
 use Activity;
 use Auth;
@@ -80,6 +81,40 @@ class UtilController extends Controller
         }
 
         return response()->json($store);
+    }
+
+    public function getHistoryStoreForEmployee($userId){        
+        // $empStore = EmployeeStore::where('employee_id', $employeeId);
+        $emStore = HistoryEmployeeStore::where('user_id', $userId)
+                    // ->join('stores as storeid', history_employee_stores.details, '=', 'stores.')
+                    ->orderBy('id', 'desc')->get();
+                    // ->select('history_employee_stores.*')
+        // pluck('details');
+        //         $result[0]['user_name']
+        $index = 0;
+        foreach ($emStore as $key => $value) {
+            $result[$index]['id'] = $value->id;
+            $result[$index]['user_id'] = $value->user_id;
+            $datem = date('F', strtotime($value->created_at));
+            $result[$index]['month'] = $datem;
+            $result[$index]['year'] = $value->year;
+            $result[$index]['details'] = $value->details;
+                $emStoreIds = explode(",", $value->details);
+            
+                $store = Store::where('stores.deleted_at', null)
+                            ->whereIn('stores.id', $emStoreIds)
+                            ->select('stores.*')->get();
+                    $idx = 0;
+                    foreach ($store as $keyStore => $valueStore) {
+                        $result[$index]['stores']['store_id'][$idx] = $valueStore->store_id;
+                        $result[$index]['stores']['store_name_1'][$idx] = $valueStore->store_name_1;
+                        $result[$index]['stores']['store_name_2'][$idx] = $valueStore->store_name_2;
+                        $idx ++;
+                    }
+            $index++;
+        }
+
+        return response()->json($result);
     }
 
     public function getStoreForSpvEmployee($userId){        

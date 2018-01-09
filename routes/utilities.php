@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/promoactivityreport', ['as'=> 'datatable.promoactivityreport','uses'=>'Master\ReportController@promoActivityData']);
     Route::post('datatable/posmactivityreport', ['as'=> 'datatable.posmactivityreport','uses'=>'Master\ReportController@posmActivityData']);
     Route::post('datatable/attendancereport', ['as'=> 'datatable.attendancereport','uses'=>'Master\ReportController@attendanceData']);
+    Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);
     
 
     
@@ -86,6 +87,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/district', ['as'=> 'data.district','uses'=>'Master\DistrictController@getDataWithFilters']);
     Route::post('data/employee', ['as'=> 'data.employee','uses'=>'UserController@getDataWithFilters']);
     Route::post('data/promoter', ['as'=> 'data.promoter','uses'=>'UserController@getDataPromoterWithFilters']);
+    Route::post('data/nonPromoter', ['as'=> 'data.nonPromoter','uses'=>'UserController@getDataNonPromoterWithFilters']);
+    Route::post('data/groupPromoter', ['as'=> 'data.groupPromoter','uses'=>'UserPromoterController@getDataGroupPromoterWithFilters']);
     Route::post('data/userpromoter', ['as'=> 'data.userpromoter','uses'=>'UserPromoterController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/product', ['as'=> 'data.product','uses'=>'Master\ProductController@getDataWithFilters']);
@@ -95,6 +98,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
     Route::post('data/feedbackCategory', ['as'=> 'data.feedbackCategory','uses'=>'Master\FeedbackCategoryController@getDataWithFilters']);
     Route::post('data/feedbackQuestion', ['as'=> 'data.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
+    Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
     Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
 
     /**
@@ -158,6 +162,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/user-online', ['uses'=>'UtilController@getUserOnline']);
     Route::get('util/get-store-id', ['uses'=>'UtilController@getStoreId']);
     Route::get('util/attendancedetail/{id}', ['uses'=>'UtilController@getAttendanceDetail']);
+    Route::get('util/historyempstore/{id}', ['uses'=>'UtilController@getHistoryStoreForEmployee']);
 
     /**
      * Export
@@ -176,6 +181,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
     Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
+    Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
     
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 

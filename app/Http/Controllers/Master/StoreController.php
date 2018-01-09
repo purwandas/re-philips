@@ -9,10 +9,13 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Filters\StoreFilters;
 use App\Traits\StringTrait;
+use Auth;
 use DB;
 use App\Store;
 use App\EmployeeStore;
 use App\User;
+use App\RsmRegion;
+use App\DmArea;
 
 class StoreController extends Controller
 {
@@ -76,12 +79,12 @@ class StoreController extends Controller
 
         return Datatables::of($data)
                 ->editColumn('spv_name', function ($item) {
-
-                    if($item->user_id == null){
-                        return "";
+                    if($item->user_id != null){
+                        $data = User::where('id', $item->user_id)
+                                    ->select('users.name as spv_name')->first();
+                        return $data->spv_name;
                     }
-
-                    return User::find($item->user_id)->first()->name;
+                    return "";
 
                 })
                 ->addColumn('action', function ($item) {
