@@ -37,23 +37,39 @@
                 <!-- MAIN CONTENT -->
 
                 <div class="row">
+                @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+                    <!-- <div class="table-toolbar">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="btn-group">
+                                    <a id="add-messageToAdmin" class="btn green" data-toggle="modal" href="#" disabled><i
+                                        class="fa fa-plus"></i> Create Message </a>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                @else
                     <div class="table-toolbar">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="btn-group">
-                                    <a id="add-messageToAdmin" class="btn green" data-toggle="modal" href="#messageToAdmin"><i
+                                    <a id="add-messageToAdmin" class="btn green" data-toggle="modal" href="#messageToAdmin" ><i
                                         class="fa fa-plus"></i> Create Message </a>
 
                                 </div>
                             </div>
                         </div>
                     </div>
+                @endif
+
+
 
                     <table class="table table-striped table-hover table-bordered" id="messageToAdminTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
-                                <th> user mail </th>  
+                                <th> Date </th>  
+                                <th> User Mail </th>  
                                 <th> Subject </th>                           
                                 <th> Body </th>
                                 <th> Read </th>
@@ -65,6 +81,7 @@
                 </div>
 
                 @include('partial.modal.messageToAdmin-modal')
+                @include('partial.modal.messageToAdminShow-modal')
 
                 <!-- END MAIN CONTENT -->
             </div>
@@ -85,6 +102,7 @@
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
+<script src="{{ asset('js/handler/messageToAdminNew-handler.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/handler/messageToAdmin-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
@@ -112,7 +130,8 @@
             
             "rowId": "id",
             "columns": [
-                {data: 'user', name: 'user', width: 200},
+                {data: 'created_at', name: 'created_at', width: 100},
+                {data: 'user', name: 'user', width: 100},
                 {data: 'subject', name: 'subject', width: 200},
                 {data: 'message', name: 'message', width: 400},
                 {
@@ -123,15 +142,16 @@
                         }
                         return data;
                     },
-                    className: "dt-body-center"
+                    className: "dt-body-center", width: 10
                 },
                 {data: 'action', name: 'action', searchable: false, sortable: false, width: 100},
             ],
             "columnDefs": [
-                {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [3,4]},
+                {"className": "dt-center", "targets": [1]},
+                {"className": "dt-center", "targets": [4,5]},
+
             ],
-            "order": [ [0, 'asc'] ],
+            "order": [ [0, 'desc'] ],
             "scroll": true,
 
 
@@ -140,7 +160,7 @@
                 $(row)
                     .attr('data-id',data.id)
                     .attr('data-toggle','modal')
-                    .attr('data-target','#messageToAdmin')
+                    .attr('data-target','#messageToAdminShow')
                     .attr('style','crusor:pointer')
                     .addClass('clickable-row');
 
@@ -224,7 +244,7 @@
 
         // Set action url form for add
         var postDataUrl = "{{ url('messageToAdmin') }}";
-        $("#form_messageToAdmin").attr("action", postDataUrl);
+        $("#form_MessageToAdmin").attr("action", postDataUrl);
 
         // Delete Patch Method if Exist
         if($('input[name=_method]').length){
@@ -273,14 +293,17 @@
         var id = $(this).data('id');
         var getDataUrl = "{{ url('messageToAdmin/show/') }}";
 
-
         $.get(getDataUrl + '/' + id, function (data) {
 
-                    $('#user').val(data.user);
-                    $('#subject').val(data.subject);
-                    $('#message').val(data.message); 
+                    $('#usershow').val(data.user);
+                    $('#subjectshow').val(data.subject);
+                    $('#messageshow').val(data.message); 
         })
 
+        // $('#messageToAdminTable').DataTable().search('').draw();
+        $('#messageToAdminTable').DataTable().ajax.reload();
+
+        $('#messageToAdminShow').modal('hide');
     });
 
 </script>

@@ -25,6 +25,42 @@
 
 <div class="row">
     <div class="col-lg-12 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+        <!-- BEGIN FILTER-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-map-o font-blue"></i>
+                        <span class="caption-subject font-blue bold uppercase">FILTER PRICE</span>
+                    </div>
+                </div>
+
+                <div class="caption padding-caption">
+                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
+                </div>
+                
+                <div class="row filter" style="margin-top: 10px;">
+                    <div class="col-md-4">
+                        <select id="filterGlobalChannel" class="select2select">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="btn-group">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                        <i class="fa fa-refresh"></i> Reset </a>
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                        <i class="fa fa-filter"></i> Filter </a>
+                </div>
+
+                <br><br>
+
+            </div>
+        <!-- END FILTER-->
+
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
         <div class="portlet light bordered">
             <div class="portlet-title">
@@ -92,6 +128,25 @@
      *
      *
      */
+
+        var filterId = ['#filterGlobalChannel'];
+        var url = 'datatable/price';
+        var order = [ [0, 'desc'] ];
+        var columnDefs = [
+                {"className": "dt-center", "targets": [0]},
+                {"className": "dt-center", "targets": [4]},
+            ];
+
+        var tableColumns = [
+                {data: 'id', name: 'id'},
+                {data: 'product_name', name: 'product_name'},
+                {data: 'globalchannel_name', name: 'globalchannel_name'},
+                {data: 'price', name: 'price'},
+                {data: 'action', name: 'action', searchable: false, sortable: false},            
+            ];
+        var paramFilter = ['priceTable', $('#priceTable'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'priceTable', $('#priceTable'), url, tableColumns, columnDefs, order];
+
     $(document).ready(function () {
 
         $.ajaxSetup({
@@ -101,6 +156,7 @@
         });
 
         // Set data for Data Table
+
         var table = $('#priceTable').dataTable({
             "processing": true,
             "serverSide": true,
@@ -123,7 +179,6 @@
             ],
             "order": [ [0, 'desc'] ],
         });
-
 
         // Delete data with sweet alert
         $('#priceTable').on('click', 'tr td button.deleteButton', function () {
@@ -260,6 +315,20 @@
                 })
             }
         }));
+
+
+        $('#filterGlobalChannel').select2(setOptions('{{ route("data.globalchannel") }}', 'Global Channel', function (params) {
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+        $('#filterGlobalChannel').on('select2:select', function () {
+            self.selected('byGChannel', $('#filterGlobalChannel').val());
+        });
 
         $('#sell_type').select2({
             width: '100%',

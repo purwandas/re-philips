@@ -156,12 +156,14 @@ class ExcelHelper
         });
     }
 
+
     public function mapForExportSalesman(Array $data)
     {
         $collection = collect($data);
 
         return $collection->map(function ($item) {
             return [
+
                 'WEEK' => @$item['week'],
                 'DISTRIBUTOR CODE' => @$item['distributor_code'],
                 'DISTRIBUTOR NAME' => @$item['distributor_name'],
@@ -189,4 +191,83 @@ class ExcelHelper
         });
     }
 
+
+    public function mapForExportAchievement(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'REGION'=> @$item['region'], 
+                'AREA'=> @$item['area'], 
+                'DISTRICT'=> @$item['district'], 
+                'NIK'=> @$item['nik'], 
+                'PROMOTER NAME'=> @$item['promoter_name'], 
+                'ACCOUNT TYPE'=> @$item['account_type'], 
+                'TITLE OF PROMOTER'=> @$item['title_of_promoter'], 
+                'CLASSIFICATION STORE'=> @$item['classification_store'], 
+                'ACCOUNT'=> @$item['account'], 
+                'STORE ID'=> @$item['store_id'], 
+                'STORE NAME 1'=> @$item['store_name_1'], 
+                'STORE NAME 2'=> @$item['store_name_2'], 
+                'SPV NAME'=> @$item['spv_name'], 
+                'TRAINER'=> @$item['trainer'], 
+                'SELL TYPE'=> @$item['sell_type'], 
+
+                'TARGET DAPC'=> @$item['target_dapc'], 
+                'ACTUAL DAPC'=> @$item['actual_dapc'], 
+                'TARGET DA'=> @$item['target_da'], 
+                'ACTUAL DA'=> @$item['actual_da'], 
+                'TARGET PC'=> @$item['target_pc'], 
+                'ACTUAL PC'=> @$item['actual_pc'], 
+                'TARGET MCC'=> @$item['target_mcc'], 
+                'ACTUAL MCC'=> @$item['actual_mcc'], 
+                'TARGET PF DA'=> @$item['target_pf_da'], 
+                'ACTUAL PF DA'=> @$item['actual_pf_da'], 
+                'TARGET PF PC'=> @$item['target_pf_pc'], 
+                'ACTUAL PF PC'=> @$item['actual_pf_pc'], 
+                'TARGET PF MCC'=> @$item['target_pf_mcc'], 
+                'ACTUAL PF MCC'=> @$item['actual_pf_mcc'], 
+
+                'TARGET DA W1'=> @$item['target_da_w1'], 
+                'ACTUAL DA W1'=> @$item['actual_da_w1'], 
+                'TARGET DA W2'=> @$item['target_da_w2'], 
+                'ACTUAL DA W2'=> @$item['actual_da_w2'], 
+                'TARGET DA W3'=> @$item['target_da_w3'], 
+                'ACTUAL DA W3'=> @$item['actual_da_w3'], 
+                'TARGET DA W4'=> @$item['target_da_w4'], 
+                'ACTUAL DA W4'=> @$item['actual_da_w4'], 
+                'TARGET DA W5'=> @$item['target_da_w5'], 
+                'ACTUAL DA W5'=> @$item['actual_da_w5'], 
+                'TARGET PC W1'=> @$item['target_pc_w1'], 
+                'ACTUAL PC W1'=> @$item['actual_pc_w1'], 
+                'TARGET PC W2'=> @$item['target_pc_w2'], 
+                'ACTUAL PC W2'=> @$item['actual_pc_w2'], 
+                'TARGET PC W3'=> @$item['target_pc_w3'], 
+                'ACTUAL PC W3'=> @$item['actual_pc_w3'], 
+                'TARGET PC W4'=> @$item['target_pc_w4'], 
+                'ACTUAL PC W4'=> @$item['actual_pc_w4'], 
+                'TARGET PC W5'=> @$item['target_pc_w5'], 
+                'ACTUAL PC W5'=> @$item['actual_pc_w5'], 
+                'TARGET MCC W1'=> @$item['target_mcc_w1'], 
+                'ACTUAL MCC W1'=> @$item['actual_mcc_w1'], 
+                'TARGET MCC W2'=> @$item['target_mcc_w2'], 
+                'ACTUAL MCC W2'=> @$item['actual_mcc_w2'], 
+                'TARGET MCC W3'=> @$item['target_mcc_w3'], 
+                'ACTUAL MCC W3'=> @$item['actual_mcc_w3'], 
+                'TARGET MCC W4'=> @$item['target_mcc_w4'], 
+                'ACTUAL MCC W4'=> @$item['actual_mcc_w4'], 
+                'TARGET MCC W5'=> @$item['target_mcc_w5'], 
+                'ACTUAL MCC W5'=> @$item['actual_mcc_w5'], 
+                        
+                'SUM TARGET STORE'=> @$item['sum_target_store'], 
+                'SUM ACTUAL STORE'=> @$item['sum_actual_store'], 
+                'SUM TARGET AREA'=> @$item['sum_target_area'], 
+                'SUM ACTUAL AREA'=> @$item['sum_actual_area'], 
+                'SUM TARGET REGION'=> @$item['sum_target_region'], 
+                'SUM ACTUAL REGION'=> @$item['sum_actual_region'], 
+
+            ];
+        });
+    }
 }

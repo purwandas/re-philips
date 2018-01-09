@@ -320,13 +320,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('posmactivityreport', 'Master\ReportController@posmActivityIndex');
     Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
+    Route::get('achievement', 'Master\AchievementController@achievementIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
     Route::post('profile', 'ProfileController@update');
 
     /** MessageToAdmin **/
-    // Route::resource('MessageToAdmin', 'Master\MessageToAdminController');
     Route::get('messageToAdmin', 'MessageToAdminController@index');
     Route::post('messageToAdmin', 'MessageToAdminController@store');
     Route::get('messageToAdmin/show/{id}', 'MessageToAdminController@show');

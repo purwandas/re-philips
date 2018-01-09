@@ -37,14 +37,22 @@ class PriceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $data = Price::where('prices.deleted_at', null)
         			->join('products', 'prices.product_id', '=', 'products.id')
                     ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
                     ->select('prices.*', 'products.name as product_name', 'global_channels.name as globalchannel_name')->get();
 
-        return $this->makeTable($data);
+        
+        $filter = $data;
+
+        /* If filter */
+            if($request['byGChannel']){
+                $filter = $data->where('globalchannel_id', $request['byGChannel']);
+            }
+
+        return $this->makeTable($filter);
     }
 
     // Data for select2 with Filters

@@ -16,11 +16,15 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Traits\AttendanceTrait;
+use Illuminate\Support\Collection;
 use Auth;
 use App\Filters\UserFilters;
 use File;
 use App\NewsRead;
 use App\ProductKnowledgeRead;
+use App\Reports\HistoryEmployeeStore;
+use Carbon\Carbon;
+use DB;
 
 class UserPromoterController extends Controller
 {
@@ -127,7 +131,20 @@ class UserPromoterController extends Controller
                     return;
 
                 })
-                ->rawColumns(['store', 'action'])
+                ->addColumn('history', function ($item) {
+
+
+                    $countStore = $item->historyEmployeeStores()->count();
+
+                    if($countStore > 0){
+                        return
+                        "<a class='open-history-employee-store-modal btn btn-primary' data-target='#history-employee-store-modal' data-toggle='modal' data-url='util/historyempstore' data-title='List History' data-promoter-name='".$item->name."' data-id='".$item->id."'> See History </a>";
+                    }
+
+                    return;
+
+                })
+                ->rawColumns(['history', 'store', 'action'])
                 ->make(true);
     }
 
@@ -142,6 +159,13 @@ class UserPromoterController extends Controller
 
         return $data;
     }
+    public function getDataGroupPromoterWithFilters(UserFilters $filters){ 
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        $data = User::filter($filters)->where('role',$roles)->get();
+
+        return $data;
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -250,6 +274,27 @@ class UserPromoterController extends Controller
 
         if(in_array($user->role, $promoterArray)){
             $this->generateAttendace($user->id);
+        }
+        
+        if($request['store_id']){
+            $newEmStore = $request->store_id;
+            HistoryEmployeeStore::create([
+                            'user_id' => $userId->id,
+                            'month' => Carbon::now()->format('m'),
+                            'year' => Carbon::now()->format('Y'),
+                            'details' => $newEmStore,
+                    ]);
+        }
+        /* Employee Multiple Store */
+        if($request['store_ids']){
+            $newEmStore = $request->store_ids;
+            $newEmStore2 = implode(",",$newEmStore);
+            HistoryEmployeeStore::create([
+                            'user_id' => $userId->id,
+                            'month' => Carbon::now()->format('m'),
+                            'year' => Carbon::now()->format('Y'),
+                            'details' => $newEmStore2,
+                    ]);
         }
         
         return response()->json(['url' => url('userpromoter')]);
@@ -469,6 +514,77 @@ class UserPromoterController extends Controller
 
             $this->upload($request->photo_file, $imageFolder, $imageName);
         }
+
+        $emStore = HistoryEmployeeStore::where('user_id', $user->id)->orderBy('id', 'desc')->first();
+        // $emStore2 = $emStore->details;
+        $emStore2='';
+            if (isset($emStore->details)) {
+                $emStore2 = $emStore->details;
+            }
+        // $newEmStore = $request 'store_id';
+        // $newEmStore2 = implode(",",$newEmStore);
+        // echo response()->json($user);
+        // echo response()->json($emStore2);
+        // echo response()->json($newEmStore);
+
+        // foreach ($emStore as $key => $value) {
+        //     foreach ($newEmStore as $key2 => $value2) {
+        //         if ($value == $value2) {
+        //             $stay[] = $value;
+        //             $c = deleteElement($value2,$c);
+        //             $d = deleteElement($value2,$d);
+        //         }
+        //     }
+        // }
+        // if (isset($stay)) {
+        
+            if($request['store_id']){
+                $newEmStore = $request->store_id;
+                if ($newEmStore != $emStore2) {
+                HistoryEmployeeStore::create([
+                                'user_id' => $user->id,
+                                'month' => Carbon::now()->format('m'),
+                                'year' => Carbon::now()->format('Y'),
+                                'details' => $newEmStore,
+                        ]);
+                }
+            }
+            /* Employee Multiple Store */
+            if($request['store_ids']){
+                $newEmStore = $request->store_ids;
+                $newEmStore2 = implode(",",$newEmStore);
+                if ($newEmStore2 != $emStore2) {
+                HistoryEmployeeStore::create([
+                                'user_id' => $user->id,
+                                'month' => Carbon::now()->format('m'),
+                                'year' => Carbon::now()->format('Y'),
+                                'details' => $newEmStore2,
+                        ]);
+                }
+            }
+        // }
+
+
+        // if (isset($stay)) {
+        //     foreach ($c as $key => $value) {
+        //             $headerDetails->push($value);
+        //     }
+        //     foreach ($stay as $key => $value) {
+        //             $headerDetails->push($value);
+        //     }
+        //     foreach ($d as $key => $value) {
+        //             $headerDetails->push($value);
+        //     }
+        // }
+
+        // function deleteElement( $item, $array ) {
+        //     $index = array_search($item, $array);
+        //     if ( $index !== false ) {
+        //         unset( $array[$index] );
+        // }
+        //     return $array;
+        // }
+        
 
         return response()->json(
             [
