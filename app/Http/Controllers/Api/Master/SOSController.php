@@ -86,7 +86,8 @@ class SOSController extends Controller
                                 /* Price */
                                 $realPrice = 0;
                                 $price = Price::where('product_id', $product->id)
-                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')->first();
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -233,7 +234,8 @@ class SOSController extends Controller
                             /* Price */
                             $realPrice = 0;
                             $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)->first();
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')->first();
 
                             if($price){
                                 $realPrice = $price->price;

@@ -12,6 +12,7 @@ use Auth;
 use App\Store;
 use App\DmArea;
 use App\RsmRegion;
+use App\Reports\SalesmanSummaryTargetActual;
 
 trait AchievementTrait {
 
@@ -49,7 +50,7 @@ trait AchievementTrait {
                     'sell_in_target' => $totalTargetSellIn,
                     'sell_in_actual' => $totalActualSellIn,
                     'sell_in_at' => ($totalTargetSellIn == 0) ? 0 : ($totalActualSellIn/$totalTargetSellIn) * 100,
-                    'sell_in_gap' => $totalTargetSellIn - $totalActualSellIn,
+                    'sell_in_gap' => (($totalTargetSellIn - $totalActualSellIn) < 0) ? 0 : ($totalTargetSellIn - $totalActualSellIn),
                     'sell_out_target' => $totalTargetSellOut,
                     'sell_out_actual' => $totalActualSellOut,
                     'sell_out_at' => ($totalTargetSellOut == 0) ? 0 : ($totalActualSellOut/$totalTargetSellOut) * 100,
@@ -95,7 +96,7 @@ trait AchievementTrait {
                     'sell_in_target' => $totalTargetSellIn,
                     'sell_in_actual' => $totalActualSellIn,
                     'sell_in_at' => ($totalTargetSellIn == 0) ? 0 : ($totalActualSellIn/$totalTargetSellIn) * 100,
-                    'sell_in_gap' => $totalTargetSellIn - $totalActualSellIn,
+                    'sell_in_gap' => (($totalTargetSellIn - $totalActualSellIn) < 0) ? 0 : ($totalTargetSellIn - $totalActualSellIn),
                     'sell_out_target' => $totalTargetSellOut,
                     'sell_out_actual' => $totalActualSellOut,
                     'sell_out_at' => ($totalTargetSellOut == 0) ? 0 : ($totalActualSellOut/$totalTargetSellOut) * 100,
@@ -149,7 +150,7 @@ trait AchievementTrait {
                     'sell_in_target' => $totalTargetSellIn,
                     'sell_in_actual' => $totalActualSellIn,
                     'sell_in_at' => ($totalTargetSellIn == 0) ? 0 : ($totalActualSellIn/$totalTargetSellIn) * 100,
-                    'sell_in_gap' => $totalTargetSellIn - $totalActualSellIn,
+                    'sell_in_gap' => (($totalTargetSellIn - $totalActualSellIn) < 0) ? 0 : ($totalTargetSellIn - $totalActualSellIn),
                     'sell_out_target' => $totalTargetSellOut,
                     'sell_out_actual' => $totalActualSellOut,
                     'sell_out_at' => ($totalTargetSellOut == 0) ? 0 : ($totalActualSellOut/$totalTargetSellOut) * 100,
@@ -195,12 +196,41 @@ trait AchievementTrait {
                     'sell_in_target' => $totalTargetSellIn,
                     'sell_in_actual' => $totalActualSellIn,
                     'sell_in_at' => ($totalTargetSellIn == 0) ? 0 : ($totalActualSellIn/$totalTargetSellIn) * 100,
-                    'sell_in_gap' => $totalTargetSellIn - $totalActualSellIn,
+                    'sell_in_gap' => (($totalTargetSellIn - $totalActualSellIn) < 0) ? 0 : ($totalTargetSellIn - $totalActualSellIn),
                     'sell_out_target' => $totalTargetSellOut,
                     'sell_out_actual' => $totalActualSellOut,
                     'sell_out_at' => ($totalTargetSellOut == 0) ? 0 : ($totalActualSellOut/$totalTargetSellOut) * 100,
                     'sell_out_gap' => $totalTargetSellOut - $totalActualSellOut,
                 ]);
+
+    }
+
+    public function dataNationalSalesman(){
+
+        $ta = SalesmanSummaryTargetActual::first();
+
+        return response()->json([
+            'sum_national_target_call' => (@$ta->sum_national_target_call) ? $ta->sum_national_target_call : 0,
+            'sum_national_actual_call' => (@$ta->sum_national_actual_call) ? $ta->sum_national_actual_call : 0,
+            'sum_national_at_call' => (@$ta->sum_national_actual_call) ? ($ta->sum_national_actual_call / $ta->sum_national_target_call) * 100 : 0,
+            'sum_national_gap_call' => (@$ta->sum_national_actual_call) ? (($ta->sum_national_target_call - $ta->sum_national_actual_call) < 0) ? 0 : ($ta->sum_national_target_call - $ta->sum_national_actual_call) : 0,
+            'sum_national_target_active_outlet' => (@$ta->sum_national_target_active_outlet) ? $ta->sum_national_target_active_outlet : 0,
+            'sum_national_actual_active_outlet' => (@$ta->sum_national_actual_active_outlet) ? $ta->sum_national_actual_active_outlet : 0,
+            'sum_national_at_active_outlet' => (@$ta->sum_national_actual_active_outlet) ? ($ta->sum_national_actual_active_outlet / $ta->sum_national_target_active_outlet) * 100 : 0,
+            'sum_national_gap_active_outlet' => (@$ta->sum_national_actual_active_outlet) ? (($ta->sum_national_target_active_outlet - $ta->sum_national_actual_active_outlet) < 0) ? 0 : ($ta->sum_national_target_active_outlet - $ta->sum_national_actual_active_outlet) : 0,
+            'sum_national_target_effective_call' => (@$ta->sum_national_target_effective_call) ? $ta->sum_national_target_effective_call : 0,
+            'sum_national_actual_effective_call' => (@$ta->sum_national_actual_effective_call) ? $ta->sum_national_actual_effective_call : 0,
+            'sum_national_at_effective_call' => (@$ta->sum_national_actual_effective_call) ? ($ta->sum_national_actual_effective_call / $ta->sum_national_target_effective_call) * 100 : 0,
+            'sum_national_gap_effective_call' => (@$ta->sum_national_actual_effective_call) ? (($ta->sum_national_target_effective_call - $ta->sum_national_actual_effective_call) < 0) ? 0 : ($ta->sum_national_target_effective_call - $ta->sum_national_actual_effective_call) : 0,
+            'sum_national_target_sales' => (@$ta->sum_national_target_sales) ? $ta->sum_national_target_sales : 0,
+            'sum_national_actual_sales' => (@$ta->sum_national_actual_sales) ? $ta->sum_national_actual_sales : 0,
+            'sum_national_at_sales' => (@$ta->sum_national_actual_sales) ? ($ta->sum_national_actual_sales / $ta->sum_national_target_sales) * 100 : 0,
+            'sum_national_gap_sales' => (@$ta->sum_national_actual_sales) ? (($ta->sum_national_target_sales - $ta->sum_national_actual_sales) < 0) ? 0 : ($ta->sum_national_target_sales - $ta->sum_national_actual_sales) : 0,
+            'sum_national_target_sales_pf' => (@$ta->sum_national_target_sales_pf) ? $ta->sum_national_target_sales_pf : 0,
+            'sum_national_actual_sales_pf' => (@$ta->sum_national_actual_sales_pf) ? $ta->sum_national_actual_sales_pf : 0,
+            'sum_national_at_sales_pf' => (@$ta->sum_national_actual_sales_pf) ? ($ta->sum_national_actual_sales_pf / $ta->sum_national_target_sales_pf) * 100 : 0,
+            'sum_national_gap_sales_pf' => (@$ta->sum_national_actual_sales_pf) ? (($ta->sum_national_target_sales_pf - $ta->sum_national_actual_sales_pf) < 0) ? 0 : ($ta->sum_national_target_sales_pf - $ta->sum_national_actual_sales_pf) : 0,
+        ]);
 
     }
 
