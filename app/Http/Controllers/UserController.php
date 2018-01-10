@@ -108,7 +108,42 @@ class UserController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(UserFilters $filters){ 
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;       
+
         $data = User::filter($filters)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('rsm_regions.user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('dm_areas.user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('stores.user_id', $userId)
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $store);
+        }
 
         return $data;
     }

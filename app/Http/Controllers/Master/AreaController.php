@@ -11,6 +11,10 @@ use App\Traits\StringTrait;
 use DB;
 use App\Area;
 use App\DmArea;
+use Auth;
+use App\Store;
+use App\Region;
+use App\RsmRegion;
 
 class AreaController extends Controller
 {
@@ -42,8 +46,34 @@ class AreaController extends Controller
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(AreaFilters $filters){        
+    public function getDataWithFilters(AreaFilters $filters){     
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;       
+
         $data = Area::filter($filters)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->pluck('areas.id');
+            $data = $data->whereIn('id', $region);
+        // return response()->json($data);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->pluck('dm_areas.area_id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->pluck('areas.id');
+            $data = $data->whereIn('id', $store);
+        }
 
         return $data;
     }

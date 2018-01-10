@@ -10,6 +10,7 @@ use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
 use Auth;
+use App\Store;
 use Carbon\Carbon;
 use App\SellIn;
 use App\SellInDetail;
@@ -38,6 +39,8 @@ class EditSellInController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = SellIn::
                     where('sell_ins.deleted_at', null)
                     ->where('sell_in_details.deleted_at', null)
@@ -50,9 +53,16 @@ class EditSellInController extends Controller
 
                     ->join('users', 'sell_ins.user_id', '=', 'users.id')
                     ->join('products', 'sell_in_details.product_id', '=', 'products.id')
+
                     ->select('sell_ins.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.id as storeId', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product',
                      'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
                     ->get();
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
 
            $filter = $data;
 

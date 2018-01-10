@@ -10,6 +10,7 @@ use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
 use Auth;
+use App\Store;
 use Carbon\Carbon;
 use App\RetDistributor;
 use App\RetDistributorDetail;
@@ -38,6 +39,8 @@ class EditRetDistributorController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = RetDistributor::
                     where('ret_distributors.deleted_at', null)
                     ->where('ret_distributor_details.deleted_at', null)
@@ -50,10 +53,16 @@ class EditRetDistributorController extends Controller
 
                     ->join('users', 'ret_distributors.user_id', '=', 'users.id')
                     ->join('products', 'ret_distributor_details.product_id', '=', 'products.id')
+
                     ->select('ret_distributors.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_distributor_details.id as id', 'ret_distributor_details.quantity as quantity', 'products.name as product',
                         'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
                     ->get();
-                    
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+
             $filter = $data;
 
             /* If filter */

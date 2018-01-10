@@ -10,6 +10,7 @@ use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
 use Auth;
+use App\Store;
 use Carbon\Carbon;
 use App\SellOut;
 use App\SellOutDetail;
@@ -38,6 +39,8 @@ class EditSellOutController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = SellOut::
                     where('sell_outs.deleted_at', null)
                     ->where('sell_out_details.deleted_at', null)
@@ -53,6 +56,13 @@ class EditSellOutController extends Controller
                     ->select('sell_outs.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_out_details.id as id', 'sell_out_details.quantity as quantity', 'products.name as product',
                          'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
                     ->get();
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
+
         $filter = $data;
 
             /* If filter */
@@ -94,7 +104,6 @@ class EditSellOutController extends Controller
             }
 
         return $this->makeTable($filter);
-
     }
 
     // Data for select2 with Filters

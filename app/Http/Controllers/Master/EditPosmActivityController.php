@@ -8,6 +8,8 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\PosmActivity;
 use App\PosmActivityDetail;
 use App\Filters\PosmActivityFilters;
@@ -34,6 +36,8 @@ class EditPosmActivityController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = PosmActivity::
                     where('posm_activities.deleted_at', null)
                     ->where('posm_activity_details.deleted_at', null)
@@ -43,6 +47,11 @@ class EditPosmActivityController extends Controller
                     ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
                     ->select('posm_activities.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'posm_activity_details.id as id', 'posm_activity_details.quantity as quantity', 'posms.name as posm')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 
