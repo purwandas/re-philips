@@ -153,7 +153,7 @@
                             {data: 'storeid', name: 'storeid'},
                             {data: 'week', name: 'week'},
                             {data: 'posm_name', name: 'posm_name'},
-                            {data: 'group_product_name', name: 'group_product_name'},
+                            {data: 'group_product', name: 'group_product'},
                             {data: 'quantity', name: 'quantity'},
                             {data: 'photo', name: 'photo'},
                             

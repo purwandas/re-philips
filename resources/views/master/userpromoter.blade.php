@@ -137,6 +137,7 @@
                             <th> Name </th>
                         	<th> Role </th>
                             <th> Status </th>
+                            <th> Supervisor </th>
                             <th> Store </th>
                             <th> History </th>
                             <th> Options </th>                             
@@ -186,6 +187,7 @@
                 {data: 'name', name: 'name'},
                 {data: 'role', name: 'role'},
                 {data: 'status', name: 'status'},
+                {data: 'supervisor', name: 'supervisor'},
                 {data: 'store', name: 'store'},
                 {data: 'history', name: 'history'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                

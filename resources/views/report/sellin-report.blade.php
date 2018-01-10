@@ -75,7 +75,7 @@
 
                 <br><br>
 
-                </div>
+            </div>
 
                 <div class="portlet light bordered display-hide" id="dataContent">
                     <!-- MAIN CONTENT -->

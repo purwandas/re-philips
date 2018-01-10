@@ -11,6 +11,7 @@ use App\Traits\SalesTrait;
 use DB;
 use Auth;
 use App\Store;
+use Carbon\Carbon;
 use App\RetDistributor;
 use App\RetDistributorDetail;
 
@@ -34,7 +35,9 @@ class EditRetDistributorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
@@ -43,16 +46,64 @@ class EditRetDistributorController extends Controller
                     ->where('ret_distributor_details.deleted_at', null)
         			->join('ret_distributor_details', 'ret_distributors.id', '=', 'ret_distributor_details.retdistributor_id')
                     ->join('stores', 'ret_distributors.store_id', '=', 'stores.id')
+                    
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+
                     ->join('users', 'ret_distributors.user_id', '=', 'users.id')
                     ->join('products', 'ret_distributor_details.product_id', '=', 'products.id')
-                    ->select('ret_distributors.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_distributor_details.id as id', 'ret_distributor_details.quantity as quantity', 'products.name as product')->get();
+
+                    ->select('ret_distributors.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_distributor_details.id as id', 'ret_distributor_details.quantity as quantity', 'products.name as product',
+                        'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
+                    ->get();
 
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
                 $store = Store::where('user_id', $userId)
                             ->pluck('stores.store_id');
                 $data = $data->whereIn('store_id', $store);
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             }
-        return $this->makeTable($data);
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $filter = $filter->where('storeId', $request['byStore']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $filter->where('region_id', $value->region_id);
+                }
+            }
+
+        return $this->makeTable($filter);
     }
 
     // Data for select2 with Filters
