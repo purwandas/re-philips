@@ -34,7 +34,7 @@ class DisplayShareController extends Controller
 
             if ($displayShareHeader) { // If header exist (update and/or create detail)
 
-                // try {
+                try {
                     DB::transaction(function () use ($content, $displayShareHeader, $user) {
 
                         foreach ($content['data'] as $data) {
@@ -76,7 +76,7 @@ class DisplayShareController extends Controller
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $displayShareHeader->store_id)->first();
-                                $spvName = ($store->user->name != '') ? $store->user->name : '';
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                                 /* Category */
                                 $category = Category::where('id', $data['category_id'])->first();
@@ -161,15 +161,15 @@ class DisplayShareController extends Controller
                         }
 
                     });
-                // } catch (\Exception $e) {
-                //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                // }
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
 
                 return response()->json(['status' => true, 'id_transaksi' => $displayShareHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-                // try {
+                try {
                     DB::transaction(function () use ($content, $user) {
 
                         // HEADER
@@ -196,7 +196,7 @@ class DisplayShareController extends Controller
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
-                            $spvName = ($store->user->name != '') ? $store->user->name : '';
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                             /* Category */
                             $category = Category::where('id', $detail->category_id)->first();
@@ -277,9 +277,9 @@ class DisplayShareController extends Controller
                         }
 
                     });
-                // } catch (\Exception $e) {
-                //     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                // }
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                }
 
                 // Check sell in header after insert
                 $displayShareHeaderAfter = DisplayShare::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();

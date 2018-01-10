@@ -39,8 +39,6 @@ class EditSellOutController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
 
-        $userRole = Auth::user()->role;
-        $userId = Auth::user()->id;
         $data = SellOut::
                     where('sell_outs.deleted_at', null)
                     ->where('sell_out_details.deleted_at', null)
@@ -63,7 +61,7 @@ class EditSellOutController extends Controller
                 $data = $data->whereIn('store_id', $store);
             }
 
-        $filter = $data;
+            $filter = $data;
 
             /* If filter */
             if($request['searchMonth']){

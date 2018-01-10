@@ -242,7 +242,6 @@
 
         initSelect2();
         initDateTimePicker();
-        initSelect2Account();
 
     });
 
@@ -271,30 +270,9 @@
 
                     $('#quantity').val(data.quantity);
 
-                    // setSelect2IfPatchModal($("#globalchannel"), data.globalchannel_id, data.global_channel.name);
-
         })
 
     });
-
-    function initSelect2Account(){
-
-        /*
-         * Select 2 init
-         *
-         */
-
-         $('#globalchannel').select2(setOptions('{{ route("data.globalchannel") }}', 'Global Channel', function (params) {
-            return filterData('name', params.term);
-        }, function (data, params) {
-            return {
-                results: $.map(data, function (obj) {
-                    return {id: obj.id, text: obj.name}
-                })
-            }
-        }));
-
-    }
 
     function initSelect2(){
 
