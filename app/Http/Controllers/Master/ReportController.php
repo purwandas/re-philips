@@ -183,25 +183,24 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySellIn::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySellIn::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySellIn::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySellIn::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySellIn::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySellIn::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySellIn::all();
@@ -239,13 +238,6 @@ class ReportController extends Controller
 
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
-            }
-
-            if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $data->where('region_id', $value->region_id);
-                }
             }
 
             return Datatables::of($filter->all())
@@ -347,24 +339,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
 
@@ -392,24 +381,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySellOut::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySellOut::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySellOut::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySellOut::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySellOut::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySellOut::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySellOut::all();
@@ -548,24 +534,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
             ->make(true);
@@ -590,24 +573,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryRetConsument::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryRetConsument::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryRetConsument::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryRetConsument::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryRetConsument::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryRetConsument::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryRetConsument::all();
@@ -744,24 +724,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             } 
             return Datatables::of($filter->all())
             ->make(true);
@@ -783,23 +760,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryRetDistributor::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryRetDistributor::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryRetDistributor::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryRetDistributor::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryRetDistributor::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryRetDistributor::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryRetDistributor::all();
@@ -933,26 +910,23 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
-        
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -977,24 +951,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryTbat::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryTbat::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryTbat::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryTbat::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryTbat::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryTbat::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryTbat::all();
@@ -1145,24 +1116,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1184,23 +1152,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryFreeProduct::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryFreeProduct::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryFreeProduct::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryFreeProduct::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryFreeProduct::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryFreeProduct::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryFreeProduct::all();
@@ -1336,24 +1304,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1376,23 +1341,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySoh::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySoh::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySoh::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySoh::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySoh::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySoh::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySoh::all();
@@ -1529,24 +1494,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
             ->make(true);
@@ -1567,23 +1529,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySos::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySos::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySos::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySos::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySos::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySos::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySos::all();
@@ -1700,24 +1662,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1739,27 +1698,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-
-
+ 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryDisplayShare::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryDisplayShare::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryDisplayShare::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryDisplayShare::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryDisplayShare::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryDisplayShare::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryDisplayShare::all();
@@ -1892,24 +1847,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1978,24 +1930,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2085,24 +2034,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2193,24 +2139,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2303,24 +2246,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2406,26 +2346,23 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
-            
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())

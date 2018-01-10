@@ -9,6 +9,11 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use DB;
 use App\District;
+use App\DmArea;
+use Auth;
+use App\Store;
+use App\Region;
+use App\RsmRegion;
 
 class DistrictController extends Controller
 {
@@ -42,7 +47,36 @@ class DistrictController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(DistrictFilters $filters){
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;       
+
         $data = District::filter($filters)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->pluck('districts.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->pluck('districts.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->pluck('districts.id');
+            $data = $data->whereIn('id', $store);
+        }
 
         return $data;
     }

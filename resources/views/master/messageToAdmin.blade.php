@@ -73,7 +73,7 @@
                                 <th> Subject </th>                           
                                 <th> Body </th>
                                 <th> Read </th>
-                                <th> Options </th>                        
+                                <!-- <th> Options </th>                         -->
                             </tr>
                         </thead>
                     </table>                 
@@ -144,11 +144,11 @@
                     },
                     className: "dt-body-center", width: 10
                 },
-                {data: 'action', name: 'action', searchable: false, sortable: false, width: 100},
+                // {data: 'action', name: 'action', searchable: false, sortable: false, width: 100},
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [1]},
-                {"className": "dt-center", "targets": [4,5]},
+                {"className": "dt-center", "targets": [4]},
 
             ],
             "order": [ [0, 'desc'] ],
@@ -181,52 +181,52 @@
 
  
         // Delete data with sweet alert
-        $('#messageToAdminTable').on('click', 'tr td button.deleteButton', function () {
-            var id = $(this).val();
+        // $('#messageToAdminTable').on('click', 'tr td button.deleteButton', function () {
+        //     var id = $(this).val();
 
                 // if(fanspageRelation(id)){
                 //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                 //     return;
                 // }
 
-                swal({
-                    title: "Are you sure?",
-                    text: "You will not be able to recover data!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete it",
-                    cancelButtonText: "No, cancel",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        })
+        //         swal({
+        //             title: "Are you sure?",
+        //             text: "You will not be able to recover data!",
+        //             type: "warning",
+        //             showCancelButton: true,
+        //             confirmButtonClass: "btn-danger",
+        //             confirmButtonText: "Yes, delete it",
+        //             cancelButtonText: "No, cancel",
+        //             closeOnConfirm: false,
+        //             closeOnCancel: false
+        //         },
+        //         function (isConfirm) {
+        //             if (isConfirm) {
+        //                 $.ajaxSetup({
+        //                     headers: {
+        //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                     }
+        //                 })
 
 
-                        $.ajax({
+        //                 $.ajax({
 
-                            type: "DELETE",
-                            url:  'messageToAdmin/' + id,
-                            success: function (data) {
-                                $("#"+id).remove();
-                            },
-                            error: function (data) {
-                                console.log('Error:', data);
-                            }
-                        });
+        //                     type: "DELETE",
+        //                     url:  'messageToAdmin/' + id,
+        //                     success: function (data) {
+        //                         $("#"+id).remove();
+        //                     },
+        //                     error: function (data) {
+        //                         console.log('Error:', data);
+        //                     }
+        //                 });
 
-                        swal("Deleted!", "Data has been deleted.", "success");
-                    } else {
-                        swal("Cancelled", "Data is safe ", "success");
-                    }
-                });
-        });
+        //                 swal("Deleted!", "Data has been deleted.", "success");
+        //             } else {
+        //                 swal("Cancelled", "Data is safe ", "success");
+        //             }
+        //         });
+        // });
 
     });
 

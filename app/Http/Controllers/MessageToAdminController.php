@@ -75,13 +75,13 @@ class MessageToAdminController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
-                ->addColumn('action', function ($item) {
+                // ->addColumn('action', function ($item) {
 
-                   return
+                //    return
                     // "<a href='#messageToAdmin' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-messageToAdmin'><i class='fa fa-pencil'></i></a>
-                    "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                //     "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
-                })
+                // })
                 ->rawColumns(['action'])
                 ->make(true);
 

@@ -8,6 +8,8 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\FreeProduct;
 use App\FreeProductDetail;
 use App\Filters\FreeProductFilters;
@@ -34,6 +36,8 @@ class EditFreeProductController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = FreeProduct::
                     where('free_products.deleted_at', null)
                     ->where('free_product_details.deleted_at', null)
@@ -43,6 +47,11 @@ class EditFreeProductController extends Controller
                     ->join('products', 'free_product_details.product_id', '=', 'products.id')
                     ->select('free_products.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'free_product_details.id as id', 'free_product_details.quantity as quantity', 'products.name as product')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 
