@@ -9,6 +9,8 @@ use App\Filters\RetDistributorFilters;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\RetDistributor;
 use App\RetDistributorDetail;
 
@@ -34,6 +36,8 @@ class EditRetDistributorController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = RetDistributor::
                     where('ret_distributors.deleted_at', null)
                     ->where('ret_distributor_details.deleted_at', null)
@@ -43,6 +47,11 @@ class EditRetDistributorController extends Controller
                     ->join('products', 'ret_distributor_details.product_id', '=', 'products.id')
                     ->select('ret_distributors.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_distributor_details.id as id', 'ret_distributor_details.quantity as quantity', 'products.name as product')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 

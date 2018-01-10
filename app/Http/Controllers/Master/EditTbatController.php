@@ -8,6 +8,8 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\Tbat;
 use App\TbatDetail;
 use App\Filters\TbatFilters;
@@ -34,6 +36,8 @@ class EditTbatController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = Tbat::
                     where('tbats.deleted_at', null)
                     ->where('tbat_details.deleted_at', null)
@@ -44,6 +48,11 @@ class EditTbatController extends Controller
                     ->join('products', 'tbat_details.product_id', '=', 'products.id')
                     ->select('tbats.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'storesD.store_id as storeD_id', 'storesD.store_name_1 as storeD_name_1', 'storesD.store_name_2 as storeD_name_2', 'storesD.dedicate as dedicateD', 'tbat_details.id as id', 'tbat_details.quantity as quantity', 'products.name as product')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 

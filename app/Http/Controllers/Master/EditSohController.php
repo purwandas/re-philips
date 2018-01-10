@@ -8,6 +8,8 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\Soh;
 use App\SohDetail;
 use App\Filters\SohFilters;
@@ -34,6 +36,8 @@ class EditSohController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = Soh::
                     where('sohs.deleted_at', null)
                     ->where('soh_details.deleted_at', null)
@@ -43,6 +47,11 @@ class EditSohController extends Controller
                     ->join('products', 'soh_details.product_id', '=', 'products.id')
                     ->select('sohs.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'soh_details.id as id', 'soh_details.quantity as quantity', 'products.name as product')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 

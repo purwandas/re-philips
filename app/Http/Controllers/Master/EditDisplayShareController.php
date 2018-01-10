@@ -8,6 +8,8 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use Store;
 use App\DisplayShare;
 use App\DisplayShareDetail;
 use App\Filters\DisplayShareFilters;
@@ -34,6 +36,8 @@ class EditDisplayShareController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = DisplayShare::
                     where('display_shares.deleted_at', null)
                     ->where('display_share_details.deleted_at', null)
@@ -42,6 +46,14 @@ class EditDisplayShareController extends Controller
                     ->join('users', 'display_shares.user_id', '=', 'users.id')
                     ->join('categories', 'display_share_details.category_id', '=', 'categories.id')
                     ->select('display_shares.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'display_share_details.id as id', 'display_share_details.philips as philips', 'display_share_details.all as all', 'categories.name as category')->get();
+
+            
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+                }
+            }
 
         return $this->makeTable($data);
     }

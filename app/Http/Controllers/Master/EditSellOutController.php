@@ -9,6 +9,8 @@ use App\Filters\SellOutFilters;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\SellOut;
 use App\SellOutDetail;
 
@@ -34,6 +36,8 @@ class EditSellOutController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = SellOut::
                     where('sell_outs.deleted_at', null)
                     ->where('sell_out_details.deleted_at', null)
@@ -43,6 +47,11 @@ class EditSellOutController extends Controller
                     ->join('products', 'sell_out_details.product_id', '=', 'products.id')
                     ->select('sell_outs.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_out_details.id as id', 'sell_out_details.quantity as quantity', 'products.name as product')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 

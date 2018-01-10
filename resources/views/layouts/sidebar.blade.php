@@ -210,23 +210,23 @@
             </li>
 
             <li class="nav-item
-            {{ Request::is('sellinreport') ? 'active open' : '' }}
-            {{ Request::is('selloutreport') ? 'active open' : '' }}
-            {{ Request::is('retconsumentreport') ? 'active open' : '' }}
-            {{ Request::is('retdistributorreport') ? 'active open' : '' }}
-            {{ Request::is('freeproductreport') ? 'active open' : '' }}
-            {{ Request::is('tbatreport') ? 'active open' : '' }}
+            {{ Request::is('editsellin') ? 'active open' : '' }}
+            {{ Request::is('editsellout') ? 'active open' : '' }}
+            {{ Request::is('editretconsument') ? 'active open' : '' }}
+            {{ Request::is('editretdistributor') ? 'active open' : '' }}
+            {{ Request::is('editfreeproduct') ? 'active open' : '' }}
+            {{ Request::is('edittbat') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cog"></i>
                     <span class="title">Update Sales</span>
                     <span class="arrow
-                    {{ Request::is('sellinreport') ? 'active open' : '' }}
-                    {{ Request::is('selloutreport') ? 'active open' : '' }}
-                    {{ Request::is('retconsumentreport') ? 'active open' : '' }}
-                    {{ Request::is('retdistributorreport') ? 'active open' : '' }}
-                    {{ Request::is('freeproductreport') ? 'active open' : '' }}
-                    {{ Request::is('tbatreport') ? 'active open' : '' }}
+                    {{ Request::is('editsellin') ? 'active open' : '' }}
+                    {{ Request::is('editsellout') ? 'active open' : '' }}
+                    {{ Request::is('editretconsument') ? 'active open' : '' }}
+                    {{ Request::is('editretdistributor') ? 'active open' : '' }}
+                    {{ Request::is('editfreeproduct') ? 'active open' : '' }}
+                    {{ Request::is('edittbat') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">

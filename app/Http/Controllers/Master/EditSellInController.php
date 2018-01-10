@@ -9,6 +9,8 @@ use App\Filters\SellinFilters;
 use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
+use Auth;
+use App\Store;
 use App\SellIn;
 use App\SellInDetail;
 
@@ -34,6 +36,8 @@ class EditSellInController extends Controller
      */
     public function masterDataTable(){
 
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
         $data = SellIn::
                     where('sell_ins.deleted_at', null)
                     ->where('sell_in_details.deleted_at', null)
@@ -43,6 +47,11 @@ class EditSellInController extends Controller
                     ->join('products', 'sell_in_details.product_id', '=', 'products.id')
                     ->select('sell_ins.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product')->get();
 
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', $store);
+            }
         return $this->makeTable($data);
     }
 
