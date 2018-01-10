@@ -24,6 +24,9 @@ var FormValidation = function () {
                     globalchannel_id:{
                         required: true,
                     },
+                    sell_type:{
+                        required: true,
+                    },
                     price: {
                         number: true,
                         min: 1,

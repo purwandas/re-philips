@@ -50,6 +50,7 @@
                                 <th> Category Product </th>
                                 <th> Philips </th>
                                 <th> All </th>
+                                <th> Percentage </th>
                                 <th> Action </th>
                             </tr>
                         </thead>
@@ -112,6 +113,7 @@
                 {data: 'category', name: 'category'},
                 {data: 'philips', name: 'philips'},
                 {data: 'all', name: 'all'},
+                {data: 'percentage', name: 'percentage'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [

@@ -40,4 +40,8 @@ class DashboardController extends Controller
     public function getDataSupervisor(){
         return $this->dataSupervisor();
     }
+
+    public function getDataNationalSalesman(){
+        return $this->dataNationalSalesman();
+    }
 }

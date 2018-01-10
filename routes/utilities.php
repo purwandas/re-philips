@@ -204,6 +204,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('chart/data-region', ['uses'=>'DashboardController@getDataRegion']);
     Route::get('chart/data-area', ['uses'=>'DashboardController@getDataArea']);
     Route::get('chart/data-supervisor', ['uses'=>'DashboardController@getDataSupervisor']);
+    Route::get('chart/data-national-salesman', ['uses'=>'DashboardController@getDataNationalSalesman']);
     
 });
 
