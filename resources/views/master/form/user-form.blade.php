@@ -82,23 +82,6 @@
      
                                 <select class="select2select" name="role" id="role" required>
 
-                                	<!-- <option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
-                                	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? 
-                                	"selected" : "" }}>Promoter Additional</option>
-                                	<option value="Promoter Event" {{ (@$data->role == 'Promoter Event') ? "selected" : "" }}>Promoter Event</option>
-                                	<option value="Demonstrator MCC" {{ (@$data->role == 'Demonstrator MCC') ? "selected" : "" }}>Demonstrator MCC</option>
-                                	<option value="Demonstrator DA" {{ (@$data->role == 'Demonstrator DA') ? "selected" : "" }}>Demonstrator DA</option>
-                                	<option value="ACT" {{ (@$data->role == 'ACT') ? "selected" : "" }}>ACT</option>
-                                	<option value="PPE" {{ (@$data->role == 'PPE') ? "selected" : "" }}>PPE</option>
-                                	<option value="BDT" {{ (@$data->role == 'BDT') ? "selected" : "" }}>BDT</option>
-                                	<option value="Salesman Explorer" {{ (@$data->role == 'Salesman Explorer') ? "selected" : "" }}>Salesman Explorer</option>
-                                	<option value="SMD" {{ (@$data->role == 'SMD') ? "selected" : "" }}>SMD</option>
-                                	<option value="SMD Coordinator" {{ (@$data->role == 'SMD Coordinator') ? "selected" : "" }}>SMD Coordinator</option>
-                                	<option value="HIC" {{ (@$data->role == 'HIC') ? "selected" : "" }}>HIC</option>
-                                	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
-                                	<option value="SMD Additional" {{ (@$data->role == 'SMD Additional') ? "selected" : "" }}>SMD Additional</option>
-                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option> -->
-
                                 	<option value="Driver" {{ (@$data->role == 'Driver') ? "selected" : "" }}>Driver</option>
                                 	<option value="Helper" {{ (@$data->role == 'Helper') ? "selected" : "" }}>Helper</option>
                                 	<option value="PCE" {{ (@$data->role == 'PCE') ? "selected" : "" }}>PCE</option>
@@ -138,6 +121,16 @@
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
 				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Input Name" />
+				            </div>
+				          </div>
+				        </div>
+
+				        <div class="form-group">
+				          <label class="col-sm-2 control-label">Join Date</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="join_date" name="join_date" class="form-control" value="{{ @$data->join_date }}" placeholder="Join Date" />
 				            </div>
 				          </div>
 				        </div>
@@ -658,6 +651,25 @@
 			return false;
 		} 
 
+
+		function initDateTimePicker(){
+
+            // Filter Month
+            $('#join_date').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+            // Set to Month now
+            $('#join_date').val(
+            	{{( @$data->join_date ) ? "" : "moment().format(" }}
+            	'{{( @$data->join_date ) ? @$data->join_date : "YYYY-MM-DD" }}'
+            	{{( @$data->join_date ) ? "" : ")" }}
+            );
+
+        }
+
 		/*
 		 * Select2 change
 		 *
@@ -670,6 +682,9 @@
 
 
 		$(document).ready(function(){
+			
+			initDateTimePicker();
+
 			// On Change status
 		    $('input[type=radio][name=status]').change(function() {
 		        resetStore();

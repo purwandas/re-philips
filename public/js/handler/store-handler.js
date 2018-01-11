@@ -25,8 +25,11 @@ var FormValidation = function () {
                         minlength: 2,
                         required: true,
                     },
-                    subchannel_id:{
-                        required: true,
+                    no_telp_toko:{
+                        number: true,
+                    },
+                    no_telp_pemilik_toko:{
+                        number: true,
                     },
                     district_id:{
                         required: true,
@@ -37,9 +40,6 @@ var FormValidation = function () {
 
                 },
                 messages:{
-                    subchannel_id:{
-                        required: "Please select a Sub Channel!"
-                    },
                     district_id:{
                         required: "Please select a District!"
                     },

@@ -63,7 +63,11 @@ class AuthController extends Controller
         $kpi = '';
         if(count($storeIds) > 0){
 
-            $channel = Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name;
+            if (isset(Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name)) {
+            	$channel = Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name;
+            }else{
+            	$channel = '';
+            }
 
             if($channel == 'Traditional Retail'){
                 $kpi = 'Sell In';
@@ -147,6 +151,8 @@ class AuthController extends Controller
 		$data['photo'] = $user->photo;
 	    $data['name'] = $user->name;
 	    $data['email'] = $user->email;
+	    $data['join_date'] = $user->join_date;
+	    $data['grading'] = $user->grading;
 
 		// the token is valid and we have found the user via the sub claim
 		return response()->json($data);
