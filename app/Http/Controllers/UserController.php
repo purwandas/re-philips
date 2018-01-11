@@ -340,10 +340,11 @@ class UserController extends Controller
         // $data = User::where('id', $id)->first();
         $data = User::
             where('users.id', $id)
-            ->join('employee_stores','users.id','employee_stores.user_id')
-            ->join('stores','employee_stores.store_id','stores.id')
-            ->select('users.*', 'stores.dedicate as dedicate')
+            // ->join('employee_stores','users.id','employee_stores.user_id')
+            // ->join('stores','employee_stores.store_id','stores.id')
+            ->select('users.*')//, 'stores.dedicate as dedicate')
             ->first();
+            // return response()->json($data);
 
         return view('master.form.user-form', compact('data'));
     }

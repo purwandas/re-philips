@@ -157,6 +157,7 @@
 <!-- BEGIN TEXT MODAL SCRIPTS -->
 <script src="{{ asset('js/text-modal/popup.js') }}" type="text/javascript"></script>
 <!-- END TEXT MODAL SCRIPTS -->
+<script src="{{ asset('js/handler/user-handler.js') }}" type="text/javascript"></script>
 
 <script>
         var filterId = ['#filterNik', '#filterName', '#filterRole'];
