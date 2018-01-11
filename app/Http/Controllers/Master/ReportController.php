@@ -2092,8 +2092,8 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'posm_activities.user_id', '=', 'users.id')
                     ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
-                    ->join('group_products', 'posms.group_id', '=', 'group_products.id')
-                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'posms.name as posm_name', 'group_products.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
+                    ->join('groups', 'posms.group_id', '=', 'groups.id')
+                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'posms.name as posm_name', 'groups.name as group_name', 'posm_activity_details.quantity', 'posm_activity_details.photo')
                     ->get();
 
             $filter = $data;
@@ -2209,16 +2209,16 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
-            if($request['searchMonth']){
-                $month = Carbon::parse($request['searchMonth'])->format('m');
-                $year = Carbon::parse($request['searchMonth'])->format('Y');
-                // $filter = $data->where('month', $month)->where('year', $year);
-                $date1 = "$year-$month-01";
-                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }
+//            if($request['searchMonth']){
+//                $month = Carbon::parse($request['searchMonth'])->format('m');
+//                $year = Carbon::parse($request['searchMonth'])->format('Y');
+//                // $filter = $data->where('month', $month)->where('year', $year);
+//                $date1 = "$year-$month-01";
+//                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+//                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+//
+//                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+//            }
 
             if($request['byStore']){
                 $filter = $filter->where('store_id', $request['byStore']);
@@ -2312,6 +2312,7 @@ class ReportController extends Controller
                         ->where('attendances.user_id',$item->user_id)
                         ->orderBy('id','asc')
                         ->get()->all();
+                    return response()->json($dataDetail);
                     foreach ($dataDetail as $key => $value) {
                         $statusAttendance[] = $value->status;
                     }

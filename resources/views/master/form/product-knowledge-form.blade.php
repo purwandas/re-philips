@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Product Knowledge
-            <small>manage product knowledge</small>
+        <h1>Guidelines
+            <small>manage guidelines</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,15 +16,15 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <a href="{{ url('product-knowledge') }}">Product Knowledge Management</a>
+        <a href="{{ url('product-knowledge') }}">Guidelines Management</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>
 		<span>
 			@if (empty($data))
-				Add More Product Knowledge
+				Add More Guidelines
 			@else
-				Update Product Knowledge
+				Update Guidelines
 			@endif
 		</span>
 	</li>
@@ -42,9 +42,9 @@
 					<i class="fa fa-group font-blue"></i>
 					<span class="caption-subject font-blue bold uppercase">
 						@if (empty($data))
-							ADD MORE PRODUCT KNOWLEDGE
+							ADD MORE GUIDELINES
 						@else
-							UPDATE PRODUCT KNOWLEDGE
+							UPDATE GUIDELINES
 						@endif
 					</span>
 				</div>

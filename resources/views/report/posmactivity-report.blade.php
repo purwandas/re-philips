@@ -109,7 +109,7 @@
                                 <th> Store ID </th>
                                 <th> Week </th>
                                 <th> POSM </th>
-                                <th> Group Product </th>
+                                <th> Group </th>
                                 <th> Quantity </th>
                                 <th> Photo </th>
                                 <th> Date </th>
@@ -153,7 +153,7 @@
                             {data: 'storeid', name: 'storeid'},
                             {data: 'week', name: 'week'},
                             {data: 'posm_name', name: 'posm_name'},
-                            {data: 'group_product_name', name: 'group_product_name'},
+                            {data: 'group_name', name: 'group_name'},
                             {data: 'quantity', name: 'quantity'},
                             {data: 'photo', name: 'photo'},
                             
