@@ -39,8 +39,6 @@ class EditRetDistributorController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
 
-        $userRole = Auth::user()->role;
-        $userId = Auth::user()->id;
         $data = RetDistributor::
                     where('ret_distributors.deleted_at', null)
                     ->where('ret_distributor_details.deleted_at', null)
@@ -62,6 +60,7 @@ class EditRetDistributorController extends Controller
                 $store = Store::where('user_id', $userId)
                             ->pluck('stores.store_id');
                 $data = $data->whereIn('store_id', $store);
+            }
 
             $filter = $data;
 

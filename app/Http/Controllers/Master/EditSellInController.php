@@ -39,8 +39,6 @@ class EditSellInController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
 
-        $userRole = Auth::user()->role;
-        $userId = Auth::user()->id;
         $data = SellIn::
                     where('sell_ins.deleted_at', null)
                     ->where('sell_in_details.deleted_at', null)
