@@ -154,6 +154,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/promoter-feedback-list', 'Api\Master\FeedbackController@getListPromoterFeedback');
     Route::get('/promoter-feedback-list/{param}', 'Api\Master\FeedbackController@getListPromoterFeedbackWithParam');
+    Route::post('/promotor-store-nearby', 'Api\Master\FeedbackController@getListStoreNearby');
+    Route::get('/promoter-feedback-list-from-store/{param}', 'Api\Master\FeedbackController@getListPromoterFeedbackWithParamStore');
     Route::post('/category-feedback-list/{param}', 'Api\Master\FeedbackController@getListCategoryFeedback');
     Route::get('/question-feedback-list/{param}', 'Api\Master\FeedbackController@getListQuestionFeedback');
     Route::post('/promoter-feedback-send', 'Api\Master\FeedbackController@feedbackSend');
