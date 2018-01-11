@@ -1892,7 +1892,7 @@ class ReportController extends Controller
                     ->join('stores', 'maintenance_requests.store_id', '=', 'stores.id')
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('users', 'maintenance_requests.user_id', '=', 'users.id')
-                    ->select('maintenance_requests.*', 'maintenance_requests.photo as photo2', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.district_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name')
+                    ->select('maintenance_requests.*', 'maintenance_requests.photo as photo2', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.district_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name')
                     ->get();
 
             $filter = $data;
@@ -1991,7 +1991,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'competitor_activities.user_id', '=', 'users.id')
                     ->join('group_competitors', 'competitor_activities.groupcompetitor_id', '=', 'group_competitors.id')
-                    ->select('competitor_activities.*', 'competitor_activities.photo as photo2','regions.name as region_name', 'regions.id as region_id', 'areas.name as area_name', 'areas.id as area_id', 'districts.name as district_name', 'stores.district_id','stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'group_competitors.name as group_competitor')
+                    ->select('competitor_activities.*', 'competitor_activities.photo as photo2','regions.name as region_name', 'regions.id as region_id', 'areas.name as area_name', 'areas.id as area_id', 'districts.name as district_name', 'stores.district_id','stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'group_competitors.name as group_competitor')
                     ->get();
 
             $filter = $data;
@@ -2097,7 +2097,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'promo_activities.user_id', '=', 'users.id')
                     ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
-                    ->select('promo_activities.*', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
+                    ->select('promo_activities.*', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
                     ->get();
 
             $filter = $data;
@@ -2203,7 +2203,7 @@ class ReportController extends Controller
                     ->join('users', 'posm_activities.user_id', '=', 'users.id')
                     ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
                     ->join('groups', 'posms.group_id', '=', 'groups.id')
-                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'posms.name as posm_name', 'groups.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
+                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'posms.name as posm_name', 'groups.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
                     ->get();
 
             $filter = $data;

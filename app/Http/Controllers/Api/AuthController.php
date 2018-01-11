@@ -63,7 +63,11 @@ class AuthController extends Controller
         $kpi = '';
         if(count($storeIds) > 0){
 
-            $channel = Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name;
+            if (isset(Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name)) {
+            	$channel = Store::where('id', $storeIds[0])->first()->subChannel->channel->globalChannel->name;
+            }else{
+            	$channel = '';
+            }
 
             if($channel == 'Traditional Retail'){
                 $kpi = 'Sell In';
