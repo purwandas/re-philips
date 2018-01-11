@@ -194,6 +194,7 @@ class UserPromoterController extends Controller
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
+        // return response()->json($request);
         $request['password'] = bcrypt($request['password']);
 
         // dd(public_path());        
@@ -276,7 +277,7 @@ class UserPromoterController extends Controller
         if($request['store_id']){
             $newEmStore = $request->store_id;
             HistoryEmployeeStore::create([
-                            'user_id' => $userId->id,
+                            'user_id' => $user->id,
                             'month' => Carbon::now()->format('m'),
                             'year' => Carbon::now()->format('Y'),
                             'details' => $newEmStore,
@@ -287,7 +288,7 @@ class UserPromoterController extends Controller
             $newEmStore = $request->store_ids;
             $newEmStore2 = implode(",",$newEmStore);
             HistoryEmployeeStore::create([
-                            'user_id' => $userId->id,
+                            'user_id' => $user->id,
                             'month' => Carbon::now()->format('m'),
                             'year' => Carbon::now()->format('Y'),
                             'details' => $newEmStore2,
@@ -426,6 +427,14 @@ class UserPromoterController extends Controller
         if($request['nik']){
             $requestNew['nik'] = $request['nik'];
         }
+
+        $requestNew['grading'] = null;
+
+        if($request['grading']){
+            $requestNew['grading'] = $request['grading'];
+        }
+
+        $requestNew['join_date'] = $request['join_date'];
 
         $user->update($requestNew->all()); 
 

@@ -651,6 +651,25 @@
 			return false;
 		} 
 
+
+		function initDateTimePicker(){
+
+            // Filter Month
+            $('#join_date').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+            // Set to Month now
+            $('#join_date').val(
+            	{{( @$data->join_date ) ? "" : "moment().format(" }}
+            	'{{( @$data->join_date ) ? @$data->join_date : "YYYY-MM-DD" }}'
+            	{{( @$data->join_date ) ? "" : ")" }}
+            );
+
+        }
+
 		/*
 		 * Select2 change
 		 *
@@ -663,6 +682,9 @@
 
 
 		$(document).ready(function(){
+			
+			initDateTimePicker();
+
 			// On Change status
 		    $('input[type=radio][name=status]').change(function() {
 		        resetStore();
