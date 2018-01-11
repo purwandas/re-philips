@@ -183,25 +183,24 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySellIn::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySellIn::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySellIn::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySellIn::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySellIn::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySellIn::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySellIn::all();
@@ -210,6 +209,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -228,13 +238,6 @@ class ReportController extends Controller
 
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
-            }
-
-            if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $data->where('region_id', $value->region_id);
-                }
             }
 
             return Datatables::of($filter->all())
@@ -275,7 +278,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -305,6 +307,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -326,24 +339,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
 
@@ -371,24 +381,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySellOut::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySellOut::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySellOut::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySellOut::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySellOut::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySellOut::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySellOut::all();
@@ -397,6 +404,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -455,7 +473,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -485,6 +502,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -506,24 +534,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
             ->make(true);
@@ -548,24 +573,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryRetConsument::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryRetConsument::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryRetConsument::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryRetConsument::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryRetConsument::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryRetConsument::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryRetConsument::all();
@@ -575,6 +597,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -633,7 +666,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -660,6 +692,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -681,24 +724,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             } 
             return Datatables::of($filter->all())
             ->make(true);
@@ -720,23 +760,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryRetDistributor::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryRetDistributor::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryRetDistributor::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryRetDistributor::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryRetDistributor::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryRetDistributor::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryRetDistributor::all();
@@ -745,6 +785,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -803,7 +854,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -830,6 +880,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -849,26 +910,23 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
-        
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -893,24 +951,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryTbat::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryTbat::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryTbat::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryTbat::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryTbat::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryTbat::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryTbat::all();
@@ -920,6 +975,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -985,7 +1051,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['store_destination_name_1'] = $detail->store_destination_name_1;
                         $collection['store_destination_name_2'] = $detail->store_destination_name_2;
                         $collection['store_destination_id'] = $detail->store_destination_id;
@@ -1015,6 +1080,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1040,24 +1116,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1079,23 +1152,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryFreeProduct::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryFreeProduct::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryFreeProduct::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryFreeProduct::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryFreeProduct::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryFreeProduct::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryFreeProduct::all();
@@ -1104,6 +1177,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1162,7 +1246,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -1189,6 +1272,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1210,24 +1304,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1250,23 +1341,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySoh::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySoh::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySoh::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySoh::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySoh::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySoh::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySoh::all();
@@ -1276,6 +1367,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1334,7 +1436,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -1361,6 +1462,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1382,24 +1494,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
             ->make(true);
@@ -1420,23 +1529,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummarySos::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySos::where('region_id', $region)->get();
             }
+
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummarySos::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySos::where('area_id', $area)->get();
             }
+
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummarySos::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySos::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummarySos::all();
@@ -1502,7 +1611,6 @@ class ReportController extends Controller
                         $collection['district'] = $detail->district;
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['store_id'] = $detail->store_id;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
@@ -1554,24 +1662,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1593,27 +1698,23 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-
-
+ 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $data = SummaryDisplayShare::where('region_id', $value->region_id)->get();
-                }
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryDisplayShare::where('region_id', $region)->get();
             }
 
             elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $data = SummaryDisplayShare::where('area_id', $value->area_id)->get();
-                }
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryDisplayShare::where('area_id', $area)->get();
             }
 
             elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $data = SummaryDisplayShare::where('store_id', $value->store_id)->get();
-                }
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryDisplayShare::wherein('store_id', $store)->get();
             }
             else{
                 $data = SummaryDisplayShare::all();
@@ -1622,6 +1723,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1680,7 +1792,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -1704,6 +1815,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1725,24 +1847,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1811,24 +1930,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -1918,24 +2034,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2026,24 +2139,21 @@ class ReportController extends Controller
             }
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2136,24 +2246,21 @@ class ReportController extends Controller
 
 
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2239,26 +2346,23 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
-            
+
             if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)->get();
-                foreach ($region as $key => $value) {
-                    $filter = $filter->where('region_id', $value->region_id);
-                }
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
             }
 
             if ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)->get();
-                foreach ($area as $key => $value) {
-                    $filter = $filter->where('area_id', $value->area_id);
-                }
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
             }
-            
+
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)->get();
-                foreach ($store as $key => $value) {
-                    $filter = $filter->where('store_id', $value->store_id);
-                }
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
             }
 
             return Datatables::of($filter->all())
@@ -2301,7 +2405,9 @@ class ReportController extends Controller
                     $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
                     $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
-                // return $minDate.' / '.$maxDate;
+                // return $minDate.' / '.$maxDate;, 
+
+                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
                     /* Get data from attendanceDetails then convert them into colored table */
                     // return $item->user_id;
@@ -2310,6 +2416,8 @@ class ReportController extends Controller
                         ->where('attendances.date','>=',$minDate)
                         ->where('attendances.date','<=',$maxDate)
                         ->where('attendances.user_id',$item->user_id)
+                        ->join('users','users.id','attendances.user_id')
+                        ->whereIn('users.role',$promoterGroup)
                         ->orderBy('id','asc')
                         ->get()->all();
                     return response()->json($dataDetail);
@@ -2507,6 +2615,17 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -2565,7 +2684,6 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
                         $collection['nik'] = $detail->nik;
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
@@ -2590,6 +2708,17 @@ class ReportController extends Controller
             $filter = $historyData;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }

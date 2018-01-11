@@ -1,4 +1,4 @@
-@extends('layouts.app')
+<!-- @extends('layouts.app')
 
 @section('header')
 <div class="page-head">
@@ -417,7 +417,10 @@
 	        }));
 
 	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
-	            filters['byDedicate'] = $('#dedicate').val();
+	            if($('#role').val() != 'Salesman Explorer')
+	            {
+            		filters['byDedicate'] = $('#dedicate').val();
+	        	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
@@ -431,7 +434,10 @@
 	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
 		        	filters['bySpv'] = $('#penampungUserId').val();
 		        }
-		        filters['byDedicate'] = $('#dedicate').val();
+		        if($('#role').val() != 'Salesman Explorer')
+		        {
+	        		filters['byDedicate'] = $('#dedicate').val();
+		    	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
@@ -500,6 +506,12 @@
 			}
 
 			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
+				$('#storeContent').removeClass('display-hide');				
+				$('#multipleStoreContent').removeClass('display-hide');			
+	            $('#stores').attr('required', 'required');
+			}
+
+			if (role == 'Salesman Explorer') {
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
 	            $('#stores').attr('required', 'required');
@@ -662,13 +674,19 @@
 		    
 		});
 
-		// On Change status
 		$(document).ready(function(){
+		    // On Change status
 		    $('input[type=radio][name=status]').change(function() {
 		        resetStore();
 		        setStore(this.value);
 		    });
+
+		    // On Change Dedicate
+		    $('#dedicate').change(function() {
+		        $("#store").val('').change();
+		        $("#stores").val('').change();
+		    });
 		});
 
 	</script>	
-@endsection
+@endsection -->

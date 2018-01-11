@@ -215,12 +215,12 @@
                     <i class="fa fa-edit"></i>
                     <span class="title">Update Sales</span>
                     <span class="arrow
-                    {{ Request::is('editsellin') ? 'active open' : '' }}
-                    {{ Request::is('editsellout') ? 'active open' : '' }}
-                    {{ Request::is('editretdistributor') ? 'active open' : '' }}
-                    {{ Request::is('editretconsument') ? 'active open' : '' }}
-                    {{ Request::is('editfreeproduct') ? 'active open' : '' }}
-                    {{ Request::is('edittbat') ? 'active open' : '' }}
+                        {{ Request::is('editsellin') ? 'active open' : '' }}
+                        {{ Request::is('editsellout') ? 'active open' : '' }}
+                        {{ Request::is('editretdistributor') ? 'active open' : '' }}
+                        {{ Request::is('editretconsument') ? 'active open' : '' }}
+                        {{ Request::is('editfreeproduct') ? 'active open' : '' }}
+                        {{ Request::is('edittbat') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">

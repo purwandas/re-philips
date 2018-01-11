@@ -562,6 +562,7 @@ trait SalesTrait {
             $summary->update([
                         'philips'=> $philips,
                         'all'=> $all,
+                        'percentage'=> ($philips/$all)*100,
                     ]);
 
         if ($detail) {

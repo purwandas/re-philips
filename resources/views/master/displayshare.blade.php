@@ -27,6 +27,58 @@
     <div class="col-lg-12 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
         <div class="portlet light bordered">
+             <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-map-o font-blue"></i>
+                    <span class="caption-subject font-blue bold uppercase">FILTER REPORT</span>
+                </div>
+            </div>
+
+            <div class="caption padding-caption">
+                <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> FILTERS BY</span>
+            </div>
+
+            <div class="row filter" style="margin-top: 10px;">
+                <div class="col-md-4">
+                    <select id="filterRegion" class="select2select"></select>
+                </div>
+                <div class="col-md-4">
+                    <select id="filterArea" class="select2select"></select>
+                </div>
+                <div class="col-md-4">
+                    <select id="filterDistrict" class="select2select"></select>
+                </div>
+            </div>
+
+            <div class="row filter" style="margin-top: 10px;">
+                <div class="col-md-4">
+                    <select id="filterStore" class="select2select"></select>
+                </div>
+                <div class="col-md-4">
+                    <select id="filterEmployee" class="select2select"></select>
+                </div>
+            </div>
+
+            <div class="row filter" id="monthContent" style="margin-top: 10px;">
+                <div class="col-md-4">
+                    <input type="text" id="filterMonth" class="form-control" placeholder="Month">
+                </div>
+            </div>
+
+            <br>
+
+            <div class="btn-group">
+                <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <i class="fa fa-refresh"></i> Reset </a>
+                <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                    <i class="fa fa-filter"></i> Filter </a>
+            </div>
+
+            <br><br>
+
+        </div>
+
+        <div class="portlet light bordered display-hide" id="dataContent">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-share-alt font-blue"></i>
@@ -50,6 +102,7 @@
                                 <th> Category Product </th>
                                 <th> Philips </th>
                                 <th> All </th>
+                                <th> Percentage </th>
                                 <th> Action </th>
                             </tr>
                         </thead>
@@ -85,6 +138,31 @@
      * ACCOUNT
      *
      */
+
+    var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
+    var url = 'datatable/editdisplayshare';
+    var order = [ [0, 'desc'] ];
+    var columnDefs = [{"className": "dt-center", "targets": [0]}];
+    var tableColumns = [
+                        {data: 'id', name: 'id'},
+                        {data: 'user_name', name: 'user_name'},
+                        {data: 'user_nik', name: 'user_nik'},
+                        {data: 'store_name_1', name: 'store_name_1'},
+                        {data: 'store_name_2', name: 'store_name_2'},
+                        {data: 'store_id', name: 'store_id'},
+                        {data: 'category', name: 'category'},
+                        {data: 'philips', name: 'philips'},
+                        {data: 'all', name: 'all'},
+                        {data: 'percentage', name: 'percentage'},
+                        {data: 'action', name: 'action', searchable: false, sortable: false},
+                        ];
+
+    // var exportButton = '#export';
+
+    var paramFilter = ['displayShareTable', $('#displayShareTable'), url, tableColumns, columnDefs, order];//, exportButton];
+
+    var paramReset = [filterId, 'displayShareTable', $('#displayShareTable'), url, tableColumns, columnDefs, order];
+
     $(document).ready(function () {
 
         $.ajaxSetup({
@@ -94,32 +172,33 @@
         });
 
         // Set data for Data Table
-        var table = $('#displayShareTable').dataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                url: "{{ route('datatable.editdisplayshare') }}",
-                type: 'POST',
-            },
-            "rowId": "id",
-            "columns": [
-                {data: 'id', name: 'id'},
-                {data: 'user_name', name: 'user_name'},
-                {data: 'user_nik', name: 'user_nik'},
-                {data: 'store_name_1', name: 'store_name_1'},
-                {data: 'store_name_2', name: 'store_name_2'},
-                {data: 'store_id', name: 'store_id'},
-                {data: 'category', name: 'category'},
-                {data: 'philips', name: 'philips'},
-                {data: 'all', name: 'all'},
-                {data: 'action', name: 'action', searchable: false, sortable: false},
-            ],
-            "columnDefs": [
-                {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [3]},
-            ],
-            "order": [ [0, 'desc'] ],
-        });
+        // var table = $('#displayShareTable').dataTable({
+        //     "processing": true,
+        //     "serverSide": true,
+        //     "ajax": {
+        //         url: "{{ route('datatable.editdisplayshare') }}",
+        //         type: 'POST',
+        //     },
+        //     "rowId": "id",
+        //     "columns": [
+        //         {data: 'id', name: 'id'},
+        //         {data: 'user_name', name: 'user_name'},
+        //         {data: 'user_nik', name: 'user_nik'},
+        //         {data: 'store_name_1', name: 'store_name_1'},
+        //         {data: 'store_name_2', name: 'store_name_2'},
+        //         {data: 'store_id', name: 'store_id'},
+        //         {data: 'category', name: 'category'},
+        //         {data: 'philips', name: 'philips'},
+        //         {data: 'all', name: 'all'},
+        //         {data: 'percentage', name: 'percentage'},
+        //         {data: 'action', name: 'action', searchable: false, sortable: false},
+        //     ],
+        //     "columnDefs": [
+        //         {"className": "dt-center", "targets": [0]},
+        //         {"className": "dt-center", "targets": [3]},
+        //     ],
+        //     "order": [ [0, 'desc'] ],
+        // });
 
 
         // Delete data with sweet alert
@@ -163,6 +242,9 @@
                     }
                 });
         });
+        
+        initSelect2();
+        initDateTimePicker();
 
     });
 
@@ -190,6 +272,125 @@
                     $('#all').val(data.all);
 
         })
+
+    });
+
+    function initSelect2(){
+
+        /*
+         * Select 2 init
+         *
+         */
+
+        $('#filterRegion').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+        $('#filterRegion').on('select2:select', function () {
+            self.selected('byRegion', $('#filterRegion').val());
+        });
+
+        $('#filterArea').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+        $('#filterArea').on('select2:select', function () {
+            self.selected('byArea', $('#filterArea').val());
+        });
+
+        $('#filterDistrict').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
+            return filterData('name', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {
+                    return {id: obj.id, text: obj.name}
+                })
+            }
+        }));
+        $('#filterDistrict').on('select2:select', function () {
+            self.selected('byDistrict', $('#filterDistrict').val());
+        });
+
+        $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
+            return filterData('store', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {
+                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                })
+            }
+        }));
+        $('#filterStore').on('select2:select', function () {
+            self.selected('byStore', $('#filterStore').val());
+        });
+
+        $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
+            filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+            return filterData('employee', params.term);
+        }, function (data, params) {
+            return {
+                results: $.map(data, function (obj) {
+                    return {id: obj.id, text: obj.nik + " - " + obj.name}
+                })
+            }
+        }));
+        $('#filterEmployee').on('select2:select', function () {
+            self.selected('byEmployee', $('#filterEmployee').val());
+        });
+
+    }
+
+    function initDateTimePicker (){
+
+        // Filter Month
+        $('#filterMonth').datetimepicker({
+            format: "MM yyyy",
+            startView: "3",
+            minView: "3",
+            autoclose: true,
+        });
+
+        // Set to Month now
+        $('#filterMonth').val(moment().format('MMMM YYYY'));
+        filters['searchMonth'] = $('#filterMonth').val();
+
+    }
+
+    // On Change Search Date
+    $(document).ready(function() {
+
+        $('#filterMonth').change(function(){
+            filters['searchMonth'] = this.value;
+            console.log(filters);
+        });
+
+    });
+
+    $("#resetButton").click( function(){
+
+        // Hide Table Content
+        $('#dataContent').addClass('display-hide');
+
+        // Set to Month now
+        $('#filterMonth').val(moment().format('MMMM YYYY'));
+        filters['searchMonth'] = $('#filterMonth').val();
+
+    });
+
+    $("#filterButton").click( function(){
+
+        // Set Table Content
+        $('#dataContent').removeClass('display-hide');
 
     });
 

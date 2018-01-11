@@ -148,7 +148,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -362,7 +362,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -575,7 +575,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -787,7 +787,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -999,7 +999,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1211,7 +1211,10 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                    $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_destination_id)->first();
+                    $spvNameDestination = (isset($storeDestination->user->name)) ? $storeDestination->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1325,13 +1328,18 @@ class SalesHistory extends Command
                         'store_name_2' => $store->store_name_2,
                         'store_id' => $store->store_id,
                         'storeId' => $store->id,
-                        'dedicate' => $store->dedicate,
+                        'store_destination_name_1' => $storeDestination->store_name_1,
+                        'store_destination_name_2' => $storeDestination->store_name_2,
+                        'store_destination_id' => $storeDestination->store_id,
+                        'store_destinationId' => $storeDestination->id,
+                        // 'dedicate' => $store->dedicate,
                         'nik' => $user->nik,
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
                         'role' => $user->role,
                         'spv_name' => $spvName,
+                        'spv_destination_name' => $spvNameDestination,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
                         'transaction' => $transactionDetails,
@@ -1424,7 +1432,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1605,7 +1613,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
@@ -1951,7 +1959,7 @@ class SalesHistory extends Command
 
                     /* District, Area, Region */
                     $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
-                    $spvName = ($store->user->name != '' ) ? $store->user->name : '';
+                    $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
                     /* Distributor */
                     $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
