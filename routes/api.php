@@ -36,7 +36,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/product/{param}', 'Api\Master\ProductController@all');
 	Route::get('/category-product', 'Api\Master\CategoryController@all');
 	Route::get('/category-product/{param}', 'Api\Master\CategoryController@allWithParam');
-    Route::get('/store', 'Api\Master\StoreController@all');
+    Route::get('/store', 'Api\Master\StoreController@all');    
 	Route::get('/store-promoter', 'Api\Master\StoreController@byPromoter');
 	Route::post('/store-area', 'Api\Master\StoreController@byArea');
     Route::post('/store-create', 'Api\Master\StoreController@create');
@@ -97,6 +97,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/guidelines/{param}', 'Api\Master\ProductKnowledgeController@get');
     Route::get('/guidelines-read/{param}', 'Api\Master\ProductKnowledgeController@read');
     Route::get('/get-fanspage', 'Api\Master\FanspageController@getFanspage');
+    Route::get('/get-store-id', 'Api\Master\StoreController@getStoreId');
+    Route::get('/get-district', 'Api\Master\StoreController@getDistrict');
+    // Route::get('/get-district/{param}', 'Api\Master\StoreController@nearby');
 
     /**
      * Supervisor Module(s)
