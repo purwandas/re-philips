@@ -130,10 +130,10 @@
             
             "rowId": "id",
             "columns": [
-                {data: 'created_at', name: 'created_at', width: 100},
+                {data: 'created_at', name: 'created_at', width: 80},
                 {data: 'user', name: 'user', width: 100},
-                {data: 'subject', name: 'subject', width: 200},
-                {data: 'message', name: 'message', width: 400},
+                {data: 'subject', name: 'subject', width: 100},
+                {data: 'message', name: 'message', width: 500},
                 {
                     data:   'status',
                     render: function ( data, type, row ) {
