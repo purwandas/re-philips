@@ -476,6 +476,7 @@
 			if(role == 'DM'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
 
