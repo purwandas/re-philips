@@ -94,7 +94,28 @@
               				</div>
 				            
 				          </div>
-				        </div>				        
+				        </div>
+				        <div class="form-group">
+				          <label class="col-sm-2 control-label">Join Date</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="join_date" name="join_date" class="form-control" value="{{ @$data->join_date }}" placeholder="Join Date" disabled/>
+				            </div>
+				          </div>
+				        </div>
+
+                		@if(Auth::user()->role == 'Promoter' || Auth::user()->role == 'Promoter Additional' || Auth::user()->role == 'Promoter Event' || Auth::user()->role == 'Demonstrator MCC' || Auth::user()->role == 'Demonstrator DA' || Auth::user()->role == 'ACT'  || Auth::user()->role == 'PPE' || Auth::user()->role == 'BDT' || Auth::user()->role == 'Salesman Explorer' || Auth::user()->role == 'SMD' || Auth::user()->role == 'SMD Coordinator' || Auth::user()->role == 'HIC' || Auth::user()->role == 'HIE' || Auth::user()->role == 'SMD Additional' || Auth::user()->role == 'ASC')
+							<div class="form-group">
+					          <label class="col-sm-2 control-label">Grading</label>
+					          <div class="col-sm-9">
+					          	<div class="input-icon right">
+					          		<i class="fa"></i>
+					            	<input type="text" id="grading" name="grading" class="form-control" value="{{ @$data->grading }}" placeholder="Grading" disabled/>
+					            </div>
+					          </div>
+					        </div>
+               			@endif				        
 
 				        <!-- View for old image * PHOTO * -->
 				        @if (!empty($data))
