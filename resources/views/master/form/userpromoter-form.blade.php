@@ -143,14 +143,20 @@
 				        	<div class="form-group">
 					          <label class="col-sm-2 control-label">Grading</label>
 					          <div class="col-sm-9">
-					          	<div class="input-icon right">
-					          		<i class="fa"></i>
-					            	<input type="text" id="grading" name="grading" class="form-control" value="{{ @$data->grading }}" placeholder="Grading" />
-					            </div>
-					          </div>
+					          	<div style="width: 100%;" class="input-group input-icon right">
+						          		<i class="fa"></i>
+	                                        <select class="select2select" name="grading" id="grading">
+	                                        	<option></option>
+												<option value="Associate">Associate</option>
+												<option value="Starfour">Starfour</option>
+												<option value="Non-Starfour">Non-Starfour</option>
+											</select>
+	                                        <span></span>
+	                                </div>
+	                            </div>
 					        </div>
 
-					        <div class="form-group">
+					        <div class="form-group" style="margin-bottom: 0px;">
 	                            <label class="control-label col-md-2">Status                               
 	                            </label>
 	                            <div class="col-md-9">
@@ -175,22 +181,22 @@
 	                            <div class="col-md-9">
 	                                <div style="width: 100%;" class="input-group input-icon right">
 						          		<i class="fa"></i>
-	                                        <select class="select2select" name="dedicate" id="dedicate" required>
-	                                        	<option></option>
-			-									<option value="DA" 
-													{{ (@$data->dedicate == 'DA') ? "selected" : "" }}>
-												DA</option>
-			-									<option value="PC" 
-													{{ (@$data->dedicate == 'PC') ? "selected" : "" }}>
-												PC</option>
-			-									<option value="MCC" 
-													{{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>
-												MCC</option>
-			-									<option value="HYBRID" 
-													{{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>
-												HYBRID</option>
-			-                                </select>
-	                                        <span></span>
+                                        <select class="select2select" name="dedicate" id="dedicate" required>
+                                        	<option></option>
+											<option value="DA" 
+												{{ (@$data->dedicate == 'DA') ? "selected" : "" }}>
+											DA</option>
+											<option value="PC" 
+												{{ (@$data->dedicate == 'PC') ? "selected" : "" }}>
+											PC</option>
+											<option value="MCC" 
+												{{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>
+											MCC</option>
+											<option value="HYBRID" 
+												{{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>
+											HYBRID</option>
+		                                </select>
+                                        <span></span>
 	                                </div>
 	                            </div>
 	                        </div>
@@ -464,7 +470,19 @@
                 placeholder: 'Dedicate'
             });
 
+            $('#grading').select2({
+                width: '100%',
+                placeholder: 'Grading'
+            });
+            
+
             setForm($('#role').val());
+
+            setSelect2IfPatch(
+		    	$("#grading"),
+		    	'{{( @$data->grading ) ? @$data->grading  : "" }}',
+		    	'{{( @$data->grading ) ? @$data->grading  : "" }}'
+		    );
 
 		});
 
@@ -495,37 +513,14 @@
 
 		// Set and init dm and rsm
 		function setForm(role){
-
+			var status = $('input[name=status]:checked').val();
 			resetForm();
 			resetStore();
-
-			if(role == 'Trainer'){
-				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
-				document.getElementById('areaTitle').innerHTML = "TRAINER AREA";
-				$('#dmContent').removeClass('display-hide');
-			}
-
-			if(role == 'RSM'){
-				$('#region').attr('required', 'required');
-				setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
-				$('#rsmContent').removeClass('display-hide');
-			}
-
-			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
-				$('#storeContent').removeClass('display-hide');				
-				$('#multipleStoreContent').removeClass('display-hide');			
-	            $('#stores').attr('required', 'required');
-			}
 
 			if (role == 'Salesman Explorer') {
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
 	            $('#stores').attr('required', 'required');
-			}
-
-			if(!checkAdmin()){
-				$('#nik').attr('required', 'required');
 			}
 
 			if(!checkPromoter()){
@@ -537,20 +532,25 @@
 
 				if(role == 'Salesman Explorer'){
 					$('input[type=radio][name=status][value=mobile]').prop('checked', true);
+					status = 'mobile';
 				    // $('#statusContent').removeClass('display-hide');
+				    $('#multipleStoreContent').removeClass('display-hide');
 					$('#dedicate').prop('required',false);
 				}else{
 					$('#statusContent').removeClass('display-hide');
+					$('#storeContent').removeClass('display-hide');
 					$('#dedicate').prop('required',true);
+					
+					if (status == 'mobile') {
+						$('#multipleStoreContent').removeClass('display-hide');
+					}else{
+						$('#oneStoreContent').removeClass('display-hide');
+					}
+					
 				}
 
-
 				//Set Store
-			    var status = $('input[type=radio][name=status]:checked').val();
-
-			    if(!(typeof(status) === 'undefined')){
-			    	setStore(status);
-		    	}			
+		    	setStore(status);
 			}
 		}
 
@@ -579,20 +579,16 @@
 				select2Reset($('#stores'));
 			}
 
-			if($('input[name=_method]').val() == "PATCH" && checkPromoter()){
+			if($('input[name=_method]').val() == "PATCH"){
 				updateStore();
 			}
 
-			var role = $('#role').val();
-			if($('input[name=_method]').val() == "PATCH" && (role == 'Supervisor' || role == 'Supervisor Hybrid')){
-				updateStoreSpv();
-			}			
 		}
 
 		function updateStore(){
-			var oldStatus = "{{ @$data->status }}";
 			var getDataUrl = "{{ url('util/empstore/') }}";
-			var status = $('input[type=radio][name=status]:checked').val();
+			var status = $('input[name=status]:checked').val();
+                    console.log(status);
 
 			$.get(getDataUrl + '/' + userId, function (data) {
 				if(data){
@@ -600,31 +596,9 @@
                     if(status == 'mobile'){
                     	element = $("#stores");
                     }
-
                     select2Reset($('#store'));
                     select2Reset($('#stores'));
 
-                    if(oldStatus == status){                    	
-	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
-						});
-                	}                	
-
-            	}	
-
-        	})
-		}
-
-		function updateStoreSpv(){
-			var oldStatus = "{{ @$data->status }}";
-			var getDataUrl = "{{ url('util/spvstore/') }}";
-			var status = $('input[type=radio][name=status]:checked').val();
-
-			$.get(getDataUrl + '/' + userId, function (data) {
-				if(data){
-                    var element = $("#stores");
-
-                    select2Reset(element);
 
 	                    $.each(data, function() {
 							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
@@ -639,7 +613,6 @@
 		function setStore(value){			
 
 			$('#storeContent').removeClass('display-hide');				
-
 			if(value == 'stay'){			
 				$('#oneStoreContent').removeClass('display-hide');
 	            $('#store').attr('required', 'required');
@@ -648,17 +621,6 @@
 	            $('#stores').attr('required', 'required');
 			}			
 		}		
-
-		// Check admin
-		function checkAdmin(){
-			var role = $('#role').val();
-
-			if(role == 'DM' || role == 'RSM' || role == 'Admin'){
-				return true;
-			}
-
-			return false;
-		} 
 
 		// Check promoter group
 		function checkPromoter(){
@@ -681,7 +643,12 @@
                 autoclose: true,
             });
             // Set to Month now
-            $('#join_date').val(moment().format('YYYY-MM-DD'));
+            $('#join_date').val(
+            	{{( @$data->join_date ) ? "" : "moment().format(" }}
+            	'{{( @$data->join_date ) ? @$data->join_date : "YYYY-MM-DD" }}'
+            	{{( @$data->join_date ) ? "" : ")" }}
+            );
+
         }
 
 		/*
@@ -709,6 +676,7 @@
 		        $("#store").val('').change();
 		        $("#stores").val('').change();
 		    });
+
 		});
 
 	</script>	
