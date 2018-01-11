@@ -63,15 +63,18 @@ class UtilController extends Controller
         $empStore = EmployeeStore::where('user_id', $userId);        
         $empStoreIds = $empStore->pluck('store_id');
         $store = Store::where('stores.deleted_at', null)
-                    ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
-                    ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
-                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    // ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    // ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    // ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
 //                    ->join('users', 'stores.user_id', '=', 'users.id')
                     ->whereIn('stores.id', $empStoreIds)
-                    ->select('stores.*', 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name')->get();
+                    ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
+                        // , 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name'
+                        )
+                    ->get();
 
         foreach ($store as $item){
 
