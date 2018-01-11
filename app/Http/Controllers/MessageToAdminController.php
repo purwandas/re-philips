@@ -75,6 +75,13 @@ class MessageToAdminController extends Controller
     public function makeTable($data){
 
         return Datatables::of($data)
+                ->addColumn('message', function ($item) {
+                    $jumlahkarakter=100;
+                    $cetak = substr($item->message, 0, $jumlahkarakter);
+                    return $cetak;
+
+
+                })
                 // ->addColumn('action', function ($item) {
 
                 //    return
@@ -82,7 +89,7 @@ class MessageToAdminController extends Controller
                 //     "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 // })
-                ->rawColumns(['action'])
+                ->rawColumns(['message'])
                 ->make(true);
 
     }
@@ -127,8 +134,13 @@ class MessageToAdminController extends Controller
      */
     public function show($id)
     {   
-        $input['status']='read';
-        $messageToAdmin = MessageToAdmin::find($id)->update($input);
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+            
+        if (($userRole == 'Admin') or ($userRole == 'Master')) {
+            $input['status']='read';
+            $messageToAdmin = MessageToAdmin::find($id)->update($input);
+        }
 
         $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
                     ->join('users', 'message_to_admin.user_id', '=', 'users.id')
