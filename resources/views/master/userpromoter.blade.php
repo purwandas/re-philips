@@ -75,20 +75,6 @@
                             <option value="HIE">HIE</option>
                             <option value="SMD Additional">SMD Additional</option>
                             <option value="ASC">ASC</option>
-                            
-                            <!-- <option value="Driver">Driver</option>
-                            <option value="Helper">Helper</option>
-                            <option value="PCE">PCE</option>
-                            <option value="RE Executive">RE Executive</option>
-                            <option value="RE Support">RE Support</option>
-                            <option value="Supervisor">Supervisor</option>
-                            <option value="Trainer">Trainer</option>
-                            <option value="Head Trainer">Head Trainer</option>
-                            <option value="Supervisor Hybrid">Supervisor Hybrid</option>
-                            <option value="DM">DM</option>
-                            <option value="RSM">RSM</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Master">Master</option> -->
                         </select>
                     </div>
                 </div>
@@ -137,6 +123,8 @@
                             <th> Name </th>
                         	<th> Role </th>
                             <th> Status </th>
+                            <th> Join Date </th>
+                            <th> Grading </th>
                             <th> Supervisor </th>
                             <th> Store </th>
                             <th> History </th>
@@ -187,6 +175,8 @@
                 {data: 'name', name: 'name'},
                 {data: 'role', name: 'role'},
                 {data: 'status', name: 'status'},
+                {data: 'join_date', name: 'join_date'},
+                {data: 'grading', name: 'grading'},
                 {data: 'supervisor', name: 'supervisor'},
                 {data: 'store', name: 'store'},
                 {data: 'history', name: 'history'},
@@ -203,28 +193,6 @@
             	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-     //    // Set data for Data Table '#athletesTable'
-     //    var table = $('#userTable').dataTable({
-	    //     "processing": true,
-	    //     "serverSide": true,	          
-	    //     "ajax": {
-     //            url: "{{ route('datatable.user') }}",
-     //            type: 'POST',
-     //        },
-	    //     "rowId": "id",
-	    //     "columns": [
-	    //         {data: 'id', name: 'id'}, 
-     //            {data: 'nik', name: 'nik'},               
-	    //         {data: 'name', name: 'name'},
-     //            {data: 'role', name: 'role'},
-     //            {data: 'status', name: 'status'},
-     //            {data: 'store', name: 'store'},
-	    //         {data: 'action', name: 'action', searchable: false, sortable: false},                
-	    //     ],
-	    //     "columnDefs": ,
-     //        "order": [ [0, 'desc'] ],            
-    	// });
 
         // Set data for Data Table
             var table = $('#userTable').dataTable({

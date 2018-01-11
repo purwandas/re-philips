@@ -70,19 +70,6 @@ class UserPromoterController extends Controller
                 $filter = $data->where('role', $request['byRole']);
             }
 
-    //     return $this->makeTable($filter);
-    // }
-
-    
-    
-
-    // // Datatable template
-    // public function makeTable($data){
-
-
-    //     // Datatables::of($filter->all())
-    //     //     ->make(true);
-
         return Datatables::of($filter->get())
                 ->editColumn('role',function ($item) {
                     
@@ -107,20 +94,6 @@ class UserPromoterController extends Controller
                 })
                 ->addColumn('store', function ($item) {
 
-//                    $storeIds = EmployeeStore::where('user_id', $item->id)->pluck('store_id');
-//                    $storeName = "";
-//
-//                    foreach ($storeIds as $storeId){
-//
-//                        $store = Store::find(trim($storeId));
-//                        $storeName .= $store->store_id." - ".$store->store_name_1." (".$store->store_name_2.")";
-//
-//                        if($storeId != $storeIds[count($storeIds)-1]){
-//                                $storeName .= ", ";
-//                        }
-//
-//                    }
-
                     $countStore = $item->employeeStores()->count();
 
                     if($countStore > 0){
@@ -141,7 +114,9 @@ class UserPromoterController extends Controller
 
                     $storeSpv = [];
                     foreach ($storeIds as $storeId){
-                        $storeSpv[] = $storeId->store->user->name;
+                        if (isset($storeId->store->user->name)) {
+                            $storeSpv[] = $storeId->store->user->name;
+                        }
                     }
 
                     $newStoreSpv = array_unique($storeSpv);
@@ -158,7 +133,6 @@ class UserPromoterController extends Controller
 
                 })
                 ->addColumn('history', function ($item) {
-
 
                     $countStore = $item->historyEmployeeStores()->count();
 
@@ -216,6 +190,7 @@ class UserPromoterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:3|confirmed',
             'role' => 'required|string',
+            'join_date' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
@@ -241,19 +216,7 @@ class UserPromoterController extends Controller
         $user = User::create($request->all());
 
         // /* Insert user relation */
-        // if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
-        //     /* Employee One Store */
-        //     if($request['store_id']){
-        //         $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-        //     }
-
-        //     /* Employee Multiple Store */
-        //     if($request['store_ids']){
-        //         foreach ($request['store_ids'] as $storeId) {
-        //             $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-        //         }
-        //     }
-        // }else{
+       
             /* Employee One Store */
             if($request['store_id']){
                 // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
@@ -273,7 +236,6 @@ class UserPromoterController extends Controller
                     ]);
                 }
             }
-        // }
 
         // If DM or Trainer
         if(isset($request->area)){
@@ -354,7 +316,12 @@ class UserPromoterController extends Controller
      */
     public function edit($id)
     {
-        $data = User::where('id', $id)->first();
+        $data = User::
+            where('users.id', $id)
+            ->join('employee_stores','users.id','employee_stores.user_id')
+            ->join('stores','employee_stores.store_id','stores.id')
+            ->select('users.*', 'stores.dedicate as dedicate')
+            ->first();
 
         return view('master.form.userpromoter-form', compact('data'));
     }
@@ -384,10 +351,10 @@ class UserPromoterController extends Controller
         }
 
         /* Delete if any relation exist in employee store */
-        // $empStore = EmployeeStore::where('user_id', $user->id);
-        // if($empStore->count() > 0){
-        //     $empStore->delete();
-        // }
+        $empStore = EmployeeStore::where('user_id', $user->id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
 
         if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
             /* SPV Multiple Store */

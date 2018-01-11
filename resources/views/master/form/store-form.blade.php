@@ -80,23 +80,11 @@
 								  class="display-hide" 
 								@endif
 					        >
-					          	<label class="col-sm-2">
-					          			<input type="radio" name="store_status" value="new" id="rNew" checked> NEW 
-				          			</label>
-					          	<label class="col-sm-2">
-					            	<input type="radio" name="store_status" value="old" id="rOld"> OLD
-				            	</label>
 			            	</div>	
 				          <div class="col-sm-9">
 				          	<div class="input-icon right" id="new_store">
 				          		<i class="fa"></i>
 				            	<input type="text" id="store_id" name="store_id" class="form-control" value="{{ @$data->store_id }}" placeholder="Input Store ID" readonly="readonly" />
-				            </div>
-
-				            <div class="input-icon right display-hide" style="margin-top: 10px" id="old_store">
-				          		<i class="fa"></i>
-				            	<select id="old_store_id" name="old_store_id"  class="select2select">
-				            	</select>
 				            </div>
 				          </div>
 				        </div>
@@ -117,6 +105,36 @@
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
 				            	<input type="text" id="store_name_2" name="store_name_2" class="form-control" value="{{ @$data->store_name_2 }}" placeholder="Input Store Name 2" />
+				            </div>
+				          </div>
+				        </div>
+
+				        <div class="form-group" id="no_telp_toko_div">
+				          <label class="col-sm-2 control-label">Store Phone Number</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="no_telp_toko" name="no_telp_toko" class="form-control" value="{{ @$data->no_telp_toko }}" placeholder="Input Store Phone Number" />
+				            </div>
+				          </div>
+				        </div>
+						
+						<div class="form-group" id="no_telp_pemilik_toko_div">
+				          <label class="col-sm-2 control-label">Store Owner Phone Number</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="no_telp_pemilik_toko" name="no_telp_pemilik_toko" class="form-control" value="{{ @$data->no_telp_pemilik_toko }}" placeholder="Input Store Owner Phone Number" />
+				            </div>
+				          </div>
+				        </div>
+
+						<div class="form-group" id="kepemilikan_toko_div">
+				          <label class="col-sm-2 control-label">Store Ownership Status</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="kepemilikan_toko" name="kepemilikan_toko" class="form-control" value="{{ @$data->kepemilikan_toko }}" placeholder="Input Ownership Status" />
 				            </div>
 				          </div>
 				        </div>
@@ -171,11 +189,12 @@
 					          <div class="input-group" style="width: 100%;">
 
 	                                <select class="select2select" name="classification" id="classification" required>
-										<option value="New Store" {{ (@$data->role == 'New Store') ? "selected" : "" }}>New Store</option>
-										<option value="Gold" {{ (@$data->role == 'Gold') ? "selected" : "" }}>Gold</option>
-										<option value="Platinum" {{ (@$data->role == 'Platinum') ? "selected" : "" }}>Platinum</option>
-										<option value="Silver" {{ (@$data->role == 'Silver') ? "selected" : "" }}>Silver</option>
-										<option value="Don`t have any classification" {{ (@$data->role == 'Don`t have any classification') ? "selected" : "" }}>Don`t have any classification</option>
+	                                	<option></option>
+										<option value="New Store">New Store</option>
+										<option value="Gold">Gold</option>
+										<option value="Platinum">Platinum</option>
+										<option value="Silver">Silver</option>
+										<option value="Don`t have any classification">Don`t have any classification</option>
 	                                </select>
 
 	                                <span class="input-group-addon display-hide">
@@ -210,7 +229,7 @@
 
 	                          <div class="input-group" style="width: 100%;">
 	     
-	                                <select class="select2select" name="subchannel_id" id="subchannel" required></select>
+	                                <select class="select2select" name="subchannel_id" id="subchannel"></select>
 	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
@@ -282,16 +301,6 @@
 	            }
 	        });
 
-	        $('#old_store_id').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
-	            return filterData('store', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
-	                })
-	            }
-	        }));
-
 	    	$('#subchannel').select2(setOptions('{{ route("data.subchannel") }}', 'Sub Channel', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
@@ -341,6 +350,7 @@
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
+	       setSelect2IfPatch($("#classification"), "{{ @$data->classification }}", "{{ @$data->classification }}");
 	       // setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
 
 	       updateDistributor();
@@ -367,39 +377,6 @@
 
         	})
 		}
-
-		$('input[type=radio][name=store_status]').change(function() {
-	        if (this.value == 'old') {
-	            $('#new_store').addClass('display-hide');
-	            $('#store_name_1_div').addClass('display-hide');
-	            $('#store_name_2_div').addClass('display-hide');
-	            $('#latitude_longitude_div').addClass('display-hide');
-	            $('#area_div').addClass('display-hide');
-	            
-	            $('#store_name_1').val('null');
-	            $('#classification').prop('required',false);
-	            $('#distributors').prop('required',false);
-	            $("#subchannel").empty().append('<option value="id">- select Sub Channel -</option>').val('id').trigger('change');
-	            $("#district").empty().append('<option value="id">- select District -</option>').val('id').trigger('change');
-
-
-	            $('#old_store').removeClass('display-hide');
-	        }
-	        else if (this.value == 'new') {
-	            $('#old_store').addClass('display-hide');
-
-	            $('#store_name_1_div').removeClass('display-hide');
-	            $('#store_name_2_div').removeClass('display-hide');
-	            $('#latitude_longitude_div').removeClass('display-hide');
-	            $('#area_div').removeClass('display-hide');
-	            
-	            $('#store_name_1').prop('aria-required',true);
-	            $('#classification').prop('required',true);
-	            $('#distributors').prop('required',true);
-
-	            $('#new_store').removeClass('display-hide');
-	        }
-	    });
 
 	</script>	
 

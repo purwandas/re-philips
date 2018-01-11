@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Master;
 
 use App\DmArea;
+use App\District;
 use App\EmployeeStore;
 use App\RsmRegion;
 use Illuminate\Http\Request;
@@ -159,6 +160,9 @@ class StoreController extends Controller
                                 'longitude' => $request['longitude'],
                                 'latitude' => $request['latitude'],
                                 'subchannel_id' => $request['subchannel_id'],
+                                'no_telp_toko' => $request['no_telp_toko'],
+                                'no_telp_pemilik_toko' => $request['no_telp_pemilik_toko'],
+                                'kepemilikan_toko' => $request['kepemilikan_toko'],
                                 'district_id' => $request['district_id'],
                             ]
                             );
@@ -175,5 +179,16 @@ class StoreController extends Controller
                 }
 
 
+    }
+
+    public function getStoreId(){
+        $result['store_id'] = $this->traitGetStoreId();
+            return $result;
+    }
+
+    public function getDistrict(){
+            $district = District::select('districts.id', 'districts.area_id','districts.name')->get();
+
+        return $district;
     }
 }

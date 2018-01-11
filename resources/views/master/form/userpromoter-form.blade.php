@@ -98,19 +98,6 @@
                                 	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
                                 	<option value="SMD Additional" {{ (@$data->role == 'SMD Additional') ? "selected" : "" }}>SMD Additional</option>
                                 	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option>
-
-                                	<!-- <option value="Driver" {{ (@$data->role == 'Driver') ? "selected" : "" }}>Driver</option>
-                                	<option value="Helper" {{ (@$data->role == 'Helper') ? "selected" : "" }}>Helper</option>
-                                	<option value="PCE" {{ (@$data->role == 'PCE') ? "selected" : "" }}>PCE</option>
-                                	<option value="RE Executive" {{ (@$data->role == 'RE Executive') ? "selected" : "" }}>RE Executive</option>
-                                	<option value="RE Support" {{ (@$data->role == 'RE Support') ? "selected" : "" }}>RE Support</option>
-                                	<option value="Supervisor" {{ (@$data->role == 'Supervisor') ? "selected" : "" }}>Supervisor</option>
-                                	<option value="Trainer" {{ (@$data->role == 'Trainer') ? "selected" : "" }}>Trainer</option>
-                                	<option value="Head Trainer" {{ (@$data->role == 'Head Trainer') ? "selected" : "" }}>Head Trainer</option>
-                                	<option value="Supervisor Hybrid" {{ (@$data->role == 'Supervisor Hybrid') ? "selected" : "" }}>Supervisor Hybrid</option>
-                                	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
-                                	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>Admin</option>                                	 -->
                                 </select>
                                	
                                 <span class="input-group-addon display-hide">
@@ -142,8 +129,28 @@
 				          </div>
 				        </div>
 
+				        <div class="form-group">
+				          <label class="col-sm-2 control-label">Join Date</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="join_date" name="join_date" class="form-control" value="{{ @$data->join_date }}" placeholder="Join Date" />
+				            </div>
+				          </div>
+				        </div>
+
 				        <div id="statusContent" class="display-hide">
-					        <div class="form-group" style="margin-bottom: 0px;">
+				        	<div class="form-group">
+					          <label class="col-sm-2 control-label">Grading</label>
+					          <div class="col-sm-9">
+					          	<div class="input-icon right">
+					          		<i class="fa"></i>
+					            	<input type="text" id="grading" name="grading" class="form-control" value="{{ @$data->grading }}" placeholder="Grading" />
+					            </div>
+					          </div>
+					        </div>
+
+					        <div class="form-group">
 	                            <label class="control-label col-md-2">Status                               
 	                            </label>
 	                            <div class="col-md-9">
@@ -529,8 +536,8 @@
 				$('#statusCheck').attr('required', 'required');
 
 				if(role == 'Salesman Explorer'){
-					$('input[type=radio][name=status][value=mobile]').attr('checked', 'checked');
-//				    $('#statusContent').removeClass('display-hide');
+					$('input[type=radio][name=status][value=mobile]').prop('checked', true);
+				    // $('#statusContent').removeClass('display-hide');
 					$('#dedicate').prop('required',false);
 				}else{
 					$('#statusContent').removeClass('display-hide');
@@ -664,6 +671,19 @@
 			return false;
 		} 
 
+		function initDateTimePicker(){
+
+            // Filter Month
+            $('#join_date').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+            // Set to Month now
+            $('#join_date').val(moment().format('YYYY-MM-DD'));
+        }
+
 		/*
 		 * Select2 change
 		 *
@@ -675,6 +695,9 @@
 		});
 
 		$(document).ready(function(){
+			
+			initDateTimePicker();
+
 		    // On Change status
 		    $('input[type=radio][name=status]').change(function() {
 		        resetStore();
