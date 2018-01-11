@@ -151,6 +151,8 @@ class AuthController extends Controller
 		$data['photo'] = $user->photo;
 	    $data['name'] = $user->name;
 	    $data['email'] = $user->email;
+	    $data['join_date'] = $user->join_date;
+	    $data['grading'] = $user->grading;
 
 		// the token is valid and we have found the user via the sub claim
 		return response()->json($data);
