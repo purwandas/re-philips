@@ -11,6 +11,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\Store;
+use App\District;
 use App\EmployeeStore;
 use App\User;
 use DB;
@@ -33,6 +34,40 @@ class FeedbackController extends Controller
         $user = User::where('id', $param)->first();
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
+        $promoters = User::whereIn('id', $promoterIds)->get();
+
+        return response()->json($promoters);
+    }
+
+    public function getListStoreNearby(Request $request)
+    {
+        $content = json_decode($request->getContent(), true);
+        $distance = 250;
+
+        $user = JWTAuth::parseToken()->authenticate();
+        $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+
+        $data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->where('latitude', '!=', null)
+                    ->where('longitude', '!=', null)
+                    ->whereNotIn('stores.id', $storeIds)
+                    ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name');
+//                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');
+
+        // This will calculate the distance in km
+        // if you want in miles use 3959 instead of 6371
+        $haversine = '( 6371 * acos( cos( radians('.$content['latitude'].') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('.$content['longitude'].') ) + sin( radians('.$content['latitude'].') ) * sin( radians( latitude ) ) ) ) * 1000';
+        $data = $data->selectRaw("{$haversine} AS distance")->orderBy('distance', 'asc')->whereRaw("{$haversine} <= ?", [$distance])
+            ->groupBy('store_id');
+
+        return response()->json($data->get());
+    }
+
+    public function getListPromoterFeedbackWithParamStore($param){
+
+        $storeIds = Store::where('store_id', $param)->pluck('id');
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
         $promoters = User::whereIn('id', $promoterIds)->get();
 
