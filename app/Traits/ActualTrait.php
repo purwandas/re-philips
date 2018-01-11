@@ -848,7 +848,7 @@ trait ActualTrait {
             ]);
 
             /* Check if Promoter was hybrid or not */
-            if ($summary->title_of_promoter == 'HYBRID') {
+            if ($summary->title_of_promoter == 'HYBRID' || $summary->title_of_promoter == 'DA' || $summary->title_of_promoter == 'PC') {
 
                 if ($summary->target_dapc > 0) {
                     $summary->update([
