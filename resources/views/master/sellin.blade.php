@@ -77,7 +77,8 @@
             <br><br>
 
         </div>
-        <div class="portlet light bordered">
+
+        <div class="portlet light bordered display-hide" id="dataContent">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-share-alt font-blue"></i>
@@ -135,6 +136,29 @@
      * ACCOUNT
      *
      */
+
+    var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
+    var url = 'datatable/editsellin';
+    var order = [ [0, 'desc'] ];
+    var columnDefs = [{"className": "dt-center", "targets": [0]}];
+    var tableColumns = [
+                        {data: 'id', name: 'id'},
+                        {data: 'user_name', name: 'user_name'},
+                        {data: 'user_nik', name: 'user_nik'},
+                        {data: 'store_name_1', name: 'store_name_1'},
+                        {data: 'store_name_2', name: 'store_name_2'},
+                        {data: 'store_id', name: 'store_id'},
+                        {data: 'product', name: 'product'},
+                        {data: 'quantity', name: 'quantity'},
+                        {data: 'action', name: 'action', searchable: false, sortable: false},
+                        ];
+
+    // var exportButton = '#export';
+
+    var paramFilter = ['sellInTable', $('#sellInTable'), url, tableColumns, columnDefs, order];//, exportButton];
+
+    var paramReset = [filterId, 'sellInTable', $('#sellInTable'), url, tableColumns, columnDefs, order];
+
     $(document).ready(function () {
 
         $.ajaxSetup({
@@ -144,31 +168,31 @@
         });
 
         // Set data for Data Table
-        var table = $('#sellInTable').dataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                url: "{{ route('datatable.editsellin') }}",
-                type: 'POST',
-            },
-            "rowId": "id",
-            "columns": [
-                {data: 'id', name: 'id'},
-                {data: 'user_name', name: 'user_name'},
-                {data: 'user_nik', name: 'user_nik'},
-                {data: 'store_name_1', name: 'store_name_1'},
-                {data: 'store_name_2', name: 'store_name_2'},
-                {data: 'store_id', name: 'store_id'},
-                {data: 'product', name: 'product'},
-                {data: 'quantity', name: 'quantity'},
-                {data: 'action', name: 'action', searchable: false, sortable: false},
-            ],
-            "columnDefs": [
-                {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [3]},
-            ],
-            "order": [ [0, 'desc'] ],
-        });
+        // var table = $('#sellInTable').dataTable({
+        //     "processing": true,
+        //     "serverSide": true,
+        //     "ajax": {
+        //         url: "{{ route('datatable.editsellin') }}",
+        //         type: 'POST',
+        //     },
+        //     "rowId": "id",
+        //     "columns": [
+        //         {data: 'id', name: 'id'},
+        //         {data: 'user_name', name: 'user_name'},
+        //         {data: 'user_nik', name: 'user_nik'},
+        //         {data: 'store_name_1', name: 'store_name_1'},
+        //         {data: 'store_name_2', name: 'store_name_2'},
+        //         {data: 'store_id', name: 'store_id'},
+        //         {data: 'product', name: 'product'},
+        //         {data: 'quantity', name: 'quantity'},
+        //         {data: 'action', name: 'action', searchable: false, sortable: false},
+        //     ],
+        //     "columnDefs": [
+        //         {"className": "dt-center", "targets": [0]},
+        //         {"className": "dt-center", "targets": [3]},
+        //     ],
+        //     "order": [ [0, 'desc'] ],
+        // });
 
 
         // Delete data with sweet alert
@@ -216,7 +240,6 @@
 
         initSelect2();
         initDateTimePicker();
-        initSelect2Account();
 
     });
 
@@ -245,30 +268,9 @@
 
                     $('#quantity').val(data.quantity);
 
-                    // setSelect2IfPatchModal($("#globalchannel"), data.globalchannel_id, data.global_channel.name);
-
         })
 
     });
-
-    function initSelect2Account(){
-
-        /*
-         * Select 2 init
-         *
-         */
-
-         $('#globalchannel').select2(setOptions('{{ route("data.globalchannel") }}', 'Global Channel', function (params) {
-            return filterData('name', params.term);
-        }, function (data, params) {
-            return {
-                results: $.map(data, function (obj) {
-                    return {id: obj.id, text: obj.name}
-                })
-            }
-        }));
-
-    }
 
     function initSelect2(){
 
@@ -368,6 +370,24 @@
                 filters['searchMonth'] = this.value;
                 console.log(filters);
             });
+
+        });
+
+        $("#resetButton").click( function(){
+
+            // Hide Table Content
+            $('#dataContent').addClass('display-hide');
+
+            // Set to Month now
+            $('#filterMonth').val(moment().format('MMMM YYYY'));
+            filters['searchMonth'] = $('#filterMonth').val();
+
+        });
+
+        $("#filterButton").click( function(){
+
+            // Set Table Content
+            $('#dataContent').removeClass('display-hide');
 
         });
 
