@@ -17,7 +17,7 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-        'store_id', 'store_name_1', 'store_name_2', 'dedicate', 'longitude', 'latitude', 'channel', 'subchannel_id', 'district_id', 'user_id', 'address', 'classification'
+        'store_id', 'store_name_1', 'store_name_2', 'dedicate', 'longitude', 'latitude', 'channel', 'subchannel_id', 'district_id', 'user_id', 'address', 'classification', 'no_telp_toko', 'no_telp_pemilik_toko', 'kepemilikan_toko'
     ];
 
     /* Metode tambahan untuk model Branch Sport. */

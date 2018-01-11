@@ -65,6 +65,9 @@
                             <th> Longitude</th>
                             <th> Latitude</th>
                             <th> Address</th>
+                            <th> Store Phone Number</th>
+                            <th> Store Owner Phone Number</th>
+                            <th> Store Ownership Status</th>
                             <th> Supervisor </th>
                             <th> Options </th>                        
                         </tr>
@@ -119,6 +122,9 @@
                 {data: 'longitude', name: 'longitude'},
                 {data: 'latitude', name: 'latitude'},
                 {data: 'address', name: 'address'},
+                {data: 'no_telp_toko', name: 'no_telp_toko'},
+                {data: 'no_telp_pemilik_toko', name: 'no_telp_pemilik_toko'},
+                {data: 'kepemilikan_toko', name: 'kepemilikan_toko'},
                 {data: 'spv_name', name: 'spv_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ],
