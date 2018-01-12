@@ -10,6 +10,7 @@ use App\DmArea;
 use App\EmployeeStore;
 use App\Attendance;
 use App\AttendanceDetail;
+use App\SalesmanDedicate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -73,14 +74,15 @@ class UserPromoterController extends Controller
         return Datatables::of($filter->get())
                 ->editColumn('role',function ($item) {
                     
-                    if ($item->role == 'DM') {
+                    if ($item->role == 'Salesman Explorer') {
                         $dedicate = '';
-                        $dmarea = DmArea::where('user_id', $item->id)->get();
-                        foreach ($dmarea as $key => $value) {
-                            $dedicate = $value->dedicate;
+                        $salesmanDedicate = SalesmanDedicate::where('user_id',$item->id)->first();
+                        if (isset($salesmanDedicate)) {
+                            $dedicate = ' - '.$salesmanDedicate->dedicate;
                         }
-                        return $item->role.' - '.$dedicate;
+                        return $item->role.$dedicate;
                     }
+
 
                     return $item->role;                    
                     
@@ -294,6 +296,15 @@ class UserPromoterController extends Controller
                             'details' => $newEmStore2,
                     ]);
         }
+
+        if($request['role'] == 'Salesman Explorer'){
+            if (isset($request['salesman_dedicate'])) {
+                SalesmanDedicate::create([
+                    'user_id' => $user->id,
+                    'dedicate' => $request['salesman_dedicate'],
+                ]);
+            }
+        }
         
         return response()->json(['url' => url('userpromoter')]);
     }
@@ -324,7 +335,14 @@ class UserPromoterController extends Controller
             ->select('users.*', 'stores.dedicate as dedicate')
             ->first();
 
-        return view('master.form.userpromoter-form', compact('data'));
+        if ($data->role == 'Salesman Explorer') {
+            $salesmanDedicate = SalesmanDedicate::
+                where('user_id',$data->id)
+                ->first();
+            // $salesmanDedicate = $data->id;
+        }
+
+        return view('master.form.userpromoter-form', compact('data','salesmanDedicate'));
     }
 
     /**
@@ -439,6 +457,19 @@ class UserPromoterController extends Controller
         $user->update($requestNew->all()); 
 
         /* Insert user relation */
+
+            if($request['role'] == 'Salesman Explorer'){
+                if (isset($request['salesman_dedicate'])) {
+                    $salesmanDedicate = SalesmanDedicate::where('user_id',$user->id);
+                    if ($salesmanDedicate->count() >0) {
+                        $salesmanDedicate->delete();
+                    }
+                    SalesmanDedicate::create([
+                        'user_id' => $user->id,
+                        'dedicate' => $request['salesman_dedicate'],
+                    ]);
+                }
+            }
         
             EmployeeStore::where('user_id',$user->id)->delete();
 
@@ -462,38 +493,6 @@ class UserPromoterController extends Controller
                 }
             }
 
-        // If DM
-        if($request->area){
-            if($request['role'] == 'DM') {
-                $dmArea = DmArea::where('user_id', $user->id);
-                if($dmArea->count() > 0){
-                    $dmArea->first()->update(['area_id' => $request->area]);
-                    $dmArea->first()->update(['dedicate' => $request->dedicate]);
-                }else{
-                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
-                }
-            }elseif($request['role'] == 'Trainer') {
-                $trainerArea = TrainerArea::where('user_id', $user->id);
-                if($trainerArea->count() > 0){
-                    $trainerArea->first()->update(['area_id' => $request->area]);
-                }else{
-                    TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
-                }
-            }
-
-            
-        }
-        // If RSM
-        if($request->region){
-            $rsmRegion = RsmRegion::where('user_id', $user->id);
-        
-            if($rsmRegion->count() > 0){
-                $rsmRegion->first()->update(['region_id' => $request->region]);
-            }else{
-                RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
-            }
-        }
-
         if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
             /* Delete Image */
             $imagePath = explode('/', $oldPhoto);
@@ -514,27 +513,11 @@ class UserPromoterController extends Controller
         }
 
         $emStore = HistoryEmployeeStore::where('user_id', $user->id)->orderBy('id', 'desc')->first();
-        // $emStore2 = $emStore->details;
+
         $emStore2='';
             if (isset($emStore->details)) {
                 $emStore2 = $emStore->details;
             }
-        // $newEmStore = $request 'store_id';
-        // $newEmStore2 = implode(",",$newEmStore);
-        // echo response()->json($user);
-        // echo response()->json($emStore2);
-        // echo response()->json($newEmStore);
-
-        // foreach ($emStore as $key => $value) {
-        //     foreach ($newEmStore as $key2 => $value2) {
-        //         if ($value == $value2) {
-        //             $stay[] = $value;
-        //             $c = deleteElement($value2,$c);
-        //             $d = deleteElement($value2,$d);
-        //         }
-        //     }
-        // }
-        // if (isset($stay)) {
         
             if($request['store_id']){
                 $newEmStore = $request->store_id;
@@ -560,29 +543,6 @@ class UserPromoterController extends Controller
                         ]);
                 }
             }
-        // }
-
-
-        // if (isset($stay)) {
-        //     foreach ($c as $key => $value) {
-        //             $headerDetails->push($value);
-        //     }
-        //     foreach ($stay as $key => $value) {
-        //             $headerDetails->push($value);
-        //     }
-        //     foreach ($d as $key => $value) {
-        //             $headerDetails->push($value);
-        //     }
-        // }
-
-        // function deleteElement( $item, $array ) {
-        //     $index = array_search($item, $array);
-        //     if ( $index !== false ) {
-        //         unset( $array[$index] );
-        // }
-        //     return $array;
-        // }
-        
 
         return response()->json(
             [
