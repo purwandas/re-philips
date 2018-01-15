@@ -37,6 +37,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/category-product', 'Api\Master\CategoryController@all');
 	Route::get('/category-product/{param}', 'Api\Master\CategoryController@allWithParam');
     Route::get('/store', 'Api\Master\StoreController@all');    
+    Route::get('/get-arina', 'Api\Master\StoreController@getArina');    
 	Route::get('/store-promoter', 'Api\Master\StoreController@byPromoter');
 	Route::post('/store-area', 'Api\Master\StoreController@byArea');
     Route::post('/store-create', 'Api\Master\StoreController@create');
