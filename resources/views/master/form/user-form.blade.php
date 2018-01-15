@@ -140,7 +140,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<select class="select2select" name="dedicate" id="dedicate" required>
+				            	<select class="select2select" name="dedicate" id="dedicate">
 				            		<option></option>
 									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
 									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
@@ -476,6 +476,7 @@
 			if(role == 'DM'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
 
@@ -696,6 +697,8 @@
 		    //     $("#store").val('').change();
 		    //     $("#stores").val('').change();
 		    // });
+
+		    // $('div').removeClass('display-hide');
 		});
 
 	</script>	
