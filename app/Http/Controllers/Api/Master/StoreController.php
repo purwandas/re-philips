@@ -165,7 +165,7 @@ class StoreController extends Controller
                                 'longitude' => $request['longitude'],
                                 'latitude' => $request['latitude'],
                                 'address' => $request['address'],
-                                'subchannel_id' => $request['subchannel_id'],
+//                                'subchannel_id' => $request['subchannel_id'],
                                 'no_telp_toko' => $request['no_telp_toko'],
                                 'no_telp_pemilik_toko' => $request['no_telp_pemilik_toko'],
                                 'kepemilikan_toko' => $request['kepemilikan_toko'],

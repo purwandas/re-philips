@@ -155,6 +155,26 @@
 				          </div>
 				        </div>
 
+						<div id="statusSpv" class="display-hide">
+					        <div class="form-group">
+	                            <label class="control-label col-md-2">Status
+	                            </label>
+	                            <div class="col-md-9">
+	                                <div class="mt-radio-list" data-error-container="#form_employee_status_error">
+	                                    <label class="mt-radio">
+	                                        <input id="statusSpvCheck" type="radio" name="status_spv" value="Promoter" {{ (@$data->status == 'Promoter') ? "checked" : "" }}> Promoter
+	                                        <span></span>
+	                                    </label>
+	                                    <label class="mt-radio">
+	                                        <input type="radio" name="status_spv" value="Demonstrator" {{ (@$data->status == 'Demonstrator') ? "checked" : "" }}> Demonstrator
+	                                        <span></span>
+	                                    </label>
+	                                </div>
+	                                <div id="form_employee_status_error"> </div>
+	                            </div>
+	                        </div>
+	                    </div>
+
 				        <div id="statusContent" class="display-hide">
 					        <div class="form-group">
 	                            <label class="control-label col-md-2">Status                               
@@ -465,6 +485,9 @@
             // STATUS
             $('#statusContent').addClass('display-hide');
             $('#statusCheck').removeAttr('required');
+            $('#statusSpv').addClass('display-hide');
+            $('#statusSpvCheck').removeAttr('required');
+
 		}
 
 		// Set and init dm and rsm
@@ -500,6 +523,10 @@
 			}
 
 			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
+			    if (role == 'Supervisor') {
+			       	$('#statusSpv').removeClass('display-hide');
+			       	console.log('spv');
+                }
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
 	            $('#stores').attr('required', 'required');
