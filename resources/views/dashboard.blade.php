@@ -66,7 +66,7 @@
 										<div id="table2" class="portlet box blue" style="width: 75%">
 											<div class="portlet-title" style="text-align: center">
 												<div style="font-size: 11pt;padding-top: 10px;">
-													<i class="fa fa-line-chart"></i>
+													<i class="fa fa-bar-chart"></i>
 													Total Achievement - Sell In </div>
 											</div>
 											<div id="portlet1" class="portlet-body" style="display: block;">
@@ -123,7 +123,7 @@
 										<div id="table2" class="portlet box blue" style="width: 75%">
 											<div class="portlet-title" style="text-align: center">
 												<div style="font-size: 11pt;padding-top: 10px;">
-													<i class="fa fa-line-chart"></i>
+													<i class="fa fa-bar-chart"></i>
 													Total Achievement - Sell Out </div>
 											</div>
 											<div id="portlet2" class="portlet-body" style="display: block;">
@@ -171,7 +171,7 @@
 									<div id="table3" class="portlet box blue" style="width: 100%">
 										<div class="portlet-title" style="text-align: center">
 											<div style="font-size: 11pt;padding-top: 10px;">
-												<i class="fa fa-line-chart"></i>
+												<i class="fa fa-bar-chart"></i>
 												Total Achievement - Salesman </div>
 										</div>
 										<div id="portlet2" class="portlet-body" style="display: block;">

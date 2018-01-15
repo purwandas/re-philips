@@ -445,6 +445,7 @@ class UserController extends Controller
 
         $requestNew['status'] = null;
         $requestNew['nik'] = null;
+        $requestNew['join_date'] = null;
 
         if($request['status']){
             $requestNew['status'] = $request['status'];
@@ -452,6 +453,10 @@ class UserController extends Controller
 
         if($request['nik']){
             $requestNew['nik'] = $request['nik'];
+        }
+
+        if($request['join_date']){
+            $requestNew['join_date'] = $request['join_date'];
         }
 
         $user->update($requestNew->all()); 

@@ -140,7 +140,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<select class="select2select" name="dedicate" id="dedicate" required>
+				            	<select class="select2select" name="dedicate" id="dedicate">
 				            		<option></option>
 									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
 									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
@@ -154,6 +154,26 @@
 				            </div>
 				          </div>
 				        </div>
+
+						<div id="statusSpv" class="display-hide">
+					        <div class="form-group">
+	                            <label class="control-label col-md-2">Status
+	                            </label>
+	                            <div class="col-md-9">
+	                                <div class="mt-radio-list" data-error-container="#form_employee_status_error">
+	                                    <label class="mt-radio">
+	                                        <input id="statusSpvCheck" type="radio" name="status_spv" value="Promoter" {{ (@$data->status == 'Promoter') ? "checked" : "" }}> Promoter
+	                                        <span></span>
+	                                    </label>
+	                                    <label class="mt-radio">
+	                                        <input type="radio" name="status_spv" value="Demonstrator" {{ (@$data->status == 'Demonstrator') ? "checked" : "" }}> Demonstrator
+	                                        <span></span>
+	                                    </label>
+	                                </div>
+	                                <div id="form_employee_status_error"> </div>
+	                            </div>
+	                        </div>
+	                    </div>
 
 				        <div id="statusContent" class="display-hide">
 					        <div class="form-group">
@@ -465,6 +485,9 @@
             // STATUS
             $('#statusContent').addClass('display-hide');
             $('#statusCheck').removeAttr('required');
+            $('#statusSpv').addClass('display-hide');
+            $('#statusSpvCheck').removeAttr('required');
+
 		}
 
 		// Set and init dm and rsm
@@ -476,6 +499,7 @@
 			if(role == 'DM'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
 
@@ -500,6 +524,10 @@
 			}
 
 			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
+			    if (role == 'Supervisor') {
+			       	$('#statusSpv').removeClass('display-hide');
+			       	console.log('spv');
+                }
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
 	            $('#stores').attr('required', 'required');
@@ -696,6 +724,8 @@
 		    //     $("#store").val('').change();
 		    //     $("#stores").val('').change();
 		    // });
+
+		    // $('div').removeClass('display-hide');
 		});
 
 	</script>	
