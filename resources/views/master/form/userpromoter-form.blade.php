@@ -56,6 +56,7 @@
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
+
 	        	<!-- MAIN CONTENT -->
 	        	<form id="form_user" class="form-horizontal" action="{{ url('userpromoter', @$data->id) }}" method="POST">	        	
 			        {{ csrf_field() }}
@@ -138,6 +139,27 @@
 				            </div>
 				          </div>
 				        </div>
+
+				        <div id="statusContentSalesman" class="display-hide">
+				        	<div class="form-group">
+					          <label class="col-sm-2 control-label">Dedicate</label>
+					          <div class="col-sm-9">
+					          	<div style="width: 100%;" class="input-group input-icon right">
+						          		<i class="fa"></i>
+	                                        <select class="select2select" name="salesman_dedicate" id="salesman_dedicate">
+	                                        	<option></option>
+												<option value="Traditional Retail"
+												{{ ( @$salesmanDedicate->dedicate == 'Traditional Retail' ) ? 'selected' : '' }}
+												>Traditional Retail</option>
+												<option value="Mother Care & Child"
+												{{ ( @$salesmanDedicate->dedicate == 'Mother Care & Child' ) ? 'selected' : '' }}
+												>Mother Care & Child</option>
+											</select>
+	                                        <span></span>
+	                                </div>
+	                            </div>
+					        </div>
+	                    </div>
 
 				        <div id="statusContent" class="display-hide">
 				        	<div class="form-group">
@@ -398,8 +420,13 @@
 
     <script>
     	var userId = "{{ collect(request()->segments())->last() }}";
+    	var kampret = '{{ @$salesmanDedicate->dedicate }}';
+
 
 		$(document).ready(function () {
+
+			var x = unescape("{{ @$salesmanDedicate->dedicate }}");
+			console.log(x);
 
 			$.ajaxSetup({
 	        	headers: {
@@ -474,7 +501,11 @@
                 width: '100%',
                 placeholder: 'Grading'
             });
-            
+
+            $('#salesman_dedicate').select2({
+                width: '100%',
+                placeholder: 'Dedicate'
+            });            
 
             setForm($('#role').val());
 
@@ -483,6 +514,8 @@
 		    	'{{( @$data->grading ) ? @$data->grading  : "" }}',
 		    	'{{( @$data->grading ) ? @$data->grading  : "" }}'
 		    );
+
+		  	
 
 		});
 
@@ -499,6 +532,8 @@
 
 			$('#dmContent').addClass('display-hide');
 			$('#rsmContent').addClass('display-hide');
+
+			$('#statusContentSalesman').addClass('display-hide');
 
 			// NIK
 			$('#nik').removeAttr('required');
@@ -517,12 +552,6 @@
 			resetForm();
 			resetStore();
 
-			if (role == 'Salesman Explorer') {
-				$('#storeContent').removeClass('display-hide');				
-				$('#multipleStoreContent').removeClass('display-hide');			
-	            $('#stores').attr('required', 'required');
-			}
-
 			if(!checkPromoter()){
 				$('input[type=radio][name=status]').prop('checked', false);
 			}
@@ -533,8 +562,10 @@
 				if(role == 'Salesman Explorer'){
 					$('input[type=radio][name=status][value=mobile]').prop('checked', true);
 					status = 'mobile';
-				    // $('#statusContent').removeClass('display-hide');
 				    $('#multipleStoreContent').removeClass('display-hide');
+				    $('#statusContentSalesman').removeClass('display-hide');
+				    $('#storeContent').removeClass('display-hide');				
+		            $('#stores').attr('required', 'required');
 					$('#dedicate').prop('required',false);
 				}else{
 					$('#statusContent').removeClass('display-hide');

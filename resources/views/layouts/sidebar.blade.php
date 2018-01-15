@@ -147,7 +147,7 @@
                 {{ Request::is('productfocussalesman') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-cubes"></i>
+                    <i class="fa fa-line-chart"></i>
                     <span class="title">Target</span>
                     <span class="arrow 
                         {{ Request::is('target') ? 'active open' : '' }}
@@ -192,12 +192,6 @@
                 <a href="{{ url('groupcompetitor') }}" class="nav-link nav-toggle">
                     <i class="fa fa-street-view"></i>
                     <span class="title">Group Competitor</span>
-                </a>
-            </li>
-            <li class="nav-item {{ Request::is('achievement') ? 'active open' : '' }}">
-                <a href="{{ url('achievement') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-trophy"></i>
-                    <span class="title">Achievement</span>
                 </a>
             </li>
 
@@ -311,7 +305,7 @@
             {{ Request::is('tbatreport') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title">Sales</span>
                     <span class="arrow 
                     {{ Request::is('sellinreport') ? 'active open' : '' }} 
@@ -361,21 +355,21 @@
             </li>
             <li class="nav-item {{ Request::is('sohreport') ? 'active open' : '' }}">
                 <a href="{{ url('sohreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title">SOH</span>                    
                 </a>
             </li>
 
             <li class="nav-item {{ Request::is('competitoractivityreport') ? 'active open' : '' }}">
                 <a href="{{ url('competitoractivityreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title">Competitor Activity</span>                    
                 </a>
             </li>
 
             <li class="nav-item {{ Request::is('promoactivityreport') ? 'active open' : '' }}">
                 <a href="{{ url('promoactivityreport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title">Promo Activity </span>                    
                 </a>
             </li>
@@ -385,7 +379,7 @@
             {{ Request::is('posmactivityreport') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title">ISE </span>   
                     <span class="arrow 
                     {{ Request::is('displaysharereport') ? 'active open' : '' }}
@@ -408,7 +402,7 @@
 
             <li class="nav-item {{ Request::is('maintenancerequest') ? 'active open' : '' }}">
                 <a href="{{ url('maintenancerequest') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title">Maintenance Request</span>
                 </a>
             </li>
@@ -416,7 +410,7 @@
 
             <li class="nav-item {{ Request::is('attendancereport') ? 'active open' : '' }}">
                 <a href="{{ url('attendancereport') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-file-text-o"></i>
                     <span class="title"> Attendance </span>                    
                 </a>
             </li>
@@ -425,16 +419,23 @@
 
                     <li class="nav-item {{ Request::is('visitplan') ? 'active open' : '' }}">
                         <a href="{{ url('visitplan') }}" class="nav-link nav-toggle">
-                            <i class="fa fa-cog"></i>
+                            <i class="fa fa-file-text-o"></i>
                             <span class="title"> Visit Plan </span>
                         </a>
                     </li>
 
                     <li class="nav-item {{ Request::is('salesmanreport') ? 'active open' : '' }}">
                     <a href="{{ url('salesmanreport') }}" class="nav-link nav-toggle">
-                        <i class="fa fa-cog"></i>
+                        <i class="fa fa-file-text-o"></i>
                         <span class="title"> Salesman Report </span>
                     </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('achievement') ? 'active open' : '' }}">
+                        <a href="{{ url('achievement') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Achievement</span>
+                        </a>
                     </li>
 
                 @endif
@@ -455,8 +456,8 @@
             </li>
             <li class="nav-item {{ Request::is('product-knowledge*') ? 'active open' : '' }}">
                 <a href="{{ url('product-knowledge') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-edit"></i>
-                    <span class="title">Product Knowledge</span>
+                    <i class="fa fa-book"></i>
+                    <span class="title">Guidelines</span>
                 </a>
             </li>
 
@@ -488,7 +489,7 @@
             </li>
             <li class="nav-item {{ Request::is('quiz*') ? 'active open' : '' }}">
                 <a href="{{ url('quiz') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-edit"></i>
+                    <i class="fa fa-list-alt"></i>
                     <span class="title">Quiz</span>
                 </a>
             </li>
@@ -513,7 +514,7 @@
             </li>
             <li class="nav-item {{ Request::is('messageToAdmin') ? 'active open' : '' }}">
                 <a href="{{ url('messageToAdmin') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-envelope"></i>
                     <span class="title">Message</span>                    
                 </a>
             </li>
