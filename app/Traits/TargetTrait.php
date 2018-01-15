@@ -513,7 +513,7 @@ trait TargetTrait {
         }
 
         /* Check if Promoter was hybrid or not */
-        if($targetAfter->title_of_promoter == 'HYBRID') {
+        if($targetAfter->title_of_promoter == 'HYBRID' || $targetAfter->title_of_promoter == 'DA' || $targetAfter->title_of_promoter == 'PC') {
 
             $targetAfter->update([
                 'target_dapc' => $targetAfter->target_da + $targetAfter->target_pc
