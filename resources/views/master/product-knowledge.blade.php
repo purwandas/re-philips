@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Product Knowledge
-            <small>manage product knowledge</small>
+        <h1>Guidelines
+            <small>manage guidelines</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Product Knowledge Management</span>
+        <span class="active">Guidelines Management</span>
     </li>
 </ul>
 @endsection
@@ -30,7 +30,7 @@
 			<div class="portlet-title">
 				<div class="caption">
 					<i class="fa fa-edit font-blue"></i>
-					<span class="caption-subject font-blue bold uppercase">PRODUCT KNOWLEDGE</span>
+					<span class="caption-subject font-blue bold uppercase">GUIDE LINES</span>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">

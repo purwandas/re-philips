@@ -13,6 +13,7 @@ use App\Reports\SummaryTargetActual;
 use App\Reports\HistoryTargetActual;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 
 class AchievementController extends Controller
 {
