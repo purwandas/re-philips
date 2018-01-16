@@ -156,7 +156,7 @@ class StoreController extends Controller
                 try {
                     $storeID = $this->traitGetStoreId();
                     // return response()->json($storeID);
-                    DB::transaction(function () use ($request, $storeID) {
+                    DB::transaction(function () use ($request, $storeID, $user) {
                         $store = Store::create(
                             [
                                 'store_id' => $storeID,
@@ -172,6 +172,12 @@ class StoreController extends Controller
                                 'district_id' => $request['district_id'],
                             ]
                             );
+                        $EmployeeStore = EmployeeStore::create(
+                            [
+                                'user_id' => $user->id,
+                                'store_id' => $store->id,
+                            ]
+                        );
                     });
 
                     // Check store after insert
