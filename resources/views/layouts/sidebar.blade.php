@@ -438,6 +438,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item {{ Request::is('salesmanachievement') ? 'active open' : '' }}">
+                        <a href="{{ url('salesmanachievement') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Salesman Achievement</span>
+                        </a>
+                    </li>
+
                 @endif
 
             @endif
