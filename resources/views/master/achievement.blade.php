@@ -127,46 +127,36 @@
                                 <th> Target PF MCC </th>
                                 <th> Actual PF MCC </th>
 
-                                <th> Target DA w1 </th>
-                                <th> Actual DA w1</th>
-                                <th> Target DA w2 </th>
-                                <th> Actual DA w2 </th>
-                                <th> Target DA w3 </th>
-                                <th> Actual DA w3 </th>
-                                <th> Target DA w4 </th>
-                                <th> Actual DA w4 </th>
-                                <th> Target DA w5 </th>
-                                <th> Actual DA w5 </th>
-                                <th> Target PC w1 </th>
-                                <th> Actual PC w1 </th>
-                                <th> Target PC w2 </th>
-                                <th> Actual PC w2 </th>
-                                <th> Target PC w3 </th>
-                                <th> Actual PC w3 </th>
-                                <th> Target PC w4 </th>
-                                <th> Actual PC w4 </th>
-                                <th> Target PC w5 </th>
-                                <th> Actual PC w5 </th>
-                                <th> Target MCC w1 </th>
-                                <th> Actual MCC w1 </th>
-                                <th> Target MCC w2 </th>
-                                <th> Actual MCC w2 </th>
-                                <th> Target MCC w3 </th>
-                                <th> Actual MCC w3 </th>
-                                <th> Target MCC w4 </th>
-                                <th> Actual MCC w4 </th>
-                                <th> Target MCC w5 </th>
-                                <th> Actual MCC w5 </th>
-
-                                <th> Sum Target Store</th>
-                                <th> Sum Actual Store</th>
-                                <th> Sum Target Area</th>
-                                <th> Sum Actual Area</th>
-                                <th> Sum Target Region</th>
-                                <th> Sum Actual Region</th>
-
-
-
+                                <th> Target DA Week 1 </th>
+                                <th> Actual DA Week 1</th>
+                                <th> Target DA Week 2 </th>
+                                <th> Actual DA Week 2 </th>
+                                <th> Target DA Week 3 </th>
+                                <th> Actual DA Week 3 </th>
+                                <th> Target DA Week 4 </th>
+                                <th> Actual DA Week 4 </th>
+                                <th> Target DA Week 5 </th>
+                                <th> Actual DA Week 5 </th>
+                                <th> Target PC Week 1 </th>
+                                <th> Actual PC Week 1 </th>
+                                <th> Target PC Week 2 </th>
+                                <th> Actual PC Week 2 </th>
+                                <th> Target PC Week 3 </th>
+                                <th> Actual PC Week 3 </th>
+                                <th> Target PC Week 4 </th>
+                                <th> Actual PC Week 4 </th>
+                                <th> Target PC Week 5 </th>
+                                <th> Actual PC Week 5 </th>
+                                <th> Target MCC Week 1 </th>
+                                <th> Actual MCC Week 1 </th>
+                                <th> Target MCC Week 2 </th>
+                                <th> Actual MCC Week 2 </th>
+                                <th> Target MCC Week 3 </th>
+                                <th> Actual MCC Week 3 </th>
+                                <th> Target MCC Week 4 </th>
+                                <th> Actual MCC Week 4 </th>
+                                <th> Target MCC Week 5 </th>
+                                <th> Actual MCC Week 5 </th>
 
                             </tr>
                             </thead>
@@ -257,13 +247,7 @@
                             {data: 'target_mcc_w4', name: 'target_mcc_w4'}, 
                             {data: 'actual_mcc_w4', name: 'actual_mcc_w4'}, 
                             {data: 'target_mcc_w5', name: 'target_mcc_w5'}, 
-                            {data: 'actual_mcc_w5', name: 'actual_mcc_w5'}, 
-                            {data: 'sum_target_store', name: 'sum_target_store'}, 
-                            {data: 'sum_actual_store', name: 'sum_actual_store'}, 
-                            {data: 'sum_target_area', name: 'sum_target_area'}, 
-                            {data: 'sum_actual_area', name: 'sum_actual_area'}, 
-                            {data: 'sum_target_region', name: 'sum_target_region'}, 
-                            {data: 'sum_actual_region', name: 'sum_actual_region'}, 
+                            {data: 'actual_mcc_w5', name: 'actual_mcc_w5'},
                             ];
 
 

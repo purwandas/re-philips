@@ -287,7 +287,7 @@ $(document).on("click", ".open-history-employee-store-modal", function () {
 
     var getDataUrl = $(this).data('url');
     var userId = $(this).data('id');
-    var bgAktif = 'style="background-color: cyan;"';
+    var bgAktif = 'style="background-color: yellow;"';
     var storeAktif = '<p> << NOW </p>';
     var cek = 0;
     content.innerHTML = "";

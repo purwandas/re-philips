@@ -258,6 +258,7 @@ class OnceController extends Controller
     public function createMaster(){
         if(Auth::user()){
             if(Auth::user()->role == 'Master'){
+                $this->createGlobalChannel();
                 $this->createRegion();
                 $this->createGroupProduct();
                 $this->createGroup();
@@ -265,7 +266,6 @@ class OnceController extends Controller
 //                $this->createAccountType();
 //                $this->createAccount();
 //                $this->createPosm();
-                $this->createGlobalChannel();
             }
         }  
 

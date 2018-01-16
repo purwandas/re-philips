@@ -321,6 +321,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
     Route::get('achievement', 'Master\AchievementController@achievementIndex');
+    Route::get('salesmanachievement', 'Master\AchievementController@salesmanAchievementIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');
