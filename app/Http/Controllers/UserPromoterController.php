@@ -337,12 +337,13 @@ class UserPromoterController extends Controller
 
         if ($data->role == 'Salesman Explorer') {
             $salesmanDedicate = SalesmanDedicate::
-                where('user_id',$data->id)
+                with('store')
+                ->where('user_id',$data->id)
                 ->first();
             // $salesmanDedicate = $data->id;
         }
 
-        return view('master.form.userpromoter-form', compact('data','salesmanDedicate'));
+        return view('master.form.userpromoter-form', compact('data','SalesmanDedicate'));
     }
 
     /**

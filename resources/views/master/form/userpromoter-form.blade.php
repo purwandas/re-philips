@@ -459,7 +459,8 @@
 	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
 	            if($('#role').val() != 'Salesman Explorer')
 	            {
-            		filters['byDedicate'] = $('#dedicate').val();
+            		// filters['byDedicate'] = $('#dedicate').val();
+            		filters['byDedicateSpv'] = $('#dedicate').val();
 	        	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
@@ -476,7 +477,8 @@
 		        }
 		        if($('#role').val() != 'Salesman Explorer')
 		        {
-	        		filters['byDedicate'] = $('#dedicate').val();
+	        		// filters['byDedicate'] = $('#dedicate').val();
+	        		filters['byDedicateSpv'] = $('#dedicate').val();
 		    	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
