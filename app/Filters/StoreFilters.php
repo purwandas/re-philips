@@ -42,7 +42,7 @@ class StoreFilters extends QueryFilters
     }
 
     // get all different store ID
-    public function bySpvNew($value) {
+    public function bySpvNew() {
         return $this->builder->groupBy('store_id');
     }
 
@@ -53,7 +53,13 @@ class StoreFilters extends QueryFilters
 
     // Ordering by dedicate SPV
     public function byDedicateSpv($value) {
-        return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);
+        
+        if ($value=="HYBRID") {
+            return $this->builder->whereIn('dedicate', ['DA','PC','HYBRID']);
+        }else{
+            return $this->builder->where('dedicate',$value);
+        }
+        // return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);
     }
 
 

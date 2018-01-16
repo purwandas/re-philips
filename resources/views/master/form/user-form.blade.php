@@ -135,26 +135,6 @@
 				          </div>
 				        </div>
 
-				        <div id="dedicateContent" class="display-hide form-group">
-				          <label class="col-sm-2 control-label">Dedicate</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<select class="select2select" name="dedicate" id="dedicate">
-				            		<option></option>
-									<option value="DA" {{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
-									<option value="PC" {{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
-									<option value="MCC" {{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>MCC</option>
-									<option value="HYBRID" {{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>HYBRID</option>
-                                </select>
-
-                                <span class="input-group-addon display-hide">
-                                	<i class="fa"></i>
-                                </span>
-				            </div>
-				          </div>
-				        </div>
-
 						<div id="statusSpv" class="display-hide">
 					        <div class="form-group">
 	                            <label class="control-label col-md-2">Status
@@ -166,7 +146,7 @@
 	                                        <span></span>
 	                                    </label>
 	                                    <label class="mt-radio">
-	                                        <input type="radio" name="status_spv" value="Demonstrator" {{ (@$data->status == 'Demonstrator') ? "checked" : "" }}> Demonstrator
+	                                        <input id="statusSpvCheck2" type="radio" name="status_spv" value="Demonstrator" {{ (@$data->status == 'Demonstrator') ? "checked" : "" }}> Demonstrator
 	                                        <span></span>
 	                                    </label>
 	                                </div>
@@ -174,6 +154,46 @@
 	                            </div>
 	                        </div>
 	                    </div>
+
+	                    <div id="dedicateContent" class="display-hide form-group">
+				          <label class="col-sm-2 control-label">Dedicate</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<select class="select2select" name="dedicate" id="dedicate">
+				            		<option></option>
+									<option value="DA" 
+										{{ (@$spvDedicate->dedicate == 'DA') ? "selected" : "" }}
+										{{ (@$spvDemoDedicate->store->dedicate == 'DA') ? "selected" : "" }}
+										>
+										DA
+									</option>
+									<option value="PC" 
+										{{ (@$spvDedicate->dedicate == 'PC') ? "selected" : "" }}
+										{{ (@$spvDemoDedicate->store->dedicate == 'PC') ? "selected" : "" }}
+										>
+										PC
+									</option>
+									<option value="MCC" 
+										{{ (@$spvDedicate->dedicate == 'MCC') ? "selected" : "" }}
+										{{ (@$spvDemoDedicate->store->dedicate == 'MCC') ? "selected" : "" }}
+										>
+										MCC
+									</option>
+									<option value="HYBRID" 
+										{{ (@$spvDedicate->dedicate == 'HYBRID') ? "selected" : "" }}
+										{{ (@$spvDemoDedicate->store->dedicate == 'HYBRID') ? "selected" : "" }}
+										>
+										HYBRID
+									</option>
+                                </select>
+
+                                <span class="input-group-addon display-hide">
+                                	<i class="fa"></i>
+                                </span>
+				            </div>
+				          </div>
+				        </div>
 
 				        <div id="statusContent" class="display-hide">
 					        <div class="form-group">
@@ -437,7 +457,10 @@
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
 		        	filters['bySpvNew'] = $('#penampungUserId').val();
-		        	// filters['byDedicateSpv'] = $('#dedicate').val();
+		        	var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
+		        	if (statusSpv == "Demonstrator") {
+		        		filters['byDedicateSpv'] = "DA";
+		        	}
 		        }
 	            return filterData('store', params.term);
 	        }, function (data, params) {
@@ -488,6 +511,12 @@
             $('#statusSpv').addClass('display-hide');
             $('#statusSpvCheck').removeAttr('required');
 
+            //SPV
+            $('#dedicate').removeAttr('required');
+	       	$('#statusSpvCheck').removeAttr('required');
+	       	$( "#statusSpvCheck" ).prop( "checked",{{ (@$spvDedicate->user_id != '') ? "true" : "false" }} );
+	       	$( "#statusSpvCheck2" ).prop( "checked",{{ (@$spvDemo->user_id != '') ? "true" : "false" }} );
+
 		}
 
 		// Set and init dm and rsm
@@ -524,14 +553,26 @@
 			}
 
 			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
-			    if (role == 'Supervisor') {
-			       	$('#statusSpv').removeClass('display-hide');
-			       	console.log('spv');
-                }
+
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
 	            $('#stores').attr('required', 'required');
 	            $('#dedicateContent').removeClass('display-hide');
+
+	            if (role == 'Supervisor') {
+			       	$('#statusSpv').removeClass('display-hide');
+			       	$('#dedicate').attr('required', 'required');
+			       	$('#statusSpvCheck').attr('required', 'required');
+			       	var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
+			       	if (statusSpv) {
+				       	if (statusSpv == "Demonstrator") 
+				       	{
+				       		$('#dedicateContent').addClass('display-hide');
+				            $('#dedicate').removeAttr('required');
+				       	}
+				    }
+                }
+                
 			}
 
 			if(!checkAdmin()){
@@ -558,7 +599,8 @@
 
 			    if(!(typeof(status) === 'undefined')){
 			    	setStore(status);
-		    	}			
+		    	}
+
 			}
 		}
 
@@ -566,6 +608,7 @@
 
 		// Reset store
 		function resetStore(){
+			var role = $('#role').val();
 
 			$('#store').removeAttr('required');
 			$('#stores').removeAttr('required');
@@ -585,63 +628,48 @@
 			if($('input[name=_method]').val() != "PATCH" || !checkPromoter()){
 				select2Reset($('#store'));
 				select2Reset($('#stores'));
-			}
+			}			
 
-			if($('input[name=_method]').val() == "PATCH" && checkPromoter()){
-				updateStore();
-			}
-
-			var role = $('#role').val();
+			
 			if($('input[name=_method]').val() == "PATCH" && (role == 'Supervisor' || role == 'Supervisor Hybrid')){
+				select2Reset($('#stores'));
 				updateStoreSpv();
+				updateStoreSpvDemo();
 			}			
 		}
 
-		function updateStore(){
-			var oldStatus = "{{ @$data->status }}";
-			var getDataUrl = "{{ url('util/empstore/') }}";
-			var status = $('input[type=radio][name=status]:checked').val();
-
-			$.get(getDataUrl + '/' + userId, function (data) {
-				if(data){
-                    var element = $("#store");
-                    if(status == 'mobile'){
-                    	element = $("#stores");
-                    }
-
-                    select2Reset($('#store'));
-                    select2Reset($('#stores'));
-
-                    if(oldStatus == status){                    	
-	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
-						});
-                	}                	
-
-            	}	
-
-        	})
-		}
-
 		function updateStoreSpv(){
-			var oldStatus = "{{ @$data->status }}";
 			var getDataUrl = "{{ url('util/spvstore/') }}";
-			var status = $('input[type=radio][name=status]:checked').val();
 
 			$.get(getDataUrl + '/' + userId, function (data) {
 				if(data){
                     var element = $("#stores");
-
-                    select2Reset(element);
-
-	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id+","+this.store_id+","+this.dedicate, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
-						});
+                    $.each(data, function() {
+						setSelect2IfPatch(element, this.id+","+this.store_id+","+this.dedicate, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+						console.log('patch2#'+this.id);
+					});
 
             	}	
 
         	})
 		}
+
+		function updateStoreSpvDemo(){
+			var getDataUrl = "{{ url('util/spvdemostore/') }}";
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+                    var element = $("#stores");
+                    $.each(data, function() {
+						setSelect2IfPatch(element, this.id+","+this.store_id+","+this.dedicate, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+						console.log('patch2#'+this.id);
+					});
+
+            	}	
+
+        	})
+		}
+		
 
 		// Set and init store select2
 		function setStore(value){			
@@ -708,16 +736,39 @@
 		    
 		});
 
+		$(document.body).on("change","#statusSpvCheck2",function(){
+			var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
+	       	if (statusSpv) {
+		       	if (statusSpv == "Demonstrator") 
+		       	{
+		       		select2Reset($('#stores'));
+		       		$('#dedicateContent').addClass('display-hide');
+		            $('#dedicate').removeAttr('required');
+		       	}
+		    }
+		});
+
+		$(document.body).on("change","#statusSpvCheck",function(){
+			var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
+	       	if (statusSpv) {
+		       	if (statusSpv == "Promoter") 
+		       	{
+		       		select2Reset($('#stores'));
+		       		$('#dedicateContent').removeClass('display-hide');
+		            $('#dedicate').attr('required','required');
+		       	}
+		    }
+		});
 
 		$(document).ready(function(){
 			
 			initDateTimePicker();
 
 			// On Change status
-		    $('input[type=radio][name=status]').change(function() {
-		        resetStore();
-		        setStore(this.value);
-		    });
+		    // $('input[type=radio][name=status]').change(function() {
+		    //     resetStore();
+		    //     setStore(this.value);
+		    // });
 
 		    // On Change Dedicate
 		    // $('#dedicate').change(function() {
