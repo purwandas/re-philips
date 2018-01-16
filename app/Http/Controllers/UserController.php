@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use File;
+use DB;
 use App\Store;
 use App\TrainerArea;
 use App\User;
+use App\SpvDemo;
 use App\RsmRegion;
 use App\DmArea;
 use App\EmployeeStore;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Yajra\Datatables\Facades\Datatables;
+use App\NewsRead;
+use App\ProductKnowledgeRead;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Traits\AttendanceTrait;
-use Illuminate\Support\Collection;
-use Auth;
 use App\Filters\UserFilters;
-use File;
-use App\NewsRead;
-use App\ProductKnowledgeRead;
 use App\Reports\HistoryEmployeeStore;
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use DB;
-
+use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
+use Yajra\Datatables\Facades\Datatables;
 
 class UserController extends Controller
 {
@@ -184,11 +184,7 @@ class UserController extends Controller
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-
-
         $request['password'] = bcrypt($request['password']);
-
-        // dd(public_path());        
 
         // Upload file process
         ($request->photo_file != null) ? 
@@ -210,65 +206,75 @@ class UserController extends Controller
                     */
                     $stores = explode(',', $storeId); // id,store_id
                     // return response()->json($stores[1]);
-                    $store = Store::where('deleted_at',null)
-                                ->where('store_id',$stores[1])->get();
-                    $status = false;
-                    $store_id   = '';
-                    $store_name_1   = '';
-                    $store_name_2   = '';
-                    $latitude   = '';
-                    $longitude  = '';
-                    $address    = '';
-                    $classification     = '';
-                    $subchannel_id  = '';
-                    $district_id    = '';
-                    // return response()->json($store);
-                    foreach ($store as $key => $value) {
-                        /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
-                        if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
-                        {
-                            Store::where('id',$stores[0])
-                            ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                            $status = true;
-                        }
-                        if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
-                        {
-                            if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                    if ($request['status_spv'] == "Promoter") 
+                    {
+                        
+                    
+                        $store = Store::where('deleted_at',null)
+                                    ->where('store_id',$stores[1])->get();
+                        $status = false;
+                        $store_id   = '';
+                        $store_name_1   = '';
+                        $store_name_2   = '';
+                        $latitude   = '';
+                        $longitude  = '';
+                        $address    = '';
+                        $classification     = '';
+                        $subchannel_id  = '';
+                        $district_id    = '';
+                        // return response()->json($store);
+                        foreach ($store as $key => $value) {
+                            /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
+                            if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
                             {
                                 Store::where('id',$stores[0])
                                 ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                 $status = true;
                             }
+                            if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
+                            {
+                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                                {
+                                    Store::where('id',$stores[0])
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+
+                            $store_id = $value->store_id;
+                            $store_name_1 = $value->store_name_1;
+                            $store_name_2 = $value->store_name_2;
+                            $latitude = $value->latitude;
+                            $longitude = $value->longitude;
+                            $address = $value->address;
+                            $classification = $value->classification;
+                            $subchannel_id = $value->subchannel_id;
+                            $district_id = $value->district_id;
                         }
 
-                        $store_id = $value->store_id;
-                        $store_name_1 = $value->store_name_1;
-                        $store_name_2 = $value->store_name_2;
-                        $latitude = $value->latitude;
-                        $longitude = $value->longitude;
-                        $address = $value->address;
-                        $classification = $value->classification;
-                        $subchannel_id = $value->subchannel_id;
-                        $district_id = $value->district_id;
-                    }
+                        if ($status == false) {
+                            Store::create([
+                                'store_id' => $store_id,
+                                'store_name_1' => $store_name_1,
+                                'store_name_2' => $store_name_2,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude,
+                                'address' => $address,
+                                'classification' => $classification,
+                                'subchannel_id' => $subchannel_id,
+                                'district_id' => $district_id,
+                                'user_id' => $user->id,
+                                'dedicate' => $request['dedicate'],
+                            ]);
+                            $status = true;
+                        }
 
-                    if ($status == false) {
-                        Store::create([
-                            'store_id' => $store_id,
-                            'store_name_1' => $store_name_1,
-                            'store_name_2' => $store_name_2,
-                            'latitude' => $latitude,
-                            'longitude' => $longitude,
-                            'address' => $address,
-                            'classification' => $classification,
-                            'subchannel_id' => $subchannel_id,
-                            'district_id' => $district_id,
+                    }else{
+                        SpvDemo::create([
                             'user_id' => $user->id,
-                            'dedicate' => $request['dedicate'],
+                            'store_id' => $stores[0],
                         ]);
-                        $status = true;
                     }
-                            
                             // $store = Store::where('id',$storeId)
                             // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                 }
@@ -340,13 +346,22 @@ class UserController extends Controller
         // $data = User::where('id', $id)->first();
         $data = User::
             where('users.id', $id)
-            // ->join('employee_stores','users.id','employee_stores.user_id')
-            // ->join('stores','employee_stores.store_id','stores.id')
             ->select('users.*')//, 'stores.dedicate as dedicate')
             ->first();
-            // return response()->json($data);
+        
+        if ($data->role == 'Supervisor') {
+            $spvDedicate = Store::
+                where('user_id',$data->id)
+                ->first();
+            $spvDemo = SpvDemo::
+                where('user_id',$data->id)
+                ->first();
+            $spvDemoDedicate = SpvDemo::
+                where('user_id',$data->id)
+                ->first();
+        }
 
-        return view('master.form.user-form', compact('data'));
+        return view('master.form.user-form', compact('data','spvDedicate','spvDemo'));
     }
 
     /**
@@ -368,9 +383,6 @@ class UserController extends Controller
         $user = User::find($id);
         $oldPhoto = "";
         
-
-
-
         if($user->photo != null && $request->photo_file != null) {
             /* Save old photo path */
             $oldPhoto = $user->photo;
@@ -381,6 +393,16 @@ class UserController extends Controller
         // if($empStore->count() > 0){
         //     $empStore->delete();
         // }
+
+        // If Exists SpvDemo Data
+        $spvDemo = SpvDemo::where('user_id', $user->id);
+        if($spvDemo->count() > 0){
+            $spvDemo->delete();
+        } 
+
+        // If Exists Spv Data
+        Store::where('user_id',$user->id)
+            ->update(['user_id'=>null]);    
 
         if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
             /* SPV Multiple Store */
@@ -465,73 +487,81 @@ class UserController extends Controller
             /* SPV Multiple Store */
             if($request['store_ids'])
             {
-                Store::where('user_id',$user->id)
-                            ->update(['user_id'=>null]);
+                
                 foreach ($request['store_ids'] as $storeId) {
                     /*
                     1. select all store with STORE ID selected
                     */
                     $stores = explode(',', $storeId); // id,store_id
-                    $store = Store::where('deleted_at',null)
-                                ->where('store_id',$stores[1])->get();
-                    $status = false;
-                    $store_id   = '';
-                    $store_name_1   = '';
-                    $store_name_2   = '';
-                    $latitude   = '';
-                    $longitude  = '';
-                    $address    = '';
-                    $classification     = '';
-                    $subchannel_id  = '';
-                    $district_id    = '';
-                    foreach ($store as $key => $value) {
-                        /* ini masih perlu di cek */
-                        if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
-                        {
-                            Store::where('id',$value->id)
-                            ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                            
-                            $status = true;
-                        }
+                    if ($request['status_spv'] == "Promoter") 
+                    {
                         
-                        if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
-                        {
-                            if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                        $store = Store::where('deleted_at',null)
+                                    ->where('store_id',$stores[1])->get();
+                        $status = false;
+                        $store_id   = '';
+                        $store_name_1   = '';
+                        $store_name_2   = '';
+                        $latitude   = '';
+                        $longitude  = '';
+                        $address    = '';
+                        $classification     = '';
+                        $subchannel_id  = '';
+                        $district_id    = '';
+                        foreach ($store as $key => $value) {
+                            /* ini masih perlu di cek */
+                            if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
                             {
                                 Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                
                                 $status = true;
                             }
+                            
+                            if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
+                            {
+                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                                {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+
+                            $store_id = $value->store_id;
+                            $store_name_1 = $value->store_name_1;
+                            $store_name_2 = $value->store_name_2;
+                            $latitude = $value->latitude;
+                            $longitude = $value->longitude;
+                            $address = $value->address;
+                            $classification = $value->classification;
+                            $subchannel_id = $value->subchannel_id;
+                            $district_id = $value->district_id;
                         }
 
-                        $store_id = $value->store_id;
-                        $store_name_1 = $value->store_name_1;
-                        $store_name_2 = $value->store_name_2;
-                        $latitude = $value->latitude;
-                        $longitude = $value->longitude;
-                        $address = $value->address;
-                        $classification = $value->classification;
-                        $subchannel_id = $value->subchannel_id;
-                        $district_id = $value->district_id;
-                    }
-
-                    if ($status == false) {
-                        Store::create([
-                            'store_id' => $store_id,
-                            'store_name_1' => $store_name_1,
-                            'store_name_2' => $store_name_2,
-                            'latitude' => $latitude,
-                            'longitude' => $longitude,
-                            'address' => $address,
-                            'classification' => $classification,
-                            'subchannel_id' => $subchannel_id,
-                            'district_id' => $district_id,
+                        if ($status == false) {
+                            Store::create([
+                                'store_id' => $store_id,
+                                'store_name_1' => $store_name_1,
+                                'store_name_2' => $store_name_2,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude,
+                                'address' => $address,
+                                'classification' => $classification,
+                                'subchannel_id' => $subchannel_id,
+                                'district_id' => $district_id,
+                                'user_id' => $user->id,
+                                'dedicate' => $request['dedicate'],
+                            ]);
+                            $status = true;
+                        }
+                
+                    }else{
+                        SpvDemo::create([
                             'user_id' => $user->id,
-                            'dedicate' => $request['dedicate'],
+                            'store_id' => $stores[0],
                         ]);
-                        $status = true;
                     }
-                            
                             // $store = Store::where('id',$storeId)
                             // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                 }

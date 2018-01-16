@@ -165,6 +165,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
     Route::get('util/empstore/{id}', ['uses'=>'UtilController@getStoreForEmployee']);
     Route::get('util/spvstore/{id}', ['uses'=>'UtilController@getStoreForSpvEmployee']);
+    Route::get('util/spvdemostore/{id}', ['uses'=>'UtilController@getStoreForSpvDemoEmployee']);    
     Route::get('util/storedist/{id}', ['uses'=>'UtilController@getDistributorForStore']);
     Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
     Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
