@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
     Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);
+    Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
     
 
     
@@ -195,6 +196,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
+    Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
     /**
