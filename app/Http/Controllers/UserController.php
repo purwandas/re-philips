@@ -206,12 +206,20 @@ class UserController extends Controller
                     */
                     $stores = explode(',', $storeId); // id,store_id
                     // return response()->json($stores[1]);
-                    if ($request['status_spv'] == "Promoter") 
+                    if ($request['status_spv'] == "Demonstrator") 
                     {
                         
-                    
+                        SpvDemo::create([
+                            'user_id' => $user->id,
+                            'store_id' => $stores[0],
+                        ]);
+
+                    }else{
+                        
+
                         $store = Store::where('deleted_at',null)
                                     ->where('store_id',$stores[1])->get();
+                                    // return response()->json($store);
                         $status = false;
                         $store_id   = '';
                         $store_name_1   = '';
@@ -222,20 +230,28 @@ class UserController extends Controller
                         $classification     = '';
                         $subchannel_id  = '';
                         $district_id    = '';
+                        $history = '';
                         // return response()->json($store);
+                        
                         foreach ($store as $key => $value) {
                             /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
-                            if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
+                            $storesDedicate = '';
+                            if (isset($value->dedicate)) {
+                                $storesDedicate = $value->dedicate;
+                            }
+                            if ( ($storesDedicate == '' || $storesDedicate == $request['dedicate']) && $status == false)
                             {
-                                Store::where('id',$stores[0])
+                                // $historyStore[] = $status.' - '.$storesDedicate.' (1)';
+                                Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                 $status = true;
                             }
-                            if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
+                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
                             {
                                 if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
                                 {
-                                    Store::where('id',$stores[0])
+                                    // $historyStore[] = $status.' - '.$storesDedicate.' (2)';
+                                    Store::where('id',$value->id)
                                     ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                     $status = true;
                                 }
@@ -266,17 +282,13 @@ class UserController extends Controller
                                 'user_id' => $user->id,
                                 'dedicate' => $request['dedicate'],
                             ]);
+                            // $historyStore[] = $status.' - '.$storesDedicate.' (3)';
                             $status = true;
                         }
 
-                    }else{
-                        SpvDemo::create([
-                            'user_id' => $user->id,
-                            'store_id' => $stores[0],
-                        ]);
                     }
-                            // $store = Store::where('id',$storeId)
-                            // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                    // return response()->json($historyStore);
+                            
                 }
             }
         }
@@ -349,7 +361,7 @@ class UserController extends Controller
             ->select('users.*')//, 'stores.dedicate as dedicate')
             ->first();
         
-        if ($data->role == 'Supervisor') {
+        if ($data->role == 'Supervisor' || $data->role == 'Supervisor Hybrid' ) {
             $spvDedicate = Store::
                 where('user_id',$data->id)
                 ->first();
@@ -401,14 +413,14 @@ class UserController extends Controller
         } 
 
         // If Exists Spv Data
-        Store::where('user_id',$user->id)
-            ->update(['user_id'=>null]);    
+        // Store::where('user_id',$user->id)
+        //     ->update(['user_id'=>null]);    
 
         if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
             /* SPV Multiple Store */
             if($request['store_ids']){
                 foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>null]);
+                    $store = Store::where('user_id', $user->id)->update(['user_id'=>null]);
                 }
             }
         }else{
@@ -493,9 +505,16 @@ class UserController extends Controller
                     1. select all store with STORE ID selected
                     */
                     $stores = explode(',', $storeId); // id,store_id
-                    if ($request['status_spv'] == "Promoter") 
+                    if ($request['status_spv'] == "Demonstrator") 
                     {
                         
+                        SpvDemo::create([
+                            'user_id' => $user->id,
+                            'store_id' => $stores[0],
+                        ]);
+                
+                    }else{
+
                         $store = Store::where('deleted_at',null)
                                     ->where('store_id',$stores[1])->get();
                         $status = false;
@@ -508,20 +527,27 @@ class UserController extends Controller
                         $classification     = '';
                         $subchannel_id  = '';
                         $district_id    = '';
+
                         foreach ($store as $key => $value) {
                             /* ini masih perlu di cek */
-                            if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
+                            $storesDedicate = '';
+                            if (isset($value->dedicate)) {
+                                $storesDedicate = $value->dedicate;
+                            }
+                            if ( ($storesDedicate == '' || $storesDedicate == $request['dedicate']) && $status == false)
                             {
+                                // $storeCheck[] = "$status - $storesDedicate - $user->id (1)";
                                 Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                 
                                 $status = true;
                             }
                             
-                            if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
+                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
                             {
                                 if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
                                 {
+                                    // $storeCheck[] = "$status - $storesDedicate - $user->id (2)";
                                     Store::where('id',$value->id)
                                     ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                     $status = true;
@@ -540,6 +566,7 @@ class UserController extends Controller
                         }
 
                         if ($status == false) {
+                            // $storeCheck[] = "$status - $storesDedicate - $user->id (3)";
                             Store::create([
                                 'store_id' => $store_id,
                                 'store_name_1' => $store_name_1,
@@ -555,13 +582,9 @@ class UserController extends Controller
                             ]);
                             $status = true;
                         }
-                
-                    }else{
-                        SpvDemo::create([
-                            'user_id' => $user->id,
-                            'store_id' => $stores[0],
-                        ]);
+                        
                     }
+                    // return response()->json($storeCheck);
                             // $store = Store::where('id',$storeId)
                             // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                 }
