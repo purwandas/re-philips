@@ -153,7 +153,7 @@ class StoreController extends Controller
         // $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
 
-                try {
+                // try {
                     $storeID = $this->traitGetStoreId();
                     // return response()->json($storeID);
                     DB::transaction(function () use ($request, $storeID, $user) {
@@ -170,6 +170,11 @@ class StoreController extends Controller
                                 'no_telp_pemilik_toko' => $request['no_telp_pemilik_toko'],
                                 'kepemilikan_toko' => $request['kepemilikan_toko'],
                                 'district_id' => $request['district_id'],
+
+                                'lokasi_toko' => $request['lokasi_toko'],
+                                'tipe_transaksi_2' => $request['tipe_transaksi_2'],
+                                'tipe_transaksi' => $request['tipe_transaksi'],
+                                'kondisi_toko' => $request['kondisi_toko'],
                             ]
                             );
                         $EmployeeStore = EmployeeStore::create(
@@ -186,9 +191,9 @@ class StoreController extends Controller
                     ->where("store_name_2", $request['store_name_2'])
                     ->first();
                     return response()->json(['status' => true, 'id_store' => $storeData->id, 'message' => 'Data berhasil di input']);
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Data gagal di input']);
-                }
+                // } catch (\Exception $e) {
+                //     return response()->json(['status' => false, 'message' => 'Data gagal di input']);
+                // }
 
 
     }
