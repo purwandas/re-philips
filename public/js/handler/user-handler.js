@@ -14,7 +14,7 @@ var FormValidation = function () {
             var rules = {};
 
             // Rules if add new
-            rules['nik']  = { digits: true };
+            rules['nik']  = { required: true };
             rules['name']  = { minlength: 2, required: true };
             rules['email'] = { 
                                 required: true,

@@ -212,7 +212,7 @@
 
 							  <div class="input-group" style="width: 100%;">
 
-									<select class="select2select" name="distributor_ids[]" id="distributors" multiple="multiple" required></select>
+									<select class="select2select" name="distributor_ids[]" id="distributors" multiple="multiple"></select>
 
 									<span class="input-group-addon display-hide">
 										<i class="fa"></i>
