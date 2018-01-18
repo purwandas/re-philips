@@ -57,7 +57,10 @@ class StoreFilters extends QueryFilters
         if ($value=="HYBRID") {
             return $this->builder->whereIn('dedicate', ['DA','PC','HYBRID']);
         }else{
-            return $this->builder->where('dedicate',$value);
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate',['DA','HYBRID'])
+                            ->orwhereNull('dedicate');
+            });
         }
         // return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);
     }
