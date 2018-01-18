@@ -150,12 +150,11 @@ class StoreController extends Controller
     }
 
     public function create(Request $request){
-        // $content = json_decode($request->getContent(),true);
+        $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
 
-                // try {
+                try {
                     $storeID = $this->traitGetStoreId();
-                    // return response()->json($storeID);
                     DB::transaction(function () use ($request, $storeID, $user) {
                         $store = Store::create(
                             [
@@ -191,9 +190,9 @@ class StoreController extends Controller
                     ->where("store_name_2", $request['store_name_2'])
                     ->first();
                     return response()->json(['status' => true, 'id_store' => $storeData->id, 'message' => 'Data berhasil di input']);
-                // } catch (\Exception $e) {
-                //     return response()->json(['status' => false, 'message' => 'Data gagal di input']);
-                // }
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Data gagal di input']);
+                }
 
 
     }
