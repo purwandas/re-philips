@@ -14,6 +14,7 @@ use App\AreaApp;
 use App\SpvDemo;
 use App\EmployeeStore;
 use App\AttendanceDetail;
+use App\TargetQuiz;
 use App\Reports\HistoryEmployeeStore;
 use DB;
 use Activity;
@@ -174,6 +175,16 @@ class UtilController extends Controller
 
         return response()->json($store);
     }
+    
+    public function getTargetQuiz($quizId){        
+        $quiz = TargetQuiz::where('target_quizs.deleted_at', null)
+                    ->where('target_quizs.quiz_id', $quizId)
+                    ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
+                    ->select('quiz_targets.id','quiz_targets.role','quiz_targets.grading')
+                    ->get();
+
+        return response()->json($quiz);
+    }
 
     public function getAttendanceDetail($attendance_id){        
         $attendance = AttendanceDetail::where('attendance_id',$attendance_id)
@@ -228,6 +239,16 @@ class UtilController extends Controller
     }
 
     public function getUserOnline(){
+
+        $users = Activity::users()->where('user_id', '<>', Auth::user()->id)->orderByUsers('name');
+
+        return response()->json([
+            'count' => $users->count(),
+            'users' => $users->get(),
+        ]);
+    }
+
+    public function getSalesHistory(){
 
         $users = Activity::users()->where('user_id', '<>', Auth::user()->id)->orderByUsers('name');
 
