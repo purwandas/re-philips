@@ -108,27 +108,8 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 
-				          		<select class="select2select" name="target" id="target">
+				          		<select class="select2select" name="target[]" id="target" multiple="multiple">
 				          			<option></option>
-				          			<option value="All" {{ (@$data->role == 'All') ? "selected" : "" }}>All</option>
-				          			<option value="Demonstrator" {{ (@$data->role == 'Demonstrator') ? "selected" : "" }}>Demonstrator</option>
-				          			<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
-                                	<!-- <option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
-                                	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? "selected" : "" }}>Promoter Additional</option>
-                                	<option value="Promoter Event" {{ (@$data->role == 'Promoter Event') ? "selected" : "" }}>Promoter Event</option>
-                                	<option value="Demonstrator MCC" {{ (@$data->role == 'Demonstrator MCC') ? "selected" : "" }}>Demonstrator MCC</option>
-                                	<option value="Demonstrator DA" {{ (@$data->role == 'Demonstrator DA') ? "selected" : "" }}>Demonstrator DA</option>
-                                	<option value="ACT" {{ (@$data->role == 'ACT') ? "selected" : "" }}>ACT</option>
-                                	<option value="PPE" {{ (@$data->role == 'PPE') ? "selected" : "" }}>PPE</option>
-                                	<option value="BDT" {{ (@$data->role == 'BDT') ? "selected" : "" }}>BDT</option>
-                                	<option value="Salesman Explorer" {{ (@$data->role == 'Salesman Explorer') ? "selected" : "" }}>Salesman Explorer</option>
-                                	<option value="SMD" {{ (@$data->role == 'SMD') ? "selected" : "" }}>SMD</option>
-                                	<option value="SMD Coordinator" {{ (@$data->role == 'SMD Coordinator') ? "selected" : "" }}>SMD Coordinator</option>
-                                	<option value="HIC" {{ (@$data->role == 'HIC') ? "selected" : "" }}>HIC</option>
-                                	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
-                                	<option value="SMD" {{ (@$data->role == 'SMD') ? "selected" : "" }}>SMD</option>
-                                	<option value="Additional" {{ (@$data->role == 'Additional') ? "selected" : "" }}>Additional</option>
-                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option> -->
                                 </select>
 				            	<span class="input-group-addon display-hide">
                                     <i class="fa"></i>
@@ -162,6 +143,7 @@
     <!-- END PAGE VALIDATION SCRIPTS -->
 
     <script> 	
+    	var quizId = "{{ collect(request()->segments())->last() }}";
 		$(document).ready(function () {
 			$.ajaxSetup({
 	        	headers: {
@@ -169,10 +151,18 @@
 	            }
 	        });   
 
-	        $('#target').select2({
-                width: '100%',
-                placeholder: 'Select Target'
-            }); 
+			updateTarget();
+
+         	$('#target').select2(setOptions('{{ route("data.quiztarget") }}', 'Target', function (params) {
+
+	            return filterData('target', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.role +' ('+obj.grading+')'}
+	                })
+	            }
+	        }));
 
 	        var newTarget = [];
 	        console.log("{{@$data->target}}");
@@ -202,6 +192,21 @@
         	console.log(item);
             setSelect2IfPatch($("#target"), item, item);
         }
+
+        function updateTarget(){
+			var getDataUrl = "{{ url('util/target/') }}";
+
+			$.get(getDataUrl + '/' + quizId, function (data) {
+				if(data){
+                    var element = $("#target");
+                    $.each(data, function() {
+						setSelect2IfPatch(element, this.id,this.role+" ("+this.grading+ ")");
+						// console.log('patch2#'+this.id+"*"+this.role+" ("+this.grading+ ")");
+					});
+            	}	
+
+        	})
+		}
 
 	</script>
 
