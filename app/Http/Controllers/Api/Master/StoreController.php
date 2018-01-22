@@ -133,6 +133,7 @@ class StoreController extends Controller
         $details = new Collection();
 
             $data = ([
+                'storeId' => $store->id,
                 'store_id' => $store->store_id,
                 'store_name_1' => $store->store_name_1,
                 'store_name_2' => $store->store_name_2,
