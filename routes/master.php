@@ -232,6 +232,8 @@ Route::group(['middleware' => ['auth']], function () {
          * Reporting Module(s) Just For Admin, Master, REM
          */
         Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
+        Route::get('salesactivity', 'Master\ReportController@salesActivityIndex');
+        Route::get('storelocationactivity', 'Master\ReportController@storeLocationActivityIndex');
 
         /**
          * Salesman Module (Reporting)

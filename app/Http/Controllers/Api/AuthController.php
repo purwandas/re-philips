@@ -87,7 +87,7 @@ class AuthController extends Controller
         if($user->role == 'REM') $access = "REM";
 
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'grading' => $user->grading, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){

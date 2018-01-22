@@ -139,6 +139,64 @@
 				          </div>
 				        </div>
 
+						<div class="form-group" id="lokasi_toko_div">
+				          <label class="col-sm-2 control-label">Store Location</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+					            	<select class="select2select" name="lokasi_toko" id="lokasi_toko" required>
+	                                	<option></option>
+										<option value="Mall">Mall</option>
+										<option value="ITC">ITC</option>
+										<option value="Pasar">Pasar</option>
+	                                </select>
+				            </div>
+				          </div>
+				        </div>
+
+						<div class="form-group" id="kondisi_toko_div">
+				          <label class="col-sm-2 control-label">Store Condition</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            		<select class="select2select" name="kondisi_toko" id="kondisi_toko" required>
+	                                	<option></option>
+										<option value="Ada AC">Ada AC</option>
+										<option value="Tidak Ada AC">Tidak Ada AC</option>
+	                                </select>
+				            </div>
+				          </div>
+				        </div>
+
+						<div class="form-group" id="tipe_transaksi_div">
+				          <label class="col-sm-2 control-label">Store Transaction Type</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            		<select class="select2select" name="tipe_transaksi" id="tipe_transaksi" required>
+	                                	<option></option>
+										<option value="Transaksi via Mesin/Kasir">Transaksi via Mesin/Kasir</option>
+										<option value="Nota Manual">Nota Manual</option>
+	                                </select>
+				            </div>
+				          </div>
+				        </div>
+
+				        <div class="form-group" id="tipe_transaksi_2_div">
+				          <label class="col-sm-2 control-label">Store Transaction Type 2</label>
+				          <div class="col-sm-9">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            		<select class="select2select" name="tipe_transaksi_2" id="tipe_transaksi_2" required>
+	                                	<option></option>
+										<option value="Konsumen Langsung">Konsumen Langsung</option>
+										<option value="Online">Online</option>
+										<option value="Grosir">Grosir</option>
+	                                </select>
+				            </div>
+				          </div>
+				        </div>
+
 				        <div id="latitude_longitude_div">
 					        <div class="caption padding-caption">
 	                        	<span class="caption-subject font-dark bold uppercase">Longitude & Latitude</span>
@@ -347,10 +405,35 @@
                 placeholder: 'Classification'
             });
 
+            $('#lokasi_toko').select2({
+                width: '100%',
+                placeholder: 'Store Location'
+            });
+
+            $('#tipe_transaksi_2').select2({
+                width: '100%',
+                placeholder: 'Transaction Type (2)'
+            });
+
+            $('#tipe_transaksi').select2({
+                width: '100%',
+                placeholder: 'Transaction Type'
+            });
+
+            $('#kondisi_toko').select2({
+                width: '100%',
+                placeholder: 'Store Condition'
+            });
+
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
 	       setSelect2IfPatch($("#classification"), "{{ @$data->classification }}", "{{ @$data->classification }}");
+
+	       setSelect2IfPatch($("#lokasi_toko"), "{{ @$data->lokasi_toko }}", "{{ @$data->lokasi_toko }}");
+	       setSelect2IfPatch($("#tipe_transaksi_2"), "{{ @$data->tipe_transaksi_2 }}", "{{ @$data->tipe_transaksi_2 }}");
+	       setSelect2IfPatch($("#tipe_transaksi"), "{{ @$data->tipe_transaksi }}", "{{ @$data->tipe_transaksi }}");
+	       setSelect2IfPatch($("#kondisi_toko"), "{{ @$data->kondisi_toko }}", "{{ @$data->kondisi_toko }}");
 	       // setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
 
 	       updateDistributor();
