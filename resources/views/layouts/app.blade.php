@@ -50,7 +50,6 @@
         <link href="{{ asset('assets/swal/sweetalert.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/global/plugins/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/global/plugins/select2/css/select2-bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
-        <link href="{{ asset('assets/global/plugins/select2/css/select2-bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/layouts/layout4/css/custom.css') }}" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->    
@@ -89,6 +88,29 @@
                     <div class="top-menu">
                         <ul class="nav navbar-nav pull-right">
                             @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Master')
+                            <li class="dropdown dropdown-extended dropdown-notification dropdown-dark"
+                                id="header_notification_bar">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                                   data-close-others="true">
+                                    <i class="fa fa-edit"></i>
+                                    <span class="badge badge-danger bedgecount2">
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu" style="min-width: 335px;">
+                                    <li class="external">
+                                        <h3>
+                                            <span class="bold">
+                                                <span class="bedgecount2"></span>
+                                                Edit Sales Activities 
+                                            </span>  
+                                        </h3>
+                                    </li>
+                                    <li>
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px;"
+                                            data-handle-color="#637283" id="dataSalesNotif"></ul>
+                                    </li>
+                                </ul>
+                            </li>
                             <li class="dropdown dropdown-extended dropdown-notification dropdown-dark"
                                 id="header_notification_bar">
                                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
@@ -260,6 +282,21 @@
 
                         var li = $(`<li><a><img width='30px' height='30px' src='${item.user.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.user.role}) &nbsp;${item.user.name}</a></li>`);
                         $('#datanotif').append(li);
+                    });
+                });
+
+            var url = "{{url('util/sales-history')}}";
+                $.get(url, function (data) {
+//                    console.log(data);
+                    $('.bedgecount2').text(data.count);
+
+                    var missing_image = "{{ asset('image/missing.png') }}";
+
+                    $.each(data.users, function (index, item) {
+//                        console.log(item);
+
+                        var li = $(`<li><a><img width='30px' height='30px' src='${item.user.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.user.role}) &nbsp;${item.user.name}</a></li>`);
+                        $('#dataSalesNotif').append(li);
                     });
                 });
         </script>

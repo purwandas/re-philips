@@ -82,7 +82,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
     Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);
     Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
-    
+    Route::post('datatable/salesactivityreport', ['as'=> 'datatable.salesactivityreport','uses'=>'Master\ReportController@salesActivityData']);
+    Route::post('datatable/storelocationactivityreport', ['as'=> 'datatable.storelocationactivityreport','uses'=>'Master\ReportController@storeLocationActivityData']);
 
     
 
@@ -112,6 +113,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/feedbackQuestion', ['as'=> 'data.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
     Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
     Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
+
+    Route::post('data/quiztarget', ['as'=> 'data.quiztarget','uses'=>'Api\Master\QuizTargetController@getDataWithFilters']);
 
     /**
      * Relation
@@ -173,9 +176,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);
     Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     Route::get('util/user-online', ['uses'=>'UtilController@getUserOnline']);
+    Route::get('util/sales-history', ['uses'=>'UtilController@getSalesHistory']);
     Route::get('util/get-store-id', ['uses'=>'UtilController@getStoreId']);
     Route::get('util/attendancedetail/{id}', ['uses'=>'UtilController@getAttendanceDetail']);
     Route::get('util/historyempstore/{id}', ['uses'=>'UtilController@getHistoryStoreForEmployee']);
+    Route::get('util/target/{id}', ['uses'=>'UtilController@getTargetQuiz']);
 
     /**
      * Export
