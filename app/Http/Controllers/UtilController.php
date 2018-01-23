@@ -16,6 +16,7 @@ use App\EmployeeStore;
 use App\AttendanceDetail;
 use App\TargetQuiz;
 use App\Reports\HistoryEmployeeStore;
+use App\Reports\SalesActivity;
 use DB;
 use Activity;
 use Auth;
@@ -250,11 +251,11 @@ class UtilController extends Controller
 
     public function getSalesHistory(){
 
-        $users = Activity::users()->where('user_id', '<>', Auth::user()->id)->orderByUsers('name');
+        $activity = SalesActivity::whereNull('status')->orwhere('status',0);
 
         return response()->json([
-            'count' => $users->count(),
-            'users' => $users->get(),
+            'count' => $activity->count(),
+            'activity' => $activity->get(),
         ]);
     }
 

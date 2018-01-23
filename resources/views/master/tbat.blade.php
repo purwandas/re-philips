@@ -94,6 +94,7 @@
                         <thead>
                             <tr>
                                 <th> No. </th>
+                                <th> Date </th>
                                 <th> User Name </th>
                                 <th> User NIK </th>
                                 <th> Store Name 1 </th>
@@ -146,6 +147,7 @@
     var columnDefs = [{"className": "dt-center", "targets": [0]}];
     var tableColumns = [
                         {data: 'id', name: 'id'},
+                        {data: 'date', name: 'date'},
                         {data: 'user_name', name: 'user_name'},
                         {data: 'user_nik', name: 'user_nik'},
                         {data: 'store_name_1', name: 'store_name_1'},
