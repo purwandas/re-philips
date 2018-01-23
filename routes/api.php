@@ -75,6 +75,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/promoactivity', 'Api\Master\PromoActivityController@store');
 	Route::post('/sales-edit/{param}', 'Api\Master\EditSalesController@edit');
 	Route::post('/sales-delete/{param}', 'Api\Master\DeleteSalesController@delete');
+    Route::get('/sales/{param}', 'Api\Master\SalesHistoryController@getData');
 
 	/**
      * Attendance Module(s)
