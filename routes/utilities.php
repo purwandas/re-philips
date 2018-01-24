@@ -177,6 +177,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     Route::get('util/user-online', ['uses'=>'UtilController@getUserOnline']);
     Route::get('util/sales-history', ['uses'=>'UtilController@getSalesHistory']);
+    Route::post('util/sales-history-read', ['uses'=>'UtilController@readSalesHistory']);
     Route::get('util/get-store-id', ['uses'=>'UtilController@getStoreId']);
     Route::get('util/attendancedetail/{id}', ['uses'=>'UtilController@getAttendanceDetail']);
     Route::get('util/historyempstore/{id}', ['uses'=>'UtilController@getHistoryStoreForEmployee']);

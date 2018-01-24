@@ -12,7 +12,7 @@ class SalesActivity extends Model
 
     //
     protected $fillable = [
-        'user_id', 'date', 'details'
+        'user_id', 'date', 'details', 'status'
     ];
 
     /**
