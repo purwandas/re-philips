@@ -251,6 +251,24 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
+            ->editColumn('value_pf_mr', function ($item) {
+               return number_format($item->value_pf_mr);
+            })
+            ->editColumn('value_pf_tr', function ($item) {
+               return number_format($item->value_pf_tr);
+            })
+            ->editColumn('value_pf_ppe', function ($item) {
+               return number_format($item->value_pf_ppe);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -369,6 +387,24 @@ class ReportController extends Controller
 
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
+            ->editColumn('value_pf_mr', function ($item) {
+               return number_format($item->value_pf_mr);
+            })
+            ->editColumn('value_pf_tr', function ($item) {
+               return number_format($item->value_pf_tr);
+            })
+            ->editColumn('value_pf_ppe', function ($item) {
+               return number_format($item->value_pf_ppe);
+            })
             ->make(true);
 
         }
@@ -446,6 +482,24 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
+            ->editColumn('value_pf_mr', function ($item) {
+               return number_format($item->value_pf_mr);
+            })
+            ->editColumn('value_pf_tr', function ($item) {
+               return number_format($item->value_pf_tr);
+            })
+            ->editColumn('value_pf_ppe', function ($item) {
+               return number_format($item->value_pf_ppe);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -561,6 +615,24 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
+            ->editColumn('value_pf_mr', function ($item) {
+               return number_format($item->value_pf_mr);
+            })
+            ->editColumn('value_pf_tr', function ($item) {
+               return number_format($item->value_pf_tr);
+            })
+            ->editColumn('value_pf_ppe', function ($item) {
+               return number_format($item->value_pf_ppe);
+            })
             ->make(true);
 
         }
@@ -639,6 +711,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -751,6 +832,15 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             } 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }
@@ -827,6 +917,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -940,6 +1039,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }
@@ -1023,6 +1131,15 @@ class ReportController extends Controller
 
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -1144,6 +1261,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }
@@ -1219,6 +1345,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -1332,6 +1467,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }
@@ -1409,6 +1553,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -1521,6 +1674,15 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }
@@ -1765,6 +1927,12 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter)
+            ->editColumn('philips', function ($item) {
+               return number_format($item->philips);
+            })
+            ->editColumn('all', function ($item) {
+               return number_format($item->all);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -1875,6 +2043,12 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('philips', function ($item) {
+               return number_format($item->philips);
+            })
+            ->editColumn('all', function ($item) {
+               return number_format($item->all);
+            })
             ->make(true);
 
         }
@@ -2657,6 +2831,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -2765,6 +2948,15 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
+            ->editColumn('quantity', function ($item) {
+               return number_format($item->quantity);
+            })
+            ->editColumn('unit_price', function ($item) {
+               return number_format($item->unit_price);
+            })
+            ->editColumn('value', function ($item) {
+               return number_format($item->value);
+            })
             ->make(true);
 
         }
