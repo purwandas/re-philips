@@ -107,7 +107,6 @@
 				          <label class="col-sm-2 control-label">Target</label>
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
-
 				          		<select class="select2select" name="target[]" id="target" multiple="multiple">
 				          			<option></option>
                                 </select>
