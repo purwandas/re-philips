@@ -251,11 +251,33 @@ class UtilController extends Controller
 
     public function getSalesHistory(){
 
-        $activity = SalesActivity::whereNull('status')->orwhere('status',0);
+        $activity = SalesActivity::
+                    whereNull('sales_activities.status')
+                    ->orwhere('sales_activities.status',0)
+                    ->join('users','users.id','sales_activities.user_id')
+                    ->select('sales_activities.*','users.name','users.role');
 
         return response()->json([
             'count' => $activity->count(),
             'activity' => $activity->get(),
+        ]);
+    }
+
+    public function readSalesHistory(Request $request){
+
+        $activity = SalesActivity::
+                    where('id',$request['id'])
+                    ->first();
+        $act = $activity;
+            if ($activity->count() >0) {
+                $activity->update([
+                    'status' => 1
+                ]);
+            }
+
+        return response()->json([
+            'status' => true,
+            'activity' => $act,
         ]);
     }
 

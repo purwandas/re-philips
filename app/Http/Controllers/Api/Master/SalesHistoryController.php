@@ -45,16 +45,23 @@ class SalesHistoryController extends Controller
 
     public function getData($param){
 
-        // Decode buat inputan raw body
         $user = JWTAuth::parseToken()->authenticate();
+
+            $month = Carbon::now()->format('m');
+            $year = Carbon::now()->format('Y');
+            $date1 = "$year-$month-01";
+            $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
         if($param == 1) { /* SELL IN */
 
         } else if($param == 2) { /* SELL OUT */
 
         } else if($param == 3) { /* RETURN DISTRIBUTOR */
-            
             $header = RetDistributor::whereNull('ret_distributors.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('ret_distributors.user_id',$user->id)
                     ->join('users','users.id','ret_distributors.user_id')
                     ->join('stores','stores.id','ret_distributors.store_id')
                     ->select('ret_distributors.id','ret_distributors.date as date','stores.store_name_1','stores.store_id')
@@ -83,6 +90,9 @@ class SalesHistoryController extends Controller
         } else if($param == 4) { /* RETURN CONSUMENT */
             
             $header = RetConsument::whereNull('ret_consuments.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('ret_consuments.user_id',$user->id)
                     ->join('users','users.id','ret_consuments.user_id')
                     ->join('stores','stores.id','ret_consuments.store_id')
                     ->select('ret_consuments.id','ret_consuments.date as date','stores.store_name_1','stores.store_id')
@@ -111,6 +121,9 @@ class SalesHistoryController extends Controller
         } else if($param == 5) { /* FREE PRODUCT */
 
             $header = FreeProduct::whereNull('free_products.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('free_products.user_id',$user->id)
                     ->join('users','users.id','free_products.user_id')
                     ->join('stores','stores.id','free_products.store_id')
                     ->select('free_products.id','free_products.date as date','stores.store_name_1','stores.store_id')
@@ -139,6 +152,9 @@ class SalesHistoryController extends Controller
         } else if($param == 6) { /* TBAT */
 
             $header = Tbat::whereNull('tbats.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('tbats.user_id',$user->id)
                     ->join('users','users.id','tbats.user_id')
                     ->join('stores','stores.id','tbats.store_id')
                     ->join('stores as storeD','storeD.id','tbats.store_destination_id')
@@ -170,6 +186,9 @@ class SalesHistoryController extends Controller
         } else if($param == 7) { /* Stock On Hand */
 
             $header = Soh::whereNull('sohs.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('sohs.user_id',$user->id)
                     ->join('users','users.id','sohs.user_id')
                     ->join('stores','stores.id','sohs.store_id')
                     ->select('sohs.id','sohs.date as date','stores.store_name_1','stores.store_id')
@@ -198,6 +217,9 @@ class SalesHistoryController extends Controller
         } else if($param == 8) { /* Display Share */
 
             $header = DisplayShare::whereNull('display_shares.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('display_shares.user_id',$user->id)
                     ->join('users','users.id','display_shares.user_id')
                     ->join('stores','stores.id','display_shares.store_id')
                     ->select('display_shares.id','display_shares.date as date','stores.store_name_1','stores.store_id')
@@ -225,6 +247,9 @@ class SalesHistoryController extends Controller
         }  else if($param == 9) { /* POSM Activity */
 
             $header = PosmActivity::whereNull('posm_activities.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->where('posm_activities.user_id',$user->id)
                     ->join('users','users.id','posm_activities.user_id')
                     ->join('stores','stores.id','posm_activities.store_id')
                     ->select('posm_activities.id','posm_activities.date as date','stores.store_name_1','stores.store_id')

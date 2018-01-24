@@ -349,5 +349,4 @@ $(document).on("click", ".open-history-employee-store-modal", function () {
             });
         // }
     });
-
 });
