@@ -482,6 +482,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('faq') ? 'active' : '' }}">
+                <a href="{{ url('faq') }}" class="nav-link ">
+                    <i class="fa fa-book"></i>
+                    <span class="title">Frequently Asked Question (FAQ)</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ Request::is('feedback*') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-commenting-o"></i>
