@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         /** FAQ **/
         Route::get('faq', 'Master\FaqController@index');
+        Route::get('faq/create', 'Master\FaqController@create');
         Route::post('faq', 'Master\FaqController@store');
         Route::get('faq/edit/{id}', 'Master\FaqController@edit');
         Route::patch('faq/{id}', 'Master\FaqController@update');

@@ -45,11 +45,11 @@ class FaqController extends Controller
            		->addColumn('action', function ($item) {
 
                    return 
-                    "<a href='#faq' data-id='".$item->id."' data-toggle='modal' class='btn btn-sm btn-warning edit-faq'><i class='fa fa-pencil'></i></a>
+                    "<a href='".url('faq/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['answer','action'])
                 ->make(true);
 
     }
@@ -61,7 +61,7 @@ class FaqController extends Controller
      */
     public function create()
     {
-        //
+        return view('master.form.faq-form');
     }
 
     /**
@@ -105,7 +105,8 @@ class FaqController extends Controller
     {
         $data = Faq::where('id', $id)->first();
 
-        return response()->json($data);
+        // return response()->json($data);
+        return view('master.form.faq-form', compact('data'));
     }
 
     /**
@@ -117,15 +118,19 @@ class FaqController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return response()->json($request);
         $this->validate($request, [
-            'question' => 'required|string|max:255',
+            'question' => 'required',
             'answer' => 'required',
             ]);
 
         $faq = Faq::find($id)->update($request->all());
 
         return response()->json(
-            ['url' => url('/faq'), 'method' => $request->_method]);  
+            [
+                'url' => url('/faq'),
+                'method' => $request->_method
+            ]);
     }
 
     /**

@@ -42,8 +42,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="btn-group">
-                                    <a id="add-faq" class="btn green" data-toggle="modal" href="#faq"><i
-                                        class="fa fa-plus"></i> Add FAQ </a>
+                                        <a class="btn green" href="{{ url('faq/create') }}"><i
+                                    class="fa fa-plus"></i> Add New </a>
 
                                 </div>
                             </div>
@@ -62,8 +62,6 @@
                     </table>                 
 
                 </div>
-
-                @include('partial.modal.faq-modal')
 
                 <!-- END MAIN CONTENT -->
             </div>
@@ -175,8 +173,8 @@
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
-        $('#name').val('');        
-        select2Reset($("#region"));
+        $('#question').val('');
+        $('#answer').val('');
 
         // Set action url form for add
         var postDataUrl = "{{ url('faq') }}";    
@@ -206,17 +204,9 @@
         $("#form_faq").attr("action", postDataUrl);
 
         // Set Patch Method
-        if(!$('input[name=_method]').length){
+        if(!$('input[name=_method]').length) {
             $("#form_faq").append("<input type='hidden' name='_method' value='PATCH'>");
         }
-
-        $.get(getDataUrl + '/' + id, function (data) {
-
-                    $('#name').val(data.name);
-
-                    setSelect2IfPatchModal($("#region"), data.region_id, data.region.name);
-
-        })
 
     });
 

@@ -198,13 +198,13 @@ var FormValidation = function () {
                                     type: 'success'
                                 },
                                 function(){
-                                    // window.location.href = data.url;
-                                    // console.log(data);
+                                    window.location.href = data.url;
+                                    console.log(data);
 
-                                    $('#faqTable').DataTable().search('').draw();
-                                    $('#faqTable').DataTable().ajax.reload();
+                                    // $('#faqTable').DataTable().search('').draw();
+                                    // $('#faqTable').DataTable().ajax.reload();
 
-                                    $('#faq').modal('hide');                                    
+                                    // $('#faq').modal('hide');                                    
                                 }
                             )
                             // console.log(data.method);
