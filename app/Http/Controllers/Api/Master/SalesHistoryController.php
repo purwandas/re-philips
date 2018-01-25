@@ -258,7 +258,7 @@ class SalesHistoryController extends Controller
                     $detail = PosmActivityDetail::where('posmactivity_id', $value->id)
                     ->join('posms','posms.id','posm_activity_details.posm_id')
                     ->join('groups','groups.id','posms.group_id')
-                    ->select('posm_activity_details.id as detail_id','posm_activity_details.quantity','posms.name as posm_name','groups.name as group_name','posm_activity_details.id as tbat_detail_id','posms.id as posm_id')
+                    ->select('posm_activity_details.id as detail_id','posm_activity_details.quantity','posms.name as posm_name','groups.name as group_name','posm_activity_details.id as tbat_detail_id','posms.id as posm_id','posm_activity_details.photo')
                     ->get();
 
                         $result[$key]['id'] = $value->id;

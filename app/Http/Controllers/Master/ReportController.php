@@ -2449,27 +2449,35 @@ class ReportController extends Controller
 
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
-                // $folderPath = explode('/', $item->photo);
-                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                // $files = File::allFiles($folder);
-                $images = '';
-                // foreach ($files as $file)
-                // {
-                    $images .= "<img src='".$item->photo."' height='100px'>\n";
-                // }
+                if ($item->photo != '') {
+                    // $folderPath = explode('/', $item->photo);
+                    // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                    // $files = File::allFiles($folder);
+                    $images = '';
+                    // foreach ($files as $file)
+                    // {
+                        $images .= "<img src='".$item->photo."' height='100px'>\n";
+                    // }
                     return $images;
-                })
-            ->editColumn('photo2', function ($item) {
-                $folderPath = explode('/', $item->photo2);
-                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                $files = File::allFiles($folder);
-                $images = '';
-                foreach ($files as $file)
-                {
-                    $images .= asset((string)$file)."\n";
+                }else{
+                    return '';
                 }
-                    return $images;
-                })
+            })
+            ->editColumn('photo2', function ($item) {
+                if ($item->photo2 != '') {
+                    $folderPath = explode('/', $item->photo2);
+                    $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                    $files = File::allFiles($folder);
+                    $images = '';
+                    foreach ($files as $file)
+                    {
+                        $images .= asset((string)$file)."\n";
+                    }
+                        return $images;
+                }else{
+                    return '';
+                }
+            })
             ->rawColumns(['photo'])
             ->make(true);
 
