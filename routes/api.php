@@ -51,7 +51,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      * Area Module(s)
      */
 
-	Route::get('/region', 'Api\Master\AreaController@getRegion');
+    Route::get('/region', 'Api\Master\AreaController@getRegion');
 	Route::get('/area/{param}', 'Api\Master\AreaController@getAreaByRegion');
 
 	/**
@@ -100,6 +100,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/get-fanspage', 'Api\Master\FanspageController@getFanspage');
     Route::get('/get-store-id', 'Api\Master\StoreController@getStoreId');
     Route::get('/get-district', 'Api\Master\StoreController@getDistrict');
+    Route::get('/faq', 'Api\Master\FaqController@getFaq');
     // Route::get('/get-district/{param}', 'Api\Master\StoreController@nearby');
 
     /**

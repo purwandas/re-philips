@@ -2449,27 +2449,35 @@ class ReportController extends Controller
 
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
-                // $folderPath = explode('/', $item->photo);
-                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                // $files = File::allFiles($folder);
-                $images = '';
-                // foreach ($files as $file)
-                // {
-                    $images .= "<img src='".$item->photo."' height='100px'>\n";
-                // }
+                if ($item->photo != '') {
+                    // $folderPath = explode('/', $item->photo);
+                    // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                    // $files = File::allFiles($folder);
+                    $images = '';
+                    // foreach ($files as $file)
+                    // {
+                        $images .= "<img src='".$item->photo."' height='100px'>\n";
+                    // }
                     return $images;
-                })
-            ->editColumn('photo2', function ($item) {
-                $folderPath = explode('/', $item->photo2);
-                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                $files = File::allFiles($folder);
-                $images = '';
-                foreach ($files as $file)
-                {
-                    $images .= asset((string)$file)."\n";
+                }else{
+                    return '';
                 }
-                    return $images;
-                })
+            })
+            ->editColumn('photo2', function ($item) {
+                if ($item->photo2 != '') {
+                    $folderPath = explode('/', $item->photo2);
+                    $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                    $files = File::allFiles($folder);
+                    $images = '';
+                    foreach ($files as $file)
+                    {
+                        $images .= asset((string)$file)."\n";
+                    }
+                        return $images;
+                }else{
+                    return '';
+                }
+            })
             ->rawColumns(['photo'])
             ->make(true);
 
@@ -2591,7 +2599,8 @@ class ReportController extends Controller
                     $tomorrowColor = "#ecf0f1";
                 // return $minDate.' / '.$maxDate;, 
 
-                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
                     /* Get data from attendanceDetails then convert them into colored table */
                     // return $item->user_id;
