@@ -202,4 +202,31 @@ class AuthController extends Controller
         return response()->json(['status' => true, 'message' => 'Profil berhasil di update']);
 
     }
+
+    public function updateProfile(Request $request){
+
+	    $user = JWTAuth::parseToken()->authenticate();
+
+	    if(!isset($request->name) || $request->name == null || !isset($request->email) || $request->email == null)
+	    {
+            return response()->json(['status' => false, 'message' => 'Nama & Email tidak boleh kosong'], 500);
+        }
+
+        $userData = User::where('id', $user->id)->first();
+        if (!isset($userData)) {
+        	return response()->json(['status' => false, 'message' => 'User not found'], 404);
+        }
+        $userData->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        if ($userData) {
+        	return response()->json(['status' => true, 'message' => 'Profil berhasil di update'], 200);
+        }
+
+        return response()->json(['status' => false, 'message' => 'Profil Gagal di update'], 500);
+
+    }
+
 }

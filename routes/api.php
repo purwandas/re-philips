@@ -60,6 +60,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 	Route::get('/profile', 'Api\AuthController@getProfile');
 	Route::post('/set-profile', 'Api\AuthController@setProfile');
+    Route::post('/edit-profile', 'Api\AuthController@updateProfile');
 
 	/**
      * Transaction Module(s)
@@ -76,6 +77,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/sales-edit/{param}', 'Api\Master\EditSalesController@edit');
 	Route::post('/sales-delete/{param}', 'Api\Master\DeleteSalesController@delete');
     Route::get('/sales/{param}', 'Api\Master\SalesHistoryController@getData');
+    Route::get('/sales-by-spv/{param}', 'Api\Master\SalesHistoryController@getDataUser');
 
 	/**
      * Attendance Module(s)
