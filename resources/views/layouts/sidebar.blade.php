@@ -438,6 +438,27 @@
                         </a>
                     </li>
 
+                    <li class="nav-item {{ Request::is('salesmanachievement') ? 'active open' : '' }}">
+                        <a href="{{ url('salesmanachievement') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Salesman Achievement</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('salesactivity') ? 'active open' : '' }}">
+                        <a href="{{ url('salesactivity') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Sales Activity</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('storelocationactivity') ? 'active open' : '' }}">
+                        <a href="{{ url('storelocationactivity') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Store Location Activity</span>
+                        </a>
+                    </li>
+
                 @endif
 
             @endif
@@ -458,6 +479,13 @@
                 <a href="{{ url('product-knowledge') }}" class="nav-link nav-toggle">
                     <i class="fa fa-book"></i>
                     <span class="title">Guidelines</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('faq') ? 'active' : '' }}">
+                <a href="{{ url('faq') }}" class="nav-link ">
+                    <i class="fa fa-book"></i>
+                    <span class="title">Frequently Asked Question (FAQ)</span>
                 </a>
             </li>
 

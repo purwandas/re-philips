@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/feedbackCategory', ['as'=> 'datatable.feedbackCategory','uses'=>'Master\FeedbackCategoryController@masterDataTable']);
     Route::post('datatable/feedbackQuestion', ['as'=> 'datatable.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@masterDataTable']);
     Route::post('datatable/feedbackAnswer', ['as'=> 'datatable.feedbackAnswer','uses'=>'Master\FeedbackAnswerController@masterDataTable']);
+    Route::post('datatable/faq', ['as'=> 'datatable.faq','uses'=>'Master\FaqController@masterDataTable']);
 
     /**
      * Edit Sales
@@ -81,7 +82,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
     Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);
-    
+    Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
+    Route::post('datatable/salesactivityreport', ['as'=> 'datatable.salesactivityreport','uses'=>'Master\ReportController@salesActivityData']);
+    Route::post('datatable/storelocationactivityreport', ['as'=> 'datatable.storelocationactivityreport','uses'=>'Master\ReportController@storeLocationActivityData']);
 
     
 
@@ -111,6 +114,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/feedbackQuestion', ['as'=> 'data.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
     Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
     Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
+
+    Route::post('data/quiztarget', ['as'=> 'data.quiztarget','uses'=>'Api\Master\QuizTargetController@getDataWithFilters']);
 
     /**
      * Relation
@@ -164,6 +169,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
     Route::get('util/empstore/{id}', ['uses'=>'UtilController@getStoreForEmployee']);
     Route::get('util/spvstore/{id}', ['uses'=>'UtilController@getStoreForSpvEmployee']);
+    Route::get('util/spvdemostore/{id}', ['uses'=>'UtilController@getStoreForSpvDemoEmployee']);    
     Route::get('util/storedist/{id}', ['uses'=>'UtilController@getDistributorForStore']);
     Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
     Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
@@ -171,9 +177,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);
     Route::get('util/productread/{id}', ['uses'=>'UtilController@getProductRead']);
     Route::get('util/user-online', ['uses'=>'UtilController@getUserOnline']);
+    Route::get('util/sales-history', ['uses'=>'UtilController@getSalesHistory']);
+    Route::post('util/sales-history-read', ['uses'=>'UtilController@readSalesHistory']);
     Route::get('util/get-store-id', ['uses'=>'UtilController@getStoreId']);
     Route::get('util/attendancedetail/{id}', ['uses'=>'UtilController@getAttendanceDetail']);
     Route::get('util/historyempstore/{id}', ['uses'=>'UtilController@getHistoryStoreForEmployee']);
+    Route::get('util/target/{id}', ['uses'=>'UtilController@getTargetQuiz']);
 
     /**
      * Export
@@ -194,6 +203,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
+    Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
 
     /**

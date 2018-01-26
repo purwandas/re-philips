@@ -35,6 +35,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('userpromoter/{id}', 'UserPromoterController@update');
         Route::delete('userpromoter/{id}', 'UserPromoterController@destroy');
 
+        /** FAQ **/
+        Route::get('faq', 'Master\FaqController@index');
+        Route::get('faq/create', 'Master\FaqController@create');
+        Route::post('faq', 'Master\FaqController@store');
+        Route::get('faq/edit/{id}', 'Master\FaqController@edit');
+        Route::patch('faq/{id}', 'Master\FaqController@update');
+        Route::delete('faq/{id}', 'Master\FaqController@destroy');
+
         /** Area **/
         Route::get('area', 'Master\AreaController@index');
         Route::post('area', 'Master\AreaController@store');
@@ -232,6 +240,8 @@ Route::group(['middleware' => ['auth']], function () {
          * Reporting Module(s) Just For Admin, Master, REM
          */
         Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
+        Route::get('salesactivity', 'Master\ReportController@salesActivityIndex');
+        Route::get('storelocationactivity', 'Master\ReportController@storeLocationActivityIndex');
 
         /**
          * Salesman Module (Reporting)
@@ -321,6 +331,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('attendancereport', 'Master\ReportController@attendanceIndex');
     Route::get('attendancereport/detail/{id}', 'Master\ReportController@attendanceForm');
     Route::get('achievement', 'Master\AchievementController@achievementIndex');
+    Route::get('salesmanachievement', 'Master\AchievementController@salesmanAchievementIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');

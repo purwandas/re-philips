@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use File;
+use DB;
 use App\Store;
 use App\TrainerArea;
 use App\User;
+use App\SpvDemo;
 use App\RsmRegion;
 use App\DmArea;
 use App\EmployeeStore;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Yajra\Datatables\Facades\Datatables;
+use App\NewsRead;
+use App\ProductKnowledgeRead;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Traits\AttendanceTrait;
-use Illuminate\Support\Collection;
-use Auth;
 use App\Filters\UserFilters;
-use File;
-use App\NewsRead;
-use App\ProductKnowledgeRead;
 use App\Reports\HistoryEmployeeStore;
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use DB;
-
+use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
+use Yajra\Datatables\Facades\Datatables;
 
 class UserController extends Controller
 {
@@ -185,11 +185,7 @@ class UserController extends Controller
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-
-
         $request['password'] = bcrypt($request['password']);
-
-        // dd(public_path());        
 
         // Upload file process
         ($request->photo_file != null) ? 
@@ -200,7 +196,7 @@ class UserController extends Controller
         $user = User::create($request->all());
 
         /* Insert user relation */
-        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+        if ($request['role'] == 'Supervisor') {
 
             /* SPV Multiple Store */
             if($request['store_ids']){
@@ -211,67 +207,347 @@ class UserController extends Controller
                     */
                     $stores = explode(',', $storeId); // id,store_id
                     // return response()->json($stores[1]);
-                    $store = Store::where('deleted_at',null)
-                                ->where('store_id',$stores[1])->get();
-                    $status = false;
-                    $store_id   = '';
-                    $store_name_1   = '';
-                    $store_name_2   = '';
-                    $latitude   = '';
-                    $longitude  = '';
-                    $address    = '';
-                    $classification     = '';
-                    $subchannel_id  = '';
-                    $district_id    = '';
-                    // return response()->json($store);
-                    foreach ($store as $key => $value) {
-                        /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
-                        if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
-                        {
-                            Store::where('id',$stores[0])
-                            ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                            $status = true;
-                        }
-                        if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
-                        {
-                            if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                    if ($request['status_spv'] == "Demonstrator") 
+                    {
+                        
+                        SpvDemo::create([
+                            'user_id' => $user->id,
+                            'store_id' => $stores[0],
+                        ]);
+
+                    }else{
+                        
+                        $store = Store::where('deleted_at',null)
+                                    ->where('store_id',$stores[1])->get();
+                        $status = false;
+                        $store_id   = '';
+                        $store_name_1   = '';
+                        $store_name_2   = '';
+                        $latitude   = '';
+                        $longitude  = '';
+                        $address    = '';
+                        $classification     = '';
+                        $subchannel_id  = '';
+                        $district_id    = '';
+                        $no_telp_toko = '';
+                        $no_telp_pemilik_toko = '';
+                        $kepemilikan_toko = '';
+                        $district_id = '';
+                        $lokasi_toko = '';
+                        $tipe_transaksi_2 = '';
+                        $tipe_transaksi = '';
+                        $kondisi_toko = '';
+                        $history = '';
+                        
+                        foreach ($store as $key => $value) {
+                            /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
+                            $storesDedicate = '';
+                            if (isset($value->dedicate)) {
+                                $storesDedicate = $value->dedicate;
+                            }
+                            if ( ($storesDedicate == '' || $storesDedicate == $request['dedicate']) && $status == false)
                             {
-                                Store::where('id',$stores[0])
+                                Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                 $status = true;
                             }
+                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
+                            {
+                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                                {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+
+                            $store_id = $value->store_id;
+                            $store_name_1 = $value->store_name_1;
+                            $store_name_2 = $value->store_name_2;
+                            $latitude = $value->latitude;
+                            $longitude = $value->longitude;
+                            $address = $value->address;
+                            $classification = $value->classification;
+                            $subchannel_id = $value->subchannel_id;
+                            $district_id = $value->district_id;
+
+                            $no_telp_toko = $value->no_telp_toko;
+                            $no_telp_pemilik_toko = $value->no_telp_pemilik_toko;
+                            $kepemilikan_toko = $value->kepemilikan_toko;
+                            $district_id = $value->district_id;
+                            $lokasi_toko = $value->lokasi_toko;
+                            $tipe_transaksi_2 = $value->tipe_transaksi_2;
+                            $tipe_transaksi = $value->tipe_transaksi;
+                            $kondisi_toko = $value->kondisi_toko;
                         }
 
-                        $store_id = $value->store_id;
-                        $store_name_1 = $value->store_name_1;
-                        $store_name_2 = $value->store_name_2;
-                        $latitude = $value->latitude;
-                        $longitude = $value->longitude;
-                        $address = $value->address;
-                        $classification = $value->classification;
-                        $subchannel_id = $value->subchannel_id;
-                        $district_id = $value->district_id;
-                    }
+                        if ($status == false) {
+                            Store::create([
+                                'store_id' => $store_id,
+                                'store_name_1' => $store_name_1,
+                                'store_name_2' => $store_name_2,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude,
+                                'address' => $address,
+                                'classification' => $classification,
+                                'subchannel_id' => $subchannel_id,
+                                'district_id' => $district_id,
+                                'user_id' => $user->id,
+                                'dedicate' => $request['dedicate'],
 
-                    if ($status == false) {
-                        Store::create([
-                            'store_id' => $store_id,
-                            'store_name_1' => $store_name_1,
-                            'store_name_2' => $store_name_2,
-                            'latitude' => $latitude,
-                            'longitude' => $longitude,
-                            'address' => $address,
-                            'classification' => $classification,
-                            'subchannel_id' => $subchannel_id,
-                            'district_id' => $district_id,
-                            'user_id' => $user->id,
-                            'dedicate' => $request['dedicate'],
-                        ]);
-                        $status = true;
+                                'no_telp_toko' => $no_telp_toko,
+                                'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                'kepemilikan_toko' => $kepemilikan_toko,
+                                'district_id' => $district_id,
+                                'lokasi_toko' => $lokasi_toko,
+                                'tipe_transaksi_2' => $tipe_transaksi_2,
+                                'tipe_transaksi' => $tipe_transaksi,
+                                'kondisi_toko' => $kondisi_toko,
+                            ]);
+                            $status = true;
+                        }
+
                     }
                             
-                            // $store = Store::where('id',$storeId)
-                            // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                }
+            }
+        }else if ($request['role'] == 'Supervisor Hybrid') {
+            if($request['store_ids']){
+                // return response()->json($request['store_ids']);
+                foreach ($request['store_ids'] as $storeId) {
+                    /*
+                    1. select all store with STORE ID selected
+                    */
+                    $stores = explode(',', $storeId);
+                    $store = Store::where('deleted_at',null)
+                                    ->where('store_id',$stores[1])->get();
+                        $status = false;
+                        $store_id   = '';
+                        $store_name_1   = '';
+                        $store_name_2   = '';
+                        $latitude   = '';
+                        $longitude  = '';
+                        $address    = '';
+                        $classification     = '';
+                        $subchannel_id  = '';
+                        $district_id    = '';
+                            $no_telp_toko = '';
+                            $no_telp_pemilik_toko = '';
+                            $kepemilikan_toko = '';
+                            $district_id = '';
+                            $lokasi_toko = '';
+                            $tipe_transaksi_2 = '';
+                            $tipe_transaksi = '';
+                            $kondisi_toko = '';
+                        $hybrid = false;
+                        $hybridData = false;
+                        $mccData = false;
+                        $dedicateStored = '';
+                        
+                        foreach ($store as $key => $value) {
+                            /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
+                            $storesDedicate = '';
+                            $store_id = $value->store_id;
+                            $store_name_1 = $value->store_name_1;
+                            $store_name_2 = $value->store_name_2;
+                            $latitude = $value->latitude;
+                            $longitude = $value->longitude;
+                            $address = $value->address;
+                            $classification = $value->classification;
+                            $subchannel_id = $value->subchannel_id;
+                            $district_id = $value->district_id;
+                                $no_telp_toko = $value->no_telp_toko;
+                                $no_telp_pemilik_toko = $value->no_telp_pemilik_toko;
+                                $kepemilikan_toko = $value->kepemilikan_toko;
+                                $district_id = $value->district_id;
+                                $lokasi_toko = $value->lokasi_toko;
+                                $tipe_transaksi_2 = $value->tipe_transaksi_2;
+                                $tipe_transaksi = $value->tipe_transaksi;
+                                $kondisi_toko = $value->kondisi_toko;
+
+                            if (isset($value->dedicate)) {
+                                $storesDedicate = $value->dedicate;
+                            }
+                            if ( ($storesDedicate == '') && $status == false)
+                            {
+                                Store::where('id',$value->id)
+                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+
+                                if ($request['dedicate'] == 'HYBRID') {
+                                    Store::create([
+                                        'store_id' => $store_id,
+                                        'store_name_1' => $store_name_1,
+                                        'store_name_2' => $store_name_2,
+                                        'latitude' => $latitude,
+                                        'longitude' => $longitude,
+                                        'address' => $address,
+                                        'classification' => $classification,
+                                        'subchannel_id' => $subchannel_id,
+                                        'district_id' => $district_id,
+                                        'user_id' => $user->id,
+                                        'dedicate' => 'MCC',
+
+                                        'no_telp_toko' => $no_telp_toko,
+                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                    'kepemilikan_toko' => $kepemilikan_toko,
+                                    'district_id' => $district_id,
+                                    'lokasi_toko' => $lokasi_toko,
+                                    'tipe_transaksi_2' => $tipe_transaksi_2,
+                                    'tipe_transaksi' => $tipe_transaksi,
+                                    'kondisi_toko' => $kondisi_toko,
+                                    ]);
+                                }
+                                $status = true;
+                            }
+                            
+                            if ( ($storesDedicate == $request['dedicate']) && $status == false && $request['dedicate'] != 'HYBRID')
+                            {
+                                Store::where('id',$value->id)
+                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                $status = true;
+                            }
+
+                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC') && $status == false)
+                            {
+                                $hybridData = true;
+                                $dedicateStored = $storesDedicate;
+                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC')
+                                {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+                            
+                            if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                            {
+                                if ($storesDedicate == 'MCC') {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+
+                            if ( ($request['dedicate'] == 'HYBRID') && $status == false ) 
+                            {
+                                $hybrid = true;
+                            }
+                            if ( ($storesDedicate == 'HYBRID') && $status == false ) 
+                            {
+                                $hybridData = true;
+                                $dedicateStored = 'HYBRID';
+                            }
+                            if ( ($storesDedicate == 'MCC') && $status == false ) 
+                            {
+                                $mccData = true;
+                            }
+
+                        }
+
+                        if ($hybrid == true) 
+                        {
+                            if ($hybridData == true) 
+                            {
+                                Store::where('deleted_at',null)
+                                ->where('store_id',$stores[1])
+                                ->where('dedicate',$dedicateStored)
+                                ->update([
+                                    'user_id'=>$user->id,'dedicate'=>'HYBRID',
+                                ]);
+                                $status = true;
+                            }
+
+                            if ($mccData == true) 
+                            {
+                                Store::where('deleted_at',null)
+                                ->where('store_id',$stores[1])
+                                ->where('dedicate','MCC')
+                                ->update([
+                                    'user_id'=>$user->id,'dedicate'=>'MCC',
+                                ]);
+                                $status = true;
+                            }
+
+                            if ($hybridData == false) {
+                                Store::create([
+                                    'store_id' => $store_id,
+                                    'store_name_1' => $store_name_1,
+                                    'store_name_2' => $store_name_2,
+                                    'latitude' => $latitude,
+                                    'longitude' => $longitude,
+                                    'address' => $address,
+                                    'classification' => $classification,
+                                    'subchannel_id' => $subchannel_id,
+                                    'district_id' => $district_id,
+                                    'user_id' => $user->id,
+                                    'dedicate' => 'HYBRID',
+
+                                    'no_telp_toko' => $no_telp_toko,
+                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                    'kepemilikan_toko' => $kepemilikan_toko,
+                                    'district_id' => $district_id,
+                                    'lokasi_toko' => $lokasi_toko,
+                                    'tipe_transaksi_2' => $tipe_transaksi_2,
+                                    'tipe_transaksi' => $tipe_transaksi,
+                                    'kondisi_toko' => $kondisi_toko,
+                                ]);
+                                $status = true;
+                            }
+                            
+                            if ($mccData == false) {
+                                Store::create([
+                                    'store_id' => $store_id,
+                                    'store_name_1' => $store_name_1,
+                                    'store_name_2' => $store_name_2,
+                                    'latitude' => $latitude,
+                                    'longitude' => $longitude,
+                                    'address' => $address,
+                                    'classification' => $classification,
+                                    'subchannel_id' => $subchannel_id,
+                                    'district_id' => $district_id,
+                                    'user_id' => $user->id,
+                                    'dedicate' => 'MCC',
+
+                                    'no_telp_toko' => $no_telp_toko,
+                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                    'kepemilikan_toko' => $kepemilikan_toko,
+                                    'district_id' => $district_id,
+                                    'lokasi_toko' => $lokasi_toko,
+                                    'tipe_transaksi_2' => $tipe_transaksi_2,
+                                    'tipe_transaksi' => $tipe_transaksi,
+                                    'kondisi_toko' => $kondisi_toko,
+                                ]);
+                                $status = true;
+                            }
+
+                        }
+
+                        if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                        {
+                            Store::create([
+                                'store_id' => $store_id,
+                                'store_name_1' => $store_name_1,
+                                'store_name_2' => $store_name_2,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude,
+                                'address' => $address,
+                                'classification' => $classification,
+                                'subchannel_id' => $subchannel_id,
+                                'district_id' => $district_id,
+                                'user_id' => $user->id,
+                                'dedicate' => 'MCC',
+                                'no_telp_toko' => $no_telp_toko,
+                                'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                'kepemilikan_toko' => $kepemilikan_toko,
+                                'district_id' => $district_id,
+                                'lokasi_toko' => $lokasi_toko,
+                                'tipe_transaksi_2' => $tipe_transaksi_2,
+                                'tipe_transaksi' => $tipe_transaksi,
+                                'kondisi_toko' => $kondisi_toko,
+                            ]);
+                            $status = true;
+                        }
+                        
                 }
             }
         }
@@ -341,13 +617,22 @@ class UserController extends Controller
         // $data = User::where('id', $id)->first();
         $data = User::
             where('users.id', $id)
-            // ->join('employee_stores','users.id','employee_stores.user_id')
-            // ->join('stores','employee_stores.store_id','stores.id')
             ->select('users.*')//, 'stores.dedicate as dedicate')
             ->first();
-            // return response()->json($data);
+        
+        if ($data->role == 'Supervisor' || $data->role == 'Supervisor Hybrid' ) {
+            $spvDedicate = Store::
+                where('user_id',$data->id)
+                ->first();
+            $spvDemo = SpvDemo::
+                where('user_id',$data->id)
+                ->first();
+            $spvDemoDedicate = SpvDemo::
+                where('user_id',$data->id)
+                ->first();
+        }
 
-        return view('master.form.user-form', compact('data'));
+        return view('master.form.user-form', compact('data','spvDedicate','spvDemo'));
     }
 
     /**
@@ -369,9 +654,6 @@ class UserController extends Controller
         $user = User::find($id);
         $oldPhoto = "";
         
-
-
-
         if($user->photo != null && $request->photo_file != null) {
             /* Save old photo path */
             $oldPhoto = $user->photo;
@@ -383,11 +665,21 @@ class UserController extends Controller
         //     $empStore->delete();
         // }
 
+        // If Exists SpvDemo Data
+        $spvDemo = SpvDemo::where('user_id', $user->id);
+        if($spvDemo->count() > 0){
+            $spvDemo->delete();
+        } 
+
+        // If Exists Spv Data
+        // Store::where('user_id',$user->id)
+        //     ->update(['user_id'=>null]);    
+
         if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
             /* SPV Multiple Store */
             if($request['store_ids']){
                 foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>null]);
+                    $store = Store::where('user_id', $user->id)->update(['user_id'=>null]);
                 }
             }
         }else{
@@ -462,79 +754,281 @@ class UserController extends Controller
         $user->update($requestNew->all()); 
 
         /* Insert user relation */
-        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+        if ($request['role'] == 'Supervisor') {
+
             /* SPV Multiple Store */
-            if($request['store_ids'])
-            {
-                Store::where('user_id',$user->id)
-                            ->update(['user_id'=>null]);
+            if($request['store_ids']){
+                // return response()->json($request['store_ids']);
                 foreach ($request['store_ids'] as $storeId) {
                     /*
                     1. select all store with STORE ID selected
                     */
                     $stores = explode(',', $storeId); // id,store_id
-                    $store = Store::where('deleted_at',null)
-                                ->where('store_id',$stores[1])->get();
-                    $status = false;
-                    $store_id   = '';
-                    $store_name_1   = '';
-                    $store_name_2   = '';
-                    $latitude   = '';
-                    $longitude  = '';
-                    $address    = '';
-                    $classification     = '';
-                    $subchannel_id  = '';
-                    $district_id    = '';
-                    foreach ($store as $key => $value) {
-                        /* ini masih perlu di cek */
-                        if ( ($stores[2] == 'null' || $stores[2] == $request['dedicate']) && $status == false)
-                        {
-                            Store::where('id',$value->id)
-                            ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                            
-                            $status = true;
-                        }
+                    // return response()->json($stores[1]);
+                    if ($request['status_spv'] == "Demonstrator") 
+                    {
                         
-                        if ( ($stores[2] == 'DA' || $stores[2] == 'PC' || $stores[2] == 'HYBRID') && $status == false)
-                        {
-                            if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                        SpvDemo::create([
+                            'user_id' => $user->id,
+                            'store_id' => $stores[0],
+                        ]);
+
+                    }else{
+                        
+                        $store = Store::where('deleted_at',null)
+                                    ->where('store_id',$stores[1])->get();
+                        $status = false;
+                        $store_id   = '';
+                        $store_name_1   = '';
+                        $store_name_2   = '';
+                        $latitude   = '';
+                        $longitude  = '';
+                        $address    = '';
+                        $classification     = '';
+                        $subchannel_id  = '';
+                        $district_id    = '';
+                        $history = '';
+                        
+                        foreach ($store as $key => $value) {
+                            /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
+                            $storesDedicate = '';
+                            if (isset($value->dedicate)) {
+                                $storesDedicate = $value->dedicate;
+                            }
+                            if ( ($storesDedicate == '' || $storesDedicate == $request['dedicate']) && $status == false)
                             {
                                 Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                 $status = true;
                             }
+                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
+                            {
+                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                                {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+
+                            $store_id = $value->store_id;
+                            $store_name_1 = $value->store_name_1;
+                            $store_name_2 = $value->store_name_2;
+                            $latitude = $value->latitude;
+                            $longitude = $value->longitude;
+                            $address = $value->address;
+                            $classification = $value->classification;
+                            $subchannel_id = $value->subchannel_id;
+                            $district_id = $value->district_id;
                         }
 
-                        $store_id = $value->store_id;
-                        $store_name_1 = $value->store_name_1;
-                        $store_name_2 = $value->store_name_2;
-                        $latitude = $value->latitude;
-                        $longitude = $value->longitude;
-                        $address = $value->address;
-                        $classification = $value->classification;
-                        $subchannel_id = $value->subchannel_id;
-                        $district_id = $value->district_id;
-                    }
+                        if ($status == false) {
+                            Store::create([
+                                'store_id' => $store_id,
+                                'store_name_1' => $store_name_1,
+                                'store_name_2' => $store_name_2,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude,
+                                'address' => $address,
+                                'classification' => $classification,
+                                'subchannel_id' => $subchannel_id,
+                                'district_id' => $district_id,
+                                'user_id' => $user->id,
+                                'dedicate' => $request['dedicate'],
+                            ]);
+                            $status = true;
+                        }
 
-                    if ($status == false) {
-                        Store::create([
-                            'store_id' => $store_id,
-                            'store_name_1' => $store_name_1,
-                            'store_name_2' => $store_name_2,
-                            'latitude' => $latitude,
-                            'longitude' => $longitude,
-                            'address' => $address,
-                            'classification' => $classification,
-                            'subchannel_id' => $subchannel_id,
-                            'district_id' => $district_id,
-                            'user_id' => $user->id,
-                            'dedicate' => $request['dedicate'],
-                        ]);
-                        $status = true;
                     }
                             
-                            // $store = Store::where('id',$storeId)
-                            // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                }
+            }
+        }else if ($request['role'] == 'Supervisor Hybrid') {
+            if($request['store_ids']){
+                // return response()->json($request['store_ids']);
+                foreach ($request['store_ids'] as $storeId) {
+                    /*
+                    1. select all store with STORE ID selected
+                    */
+                    $stores = explode(',', $storeId);
+                    $store = Store::where('deleted_at',null)
+                                    ->where('store_id',$stores[1])->get();
+                        $status = false;
+                        $store_id   = '';
+                        $store_name_1   = '';
+                        $store_name_2   = '';
+                        $latitude   = '';
+                        $longitude  = '';
+                        $address    = '';
+                        $classification     = '';
+                        $subchannel_id  = '';
+                        $district_id    = '';
+                        $hybrid = false;
+                        $hybridData = false;
+                        $mccData = false;
+                        $dedicateStored = '';
+                        
+                        foreach ($store as $key => $value) {
+                            /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
+                            $storesDedicate = '';
+                            $store_id = $value->store_id;
+                            $store_name_1 = $value->store_name_1;
+                            $store_name_2 = $value->store_name_2;
+                            $latitude = $value->latitude;
+                            $longitude = $value->longitude;
+                            $address = $value->address;
+                            $classification = $value->classification;
+                            $subchannel_id = $value->subchannel_id;
+                            $district_id = $value->district_id;
+
+                            if (isset($value->dedicate)) {
+                                $storesDedicate = $value->dedicate;
+                            }
+                            if ( ($storesDedicate == '') && $status == false)
+                            {
+                                Store::where('id',$value->id)
+                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+
+                                if ($request['dedicate'] == 'HYBRID') {
+                                    Store::create([
+                                        'store_id' => $store_id,
+                                        'store_name_1' => $store_name_1,
+                                        'store_name_2' => $store_name_2,
+                                        'latitude' => $latitude,
+                                        'longitude' => $longitude,
+                                        'address' => $address,
+                                        'classification' => $classification,
+                                        'subchannel_id' => $subchannel_id,
+                                        'district_id' => $district_id,
+                                        'user_id' => $user->id,
+                                        'dedicate' => 'MCC',
+                                    ]);
+                                }
+                                $status = true;
+                            }
+                            
+                            if ( ($storesDedicate == $request['dedicate']) && $status == false && $request['dedicate'] != 'HYBRID')
+                            {
+                                Store::where('id',$value->id)
+                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                $status = true;
+                            }
+
+                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC') && $status == false)
+                            {
+                                $hybridData = true;
+                                $dedicateStored = $storesDedicate;
+                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC')
+                                {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+                            
+                            if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                            {
+                                if ($storesDedicate == 'MCC') {
+                                    Store::where('id',$value->id)
+                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    $status = true;
+                                }
+                            }
+
+                            if ( ($request['dedicate'] == 'HYBRID') && $status == false ) 
+                            {
+                                $hybrid = true;
+                            }
+                            if ( ($storesDedicate == 'HYBRID') && $status == false ) 
+                            {
+                                $hybridData = true;
+                                $dedicateStored = 'HYBRID';
+                            }
+                            if ( ($storesDedicate == 'MCC') && $status == false ) 
+                            {
+                                $mccData = true;
+                            }
+
+                        }
+
+                        if ($hybrid == true) 
+                        {
+                            if ($hybridData == true) 
+                            {
+                                Store::where('deleted_at',null)
+                                ->where('store_id',$stores[1])
+                                ->where('dedicate',$dedicateStored)
+                                ->update([
+                                    'user_id'=>$user->id,'dedicate'=>'HYBRID',
+                                ]);
+                                $status = true;
+                            }
+
+                            if ($mccData == true) 
+                            {
+                                Store::where('deleted_at',null)
+                                ->where('store_id',$stores[1])
+                                ->where('dedicate','MCC')
+                                ->update([
+                                    'user_id'=>$user->id,'dedicate'=>'MCC',
+                                ]);
+                                $status = true;
+                            }
+
+                            if ($hybridData == false) {
+                                Store::create([
+                                    'store_id' => $store_id,
+                                    'store_name_1' => $store_name_1,
+                                    'store_name_2' => $store_name_2,
+                                    'latitude' => $latitude,
+                                    'longitude' => $longitude,
+                                    'address' => $address,
+                                    'classification' => $classification,
+                                    'subchannel_id' => $subchannel_id,
+                                    'district_id' => $district_id,
+                                    'user_id' => $user->id,
+                                    'dedicate' => 'HYBRID',
+                                ]);
+                                $status = true;
+                            }
+                            
+                            if ($mccData == false) {
+                                Store::create([
+                                    'store_id' => $store_id,
+                                    'store_name_1' => $store_name_1,
+                                    'store_name_2' => $store_name_2,
+                                    'latitude' => $latitude,
+                                    'longitude' => $longitude,
+                                    'address' => $address,
+                                    'classification' => $classification,
+                                    'subchannel_id' => $subchannel_id,
+                                    'district_id' => $district_id,
+                                    'user_id' => $user->id,
+                                    'dedicate' => 'MCC',
+                                ]);
+                                $status = true;
+                            }
+
+                        }
+
+                        if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                        {
+                            Store::create([
+                                'store_id' => $store_id,
+                                'store_name_1' => $store_name_1,
+                                'store_name_2' => $store_name_2,
+                                'latitude' => $latitude,
+                                'longitude' => $longitude,
+                                'address' => $address,
+                                'classification' => $classification,
+                                'subchannel_id' => $subchannel_id,
+                                'district_id' => $district_id,
+                                'user_id' => $user->id,
+                                'dedicate' => 'MCC',
+                            ]);
+                            $status = true;
+                        }
+                        
                 }
             }
         }

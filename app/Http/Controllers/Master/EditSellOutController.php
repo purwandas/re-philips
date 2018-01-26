@@ -168,7 +168,6 @@ class EditSellOutController extends Controller
      */
     public function destroy($id)
     {
-        
         $this->deleteSellOut($id);
 
         return response()->json($id);
