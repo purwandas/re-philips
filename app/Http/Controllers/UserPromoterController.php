@@ -431,6 +431,8 @@ class UserPromoterController extends Controller
 
         }
 
+
+        $requestNew['certificate'] = $request['certificate'];
         $requestNew['name'] = $request['name'];
         $requestNew['email'] = $request['email'];
         $requestNew['role'] = $request['role'];

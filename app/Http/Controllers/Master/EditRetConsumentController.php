@@ -10,6 +10,7 @@ use App\Traits\SalesTrait;
 use DB;
 use Auth;
 use App\Store;
+use Carbon\Carbon;
 use App\RetConsument;
 use App\RetConsumentDetail;
 use App\Filters\RetConsumentFilters;
@@ -34,7 +35,7 @@ class EditRetConsumentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
@@ -43,16 +44,67 @@ class EditRetConsumentController extends Controller
                     ->where('ret_consument_details.deleted_at', null)
         			->join('ret_consument_details', 'ret_consuments.id', '=', 'ret_consument_details.retconsument_id')
                     ->join('stores', 'ret_consuments.store_id', '=', 'stores.id')
+
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+
                     ->join('users', 'ret_consuments.user_id', '=', 'users.id')
                     ->join('products', 'ret_consument_details.product_id', '=', 'products.id')
-                    ->select('ret_consuments.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_consument_details.id as id', 'ret_consument_details.quantity as quantity', 'products.name as product')->get();
+                    ->select('ret_consuments.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.id as storeId', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_consument_details.id as id', 'ret_consument_details.quantity as quantity', 'products.name as product')
+                    ->get();
 
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
                 $store = Store::where('user_id', $userId)
                             ->pluck('stores.store_id');
                 $data = $data->whereIn('store_id', $store);
             }
-        return $this->makeTable($data);
+
+           $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                    // return response()->json($date1.'-'.$date2);
+            }
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)->get();
+                foreach ($region as $key => $value) {
+                    $filter = $filter->where('region_id', $value->region_id);
+                }
+            }
+
+        return $this->makeTable($filter);
     }
 
     // Datatable template
