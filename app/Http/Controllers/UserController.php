@@ -181,6 +181,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:3|confirmed',
             'role' => 'required|string',
+            'join_date' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 

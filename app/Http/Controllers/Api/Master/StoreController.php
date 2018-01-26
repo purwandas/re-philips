@@ -298,4 +298,12 @@ class StoreController extends Controller
 
         return $district;
     }
+
+    public function getArina(){
+
+        $data = Store::where('store_id', 'AR001')->get();
+
+        return response()->json($data);
+
+    }
 }
