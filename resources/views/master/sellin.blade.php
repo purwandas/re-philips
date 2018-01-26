@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Sell In
-            <small>manage sell in</small>
+        <h1>Sell Through
+            <small>manage sell through</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Sell In Management</span>
+        <span class="active">Sell Through Management</span>
     </li>
 </ul>
 @endsection
@@ -82,7 +82,7 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-share-alt font-blue"></i>
-                    <span class="caption-subject font-blue bold uppercase">Sell In</span>
+                    <span class="caption-subject font-blue bold uppercase">Sell Through</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
@@ -97,7 +97,7 @@
                                 <th> User Name </th>
                                 <th> User NIK </th>
                                 <th> Store Name 1 </th>
-                                <th> Store Name 2 </th>
+                                <th> Customer Code </th>
                                 <th> Store ID </th>
                                 <th> Product </th>
                                 <th> Quantity </th>

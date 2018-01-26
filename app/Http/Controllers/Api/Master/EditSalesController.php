@@ -48,7 +48,7 @@ class EditSalesController extends Controller
 
 //        return $content;
 
-        if($param == 1) { // SELL IN
+        if($param == 1) { // SELL IN(SELL THROUGH)
 
             $dataHeader = SellIn::where('id', $content['id'])->first();
 

@@ -100,11 +100,11 @@
 				        </div>
 
 				        <div class="form-group" id="store_name_2_div">
-				          <label class="col-sm-2 control-label">Store Name 2</label>
+				          <label class="col-sm-2 control-label">Customer Code</label>
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="store_name_2" name="store_name_2" class="form-control" value="{{ @$data->store_name_2 }}" placeholder="Input Store Name 2" />
+				            	<input type="text" id="store_name_2" name="store_name_2" class="form-control" value="{{ @$data->store_name_2 }}" placeholder="Input Customer Code" />
 				            </div>
 				          </div>
 				        </div>
@@ -150,7 +150,7 @@
 					          <div class="col-sm-9">
 					          	<div class="input-icon right">
 					          		<i class="fa"></i>
-					            	<input type="text" id="longitude" name="longitude" class="form-control" value="{{ @$data->longitude }}" disabled />
+					            	<input type="text" id="longitude" name="longitude" class="form-control" value="{{ @$data->longitude }}"  />
 					            </div>
 					          </div>
 					        </div>
@@ -160,7 +160,7 @@
 					          <div class="col-sm-9">
 					          	<div class="input-icon right">
 					          		<i class="fa"></i>
-					            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->latitude }}" disabled />
+					            	<input type="text" id="latitude" name="latitude" class="form-control" value="{{ @$data->latitude }}"  />
 					            </div>
 					          </div>
 					        </div>
@@ -170,7 +170,7 @@
 					          <div class="col-sm-9">
 					          	<div class="input-icon right">
 					          		<i class="fa"></i>
-					            	<input type="text" id="address" name="address" class="form-control" value="{{ @$data->address }}" disabled />
+					            	<input type="text" id="address" name="address" class="form-control" value="{{ @$data->address }}"  />
 					            </div>
 					          </div>
 					        </div>

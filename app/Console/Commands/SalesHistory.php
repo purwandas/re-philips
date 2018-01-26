@@ -108,7 +108,7 @@ class SalesHistory extends Command
     }
 
     /**
-     * History Sales : Sell In
+     * History Sales : Sell In (Sell Through)
      *
      */
     public function sellin(){
@@ -316,7 +316,7 @@ class SalesHistory extends Command
 
         }
 
-        $this->info('History Sell In berhasil dibuat');
+        $this->info('History Sell Through berhasil dibuat');
 
     }
 
