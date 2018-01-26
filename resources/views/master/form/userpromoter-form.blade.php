@@ -178,6 +178,18 @@
 	                            </div>
 					        </div>
 
+	                        <div class="form-group">
+	                          <label class="col-sm-2 control-label">Certificate</label>
+	                          <div class="col-sm-9">
+	                            <div class="input-icon right">
+	                                <i class="fa"></i>
+	                                <textarea id="certificate" name="certificate" class="form-control"  placeholder=" (Please add ' , ' to separate certificate &nbsp || &nbsp tolong tambahkan tanda ' , ' untuk memisahkan certificate )" rows="10" >{{ @$data->certificate }}</textarea>
+	                            </div>
+	        					<p class="help-block"> * Please add "<b> , </b>" to separate certificate &nbsp || &nbsp tolong tambahkan tanda "<b> , </b>" untuk memisahkan certificate </p>
+	                            
+	                          </div>
+	                        </div>   
+
 					        <div class="form-group" style="margin-bottom: 0px;">
 	                            <label class="control-label col-md-2">Status                               
 	                            </label>
