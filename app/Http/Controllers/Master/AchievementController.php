@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\Reports\HistorySalesmanTargetActual;
+use App\Reports\SalesmanSummaryTargetActual;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
@@ -116,44 +118,79 @@ class AchievementController extends Controller
 
                 foreach ($details as $detail) {
 
-                    foreach ($detail->transaction as $transaction) {
+                    $collection = new Collection();
 
-                        $collection = new Collection();
+                    /* Get Data and Push them to collection */
+                    $collection['id'] = $data->id;
+                    $collection['region_id'] = $detail->region_id;
+                    $collection['area_id'] = $detail->area_id;
+                    $collection['district_id'] = $detail->district_id;
+                    $collection['storeId'] = $detail->storeId;
+                    $collection['user_id'] = $detail->user_id;
+                    $collection['region'] = $detail->region;
+                    $collection['area'] = $detail->area;
+                    $collection['district'] = $detail->district;
+                    $collection['nik'] = $detail->nik;
+                    $collection['promoter_name'] = $detail->promoter_name;
+                    $collection['account_type'] = $detail->account_type;
+                    $collection['title_of_promoter'] = $detail->title_of_promoter;
+                    $collection['classification_store'] = $detail->classification_store;
+                    $collection['account'] = $detail->account;
+                    $collection['store_id'] = $detail->store_id;
+                    $collection['store_name_1'] = $detail->store_name_1;
+                    $collection['store_name_2'] = $detail->store_name_2;
+                    $collection['spv_name'] = $detail->spv_name;
+                    $collection['trainer'] = $detail->trainer;
+                    $collection['sell_type'] = $detail->sell_type;
 
-                        /* Get Data and Push them to collection */
-                        $collection['id'] = $data->id;
-                        $collection['region_id'] = $detail->region_id;
-                        $collection['area_id'] = $detail->area_id;
-                        $collection['district_id'] = $detail->district_id;
-                        $collection['storeId'] = $detail->storeId;
-                        $collection['user_id'] = $detail->user_id;
-                        $collection['week'] = $detail->week;
-                        $collection['distributor_code'] = $detail->distributor_code;
-                        $collection['distributor_name'] = $detail->distributor_name;
-                        $collection['region'] = $detail->region;
-                        $collection['channel'] = $detail->channel;
-                        $collection['sub_channel'] = $detail->sub_channel;
-                        $collection['area'] = $detail->area;
-                        $collection['district'] = $detail->district;
-                        $collection['store_name_1'] = $detail->store_name_1;
-                        $collection['store_name_2'] = $detail->store_name_2;
-                        $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
-                        $collection['nik'] = $detail->nik;
-                        $collection['promoter_name'] = $detail->promoter_name;
-                        $collection['date'] = $detail->date;
-                        $collection['category'] = $transaction->category;
-                        $collection['philips'] = $transaction->philips;
-                        $collection['all'] = $transaction->all;
-                        $collection['percentage'] = $transaction->percentage;
-                        $collection['role'] = $detail->role;
-                        $collection['spv_name'] = $detail->spv_name;
-                        $collection['dm_name'] = $detail->dm_name;
-                        $collection['trainer_name'] = $detail->trainer_name;
+                    $collection['target_dapc'] = $detail->target_dapc;
+                    $collection['actual_dapc'] = $detail->actual_dapc;
+                    $collection['target_da'] = $detail->target_da;
+                    $collection['actual_da'] = $detail->actual_da;
+                    $collection['target_pc'] = $detail->target_pc;
+                    $collection['actual_pc'] = $detail->actual_dapc;
+                    $collection['target_mcc'] = $detail->actual_dapc;
+                    $collection['actual_mcc'] = $detail->actual_dapc;
+                    $collection['target_pf_da'] = $detail->actual_dapc;
+                    $collection['actual_pf_da'] = $detail->actual_dapc;
+                    $collection['target_pf_pc'] = $detail->actual_dapc;
+                    $collection['actual_pf_pc'] = $detail->actual_dapc;
+                    $collection['target_pf_mcc'] = $detail->actual_dapc;
+                    $collection['actual_pf_mcc'] = $detail->actual_dapc;
 
-                        $historyData->push($collection);
+                    $collection['target_da_w1'] = $detail->actual_dapc;
+                    $collection['actual_da_w1'] = $detail->actual_dapc;
+                    $collection['target_da_w2'] = $detail->actual_dapc;
+                    $collection['actual_da_w2'] = $detail->actual_dapc;
+                    $collection['target_da_w3'] = $detail->actual_dapc;
+                    $collection['actual_da_w3'] = $detail->actual_dapc;
+                    $collection['target_da_w4'] = $detail->actual_dapc;
+                    $collection['actual_da_w4'] = $detail->actual_dapc;
+                    $collection['target_da_w5'] = $detail->actual_dapc;
+                    $collection['actual_da_w5'] = $detail->actual_dapc;
+                    $collection['target_pc_w1'] = $detail->actual_dapc;
+                    $collection['actual_pc_w1'] = $detail->actual_dapc;
+                    $collection['target_pc_w2'] = $detail->actual_dapc;
+                    $collection['actual_pc_w2'] = $detail->actual_dapc;
+                    $collection['target_pc_w3'] = $detail->actual_dapc;
+                    $collection['actual_pc_w3'] = $detail->actual_dapc;
+                    $collection['target_pc_w4'] = $detail->actual_dapc;
+                    $collection['actual_pc_w4'] = $detail->actual_dapc;
+                    $collection['target_pc_w5'] = $detail->actual_dapc;
+                    $collection['actual_pc_w5'] = $detail->actual_dapc;
+                    $collection['target_mcc_w1'] = $detail->actual_dapc;
+                    $collection['actual_mcc_w1'] = $detail->actual_dapc;
+                    $collection['target_mcc_w2'] = $detail->actual_dapc;
+                    $collection['actual_mcc_w2'] = $detail->actual_dapc;
+                    $collection['target_mcc_w3'] = $detail->actual_dapc;
+                    $collection['actual_mcc_w3'] = $detail->actual_dapc;
+                    $collection['target_mcc_w4'] = $detail->actual_dapc;
+                    $collection['actual_mcc_w4'] = $detail->actual_dapc;
+                    $collection['target_mcc_w5'] = $detail->actual_dapc;
+                    $collection['actual_mcc_w5'] = $detail->actual_dapc;
 
-                    }
+
+                    $historyData->push($collection);
 
                 }
 
@@ -204,6 +241,87 @@ class AchievementController extends Controller
                 foreach ($store as $key => $value) {
                     $filter = $data->where('store_id', $value->store_id);
                 }
+            }
+
+            return Datatables::of($filter->all())
+            ->make(true);
+
+        }
+
+    }
+
+    public function salesmanAchievementIndex()
+    {
+        return view('master.salesmanachievement');
+    }
+
+    public function salesmanAchievementData(Request $request, AchievementFilters $filters){
+
+        // Check data summary atau history
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+
+            $data = SalesmanSummaryTargetActual::all();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['byEmployee']){
+                $filter = $data->where('user_id', $request['byEmployee']);
+            }
+
+            return Datatables::of($filter)
+            ->make(true);
+
+        }else{ // Fetch data from history
+
+            $historyData = new Collection();
+
+            $history = HistorySalesmanTargetActual::where('year', $yearRequest)
+                        ->where('month', $monthRequest)->get();
+
+            foreach ($history as $data) {
+
+                $details = json_decode($data->details);
+
+                foreach ($details as $detail) {
+
+                    $collection = new Collection();
+
+                    /* Get Data and Push them to collection */
+                    $collection['id'] = $data->id;
+                    $collection['user_id'] = $detail->user_id;
+                    $collection['nik'] = $detail->nik;
+                    $collection['salesman_name'] = $detail->salesman_name;
+                    $collection['area'] = $detail->area;
+                    $collection['target_call'] = $detail->target_call;
+                    $collection['actual_call'] = $detail->actual_call;
+                    $collection['target_active_outlet'] = $detail->target_active_outlet;
+                    $collection['actual_active_outlet'] = $detail->actual_active_outlet;
+                    $collection['target_effective_call'] = $detail->target_effective_call;
+                    $collection['actual_effective_call'] = $detail->actual_effective_call;
+                    $collection['target_sales'] = $detail->target_sales;
+                    $collection['actual_sales'] = $detail->actual_sales;
+                    $collection['target_sales_pf'] = $detail->target_sales_pf;
+                    $collection['actual_sales_pf'] = $detail->actual_sales_pf;
+
+                    $historyData->push($collection);
+
+                }
+
+            }
+
+            $filter = $historyData;
+
+            /* If filter */
+            if($request['byEmployee']){
+                $filter = $historyData->where('user_id', $request['byEmployee']);
             }
 
             return Datatables::of($filter->all())

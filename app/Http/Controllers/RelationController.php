@@ -142,7 +142,7 @@ class RelationController extends Controller
 
         $countStore = 0;
         if(($request->role != $user->role) && ($user->role == "Supervisor")){
-            $countStore = $user->store()->count();
+            $countStore = $user->stores()->count();
         }
 
         return response()->json($countStore);

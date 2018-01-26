@@ -87,7 +87,7 @@ class AuthController extends Controller
         if($user->role == 'REM') $access = "REM";
 
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'grading' => $user->grading, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){
@@ -204,4 +204,31 @@ class AuthController extends Controller
         return response()->json(['status' => true, 'message' => 'Profil berhasil di update']);
 
     }
+
+    public function updateProfile(Request $request){
+
+	    $user = JWTAuth::parseToken()->authenticate();
+
+	    if(!isset($request->name) || $request->name == null || !isset($request->email) || $request->email == null)
+	    {
+            return response()->json(['status' => false, 'message' => 'Nama & Email tidak boleh kosong'], 500);
+        }
+
+        $userData = User::where('id', $user->id)->first();
+        if (!isset($userData)) {
+        	return response()->json(['status' => false, 'message' => 'User not found'], 404);
+        }
+        $userData->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        if ($userData) {
+        	return response()->json(['status' => true, 'message' => 'Profil berhasil di update'], 200);
+        }
+
+        return response()->json(['status' => false, 'message' => 'Profil Gagal di update'], 500);
+
+    }
+
 }

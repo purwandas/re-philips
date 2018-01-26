@@ -84,7 +84,7 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('SELL Out', function ($sheet) use ($data) {
+            $excel->sheet('SELL OUT', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExport($data), null, 'A1', true, true);
@@ -378,7 +378,7 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('Display Share', function ($sheet) use ($data) {
+            $excel->sheet('DISPLAY SHARE', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportDisplayShare($data), null, 'A1', true, true);
@@ -420,7 +420,7 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('Maintenance Request', function ($sheet) use ($data) {
+            $excel->sheet('MAINTENANCE REQUEST', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportReportMaintenance($data), null, 'A1', true, true);
@@ -462,7 +462,7 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('Maintenance Request', function ($sheet) use ($data) {
+            $excel->sheet('COMPETITOR ACTIVITY', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportReportCompetitor($data), null, 'A1', true, true);
@@ -504,7 +504,7 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('Maintenance Request', function ($sheet) use ($data) {
+            $excel->sheet('PROMO ACTIVITY', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportReportPromo($data), null, 'A1', true, true);
@@ -545,7 +545,7 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('Attendance', function ($sheet) use ($data) {
+            $excel->sheet('ATTENDANCE', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportAttendance($data), null, 'A1', true, true);
@@ -587,17 +587,17 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('Attendance', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+            $excel->sheet('ACHIEVEMENT', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:BM1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportAchievement($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:BM1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:BM1', 'thin');
             });
 
 
@@ -641,10 +641,52 @@ class ExportController extends Controller
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('SALESMAN REPORT', function ($sheet) use ($data) {
+            $excel->sheet('SALESMAN', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportSalesman($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:W1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:W1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportSalesmanAchievementReport(Request $request){
+
+        $filename = 'Philips Retail Report Salesman Achievement Report ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Salesman Achievement');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Salesman Achievement Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('SALESMAN ACHIEVEMENT', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:W1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportSalesmanAchievement($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });

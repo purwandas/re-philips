@@ -9,8 +9,8 @@ use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
 use Auth;
-use App\Store;
 use Carbon\Carbon;
+use App\Store;
 use App\RetConsument;
 use App\RetConsumentDetail;
 use App\Filters\RetConsumentFilters;
@@ -51,7 +51,8 @@ class EditRetConsumentController extends Controller
 
                     ->join('users', 'ret_consuments.user_id', '=', 'users.id')
                     ->join('products', 'ret_consument_details.product_id', '=', 'products.id')
-                    ->select('ret_consuments.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.id as storeId', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_consument_details.id as id', 'ret_consument_details.quantity as quantity', 'products.name as product')
+                    ->select('ret_consuments.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'ret_consument_details.id as id', 'ret_consument_details.quantity as quantity', 'products.name as product',
+                        'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
                     ->get();
 
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
@@ -60,7 +61,7 @@ class EditRetConsumentController extends Controller
                 $data = $data->whereIn('store_id', $store);
             }
 
-           $filter = $data;
+            $filter = $data;
 
             /* If filter */
             if($request['searchMonth']){
@@ -72,7 +73,6 @@ class EditRetConsumentController extends Controller
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-                    // return response()->json($date1.'-'.$date2);
             }
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);

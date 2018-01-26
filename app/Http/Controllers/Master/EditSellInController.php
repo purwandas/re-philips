@@ -155,6 +155,8 @@ class EditSellInController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $userId = Auth::user()->id;
+
         $this->validate($request, [
             'quantity' => 'required',
             ]);
@@ -173,7 +175,6 @@ class EditSellInController extends Controller
      */
     public function destroy($id)
     {
-        
         $this->deleteSellIn($id);
 
         return response()->json($id);

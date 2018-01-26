@@ -11,9 +11,12 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Store;
 use App\AreaApp;
+use App\SpvDemo;
 use App\EmployeeStore;
 use App\AttendanceDetail;
+use App\TargetQuiz;
 use App\Reports\HistoryEmployeeStore;
+use App\Reports\SalesActivity;
 use DB;
 use Activity;
 use Auth;
@@ -133,7 +136,6 @@ class UtilController extends Controller
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
-                        // , 'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name'
                         )
                     ->get();
 
@@ -148,6 +150,44 @@ class UtilController extends Controller
         }
 
         return response()->json($store);
+    }
+
+    public function getStoreForSpvDemoEmployee($userId){        
+        $store = SpvDemo::where('spv_demos.deleted_at', null)
+                    ->where('spv_demos.user_id', $userId)
+                    ->join('stores', 'spv_demos.store_id', '=', 'stores.id')
+                    // ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    // ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    // ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
+                        // ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name'
+                        )
+                    ->get();
+
+        foreach ($store as $item){
+
+            if($item->user_id == null){
+                $item['user_id'] = "";
+            }else{
+                $item['user_id'] = $item->user->name;
+            }
+
+        }
+
+        return response()->json($store);
+    }
+    
+    public function getTargetQuiz($quizId){        
+        $quiz = TargetQuiz::where('target_quizs.deleted_at', null)
+                    ->where('target_quizs.quiz_id', $quizId)
+                    ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
+                    ->select('quiz_targets.id','quiz_targets.role','quiz_targets.grading')
+                    ->get();
+
+        return response()->json($quiz);
     }
 
     public function getAttendanceDetail($attendance_id){        
@@ -209,6 +249,38 @@ class UtilController extends Controller
         return response()->json([
             'count' => $users->count(),
             'users' => $users->get(),
+        ]);
+    }
+
+    public function getSalesHistory(){
+
+        $activity = SalesActivity::
+                    whereNull('sales_activities.status')
+                    ->orwhere('sales_activities.status',0)
+                    ->join('users','users.id','sales_activities.user_id')
+                    ->select('sales_activities.*','users.name','users.role');
+
+        return response()->json([
+            'count' => $activity->count(),
+            'activity' => $activity->get(),
+        ]);
+    }
+
+    public function readSalesHistory(Request $request){
+
+        $activity = SalesActivity::
+                    where('id',$request['id'])
+                    ->first();
+        $act = $activity;
+            if ($activity->count() >0) {
+                $activity->update([
+                    'status' => 1
+                ]);
+            }
+
+        return response()->json([
+            'status' => true,
+            'activity' => $act,
         ]);
     }
 

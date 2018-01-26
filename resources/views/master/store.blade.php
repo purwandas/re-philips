@@ -65,9 +65,13 @@
                             <th> Longitude</th>
                             <th> Latitude</th>
                             <th> Address</th>
-                            <th> Store Phone Number</th>
-                            <th> Store Owner Phone Number</th>
-                            <th> Store Ownership Status</th>
+                            <th> Phone Number</th>
+                            <th> Owner Phone Number</th>
+                            <th> Ownership Status</th>
+                            <th> Location</th>
+                            <th> Transaction Type</th>
+                            <th> Transaction Type (2)</th>
+                            <th> Condition</th>
                             <th> Supervisor </th>
                             <th> Options </th>                        
                         </tr>
@@ -125,6 +129,10 @@
                 {data: 'no_telp_toko', name: 'no_telp_toko'},
                 {data: 'no_telp_pemilik_toko', name: 'no_telp_pemilik_toko'},
                 {data: 'kepemilikan_toko', name: 'kepemilikan_toko'},
+                {data: 'lokasi_toko', name: 'lokasi_toko'},
+                {data: 'tipe_transaksi_2', name: 'tipe_transaksi_2'},
+                {data: 'tipe_transaksi', name: 'tipe_transaksi'},
+                {data: 'kondisi_toko', name: 'kondisi_toko'},
                 {data: 'spv_name', name: 'spv_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ],

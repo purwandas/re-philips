@@ -6,7 +6,11 @@ use App\DmArea;
 use App\District;
 use App\EmployeeStore;
 use App\RsmRegion;
+use App\Store;
+use App\Target;
+use App\Reports\StoreLocationActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use App\Filters\StoreFilters;
 use App\Traits\StringTrait;
@@ -16,8 +20,6 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use DB;
-use App\Store;
-use App\Target;
 
 class StoreController extends Controller
 {
@@ -89,12 +91,101 @@ class StoreController extends Controller
 
     public function updateStore(Request $request){
 
+        $user = JWTAuth::parseToken()->authenticate();
+        // return response()->json($request->id);
         $store = Store::find($request->id);
 
         /* Case kalo ga bisa di update setelah first update */
 //        if($store->longitude != null && $store->latitude != null){
 //            return response()->json(['status' => false, 'message' => 'Longitude dan latitude untuk store ini telah diinput'], 500);
 //        }
+
+        // Begin Store Activities Here!
+
+        
+        // ($var > 2 ? true : false);
+        if (isset($store->subchannel_id)) {
+            $subchannel = $store->subchannel->name;
+            $channel_id = $store->subchannel->channel->id;
+            $channel = $store->subchannel->channel->name;
+            $globalchannel_id = $store->subchannel->channel->globalchannel->id;
+            $globalchannel = $store->subchannel->channel->globalchannel->name;
+        }else{
+            $subchannel = '';
+            $channel_id = '';
+            $channel = '';
+            $globalchannel_id = '';
+            $globalchannel = '';
+        }
+
+        if (isset($store->user_id)) {
+            $user_name = $store->user->name;
+            $nik = $store->user->nik;
+            $role = $store->user->role;
+            $grading = $store->user->grading;
+        }else{
+            $user_name = '';
+            $nik = '';
+            $role = '';
+            $grading = '';
+        }
+
+        $details = new Collection();
+
+            $data = ([
+                'storeId' => $store->id,
+                'store_id' => $store->store_id,
+                'store_name_1' => $store->store_name_1,
+                'store_name_2' => $store->store_name_2,
+                'longitude' => $store->longitude,
+                'latitude' => $store->latitude,
+                'address' => $store->address,
+
+                'subchannel_id' => $store->subchannel_id,
+                'subchannel' => $subchannel,
+                'channel_id' => $channel_id,
+                'channel' => $channel,
+                'globalchannel_id' => $globalchannel_id,
+                'globalchannel' => $globalchannel,
+
+
+                'no_telp_toko' => $store->no_telp_toko,
+                'no_telp_pemilik_toko' => $store->no_telp_pemilik_toko,
+                'kepemilikan_toko' => $store->kepemilikan_toko,
+                
+                'district_id' => $store->district_id,
+                'district' => $store->district->name,
+                'area_id' => $store->district->area->id,
+                'area' => $store->district->area->name,
+                'region_id' => $store->district->area->region->id,
+                'region' => $store->district->area->region->name,
+
+                'user_id' => $store->user_id,
+                'user' => $user_name,
+                'nik' => $nik,
+                'role' => $role,
+                'grading' => $grading,
+
+                'lokasi_toko' => $store->lokasi_toko,
+                'tipe_transaksi_2' => $store->tipe_transaksi_2,
+                'tipe_transaksi' => $store->tipe_transaksi,
+                'kondisi_toko' => $store->kondisi_toko,
+                'new_longitude' => $request->longitude,
+                'new_latitude' => $request->latitude,
+                'new_address' => $request->address,
+            ]);
+
+            $details->push($data);
+
+            // return response()->json($details);
+        $dt = Carbon::now();
+        $date = $dt->toDateString(); 
+        StoreLocationActivity::create([
+            'user_id' => $user->id,
+            'date' => $date,
+            'details' => $details,
+        ]);
+        // End Store Activities
 
         $store->update(['longitude' => $request->longitude, 'latitude' => $request->latitude, 'address' => $request->address]);
 
@@ -150,13 +241,12 @@ class StoreController extends Controller
     }
 
     public function create(Request $request){
-        // $content = json_decode($request->getContent(),true);
+        $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
 
                 try {
                     $storeID = $this->traitGetStoreId();
-                    // return response()->json($storeID);
-                    DB::transaction(function () use ($request, $storeID) {
+                    DB::transaction(function () use ($request, $storeID, $user) {
                         $store = Store::create(
                             [
                                 'store_id' => $storeID,
@@ -170,8 +260,19 @@ class StoreController extends Controller
                                 'no_telp_pemilik_toko' => $request['no_telp_pemilik_toko'],
                                 'kepemilikan_toko' => $request['kepemilikan_toko'],
                                 'district_id' => $request['district_id'],
+
+                                'lokasi_toko' => $request['lokasi_toko'],
+                                'tipe_transaksi_2' => $request['tipe_transaksi_2'],
+                                'tipe_transaksi' => $request['tipe_transaksi'],
+                                'kondisi_toko' => $request['kondisi_toko'],
                             ]
                             );
+                        $EmployeeStore = EmployeeStore::create(
+                            [
+                                'user_id' => $user->id,
+                                'store_id' => $store->id,
+                            ]
+                        );
                     });
 
                     // Check store after insert

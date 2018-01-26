@@ -316,4 +316,40 @@ class ExcelHelper
             ];
         });
     }
+
+    public function mapForExportSalesmanAchievement(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NIK'=> @$item['nik'],
+                'SALESMAN NAME'=> @$item['salesman_name'],
+                'AREA'=> @$item['area'],
+
+                'TARGET CALL'=> @$item['target_call'],
+                'ACTUAL CALL'=> @$item['actual_call'],
+                'TARGET ACTIVE OUTLET'=> @$item['target_active_outlet'],
+                'ACTUAL ACTIVE OUTLET'=> @$item['actual_active_outlet'],
+                'TARGET EFFECTIVE CALL'=> @$item['target_effective_call'],
+                'ACTUAL EFFECTIVE CALL'=> @$item['actual_effective_call'],
+                'TARGET SALES'=> @$item['target_sales'],
+                'ACTUAL SALES'=> @$item['actual_sales'],
+                'TARGET SALES PF'=> @$item['target_sales_pf'],
+                'ACTUAL SALES PF'=> @$item['actual_sales_pf'],
+
+                'SUM NATIONAL TARGET CALL'=> @$item['sum_national_target_call'],
+                'SUM NATIONAL ACTUAL CALL'=> @$item['sum_national_actual_call'],
+                'SUM NATIONAL TARGET ACTIVE OUTLET'=> @$item['sum_national_target_active_outlet'],
+                'SUM NATIONAL ACTUAL ACTIVE OUTLET'=> @$item['sum_national_actual_active_outlet'],
+                'SUM NATIONAL TARGET EFFECTIVE CALL'=> @$item['sum_national_target_effective_call'],
+                'SUM NATIONAL ACTUAL EFFECTIVE CALL'=> @$item['sum_national_actual_effective_call'],
+                'SUM NATIONAL TARGET SALES'=> @$item['sum_national_target_sales'],
+                'SUM NATIONAL ACTUAL SALES'=> @$item['sum_national_actual_sales'],
+                'SUM NATIONAL TARGET SALES PF'=> @$item['sum_national_target_sales_pf'],
+                'SUM NATIONAL ACTUAL SALES PF'=> @$item['sum_national_actual_sales_pf'],
+
+            ];
+        });
+    }
 }

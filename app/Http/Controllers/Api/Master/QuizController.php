@@ -16,17 +16,24 @@ class QuizController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $quiz = Quiz::all();
-        $quizArray = [];
+        // $quiz = Quiz::all();
+        // $quizArray = [];
 
-        foreach ($quiz as $data){
-            $target = explode(',', $data['target']);
-            if (in_array($user->role, $target)) {
-                array_push($quizArray, $data['id']);
-            }
-        }
+        // foreach ($quiz as $data){
+        //     $target = explode(',', $data['target']);
+        //     if (in_array($user->role, $target)) {
+        //         array_push($quizArray, $data['id']);
+        //     }
+        // }
 
-        $resultQuiz = Quiz::whereIn('id', $quizArray)->get();
+        // $resultQuiz = Quiz::whereIn('id', $quizArray)->get();
+
+        $resultQuiz = Quiz::
+                    join('target_quizs','target_quizs.quiz_id','quizs.id')
+                    ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
+                    ->where('quiz_targets.role',$user->role)
+                    ->where('quiz_targets.grading',$user->grading)
+                    ->get();
 
         // Set has read
         $resultQuiz->map(function ($detail) use ($user) {
