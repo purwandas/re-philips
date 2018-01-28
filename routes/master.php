@@ -193,6 +193,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('tbatreport', 'Master\ReportController@tbatIndex');
     Route::get('sohreport', 'Master\ReportController@sohIndex');
     Route::get('sosreport', 'Master\ReportController@sosIndex');
+    Route::get('displaysharereport', 'Master\ReportController@displayShareIndex');
 
     /** Profile **/
     Route::get('profile', 'ProfileController@index');

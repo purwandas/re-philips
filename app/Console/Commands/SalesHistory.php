@@ -17,6 +17,9 @@ use App\Reports\SummaryRetDistributor;
 use App\Tbat;
 use App\TbatDetail;
 use App\Reports\SummaryTbat;
+use App\DisplayShare;
+use App\DisplayShareDetail;
+use App\Reports\SummaryDisplayShare;
 use App\FreeProduct;
 use App\FreeProductDetail;
 use App\Reports\SummaryFreeProduct;
@@ -38,6 +41,7 @@ use App\TrainerArea;
 use DB;
 use App\Price;
 use App\Product;
+use App\Category;
 use App\ProductFocuses;
 use App\Reports\HistorySellIn;
 use App\Reports\HistorySellOut;
@@ -47,6 +51,7 @@ use App\Reports\HistoryTbat;
 use App\Reports\HistoryFreeProduct;
 use App\Reports\HistorySoh;
 use App\Reports\HistorySos;
+use App\Reports\HistoryDisplayShare;
 
 class SalesHistory extends Command
 {
@@ -87,6 +92,7 @@ class SalesHistory extends Command
         $this->retdistributor();
         $this->freeproduct();
         $this->tbat();
+        $this->displayshare();
         $this->soh();
         $this->sos();
     }
@@ -108,7 +114,7 @@ class SalesHistory extends Command
 
             $dateByUser = SellIn::where('user_id', $user->id)
                 ->whereMonth('sell_ins.date', '<', Carbon::now()->format('m'))
-                ->whereYear('sell_ins.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('sell_ins.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(sell_ins.date)"), DB::raw("MONTH(sell_ins.date)"))->orderBy(DB::raw("YEAR(sell_ins.date)"), DB::raw("MONTH(sell_ins.date)"))
                 ->select('sell_ins.user_id', DB::raw("YEAR(sell_ins.date) as year"), DB::raw("MONTH(sell_ins.date) as month"))->get();
 
@@ -309,7 +315,7 @@ class SalesHistory extends Command
 
             $dateByUser = SellOut::where('user_id', $user->id)
                 ->whereMonth('sell_outs.date', '<', Carbon::now()->format('m'))
-                ->whereYear('sell_outs.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('sell_outs.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(sell_outs.date)"), DB::raw("MONTH(sell_outs.date)"))->orderBy(DB::raw("YEAR(sell_outs.date)"), DB::raw("MONTH(sell_outs.date)"))
                 ->select('sell_outs.user_id', DB::raw("YEAR(sell_outs.date) as year"), DB::raw("MONTH(sell_outs.date) as month"))->get();
 
@@ -510,7 +516,7 @@ class SalesHistory extends Command
 
             $dateByUser = RetConsument::where('user_id', $user->id)
                 ->whereMonth('ret_consuments.date', '<', Carbon::now()->format('m'))
-                ->whereYear('ret_consuments.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('ret_consuments.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(ret_consuments.date)"), DB::raw("MONTH(ret_consuments.date)"))->orderBy(DB::raw("YEAR(ret_consuments.date)"), DB::raw("MONTH(ret_consuments.date)"))
                 ->select('ret_consuments.user_id', DB::raw("YEAR(ret_consuments.date) as year"), DB::raw("MONTH(ret_consuments.date) as month"))->get();
 
@@ -711,7 +717,7 @@ class SalesHistory extends Command
 
             $dateByUser = RetDistributor::where('user_id', $user->id)
                 ->whereMonth('ret_distributors.date', '<', Carbon::now()->format('m'))
-                ->whereYear('ret_distributors.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('ret_distributors.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(ret_distributors.date)"), DB::raw("MONTH(ret_distributors.date)"))->orderBy(DB::raw("YEAR(ret_distributors.date)"), DB::raw("MONTH(ret_distributors.date)"))
                 ->select('ret_distributors.user_id', DB::raw("YEAR(ret_distributors.date) as year"), DB::raw("MONTH(ret_distributors.date) as month"))->get();
 
@@ -912,7 +918,7 @@ class SalesHistory extends Command
 
             $dateByUser = FreeProduct::where('user_id', $user->id)
                 ->whereMonth('free_products.date', '<', Carbon::now()->format('m'))
-                ->whereYear('free_products.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('free_products.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(free_products.date)"), DB::raw("MONTH(free_products.date)"))->orderBy(DB::raw("YEAR(free_products.date)"), DB::raw("MONTH(free_products.date)"))
                 ->select('free_products.user_id', DB::raw("YEAR(free_products.date) as year"), DB::raw("MONTH(free_products.date) as month"))->get();
 
@@ -1113,7 +1119,7 @@ class SalesHistory extends Command
 
             $dateByUser = Tbat::where('user_id', $user->id)
                 ->whereMonth('tbats.date', '<', Carbon::now()->format('m'))
-                ->whereYear('tbats.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('tbats.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(tbats.date)"), DB::raw("MONTH(tbats.date)"))->orderBy(DB::raw("YEAR(tbats.date)"), DB::raw("MONTH(tbats.date)"))
                 ->select('tbats.user_id', DB::raw("YEAR(tbats.date) as year"), DB::raw("MONTH(tbats.date) as month"))->get();
 
@@ -1298,6 +1304,186 @@ class SalesHistory extends Command
     }
 
     /**
+     * History Sales : Display Share
+     *
+     */
+    public function displayshare(){
+
+        $header = new Collection();
+
+        /* Init */
+        $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+        $users = User::whereIn('role', $role)->get();
+
+        foreach ($users as $user){
+
+            $dateByUser = DisplayShare::where('user_id', $user->id)
+                ->whereMonth('display_shares.date', '<', Carbon::now()->format('m'))
+                ->whereYear('display_shares.date', '<', Carbon::now()->format('Y'), 'or')
+                ->groupBy(DB::raw("YEAR(display_shares.date)"), DB::raw("MONTH(display_shares.date)"))
+                ->orderBy(DB::raw("YEAR(display_shares.date)"), DB::raw("MONTH(display_shares.date)"))
+                ->select('display_shares.user_id', DB::raw("YEAR(display_shares.date) as year"), DB::raw("MONTH(display_shares.date) as month"))->get();
+
+            foreach ($dateByUser as $dateUser) {
+
+                $headerDetails = new Collection();
+
+                $data = DisplayShare::where('user_id', $user->id)
+                                ->whereMonth('display_shares.date', '=', $dateUser->month)
+                                ->whereYear('display_shares.date', '=', $dateUser->year)->get();
+
+                foreach ($data as $detail) {
+
+                    $transactionDetails = new Collection();
+
+                    /*
+                     * Fetch data from some models
+                     */
+
+                    /* District, Area, Region */
+                    $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')->where('id', $detail->store_id)->first();
+
+                    /* Distributor */
+                    $distIds = StoreDistributor::where('store_id', $store->id)->pluck('distributor_id');
+                    $dist = Distributor::whereIn('id', $distIds)->get();
+
+                    $distributorCode = '';
+                    $distributorName = '';
+                    foreach ($dist as $distDetail) {
+                        $distributorCode .= $distDetail->code;
+                        $distributorName .= $distDetail->name;
+
+                        if ($distDetail->id != $dist->last()->id) {
+                            $distributorCode .= ', ';
+                            $distributorName .= ', ';
+                        }
+                    }
+
+                    /* DM */
+                    $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                    $dm = User::whereIn('id', $dmIds)->get();
+
+                    $dm_name = '';
+                    foreach ($dm as $dmDetail) {
+                        $dm_name .= $dmDetail->name;
+
+                        if ($dmDetail->id != $dm->last()->id) {
+                            $dm_name .= ', ';
+                        }
+                    }
+
+                    /* Trainer */
+                    $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                    $tr = User::whereIn('id', $trIds)->get();
+
+                    $trainer_name = '';
+                    foreach ($tr as $trDetail) {
+                        $trainer_name .= $trDetail->name;
+
+                        if ($trDetail->id != $tr->last()->id) {
+                            $trainer_name .= ', ';
+                        }
+                    }
+
+                    /*
+                     * Transaction Details
+                     */
+
+                    $transaction = DisplayShareDetail::where('display_share_id', $detail->id)->get();
+
+                    foreach ($transaction as $transactionDetail){
+
+                        $category = Category::where('id', $transactionDetail->category_id)->first();
+
+                        /* Transaction Details */
+                        $transactionDetailsData = ([
+                            
+                            'category'   => $category->name,
+                            'philips'    => $transactionDetail->philips,
+                            'all'        => $transactionDetail->all,
+                            'percentage' => ($transactionDetail->philips / $transactionDetail->all * 100)
+                            
+                        ]);
+                        $transactionDetails->push($transactionDetailsData);
+
+                    }
+
+                    /* Header Details */
+                    $headerDetailsData = ([
+                        'week' => $detail->week,
+                        'distributor_code' => $distributorCode,
+                        'distributor_name' => $distributorName,
+                        'region' => $store->district->area->region->name,
+                        'region_id' => $store->district->area->region->id,
+                        'channel' => $store->subChannel->channel->name,
+                        'sub_channel' => $store->subChannel->name,
+                        'area' => $store->district->area->name,
+                        'area_id' => $store->district->area->id,
+                        'district' => $store->district->name,
+                        'district_id' => $store->district->id,
+                        'store_name_1' => $store->store_name_1,
+                        'store_name_2' => $store->store_name_2,
+                        'store_id' => $store->store_id,
+                        'storeId' => $store->id,
+                        'nik' => $user->nik,
+                        'promoter_name' => $user->name,
+                        'user_id' => $user->id,
+                        'date' => $detail->date,
+                        'role' => $user->role,
+                        'spv_name' => $store->user->name,
+                        'dm_name' => $dm_name,
+                        'trainer_name' => $trainer_name,
+                        'transaction' => $transactionDetails,
+                    ]);
+                    $headerDetails->push($headerDetailsData);
+
+
+                    /* Delete data that has been inserted to history */
+                    $displayShare = DisplayShare::where('id', $detail->id);
+                    $displayShareDetails =  DisplayShareDetail::where('display_share_id', $displayShare->first()->id);
+
+                    /* Delete summary table */
+                    $summary = SummaryDisplayShare::where('displayshare_detail_id', $displayShareDetails->first()->id);
+                    $summary->delete();
+
+                    $displayShareDetails->delete();
+                    $displayShare->delete();
+
+
+                }
+
+                /* Header */
+                $headerData = ([
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'month' => $dateUser->month,
+                    'year' => $dateUser->year,
+                    'details' => $headerDetails,
+                ]);
+                $header->push($headerData);
+
+                if($dateByUser->count() > 0){
+
+                    /* Insert Data */
+                    $h = new HistoryDisplayShare();
+                    $h->user_id = $user->id;
+                    $h->month = $dateUser->month;
+                    $h->year = $dateUser->year;
+                    $h->details = $headerDetails;
+                    $h->save();
+
+                }
+
+            }
+
+        }
+
+        $this->info('History Display Share berhasil dibuat');
+
+    }
+
+    /**
      * History Sales : SOH
      *
      */
@@ -1314,7 +1500,7 @@ class SalesHistory extends Command
 
             $dateByUser = SOH::where('user_id', $user->id)
                 ->whereMonth('sohs.date', '<', Carbon::now()->format('m'))
-                ->whereYear('sohs.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('sohs.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(sohs.date)"), DB::raw("MONTH(sohs.date)"))->orderBy(DB::raw("YEAR(sohs.date)"), DB::raw("MONTH(sohs.date)"))
                 ->select('sohs.user_id', DB::raw("YEAR(sohs.date) as year"), DB::raw("MONTH(sohs.date) as month"))->get();
 
@@ -1515,7 +1701,7 @@ class SalesHistory extends Command
 
             $dateByUser = SOS::where('user_id', $user->id)
                 ->whereMonth('sos.date', '<', Carbon::now()->format('m'))
-                ->whereYear('sos.date', '<=', Carbon::now()->format('Y'))
+                ->whereYear('sos.date', '<', Carbon::now()->format('Y'), 'or')
                 ->groupBy(DB::raw("YEAR(sos.date)"), DB::raw("MONTH(sos.date)"))->orderBy(DB::raw("YEAR(sos.date)"), DB::raw("MONTH(sos.date)"))
                 ->select('sos.user_id', DB::raw("YEAR(sos.date) as year"), DB::raw("MONTH(sos.date) as month"))->get();
 

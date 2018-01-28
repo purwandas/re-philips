@@ -57,6 +57,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/posm', 'Api\Master\PosmController@store');
 	Route::post('/soh', 'Api\Master\SOHController@store');
 	Route::post('/sos', 'Api\Master\SOSController@store');
+	Route::post('/displayshare', 'Api\Master\DisplayShareController@store');
 	Route::post('/competitoractivity', 'Api\Master\CompetitorActivityController@store');
 	Route::post('/promoactivity', 'Api\Master\PromoActivityController@store');
 
