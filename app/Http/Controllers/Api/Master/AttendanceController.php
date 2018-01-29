@@ -142,7 +142,11 @@ class AttendanceController extends Controller
                 $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
 
                 if ($visit) {
-                    $visit->update(['visit_status' => 1]);
+                    $visit->update([
+                        'visit_status' => 1,
+                        'check_in' => Carbon::now(),
+                        'check_in_location' => $content['location'],
+                        ]);
                 }
 
             }
@@ -186,6 +190,19 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
+            if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
+
+                /* Set Visit Status */
+                $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
+
+                if ($visit) {
+                    $visit->update([
+                        'check_out' => Carbon::now(),
+                        'check_out_location' => $content['location'],
+                        ]);
+                }
+
+            }
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Check Out)']);
 
         } elseif ($param == 3){ /* SAKIT */

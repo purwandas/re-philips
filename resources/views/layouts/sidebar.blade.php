@@ -72,6 +72,11 @@
                             <span class="title">Store</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('place*') ? 'active open' : '' }}">
+                        <a href="{{ url('place') }}" class="nav-link ">
+                            <span class="title">Other Store</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -227,7 +232,7 @@
 
                     <li class="nav-item {{ Request::is('editsellin') ? 'active open' : '' }}">
                         <a href="{{ url('editsellin') }}" class="nav-link nav-toggle">
-                            <span class="title">Sell In</span>
+                            <span class="title">Sell Through</span>
                         </a>
                     </li>
 
@@ -289,6 +294,22 @@
 
             @endif
 
+
+            @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+
+            <li class="heading">
+                <h3 class="uppercase">ENTRIES ATTENDANCE</h3>
+            </li>
+
+            <li class="nav-item {{ Request::is('attendance*') ? 'active open' : '' }}">
+                <a href="{{ url('attendance') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-calendar"></i>
+                    <span class="title">Entries Promotors</span>
+                </a>
+            </li>
+
+            @endif
+
             @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid'
             || Auth::user()->role == 'DM' || Auth::user()->role == 'RSM')
 
@@ -319,7 +340,7 @@
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}  ">
                         <a href="{{ url('sellinreport') }}" class="nav-link ">
-                            <span class="title">Sell In</span>
+                            <span class="title">Sell Through</span>
                         </a>
                     </li>
                     <li class="nav-item {{ Request::is('selloutreport') ? 'active open' : '' }}">
@@ -493,7 +514,10 @@
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-commenting-o"></i>
                     <span class="title">Feedback</span>
-                    <span class="arrow {{ Request::is('feedbackCategory*') ? 'open' : '' }} {{ Request::is('feedbackAnswer*') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
+                    <span class="arrow 
+                    {{ Request::is('feedbackCategory*') ? 'open' : '' }} 
+                    {{ Request::is('feedbackQuestion*') ? 'open' : '' }} 
+                    {{ Request::is('feedbackAnswer*') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('feedbackCategory*') ? 'active open' : '' }}">

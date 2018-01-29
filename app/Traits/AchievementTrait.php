@@ -110,15 +110,17 @@ trait AchievementTrait {
         $user = Auth::user();
 
         $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
-        $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
+        // $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
 //        $area = Area::whereIn('id', $areaIds)->get();
-        if(in_array("HYBRID", $dedicates)){
-            array_push($dedicates, "DA", "PC");
-        }
+        // if(in_array("HYBRID", $dedicates)){
+        //     array_push($dedicates, "DA", "PC");
+        // }
 
         $stores = Store::whereHas('district.area', function ($query) use ($areaIds){
                         return $query->whereIn('id', $areaIds);
-                    })->whereIn('dedicate', $dedicates)->get();
+                    })
+        // ->whereIn('dedicate', $dedicates)
+        ->get();
 
         $totalTargetSellIn = 0;
         $totalActualSellIn = 0;

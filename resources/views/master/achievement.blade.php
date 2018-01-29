@@ -107,7 +107,7 @@
                                 <th> Account </th>
                                 <th> Store ID </th>
                                 <th> Store Name 1 </th>
-                                <th> Store Name 2 </th>
+                                <th> Customer Code </th>
                                 <th> SPV Name </th>
                                 <th> Trainer </th>
                                 <th> Sell Type </th>
