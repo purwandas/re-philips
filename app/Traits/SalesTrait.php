@@ -2,7 +2,9 @@
 
 namespace App\Traits;
 
+use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use App\Reports\SummarySellIn;
 use App\Reports\SummarySellOut;
 use App\Reports\SummaryRetDistributor;
@@ -11,6 +13,7 @@ use App\Reports\SummaryFreeProduct;
 use App\Reports\SummaryTbat;
 use App\Reports\SummarySoh;
 use App\Reports\SummaryDisplayShare;
+use App\Reports\SalesActivity;
 use App\User;
 use App\SellIn;
 use App\SellInDetail;
@@ -36,15 +39,78 @@ trait SalesTrait {
     use ActualTrait;
 
     public function deleteSellIn($detailId){
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         // Find Detail then delete
         $sellInDetail = SellInDetail::where('id',$detailId)->first();
 
-            $sellIn_id = $sellInDetail->sellin_id;
+        $sellIn_id = $sellInDetail->sellin_id;
             
         $sellInDetail->forceDelete();
         $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$detailId)->first();
 
+            /* begin insert sales activity */
+            $data = new Collection();
+
+            /* Header Details */
+            $dataSummary = ([
+                'activity' => 'Delete',
+                'type' => 'Sell In',
+                'action_from' => 'Mobile',
+                'detail_id'=> $summarySellInDetail->sellin_detail_id,
+                'week' => $summarySellInDetail->week,
+                'distributor_code' => $summarySellInDetail->distributor_code,
+                'distributor_name' => $summarySellInDetail->distributor_name,
+                'region' => $summarySellInDetail->region,
+                'region_id' => $summarySellInDetail->region_id,
+                'channel' => $summarySellInDetail->channel,
+                'sub_channel' => $summarySellInDetail->sub_channel,
+                'area' => $summarySellInDetail->area,
+                'area_id' => $summarySellInDetail->area_id,
+                'district' => $summarySellInDetail->district,
+                'district_id' => $summarySellInDetail->district_id,
+                'store_name_1' => $summarySellInDetail->store_name_1,
+                'store_name_2' => $summarySellInDetail->store_name_2,
+                'store_id' => $summarySellInDetail->store_id,
+                'storeId' => $summarySellInDetail->storeId,
+                'dedicate' => $summarySellInDetail->dedicate,
+                'nik' => $summarySellInDetail->nik,
+                'promoter_name' => $summarySellInDetail->promoter_name,
+                'user_id' => $summarySellInDetail->user_id,
+                'date' => $summarySellInDetail->date,
+                'role' => $summarySellInDetail->role,
+                'spv_name' => $summarySellInDetail->spv_name,
+                'dm_name' => $summarySellInDetail->dm_name,
+                'trainer_name' => $summarySellInDetail->trainer_name,
+                'model' => $summarySellInDetail->model,
+                'group' => $summarySellInDetail->group,
+                'category' => $summarySellInDetail->category,
+                'product_name' => $summarySellInDetail->product_name,
+                'unit_price' => $summarySellInDetail->unit_price,
+                'quantity' => $summarySellInDetail->quantity,
+                'value' => $summarySellInDetail->value,
+                'value_pf_mr' => $summarySellInDetail->value_pf_mr,
+                'value_pf_tr' => $summarySellInDetail->value_pf_tr,
+                'value_pf_ppe' => $summarySellInDetail->value_pf_ppe,
+                'new_quantity' => '',
+                'new_value' => '',
+                'new_value_pf_mr' => '',
+                'new_value_pf_tr' => '',
+                'new_value_pf_ppe' => '',
+            ]);
+
+            $data->push($dataSummary);
+
+            $dt = Carbon::now();
+            $date = $dt->toDateString();               // 2015-12-19
+            SalesActivity::create([
+                'user_id' => $userId,
+                'date' => $date,
+                'details' => $data,
+            ]);
+            /* end insert sales activity */
+            
         // Update Target Actuals
         $summary_ta['user_id'] = $summarySellInDetail->user_id;
         $summary_ta['store_id'] = $summarySellInDetail->storeId;
@@ -75,6 +141,8 @@ trait SalesTrait {
     }
 
     public function updateSellIn($id, $qty){
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         $sellInDetail = SellInDetail::where('id',$id)->update(['quantity'=> $qty]);
 
@@ -97,6 +165,67 @@ trait SalesTrait {
             if ($summarySellInDetail->value_pf_ppe > 0) {
                 $pf_ppe = $value;
             }
+
+                /* begin insert sales activity */
+                $data = new Collection();
+
+                /* Header Details */
+                $dataSummary = ([
+                    'activity' => 'Update',
+                    'type' => 'Sell In',
+                    'action_from' => 'Mobile',
+                    'detail_id'=> $summarySellInDetail->sellin_detail_id,
+                    'week' => $summarySellInDetail->week,
+                    'distributor_code' => $summarySellInDetail->distributor_code,
+                    'distributor_name' => $summarySellInDetail->distributor_name,
+                    'region' => $summarySellInDetail->region,
+                    'region_id' => $summarySellInDetail->region_id,
+                    'channel' => $summarySellInDetail->channel,
+                    'sub_channel' => $summarySellInDetail->sub_channel,
+                    'area' => $summarySellInDetail->area,
+                    'area_id' => $summarySellInDetail->area_id,
+                    'district' => $summarySellInDetail->district,
+                    'district_id' => $summarySellInDetail->district_id,
+                    'store_name_1' => $summarySellInDetail->store_name_1,
+                    'store_name_2' => $summarySellInDetail->store_name_2,
+                    'store_id' => $summarySellInDetail->store_id,
+                    'storeId' => $summarySellInDetail->storeId,
+                    'dedicate' => $summarySellInDetail->dedicate,
+                    'nik' => $summarySellInDetail->nik,
+                    'promoter_name' => $summarySellInDetail->promoter_name,
+                    'user_id' => $summarySellInDetail->user_id,
+                    'date' => $summarySellInDetail->date,
+                    'role' => $summarySellInDetail->role,
+                    'spv_name' => $summarySellInDetail->spv_name,
+                    'dm_name' => $summarySellInDetail->dm_name,
+                    'trainer_name' => $summarySellInDetail->trainer_name,
+                    'model' => $summarySellInDetail->model,
+                    'group' => $summarySellInDetail->group,
+                    'category' => $summarySellInDetail->category,
+                    'product_name' => $summarySellInDetail->product_name,
+                    'unit_price' => $summarySellInDetail->unit_price,
+                    'quantity' => $summarySellInDetail->quantity,
+                    'value' => $summarySellInDetail->value,
+                    'value_pf_mr' => $summarySellInDetail->value_pf_mr,
+                    'value_pf_tr' => $summarySellInDetail->value_pf_tr,
+                    'value_pf_ppe' => $summarySellInDetail->value_pf_ppe,
+                    'new_quantity' => $qty,
+                    'new_value' => $value,
+                    'new_value_pf_mr' => $pf_mr,
+                    'new_value_pf_tr' => $pf_tr,
+                    'new_value_pf_ppe' => $pf_ppe,
+                ]);
+
+                $data->push($dataSummary);
+
+                $dt = Carbon::now();
+                $date = $dt->toDateString();
+                SalesActivity::create([
+                    'user_id' => $userId,
+                    'date' => $date,
+                    'details' => $data,
+                ]);
+                /* end insert sales activity */
 
             $summarySellInDetail->update([
                         'quantity'=> $qty,
@@ -126,6 +255,8 @@ trait SalesTrait {
     }
 
     public function deleteSellOut($detailId){
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         // Find Detail then delete
         $sellOutDetail = SellOutDetail::where('id',$detailId)->first();
@@ -134,6 +265,66 @@ trait SalesTrait {
             
         $sellOutDetail->forceDelete();
         $summarySellOutDetail = SummarySellOut::where('sellout_detail_id',$detailId)->first();
+
+            /* begin insert sales activity */
+            $data = new Collection();
+
+            /* Header Details */
+            $dataSummary = ([
+                'activity' => 'Delete',
+                'type' => 'Sell Out',
+                'action_from' => 'Mobile',
+                'detail_id'=> $summarySellOutDetail->sellout_detail_id,
+                'week' => $summarySellOutDetail->week,
+                'distributor_code' => $summarySellOutDetail->distributor_code,
+                'distributor_name' => $summarySellOutDetail->distributor_name,
+                'region' => $summarySellOutDetail->region,
+                'region_id' => $summarySellOutDetail->region_id,
+                'channel' => $summarySellOutDetail->channel,
+                'sub_channel' => $summarySellOutDetail->sub_channel,
+                'area' => $summarySellOutDetail->area,
+                'area_id' => $summarySellOutDetail->area_id,
+                'district' => $summarySellOutDetail->district,
+                'district_id' => $summarySellOutDetail->district_id,
+                'store_name_1' => $summarySellOutDetail->store_name_1,
+                'store_name_2' => $summarySellOutDetail->store_name_2,
+                'store_id' => $summarySellOutDetail->store_id,
+                'storeId' => $summarySellOutDetail->storeId,
+                'dedicate' => $summarySellOutDetail->dedicate,
+                'nik' => $summarySellOutDetail->nik,
+                'promoter_name' => $summarySellOutDetail->promoter_name,
+                'user_id' => $summarySellOutDetail->user_id,
+                'date' => $summarySellOutDetail->date,
+                'role' => $summarySellOutDetail->role,
+                'spv_name' => $summarySellOutDetail->spv_name,
+                'dm_name' => $summarySellOutDetail->dm_name,
+                'trainer_name' => $summarySellOutDetail->trainer_name,
+                'model' => $summarySellOutDetail->model,
+                'group' => $summarySellOutDetail->group,
+                'category' => $summarySellOutDetail->category,
+                'product_name' => $summarySellOutDetail->product_name,
+                'unit_price' => $summarySellOutDetail->unit_price,
+                'quantity' => $summarySellOutDetail->quantity,
+                'value_pf_mr' => $summarySellOutDetail->value_pf_mr,
+                'value_pf_tr' => $summarySellOutDetail->value_pf_tr,
+                'value_pf_ppe' => $summarySellOutDetail->value_pf_ppe,
+                'new_quantity' => '',
+                'new_value' => '',
+                'new_value_pf_mr' => '',
+                'new_value_pf_tr' => '',
+                'new_value_pf_ppe' => '',
+            ]);
+
+            $data->push($dataSummary);
+
+            $dt = Carbon::now();
+            $date = $dt->toDateString();               // 2015-12-19
+            SalesActivity::create([
+                'user_id' => $userId,
+                'date' => $date,
+                'details' => $data,
+            ]);
+            /* end insert sales activity */
 
         // Update Target Actuals
         $summary_ta['user_id'] = $summarySellOutDetail->user_id;
@@ -165,6 +356,8 @@ trait SalesTrait {
     }
 
     public function updateSellOut($id, $qty){
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
 
         $sellOutDetail = SellOutDetail::where('id',$id)->update(['quantity'=> $qty]);
 
@@ -187,6 +380,67 @@ trait SalesTrait {
             if ($summarySellOutDetail->value_pf_ppe > 0) {
                 $pf_ppe = $value;
             }
+                
+                /* begin insert sales activity */
+                $data = new Collection();
+
+                /* Header Details */
+                $dataSummary = ([
+                    'activity' => 'Delete',
+                    'type' => 'Sell Out',
+                    'action_from' => 'Mobile',
+                    'detail_id'=> $summarySellOutDetail->sellout_detail_id,
+                    'week' => $summarySellOutDetail->week,
+                    'distributor_code' => $summarySellOutDetail->distributor_code,
+                    'distributor_name' => $summarySellOutDetail->distributor_name,
+                    'region' => $summarySellOutDetail->region,
+                    'region_id' => $summarySellOutDetail->region_id,
+                    'channel' => $summarySellOutDetail->channel,
+                    'sub_channel' => $summarySellOutDetail->sub_channel,
+                    'area' => $summarySellOutDetail->area,
+                    'area_id' => $summarySellOutDetail->area_id,
+                    'district' => $summarySellOutDetail->district,
+                    'district_id' => $summarySellOutDetail->district_id,
+                    'store_name_1' => $summarySellOutDetail->store_name_1,
+                    'store_name_2' => $summarySellOutDetail->store_name_2,
+                    'store_id' => $summarySellOutDetail->store_id,
+                    'storeId' => $summarySellOutDetail->storeId,
+                    'dedicate' => $summarySellOutDetail->dedicate,
+                    'nik' => $summarySellOutDetail->nik,
+                    'promoter_name' => $summarySellOutDetail->promoter_name,
+                    'user_id' => $summarySellOutDetail->user_id,
+                    'date' => $summarySellOutDetail->date,
+                    'role' => $summarySellOutDetail->role,
+                    'spv_name' => $summarySellOutDetail->spv_name,
+                    'dm_name' => $summarySellOutDetail->dm_name,
+                    'trainer_name' => $summarySellOutDetail->trainer_name,
+                    'model' => $summarySellOutDetail->model,
+                    'group' => $summarySellOutDetail->group,
+                    'category' => $summarySellOutDetail->category,
+                    'product_name' => $summarySellOutDetail->product_name,
+                    'unit_price' => $summarySellOutDetail->unit_price,
+                    'quantity' => $summarySellOutDetail->quantity,
+                    'value' => $summarySellOutDetail->value,
+                    'value_pf_mr' => $summarySellOutDetail->value_pf_mr,
+                    'value_pf_tr' => $summarySellOutDetail->value_pf_tr,
+                    'value_pf_ppe' => $summarySellOutDetail->value_pf_ppe,
+                    'new_quantity' => $qty,
+                    'new_value' => $value,
+                    'new_value_pf_mr' => $pf_mr,
+                    'new_value_pf_tr' => $pf_tr,
+                    'new_value_pf_ppe' => $pf_ppe,
+                ]);
+
+                $data->push($dataSummary);
+
+                $dt = Carbon::now();
+                $date = $dt->toDateString();
+                SalesActivity::create([
+                    'user_id' => $userId,
+                    'date' => $date,
+                    'details' => $data,
+                ]);
+                /* end insert sales activity */
 
             $summarySellOutDetail->update([
                         'quantity'=> $qty,

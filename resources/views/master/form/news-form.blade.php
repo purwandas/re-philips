@@ -389,7 +389,7 @@ var editor_config = {
 		"insertdatetime media nonbreaking save table contextmenu directionality",
 		"emoticons template paste textcolor colorpicker textpattern"
 	],
-	toolbar : "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alighjustify | bullist numlist outdent indent | link ",
+	toolbar : "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alighjustify | bullist numlist outdent indent | link | preview",
 	relative_urls : false,
 	setup : function (editor) {
             editor.on('change', function () {

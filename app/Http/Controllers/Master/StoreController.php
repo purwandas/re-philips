@@ -78,7 +78,7 @@ class StoreController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;       
 
-        $data = Store::filter($filters)->get();
+        $data = Store::filter($filters)->groupBy('store_id')->get();
 
         if ($userRole == 'RSM') {
             $region = RsmRegion::where('rsm_regions.user_id', $userId)
@@ -86,8 +86,8 @@ class StoreController extends Controller
                         ->join('areas', 'regions.id', '=', 'areas.region_id')
                         ->join('districts', 'areas.id', '=', 'districts.area_id')
                         ->join('stores', 'districts.id', '=', 'stores.district_id')
-                        ->pluck('stores.id');
-            $data = $data->whereIn('id', $region);
+                        ->pluck('stores.store_id');
+            $data = $data->whereIn('store_id', $region);
         }
 
         if ($userRole == 'DM') {
@@ -95,14 +95,14 @@ class StoreController extends Controller
                         ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
                         ->join('districts', 'areas.id', '=', 'districts.area_id')
                         ->join('stores', 'districts.id', '=', 'stores.district_id')
-                        ->pluck('stores.id');
-            $data = $data->whereIn('id', $area);
+                        ->pluck('stores.store_id');
+            $data = $data->whereIn('store_id', $area);
         }
             
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('user_id', $userId)
-                        ->pluck('stores.id');
-            $data = $data->whereIn('id', $store);
+                        ->pluck('stores.store_id');
+            $data = $data->whereIn('store_id', $store);
         }
 
         return $data;

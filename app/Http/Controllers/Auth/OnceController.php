@@ -14,6 +14,7 @@ use App\Group;
 use App\Account;
 use App\AccountType;
 use App\GroupCompetitor;
+use App\QuizTarget;
 use Auth;
 use Geotools;
 
@@ -31,18 +32,37 @@ class OnceController extends Controller
     }
 
     public function createAdmin(){
-    	$users = DB::table('users')->count();
+        $users = DB::table('users')->count();
 
-    	if($users == 0){
-    		User::create([
-    			'name' => 'REM',
-            	'email' => 'rem@gmail.com',            
-            	'password' => bcrypt('admin'),
+        if($users == 0){
+            User::create([
+                'name' => 'REM',
+                'email' => 'rem@gmail.com',            
+                'password' => bcrypt('admin'),
                 'role' => 'Master',
-    		]);
-    	}
+            ]);
+        }
 
-    	return redirect('/');
+        return redirect('/');
+    }
+
+    public function createQuizTarget(){
+        $target = DB::table('quiz_targets')->count();
+
+        if($target == 0){
+            $role = array('Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC');
+            $grading = ['Associate', 'Starfour', 'Non-Starfour'];
+            foreach ($role as $key => $value) {
+                foreach ($grading as $key2 => $value2) {
+                    QuizTarget::create([
+                        'role' => $value,
+                        'grading' => $value2,
+                    ]);
+                }
+            }
+        }
+
+        return redirect('/');
     }
 
     public function createRegion(){

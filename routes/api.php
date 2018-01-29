@@ -52,7 +52,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      * Area Module(s)
      */
 
-	Route::get('/region', 'Api\Master\AreaController@getRegion');
+    Route::get('/region', 'Api\Master\AreaController@getRegion');
 	Route::get('/area/{param}', 'Api\Master\AreaController@getAreaByRegion');
 
 	/**
@@ -61,6 +61,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 	Route::get('/profile', 'Api\AuthController@getProfile');
 	Route::post('/set-profile', 'Api\AuthController@setProfile');
+    Route::post('/edit-profile', 'Api\AuthController@updateProfile');
 
 	/**
      * Transaction Module(s)
@@ -76,6 +77,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::post('/promoactivity', 'Api\Master\PromoActivityController@store');
 	Route::post('/sales-edit/{param}', 'Api\Master\EditSalesController@edit');
 	Route::post('/sales-delete/{param}', 'Api\Master\DeleteSalesController@delete');
+    Route::get('/sales/{param}', 'Api\Master\SalesHistoryController@getData');
+    Route::get('/sales-by-spv/{param}', 'Api\Master\SalesHistoryController@getDataUser');
 
 	/**
      * Attendance Module(s)
@@ -100,6 +103,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/get-fanspage', 'Api\Master\FanspageController@getFanspage');
     Route::get('/get-store-id', 'Api\Master\StoreController@getStoreId');
     Route::get('/get-district', 'Api\Master\StoreController@getDistrict');
+    Route::get('/faq', 'Api\Master\FaqController@getFaq');
     // Route::get('/get-district/{param}', 'Api\Master\StoreController@nearby');
 
     /**

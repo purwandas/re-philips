@@ -14,7 +14,9 @@ use App\AreaApp;
 use App\SpvDemo;
 use App\EmployeeStore;
 use App\AttendanceDetail;
+use App\TargetQuiz;
 use App\Reports\HistoryEmployeeStore;
+use App\Reports\SalesActivity;
 use DB;
 use Activity;
 use Auth;
@@ -127,6 +129,9 @@ class UtilController extends Controller
     public function getStoreForSpvEmployee($userId){        
         $store = Store::where('stores.deleted_at', null)
                     ->where('stores.user_id', $userId)
+                    // ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    // ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    // ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
@@ -173,6 +178,16 @@ class UtilController extends Controller
         }
 
         return response()->json($store);
+    }
+    
+    public function getTargetQuiz($quizId){        
+        $quiz = TargetQuiz::where('target_quizs.deleted_at', null)
+                    ->where('target_quizs.quiz_id', $quizId)
+                    ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
+                    ->select('quiz_targets.id','quiz_targets.role','quiz_targets.grading')
+                    ->get();
+
+        return response()->json($quiz);
     }
 
     public function getAttendanceDetail($attendance_id){        
@@ -234,6 +249,38 @@ class UtilController extends Controller
         return response()->json([
             'count' => $users->count(),
             'users' => $users->get(),
+        ]);
+    }
+
+    public function getSalesHistory(){
+
+        $activity = SalesActivity::
+                    whereNull('sales_activities.status')
+                    ->orwhere('sales_activities.status',0)
+                    ->join('users','users.id','sales_activities.user_id')
+                    ->select('sales_activities.*','users.name','users.role');
+
+        return response()->json([
+            'count' => $activity->count(),
+            'activity' => $activity->get(),
+        ]);
+    }
+
+    public function readSalesHistory(Request $request){
+
+        $activity = SalesActivity::
+                    where('id',$request['id'])
+                    ->first();
+        $act = $activity;
+            if ($activity->count() >0) {
+                $activity->update([
+                    'status' => 1
+                ]);
+            }
+
+        return response()->json([
+            'status' => true,
+            'activity' => $act,
         ]);
     }
 
