@@ -19,6 +19,7 @@ use App\Distributor;
 use App\ProductFocuses;
 use App\DmArea;
 use App\User;
+use App\SpvDemo;
 use App\TrainerArea;
 use DB;
 
@@ -72,6 +73,13 @@ class SOHController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sohHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -145,7 +153,7 @@ class SOHController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'nik' => $user->nik,
                                     'promoter_name' => $user->name,
@@ -205,6 +213,13 @@ class SOHController extends Controller
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                            $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -278,7 +293,7 @@ class SOHController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'nik' => $user->nik,
                                 'promoter_name' => $user->name,

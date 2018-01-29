@@ -95,6 +95,26 @@ class UserController extends Controller
                     return $item->role;                    
                     
                 })
+                ->addColumn('area', function ($item) {
+                    
+                    if($item->role == 'DM') {
+                        $area = DmArea::where('user_id', $item->id)->first();
+                    }elseif($item->role == 'Trainer') {
+                        $area = TrainerArea::where('user_id', $item->id)->first();
+                    }elseif($item->role == 'Supervisor' || $item->role == 'Supervisor Hybrid') {
+                        $store = Store::where('user_id', $item->id)->first();
+                        $area = (isset($store->district)) ? $store->district : '';
+                            $spvDemo = SpvDemo::where('user_id', $item->id)->first();
+                            if(count($spvDemo) > 0){
+                                $area = (isset($spvDemo->store->district)) ? $spvDemo->store->district : '';
+                            }
+                        // return $area;
+                    }
+                    $area = (isset($area->area->name)) ? $area->area->name : '';
+
+                    return $area;
+
+                })
                 ->addColumn('action', function ($item) {
 
                     return 

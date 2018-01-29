@@ -134,6 +134,17 @@ class UserPromoterController extends Controller
                     return $storeSpvName;
 
                 })
+                ->addColumn('area', function ($item) {
+                    $store = EmployeeStore::
+                                        with('store.district.area')
+                                        ->where('user_id', $item->id)
+                                        ->first();
+
+                    $area = (isset($store->store->district->area->name)) ? $store->store->district->area->name : '';
+
+                    return $area;
+
+                })
                 ->addColumn('history', function ($item) {
 
                     $countStore = $item->historyEmployeeStores()->count();
