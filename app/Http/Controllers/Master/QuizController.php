@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Quiz;
+use App\TargetQuiz;
 use App\Filters\QuizFilters;
 use Auth;
+use DB;
 use Carbon\Carbon;
 
 class QuizController extends Controller
@@ -54,18 +56,20 @@ class QuizController extends Controller
                 })
                 ->editColumn('target', function ($item) {
                     $result = '';
-                    if ($item->target == 'All') 
-                    {
-                        $result = "Promoter, Promoter Additional, Promoter Event, Demonstrator MCC, Demonstrator DA, ACT, PPE, BDT, Salesman Explorer, SMD, SMD Coordinator, HIC, HIE, SMD, Additional, ASC";
-                    }
-                    else if ($item->target == 'Demonstrator') 
-                    {
-                        $result = "Demonstrator MCC, Demonstrator DA";
-                    }
-                    else if ($item->target == 'Promoter') 
-                    {
-                        $result = "Promoter, Promoter Additional, Promoter Event, ACT, PPE, BDT, Salesman Explorer, SMD, SMD Coordinator, HIC, HIE, SMD, Additional, ASC";
-                    }
+                    $target = TargetQuiz::where('quiz_id',$item->id)
+                        ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
+                        ->select('quiz_targets.role','quiz_targets.grading')
+                        ->get();
+                    // if (count($target > 0)) 
+                    // {
+                        
+                        foreach ($target as $key => $value) {
+                            if ($key >0) {
+                                $result.=', ';
+                            }
+                            $result .= $value->role." (".$value->grading.")";
+                        }
+                    // }
                     return $result;
                 })
 
@@ -104,35 +108,24 @@ class QuizController extends Controller
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'link' => 'required',
             'target' => 'required',
             ]);  
 
-        // Admin
-        $request['user_id'] = Auth::user()->id;
+        // return response()->json($request);
+        $quiz = Quiz::create([
+            'title' => $request['title'],
+            'description' => $request['description'],
+            'link' => $request['link'],
+            'date' => Carbon::now(),
+        ]);
 
-        // Date
-        $request['date'] = Carbon::now();
-
-        // $allTarget = '';
-        // $counTarget=0;
-
-        // foreach ($request['target'] as $key => $value) {
-        //     if ($counTarget == 0) {
-        //         $allTarget .= $value;
-        //         if ($value!='') {
-        //             $counTarget++;
-        //         }
-        //     }else{
-        //         $allTarget .= ','.$value;
-        //     }            
-        // }
-
-        // $request->merge(array('target'=> $allTarget));
-
-        // return $request->all();
-
-        // dd($request->all());
-        $quiz = Quiz::create($request->all());
+        foreach ($request['target'] as $key => $value) {
+            TargetQuiz::create([
+                'quiz_id' => $quiz->id,
+                'quiz_target_id' => $value,
+            ]);
+        }
         
         return response()->json(['url' => url('/quiz')]);
     }
@@ -157,8 +150,9 @@ class QuizController extends Controller
     public function edit($id)
     {
         $data = Quiz::where('id', $id)->first();
+        $target = TargetQuiz::where('quiz_id',$id)->get();
 
-        return view('master.form.quiz-form', compact('data'));
+        return view('master.form.quiz-form', compact('data','target'));
     }
 
     /**
@@ -170,35 +164,36 @@ class QuizController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($id);
-        // dd($request->all());
+        
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'target' => 'required',
             ]);  
 
-        // $allTarget = '';
-        // $counTarget=0;
-        
-        // foreach ($request['target'] as $key => $value) {
-        //     if ($counTarget == 0) {
-        //         $allTarget .= $value;
-        //         if ($value!='') {
-        //             $counTarget++;
-        //         }
-        //     }else{
-        //         $allTarget .= ','.$value;
-        //     }            
-        // }
-
-        // $request->merge(array('target'=> $allTarget));
-
         $quiz = Quiz::find($id);
-    	$quiz->update($request->all());        
+    	$quiz->update([
+            'title' => $request['title'],
+            'description' => $request['description'],
+            'link' => $request['link'],
+            'date' => Carbon::now(),
+        ]);
 
-        return response()->json(
-            [
+        /* begin Re-create Target relation */
+        $targetQuiz = TargetQuiz::where('quiz_id',$id);
+        if ($targetQuiz->count() > 0) {
+            $targetQuiz->delete();
+        }
+
+        foreach ($request['target'] as $key => $value) {
+            TargetQuiz::create([
+                'quiz_id' => $id,
+                'quiz_target_id' => $value,
+            ]);
+        }      
+        /* end Re-create Target relation */
+
+        return response()->json([
                 'url' => url('/quiz'),
                 'method' => $request->_method
             ]);
@@ -214,6 +209,13 @@ class QuizController extends Controller
     {
         /* Deleting related to quiz */
         $quiz = Quiz::destroy($id);
+
+        /* begin Delete Target relation */
+        $targetQuiz = TargetQuiz::where('quiz_id',$id);
+        if ($targetQuiz->count() > 0) {
+            $targetQuiz->delete();
+        }
+        /* end Delete Target relation */
 
         return response()->json($id);
     }

@@ -460,6 +460,8 @@
 		        	var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
 		        	if (statusSpv == "Demonstrator") {
 		        		filters['byDedicateSpv'] = "DA";
+		        	}else{
+		        		delete filters['byDedicateSpv'];
 		        	}
 		        }
 	            return filterData('store', params.term);

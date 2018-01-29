@@ -7,6 +7,7 @@ use App\FeedbackCategory;
 use App\FeedbackQuestion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
@@ -79,6 +80,9 @@ class FeedbackController extends Controller
         $assessor = JWTAuth::parseToken()->authenticate();
         $promoter = $request->promoter_id;
 
+            $date1 = Carbon::now()->toDateString().' 00:00:00';
+            $date2 = Carbon::now()->toDateString().' 23:59:59';
+
         $type = 'PK';
 
         if($param == 1){
@@ -102,7 +106,11 @@ class FeedbackController extends Controller
             if($feedbackQuestion->count() > 0){
 
                 foreach ($feedbackQuestion->get() as $data){
-                    $feedbackAnswer = FeedbackAnswer::where('assessor_id', $assessor->id)->where('promoter_id', $promoter)
+                    $feedbackAnswer = FeedbackAnswer::
+                                        where('created_at','>=',$date1)
+                                        ->where('created_at','<=',$date2)
+                                        ->where('assessor_id', $assessor->id)
+                                        ->where('promoter_id', $promoter)
                                         ->where('feedbackQuestion_id', $data->id);
 
                     if($feedbackAnswer->count() > 0){
