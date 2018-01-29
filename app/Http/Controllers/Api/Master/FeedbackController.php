@@ -30,12 +30,17 @@ class FeedbackController extends Controller
         if(count($spvDemoIds) > 0){
             $storeIds = $spvDemoIds;
         }
-        // return response()->json($storeIds);
+        
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        // return response()->json($promoterIds);
-        $promoters = User::whereIn('id', $promoterIds)->get();
+        
+        $promoters = User::whereIn('id', $promoterIds);
+        if(count($spvDemoIds) > 0){
+            $promoters->where('role','Demonstrator DA');
+        }else{
+            $promoters->whereNotIn('role', ['Demonstrator DA']);
+        }
 
-        return response()->json($promoters);
+        return response()->json($promoters->get());
     }
 
     public function getListPromoterFeedbackWithParam($param){
@@ -50,7 +55,14 @@ class FeedbackController extends Controller
         }
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        $promoters = User::whereIn('id', $promoterIds)->get();
+     
+        $promoters = User::whereIn('id', $promoterIds);
+        if(count($spvDemoIds) > 0){
+            $promoters->where('role','Demonstrator DA');
+        }else{
+            $promoters->whereNotIn('role', ['Demonstrator DA']);
+        }
+        $promoters->get();
 
         return response()->json($promoters);
     }
