@@ -53,10 +53,13 @@
                     <table class="table table-striped table-hover table-bordered" id="placeTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
-                                <th> No. </th>                            
+                                <th> No. </th>        
+                                <th> Store ID. </th>                          
                                 <th> Place Name </th>
                                 <th> Longitude </th>
                                 <th> Latitude </th>
+                                <th> Address </th>
+                                <th> Description </th>
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -108,14 +111,17 @@
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
+                {data: 'store_id', name: 'store_id'},
                 {data: 'name', name: 'name'},
                 {data: 'longitude', name: 'longitude'},
                 {data: 'latitude', name: 'latitude'},
+                {data: 'address', name: 'address'},
+                {data: 'description', name: 'description'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [7]},
             ],
             "order": [ [0, 'desc'] ],
         });
@@ -174,7 +180,12 @@
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
+        $('#store_id').val('');
         $('#name').val('');
+        $('#longitude').val('');
+        $('#latitude').val('');
+        $('#address').val('');
+        $('#description').val('');
 
         // Set action url form for add
         var postDataUrl = "{{ url('place') }}";    
@@ -210,7 +221,12 @@
 
         $.get(getDataUrl + '/' + id, function (data) {
 
+                    $('#store_id').val(data.store_id);
                     $('#name').val(data.name);
+                    $('#longitude').val(data.longitude);
+                    $('#latitude').val(data.latitude);
+                    $('#address').val(data.address);
+                    $('#description').val(data.description);
 
         })
 

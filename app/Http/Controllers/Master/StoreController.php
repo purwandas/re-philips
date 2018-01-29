@@ -209,8 +209,8 @@ class StoreController extends Controller
             $this->validate($request, [
                 'store_name_1' => 'required|string|max:255',
                 'store_name_2' => 'max:255',
-                'longitude' => 'number',
-                'latitude' => 'number',
+                'longitude' => 'numeric',
+                'latitude' => 'numeric',
                 'district_id' => 'required',
             ]);
 
@@ -268,8 +268,8 @@ class StoreController extends Controller
         $this->validate($request, [
             'store_name_1' => 'required|string|max:255',
             'store_name_2' => 'max:255',
-            'longitude' => 'number',
-            'latitude' => 'number',
+            'longitude' => 'numeric',
+            'latitude' => 'numeric',
             'subchannel_id' => 'required',
             'district_id' => 'required'
         ]);

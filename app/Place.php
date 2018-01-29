@@ -16,7 +16,7 @@ class Place extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'longitude', 'latitude'
+        'name', 'longitude', 'latitude', 'store_id', 'address', 'description'
     ];
 
     /* Metode tambahan untuk model Branch Sport. */

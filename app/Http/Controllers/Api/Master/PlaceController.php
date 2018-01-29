@@ -24,7 +24,7 @@ class PlaceController extends Controller
 
     	$data = Place::where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
-                    ->select('id', 'name', 'latitude', 'longitude');
+                    ->select('id', 'store_id','name', 'latitude', 'longitude', 'address', 'description');
 
         // This will calculate the distance in km
         // if you want in miles use 3959 instead of 6371

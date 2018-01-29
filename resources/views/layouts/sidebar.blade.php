@@ -72,6 +72,11 @@
                             <span class="title">Store</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('place*') ? 'active open' : '' }}">
+                        <a href="{{ url('place') }}" class="nav-link ">
+                            <span class="title">Other Store</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
