@@ -252,7 +252,9 @@
 										<option value="Gold">Gold</option>
 										<option value="Platinum">Platinum</option>
 										<option value="Silver">Silver</option>
-										<option value="Don`t have any classification">Don`t have any classification</option>
+										<option value="Bronze">Bronze</option>
+										<option value="Risna">Risna</option>
+										<option value="Don`t have classification">Don`t have classification</option>
 	                                </select>
 
 	                                <span class="input-group-addon display-hide">

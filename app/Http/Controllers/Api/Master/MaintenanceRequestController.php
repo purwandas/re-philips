@@ -32,9 +32,9 @@ class MaintenanceRequestController extends Controller
         try {
             DB::transaction(function () use ($content, $user, $folderPath) {
 
-                $category = str_replace_array('"', '', $content->category);
-                $channel = str_replace_array('"', '', $content->channel);
-                $type = str_replace_array('"', '', $content->type);
+                $category = str_replace_array('"', explode(" ", $content->category), '');
+                $channel = str_replace_array('"', explode(" ",$content->channel),'');
+                $type = str_replace_array('"', explode(" ",$content->type),'');
 
                 /** Insert Maintenance Request **/
 

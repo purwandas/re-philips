@@ -61,8 +61,8 @@ class SalesController extends Controller
 
             if ($sellInHeader) { // If header exist (update and/or create detail)
 
-                try {
-                    DB::transaction(function () use ($content, $sellInHeader, $user) {
+//                    try {
+//                        DB::transaction(function () use ($content, $sellInHeader, $user) {
 
                         foreach ($content['data'] as $data) {
 
@@ -169,9 +169,9 @@ class SalesController extends Controller
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
                                             ->where('global_channels.name',$dedicate->dedicate)
                                             ->where('sell_type', 'Sell In')
-                                            ->first();                                    
+                                            ->first();
                                     }
-                                        
+
                                 }else{
                                     $price = Price::where('product_id', $product->id)
                                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -265,7 +265,7 @@ class SalesController extends Controller
                                         'distributor_code' => $distributor_code,
                                         'distributor_name' => $distributor_name,
                                         'region' => $store->district->area->region->name,
-                                        
+
                                         'channel' => $channel,
                                         'sub_channel' => $subChannel,
 
@@ -338,7 +338,7 @@ class SalesController extends Controller
                                         'distributor_code' => $distributor_code,
                                         'distributor_name' => $distributor_name,
                                         'region' => $store->district->area->region->name,
-                                        
+
                                         'channel' => $channel,
                                         'sub_channel' => $subChannel,
 
@@ -376,17 +376,17 @@ class SalesController extends Controller
 
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+//                        });
+//                    } catch (\Exception $e) {
+//                        return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+//                    }
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-                try {
-                    DB::transaction(function () use ($content, $user) {
+//                try {
+//                    DB::transaction(function () use ($content, $user) {
 
                         // HEADER
                         $transaction = SellIn::create([
@@ -431,9 +431,9 @@ class SalesController extends Controller
                                         ->join('global_channels','global_channels.id','prices.globalchannel_id')
                                         ->where('global_channels.name',$dedicate->dedicate)
                                         ->where('sell_type', 'Sell In')
-                                        ->first();                                    
+                                        ->first();
                                 }
-                                    
+
                             }else{
                                 $price = Price::where('product_id', $product->id)
                                     ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -527,7 +527,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -602,7 +602,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -638,10 +638,10 @@ class SalesController extends Controller
 
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+//                    });
+//                } catch (\Exception $e) {
+//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+//                }
 
                 // Check sell in header after insert
                 $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -815,7 +815,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -991,7 +991,7 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
 
@@ -1171,7 +1171,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -1320,7 +1320,7 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
 
@@ -1489,7 +1489,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -1638,7 +1638,7 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
 
@@ -1807,7 +1807,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -1956,7 +1956,7 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
 
@@ -2129,7 +2129,7 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
+
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
 
@@ -2289,10 +2289,10 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
-                                
+
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,

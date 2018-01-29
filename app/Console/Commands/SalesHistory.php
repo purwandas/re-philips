@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\EmployeeStore;
 use App\Reports\HistorySalesmanSales;
 use App\Reports\HistorySalesmanTargetActual;
 use App\Reports\HistoryTargetActual;
@@ -1816,6 +1817,8 @@ class SalesHistory extends Command
                         'district_id' => $detail->district_id,
                         'storeId' => $detail->storeId,
                         'user_id' => $detail->user_id,
+                        'user_role' => $detail->user_role,
+                        'partner' => $detail->partner,
                         'region' => $detail->region,
                         'area' => $detail->area,
                         'district' => $detail->district,
@@ -1877,16 +1880,65 @@ class SalesHistory extends Command
                         'actual_mcc_w5' => $detail->actual_mcc_w5,
                         'sum_target_store' => $detail->sum_target_store,
                         'sum_actual_store' => $detail->sum_actual_store,
+                        'sum_pf_target_store' => $detail->sum_pf_target_store,
+                        'sum_pf_actual_store' => $detail->sum_pf_actual_store,
+                        'sum_target_store_promo' => $detail->sum_target_store_promo,
+                        'sum_actual_store_promo' => $detail->sum_actual_store_promo,
+                        'sum_pf_target_store_promo' => $detail->sum_pf_target_store_promo,
+                        'sum_pf_actual_store_promo' => $detail->sum_pf_actual_store_promo,
+                        'sum_target_store_demo' => $detail->sum_target_store_demo,
+                        'sum_actual_store_demo' => $detail->sum_actual_store_demo,
+                        'sum_pf_target_store_demo' => $detail->sum_pf_target_store_demo,
+                        'sum_pf_actual_store_demo' => $detail->sum_pf_actual_store_demo,
                         'sum_target_area' => $detail->sum_target_area,
                         'sum_actual_area' => $detail->sum_actual_area,
+                        'sum_pf_target_area' => $detail->sum_pf_target_area,
+                        'sum_pf_actual_area' => $detail->sum_pf_actual_area,
                         'sum_target_region' => $detail->sum_target_region,
                         'sum_actual_region' => $detail->sum_actual_region,
+                        'sum_pf_target_region' => $detail->sum_pf_target_region,
+                        'sum_pf_actual_region' => $detail->sum_pf_actual_region,
                     ]);
                     $details->push($detailsData);
 
-                    /* Delete summary table */
+                    /* Truncate actual in summary table */
                     $summary = SummaryTargetActual::where('id', $detail->id);
-                    $summary->delete();
+
+                    $emp = EmployeeStore::where('user_id', $detail->user_id)
+                            ->where('store_id', $detail->storeId)->first();
+
+                    if($emp){ // JIKA MASIH ADA LINK STORE HANYA RESET ACTUAL DARI SUMMARY ACTUAL
+//                        $summary->delete();
+                        $summary->update([
+                            'actual_dapc' => 0,
+                            'actual_da' => 0,
+                            'actual_pc' => 0,
+                            'actual_mcc' => 0,
+                            'actual_pf_da' => 0,
+                            'actual_pf_pc' => 0,
+                            'actual_pf_mcc' => 0,
+                            'actual_da_w1' => 0,
+                            'actual_da_w2' => 0,
+                            'actual_da_w3' => 0,
+                            'actual_da_w4' => 0,
+                            'actual_da_w5' => 0,
+                            'actual_pc_w1' => 0,
+                            'actual_pc_w2' => 0,
+                            'actual_pc_w3' => 0,
+                            'actual_pc_w4' => 0,
+                            'actual_pc_w5' => 0,
+                            'actual_mcc_w1' => 0,
+                            'actual_mcc_w2' => 0,
+                            'actual_mcc_w3' => 0,
+                            'actual_mcc_w4' => 0,
+                            'actual_mcc_w5' => 0,
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ]);
+                    }else{ // JIKA TIDAK ADA STORE MAKA HAPUS TARGET DAN SUMMARY ACTUAL
+
+                    }
+
 
                 }
 
