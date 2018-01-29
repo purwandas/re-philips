@@ -11,7 +11,7 @@ class Target extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'store_id', 'sell_type','target_da', 'target_pf_da', 'target_pc', 'target_pf_pc', 'target_mcc', 'target_pf_mcc'
+        'user_id', 'store_id', 'sell_type', 'partner','target_da', 'target_pf_da', 'target_pc', 'target_pf_pc', 'target_mcc', 'target_pf_mcc'
     ];
 
     /**

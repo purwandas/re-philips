@@ -49,7 +49,7 @@ class AttendanceController extends Controller
         }else{
 
             if(!$attendanceHeader) {
-                return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 500);
+                return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 200);
             }
 
         }
@@ -79,7 +79,7 @@ class AttendanceController extends Controller
 
                 // Return if location longi and lati was not set
                 if ($location->longitude == null || $location->latitude == null) {
-                    return response()->json(['status' => false, 'message' => 'Tempat absensi yang anda pilih belum terkonfigurasi, silahkan hubungi administrator'], 500);
+                    return response()->json(['status' => false, 'message' => 'Tempat absensi yang anda pilih belum terkonfigurasi, silahkan hubungi administrator'], 200);
                 }
 
                 $coordStore = Geotools::coordinate([$location->latitude, $location->longitude]);
@@ -282,7 +282,7 @@ class AttendanceController extends Controller
             }
 
             // Promoter can set status to 'Off' just if in 'Alpha'
-            if($attendanceHeader->status != 'Alpha' && $attendanceHeader->status != 'Pending Sakit' && $attendanceHeader->status != 'Pending Izin'){
+            if($attendanceHeader->status != 'Alpha' && $attendanceHeader->status != 'Pending Sakit' && $attendanceHeader->status != 'Pending Izin' && $attendanceHeader->status != 'Pending Off'){
                 return response()->json(['status' => false, 'message' => 'Maaf, anda tidak bisa mengganti status menjadi off(libur)'], 200);
             }
 
@@ -291,7 +291,7 @@ class AttendanceController extends Controller
 
                     // Attendance Header Update
                     $attendanceHeader->update([
-                        'status' => 'Off'
+                        'status' => 'Pending Off'
                     ]);
 
                 });
@@ -299,25 +299,7 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
-            /* Change Weekly Target */
-            $target = SummaryTargetActual::where('user_id', $user->id)->get();
-
-            if($target){ // If Had
-
-                foreach ($target as $data){
-
-                    /* Change Weekly Target */
-                    $total['da'] = $data['target_da'];
-                    $total['pc'] = $data['target_pc'];
-                    $total['mcc'] = $data['target_mcc'];
-
-                    $this->changeWeekly($data, $total);
-
-                }
-
-            }
-
-            return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off)']);
+            return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off : masih dalam tahap verifikasi)']);
         }
 
     }
@@ -374,9 +356,9 @@ class AttendanceController extends Controller
                     ->whereDate('date', '<=', Carbon::now()->format('Y-m-d'))
                     ->where('status', '<>', 'Off')->count('id');
 
-        if($countHK > 26){
-            $countHK = 26;
-        }
+//        if($countHK > 26){
+//            $countHK = 26;
+//        }
 
         return $countHK;
 

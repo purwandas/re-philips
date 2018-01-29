@@ -741,7 +741,7 @@
 		$(document.body).on("change","#statusSpvCheck2",function(){
 			var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
 	       	if (statusSpv) {
-		       	if (statusSpv == "Demonstrator") 
+		       	if (statusSpv == "Demonstrator")
 		       	{
 		       		select2Reset($('#stores'));
 		       		$('#dedicateContent').addClass('display-hide');

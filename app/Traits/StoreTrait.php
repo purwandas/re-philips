@@ -13,7 +13,7 @@ trait StoreTrait {
         $store = Store::select('stores.*', DB::raw("( substr(stores.store_id, 3, (length(stores.store_id)-2)) ) as counting"))
                     ->orderBy('counting', 'DESC')->first();
         if(!$store){
-            return 'RE001';
+            return 'RE0001';
         }else{
             $data = "";
 
@@ -26,8 +26,10 @@ trait StoreTrait {
             $result = "";
 
             if($countLength == 1){
-                $result .= 'RE' . '00' . $increment;
+                $result .= 'RE' . '000' . $increment;
             } else if ($countLength == 2){
+                $result .= 'RE' . '00' . $increment;
+            } else if ($countLength == 3){
                 $result .= 'RE' . '0' . $increment;
             } else {
                 $result .= 'RE' . $increment;
