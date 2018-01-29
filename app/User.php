@@ -35,6 +35,11 @@ class User extends Authenticatable
      *
      */
 
+    public function spvDemos()
+    {
+        return $this->hasMany('App\SpvDemo', 'user_id');
+    }
+
     public function rsmRegion()
     {
         return $this->hasOne('App\RsmRegion', 'user_id');

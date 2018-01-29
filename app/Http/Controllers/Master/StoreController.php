@@ -170,7 +170,8 @@ class StoreController extends Controller
     public function store(Request $request)
     {
         $error = '';
-        
+//        return response()->json($request->all());
+
             $this->validate($request, [
                 'store_name_1' => 'required|string|max:255',
                 'store_name_2' => 'max:255',
@@ -232,7 +233,7 @@ class StoreController extends Controller
 
         $this->validate($request, [
             'store_name_1' => 'required|string|max:255',
-            'store_name_2' => 'string|max:255',
+            'store_name_2' => 'max:255',
             'longitude' => 'number',
             'latitude' => 'number',
             'subchannel_id' => 'required',

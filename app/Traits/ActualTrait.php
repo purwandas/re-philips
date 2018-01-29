@@ -935,10 +935,10 @@ trait ActualTrait {
             ]);
 
             /* Add Summary from User */
-            $summaryData = SummarySellIn::where('user_id', $userId)->where('storeId', $storeId)->get();
+            $summaryData = SummarySellIn::where('user_id', $userId)->where('storeId', $storeId)->where('irisan', null)->get();
 
             if ($sellType == 'Sell Out') {
-                $summaryData = SummarySellOut::where('user_id', $userId)->where('storeId', $storeId)->get();
+                $summaryData = SummarySellOut::where('user_id', $userId)->where('storeId', $storeId)->where('irisan', null)->get();
             }
 
             if ($summaryData) {

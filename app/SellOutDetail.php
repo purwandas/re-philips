@@ -11,7 +11,7 @@ class SellOutDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'sellout_id', 'product_id', 'quantity'
+        'sellout_id', 'product_id', 'quantity', 'irisan'
     ];
 
     /**

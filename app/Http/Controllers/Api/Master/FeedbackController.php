@@ -24,7 +24,9 @@ class FeedbackController extends Controller
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        $promoters = User::whereIn('id', $promoterIds)->get();
+        $promoters = User::whereIn('id', $promoterIds)
+                        ->where('role', '<>', 'Salesman Explorer')
+                        ->get();
 
         return response()->json($promoters);
     }
@@ -35,7 +37,9 @@ class FeedbackController extends Controller
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        $promoters = User::whereIn('id', $promoterIds)->get();
+        $promoters = User::whereIn('id', $promoterIds)
+                        ->where('role', '<>', 'Salesman Explorer')
+                        ->get();
 
         return response()->json($promoters);
     }
@@ -69,7 +73,9 @@ class FeedbackController extends Controller
 
         $storeIds = Store::where('store_id', $param)->pluck('id');
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        $promoters = User::whereIn('id', $promoterIds)->get();
+        $promoters = User::whereIn('id', $promoterIds)
+                        ->where('role', '<>', 'Salesman Explorer')
+                        ->get();
 
         return response()->json($promoters);
     }

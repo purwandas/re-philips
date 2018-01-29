@@ -100,7 +100,16 @@ class TargetController extends Controller
                     ->where('store_id', $request['store_id'])
                     ->where('sell_type', $request['sell_type']);
 
+        $partner = 0;
+        if(isset($request->partnerCheck)){
+            $partner = 1;
+        }
+
+        $request['partner'] = $partner;
+
         if($target->count() > 0){
+
+            $partnerOld = $target->first()->partner;
 
             $targetOldDa = $target->first()->target_da;
             $targetOldPfDa = $target->first()->target_pf_da;
@@ -119,6 +128,8 @@ class TargetController extends Controller
             /* Summary Target Add and/or Change */ // On Progress
             $summary['user_id'] = $target->first()->user_id;
             $summary['store_id'] = $target->first()->store_id;
+            $summary['partner'] = $partner;
+            $summary['partnerOld'] = $partnerOld;
             $summary['targetOldDa'] = $targetOldDa;
             $summary['targetOldPfDa'] = $targetOldPfDa;
             $summary['targetOldPc'] = $targetOldPc;
@@ -143,6 +154,7 @@ class TargetController extends Controller
             /* Summary Target Add and/or Change */ // On Progress
             $summary['user_id'] = $target->user_id;
             $summary['store_id'] = $target->store_id;
+            $summary['partner'] = $partner;
             $summary['target_da'] = $target->target_da;
             $summary['target_pf_da'] = $target->target_pf_da;
             $summary['target_pc'] = $target->target_pc;
@@ -204,6 +216,15 @@ class TargetController extends Controller
 
         $target = Target::where('id', $id)->first();
 
+        $partner = 0;
+        if(isset($request->partnerCheck)){
+            $partner = 1;
+        }
+
+        $request['partner'] = $partner;
+
+        $partnerOld = $target->partner;
+
         $targetOldDa = $target->target_da;
         $targetOldPfDa = $target->target_pf_da;
         $targetOldPc = $target->target_pc;
@@ -216,6 +237,8 @@ class TargetController extends Controller
         /* Summary Target Add and/or Change */
         $summary['user_id'] = $target->user_id;
         $summary['store_id'] = $target->store_id;
+        $summary['partner'] = $partner;
+        $summary['partnerOld'] = $partnerOld;
         $summary['targetOldDa'] = $targetOldDa;
         $summary['targetOldPfDa'] = $targetOldPfDa;
         $summary['targetOldPc'] = $targetOldPc;
@@ -249,6 +272,7 @@ class TargetController extends Controller
         /* Summary Target Delete */
         $summary['user_id'] = $target->user_id;
         $summary['store_id'] = $target->store_id;
+        $summary['partner'] = $target->partner;
         $summary['target_da'] = $target->target_da;
         $summary['target_pf_da'] = $target->target_pf_da;
         $summary['target_pc'] = $target->target_pc;

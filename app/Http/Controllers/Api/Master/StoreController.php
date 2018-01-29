@@ -6,6 +6,7 @@ use App\DmArea;
 use App\District;
 use App\EmployeeStore;
 use App\RsmRegion;
+use App\SpvDemo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Filters\StoreFilters;
@@ -66,7 +67,19 @@ class StoreController extends Controller
         $data = Store::where('user_id', $user->id)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
-                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+                    'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+        // CHECK IN DEMO SPV
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+
+        if(count($spvDemoIds) > 0){
+
+            $data = Store::whereIn('stores.id', $spvDemoIds)
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                    'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+        }
 
     	return response()->json($data);
 
@@ -77,6 +90,10 @@ class StoreController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+
+        $arinaId = Store::where('store_id', 'AR0001')->first()->id;
+
+        $storeIds->push($arinaId);
 
         $data = Store::whereIn('stores.id', $storeIds)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -202,5 +219,13 @@ class StoreController extends Controller
             $district = District::select('districts.id', 'districts.area_id','districts.name')->get();
 
         return $district;
+    }
+
+    public function getArina(){
+
+        $data = Store::where('store_id', 'AR0001')->get();
+
+        return response()->json($data);
+
     }
 }

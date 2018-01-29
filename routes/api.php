@@ -36,7 +36,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/product/{param}', 'Api\Master\ProductController@all');
 	Route::get('/category-product', 'Api\Master\CategoryController@all');
 	Route::get('/category-product/{param}', 'Api\Master\CategoryController@allWithParam');
-    Route::get('/store', 'Api\Master\StoreController@all');    
+    Route::get('/store', 'Api\Master\StoreController@all');
+    Route::get('/get-arina', 'Api\Master\StoreController@getArina');
 	Route::get('/store-promoter', 'Api\Master\StoreController@byPromoter');
 	Route::post('/store-area', 'Api\Master\StoreController@byArea');
     Route::post('/store-create', 'Api\Master\StoreController@create');
@@ -112,6 +113,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('/promoter-approval/{param}', 'Api\Master\PromoterController@approval');
     Route::get('/store-supervisor', 'Api\Master\StoreController@bySupervisor');
     Route::post('/store-update', 'Api\Master\StoreController@updateStore');
+    Route::post('/get-promoter-partner', 'Api\Master\PromoterController@getPromoterPartner');
 
     /**
      * Above Supervisor Module(s)

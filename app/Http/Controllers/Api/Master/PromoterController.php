@@ -7,6 +7,7 @@ use App\AttendanceDetail;
 use App\DmArea;
 use App\EmployeeStore;
 use App\RsmRegion;
+use App\SpvDemo;
 use App\Store;
 use App\User;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use JWTAuth;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use DB;
@@ -25,7 +27,25 @@ class PromoterController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
-        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+
+        if(count($spvDemoIds) > 0){
+            $storeIds = $spvDemoIds;
+        }
+
+        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
+                        ->whereHas('user', function ($query){
+                            return $query->where('role', '<>', 'Demonstrator DA');
+                        })
+                        ->pluck('user_id');
+
+        if(count($spvDemoIds) > 0){
+            $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
+                        ->whereHas('user', function ($query){
+                            return $query->where('role', 'Demonstrator DA');
+                        })
+                        ->pluck('user_id');
+        }
 
         $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
                      ->join('users', 'attendances.user_id', '=', 'users.id')
@@ -60,7 +80,25 @@ class PromoterController extends Controller
         $user = User::where('id', $id)->first();
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
-        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+
+        if(count($spvDemoIds) > 0){
+            $storeIds = $spvDemoIds;
+        }
+
+        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
+                        ->whereHas('user', function ($query){
+                            return $query->where('role', '<>', 'Demonstrator DA');
+                        })
+                        ->pluck('user_id');
+
+        if(count($spvDemoIds) > 0){
+            $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
+                        ->whereHas('user', function ($query){
+                            return $query->where('role', 'Demonstrator DA');
+                        })
+                        ->pluck('user_id');
+        }
 
         $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
                      ->join('users', 'attendances.user_id', '=', 'users.id')
@@ -129,6 +167,9 @@ class PromoterController extends Controller
     public function approval(Request $request, $param){
 
         $attendances = Attendance::where('id', $request->attendance_id)->first();
+        if(!$attendances){
+            return response()->json(['status' => false, 'message' => 'Data absen tidak ditemukan'], 500);
+        }
         $message = "";
 
         if($param == 1){
@@ -140,7 +181,7 @@ class PromoterController extends Controller
             $attendances->update(['status' => 'Sakit']);
             $message = "Sakit";
 
-        }else{
+        }else if($param == 2){
 
             if($attendances->status != 'Pending Izin'){
                 return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval izin'], 500);
@@ -148,6 +189,32 @@ class PromoterController extends Controller
 
             $attendances->update(['status' => 'Izin']);
             $message = "Izin";
+        }else if($param == 3){
+
+            if($attendances->status != 'Pending Off'){
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval off'], 500);
+            }
+
+            $attendances->update(['status' => 'Off']);
+            $message = "Off";
+
+            /* Change Weekly Target */
+            $target = SummaryTargetActual::where('user_id', $attendances->user_id)->get();
+
+            if($target){ // If Had
+
+                foreach ($target as $data){
+
+                    /* Change Weekly Target */
+                    $total['da'] = $data['target_da'];
+                    $total['pc'] = $data['target_pc'];
+                    $total['mcc'] = $data['target_mcc'];
+
+                    $this->changeWeekly($data, $total);
+
+                }
+
+            }
         }
 
         return response()->json(['status' => true, 'id_attendance' => $attendances->id, 'message' => 'Approval '.$message.' berhasil']);
@@ -176,9 +243,9 @@ class PromoterController extends Controller
 
         $details = Attendance::where('attendances.user_id', $user->id)
                     ->where(function ($query) {
-                        return $query->where('attendances.status', 'Pending Sakit')->orWhere('attendances.status', 'Pending Izin')
+                        return $query->where('attendances.status', 'Pending Sakit')->orWhere('attendances.status', 'Pending Izin')->orWhere('attendances.status', 'Pending Off')
                                      ->orWhere('attendances.status', 'Sakit')->orWhere('attendances.status', 'Izin')
-                                     ->orWhere('attendances.status', 'Alpha');
+                                     ->orWhere('attendances.status', 'Alpha')->orWhere('attendances.status', 'Off');
                     })
                     ->where('date', '<=', Carbon::now())
                     ->whereMonth('date', '=', Carbon::now()->format('m'))
@@ -199,6 +266,8 @@ class PromoterController extends Controller
                 return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
             })->with('stores.district.area.region')->get();
 
+//            return response()->json($supervisor);
+
             return response()->json($this->getSupervisorCollection($supervisor));
 
         }else if($param == 2) { // BY REGION
@@ -212,7 +281,12 @@ class PromoterController extends Controller
                         return $query->whereIn('id', $regionIds);
                     })->get();
 
-            return response()->json($this->getSupervisorCollection($supervisor));
+            $demoStoreIds = SpvDemo::whereHas('store.district.area.region', function ($query) use ($regionIds){
+                                return $query->whereIn('id', $regionIds);
+                           })->pluck('user_id');
+            $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
+
+            return response()->json($this->getSupervisorCollection($supervisor, $spvdemo));
 
         }else if($param == 3) { // BY AREA
 
@@ -225,15 +299,23 @@ class PromoterController extends Controller
                         return $query->whereIn('id', $areaIds);
                     })->get();
 
-            return response()->json($this->getSupervisorCollection($supervisor));
+            $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
+                                return $query->whereIn('id', $areaIds);
+                           })->pluck('user_id');
+            $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
+
+//            return response()->json($spvdemo);
+
+            return response()->json($this->getSupervisorCollection($supervisor, $spvdemo));
 
         }
 
     }
 
-    public function getSupervisorCollection($supervisor){
+    public function getSupervisorCollection($supervisor, $spvdemo = null){
 
         $result = new Collection();
+        $resultDemo = new Collection();
 
         foreach ($supervisor as $data) {
 
@@ -248,6 +330,24 @@ class PromoterController extends Controller
 
                 if (!in_array($detail->district->area->region->name, $arr_region)) {
                     array_push($arr_region, $detail->district->area->region->name);
+                }
+            }
+
+            if(count($data->stores) == 0){
+                $spvDemoIds = SpvDemo::where('user_id', $data->id)->pluck('store_id');
+
+                if(count($spvDemoIds) > 0){
+                    $stores = Store::whereIn('id', $spvDemoIds)->get();
+
+                    foreach ($stores as $detail){
+                        if (!in_array($detail->district->area->name, $arr_area)) {
+                            array_push($arr_area, $detail->district->area->name);
+                        }
+
+                        if (!in_array($detail->district->area->region->name, $arr_region)) {
+                            array_push($arr_region, $detail->district->area->region->name);
+                        }
+                    }
                 }
             }
 
@@ -277,6 +377,72 @@ class PromoterController extends Controller
 
         }
 
+        if($spvdemo != null) {
+
+            foreach ($spvdemo as $data) {
+
+                $arr_area = [];
+                $arr_region = [];
+                $collection = new Collection();
+
+                foreach ($data->spvDemos as $detail) {
+                    if (!in_array($detail->store->district->area->name, $arr_area)) {
+                        array_push($arr_area, $detail->store->district->area->name);
+                    }
+
+                    if (!in_array($detail->store->district->area->region->name, $arr_region)) {
+                        array_push($arr_region, $detail->store->district->area->region->name);
+                    }
+                }
+
+                for ($i = 0; $i < count($arr_area); $i++) {
+                    $data['area'] .= $arr_area[$i];
+
+                    if ($i != count($arr_area) - 1) {
+                        $data['area'] .= ', ';
+                    }
+                }
+
+                for ($i = 0; $i < count($arr_region); $i++) {
+                    $data['region'] .= $arr_region[$i];
+
+                    if ($i != count($arr_region) - 1) {
+                        $data['region'] .= ', ';
+                    }
+                }
+
+                $collection['id'] = $data['id'];
+                $collection['nik'] = $data['nik'];
+                $collection['name'] = $data['name'];
+                $collection['area'] = $data['area'];
+                $collection['region'] = $data['region'];
+
+                $resultDemo->push($collection);
+
+            }
+
+            $result = $result->merge($resultDemo);
+
+        }
+
         return $result;
+    }
+
+    public function getPromoterPartner(Request $request){
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        $userIds = EmployeeStore::where('store_id', $request->store_id)->pluck('user_id');
+
+        $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+        $partner = User::whereIn('id', $userIds)
+                    ->whereIn('role', $promoterGroup)
+                    ->where('id', '<>', $user->id)
+                    ->select('users.id', 'users.nik', 'users.name', 'users.role')
+                    ->get();
+
+        return response()->json($partner);
+
     }
 }
