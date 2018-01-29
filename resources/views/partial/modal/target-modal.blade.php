@@ -35,6 +35,21 @@
                           </div>
                         </div>
 
+                        <div id="partnerContent" class="display-hide">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Have partner?
+                                </label>
+                                <div class="col-md-8" style="padding-top: 10px;">
+                                    <div class="mt-checkbox-list">
+                                        <label class="mt-checkbox mt-checkbox-outline">
+                                            <input id="partnerCheck" type="checkbox" name="partnerCheck"> Yes (Demonstrator Only)
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                           <label class="col-sm-3 control-label">Store</label>
                           <div class="col-sm-8">

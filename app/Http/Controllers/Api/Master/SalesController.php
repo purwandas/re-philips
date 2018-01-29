@@ -169,9 +169,9 @@ class SalesController extends Controller
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
                                             ->where('global_channels.name',$dedicate->dedicate)
                                             ->where('sell_type', 'Sell In')
-                                            ->first();                                    
+                                            ->first();
                                     }
-                                        
+
                                 }else{
                                     $price = Price::where('product_id', $product->id)
                                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -373,7 +373,7 @@ class SalesController extends Controller
 
                         }
 
-                    });
+                       });
                 } catch (\Exception $e) {
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
@@ -428,9 +428,9 @@ class SalesController extends Controller
                                         ->join('global_channels','global_channels.id','prices.globalchannel_id')
                                         ->where('global_channels.name',$dedicate->dedicate)
                                         ->where('sell_type', 'Sell In')
-                                        ->first();                                    
+                                        ->first();
                                 }
-                                    
+
                             }else{
                                 $price = Price::where('product_id', $product->id)
                                     ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -2264,8 +2264,10 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
+
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,

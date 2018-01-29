@@ -220,6 +220,8 @@
         delete filters['byEmployee'];
         delete filters['byStore'];
 
+        resetCheckbox();
+
     });
 
 
@@ -259,7 +261,14 @@
                     self.selected('byEmployee', $('#promoter').val());
                     self.selected('byStore', $('#store').val());
 
-        })
+                    if(data.partner == 1){
+                        $("#partnerCheck").prop( "checked", true);
+                        $('#partnerContent').removeClass('display-hide');
+                    }else{
+                        resetCheckbox();
+                    }
+
+        });
 
     });
 
@@ -282,6 +291,19 @@
 	        }));
         $('#promoter').on('select2:select', function () {
                 self.selected('byEmployee', $('#promoter').val());
+
+                var getDataUrl = "{{ url('util/user/') }}";
+                $.get(getDataUrl + '/' + $('#promoter').val(), function (data) {
+
+                    if(data.role == 'Demonstrator DA'){
+                        $('#partnerContent').removeClass('display-hide');
+                    }else{
+                        $('#partnerContent').addClass('display-hide');
+                    }
+
+                });
+
+                $("#partnerCheck").prop( "checked", false);
         });
 
         $('#store').select2(setOptions('{{ route("data.stores") }}', 'Store', function (params) {
@@ -305,6 +327,13 @@
             width: '100%',
             placeholder: 'Sell Type'
         });
+
+    }
+
+    function resetCheckbox(){
+
+        $("#partnerCheck").prop( "checked", false);
+        $('#partnerContent').addClass('display-hide');
 
     }
 
