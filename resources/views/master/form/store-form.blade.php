@@ -134,7 +134,11 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="kepemilikan_toko" name="kepemilikan_toko" class="form-control" value="{{ @$data->kepemilikan_toko }}" placeholder="Input Ownership Status" />
+					            	<select class="select2select" name="kepemilikan_toko" id="kepemilikan_toko" required>
+	                                	<option></option>
+										<option value="Milik Sendiri">Milik Sendiri</option>
+										<option value="Sewa">Sewa</option>
+	                                </select>
 				            </div>
 				          </div>
 				        </div>
@@ -405,6 +409,11 @@
                 placeholder: 'Classification'
             });
 
+            $('#kepemilikan_toko').select2({
+                width: '100%',
+                placeholder: 'Store Ownership'
+            });
+
             $('#lokasi_toko').select2({
                 width: '100%',
                 placeholder: 'Store Location'
@@ -430,6 +439,7 @@
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
 	       setSelect2IfPatch($("#classification"), "{{ @$data->classification }}", "{{ @$data->classification }}");
 
+	       setSelect2IfPatch($("#kepemilikan_toko"), "{{ @$data->kepemilikan_toko }}", "{{ @$data->kepemilikan_toko }}");
 	       setSelect2IfPatch($("#lokasi_toko"), "{{ @$data->lokasi_toko }}", "{{ @$data->lokasi_toko }}");
 	       setSelect2IfPatch($("#tipe_transaksi_2"), "{{ @$data->tipe_transaksi_2 }}", "{{ @$data->tipe_transaksi_2 }}");
 	       setSelect2IfPatch($("#tipe_transaksi"), "{{ @$data->tipe_transaksi }}", "{{ @$data->tipe_transaksi }}");
