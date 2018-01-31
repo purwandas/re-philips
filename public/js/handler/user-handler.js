@@ -225,7 +225,7 @@ var FormValidation = function () {
                 submitHandler: function (form) {
 
                     // If Update
-                    if(!(typeof($('input[name=_method]').val()) === 'undefined')){
+                    // if(!(typeof($('input[name=_method]').val()) === 'undefined')){
 
                         // if(storeSpvChangeRelation(userId, $('#selectedRole').val()) > 0){
                         //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
@@ -237,7 +237,7 @@ var FormValidation = function () {
                         //     return;
                         // }
 
-                    }                  
+                    // }                  
 
                     // Check if employee is mobile and just select one store
                     if($('#stores').val() != null){
