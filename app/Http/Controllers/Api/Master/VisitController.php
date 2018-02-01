@@ -77,7 +77,7 @@ class VisitController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $visit = VisitPlan::where('visit_plans.user_id', $user->id)->where('visit_plans.date', Carbon::now()->format('Y-m-d'))
                  ->join('stores', 'stores.id', '=', 'visit_plans.store_id')
-                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'visit_plans.visit_status', 'visit_plans.id as visit_id')->get();
+                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'visit_plans.visit_status', 'visit_plans.id as visit_id', 'visit_plans.check_in', 'visit_plans.check_in_location', 'visit_plans.check_out', 'visit_plans.check_out_location')->get();
 
         return response()->json($visit);
 

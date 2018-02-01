@@ -45,7 +45,7 @@ class DeleteSalesController extends Controller
 
         $content = json_decode($request->getContent(), true);
 
-        if($param == 1) { // SELL IN
+        if($param == 1) { // SELL IN (SELL THROUGH)
 
             $dataHeader = SellIn::where('id', $content['id'])->first();
 

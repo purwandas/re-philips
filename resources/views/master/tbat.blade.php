@@ -98,10 +98,10 @@
                                 <th> User Name </th>
                                 <th> User NIK </th>
                                 <th> Store Name 1 </th>
-                                <th> Store Name 2 </th>
+                                <th> Customer Code </th>
                                 <th> Store ID </th>
                                 <th> Store Destination Name 1 </th>
-                                <th> Store Destination Name 2 </th>
+                                <th> Customer Code Destination </th>
                                 <th> Store Destination ID </th>
                                 <th> Product </th>
                                 <th> Quantity </th>

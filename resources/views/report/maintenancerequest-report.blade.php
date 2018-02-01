@@ -105,7 +105,7 @@
                                 <th> Area </th>
                                 <th> District </th>
                                 <th> Store Name 1 </th>
-                                <th> Store Name 2 </th>
+                                <th> Customer Code </th>
                                 <th> Store ID </th>
                                 <th> Category </th>
                                 <th> Channel </th>

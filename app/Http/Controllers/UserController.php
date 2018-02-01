@@ -83,14 +83,14 @@ class UserController extends Controller
 
         return Datatables::of($filter->get())
                 ->editColumn('role',function ($item) {
-                    $dedicate = '';
-                    $dmarea = DmArea::where('user_id', $item->id)->get();
-                    foreach ($dmarea as $key => $value) {
-                        $dedicate = $value->dedicate;
-                    }
-                    if ($item->role == 'DM') {
-                        return $item->role.' - '.$dedicate;
-                    }
+                    // $dedicate = '';
+                    // $dmarea = DmArea::where('user_id', $item->id)->get();
+                    // foreach ($dmarea as $key => $value) {
+                    //     $dedicate = $value->dedicate;
+                    // }
+                    // if ($item->role == 'DM') {
+                    //     return $item->role.' - '.$dedicate;
+                    // }
 
                     return $item->role;                    
                     
@@ -555,7 +555,9 @@ class UserController extends Controller
         // If DM or Trainer
         if(isset($request->area)){
             if($request['role'] == 'DM') {
-                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area,
+                 // 'dedicate' => $request->dedicate
+                 ]);
             }elseif($request['role'] == 'Trainer') {
                 $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
             }
@@ -1039,9 +1041,11 @@ class UserController extends Controller
                 $dmArea = DmArea::where('user_id', $user->id);
                 if($dmArea->count() > 0){
                     $dmArea->first()->update(['area_id' => $request->area]);
-                    $dmArea->first()->update(['dedicate' => $request->dedicate]);
+                    // $dmArea->first()->update(['dedicate' => $request->dedicate]);
                 }else{
-                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 
+                        // 'dedicate' => $request->dedicate
+                        ]);
                 }
             }elseif($request['role'] == 'Trainer') {
                 $trainerArea = TrainerArea::where('user_id', $user->id);

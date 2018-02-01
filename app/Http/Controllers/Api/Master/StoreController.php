@@ -43,22 +43,25 @@ class StoreController extends Controller
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 
         // Check Target
-        $storeIdTarget = Target::where('user_id', $user->id)->pluck('store_id');
+        // $storeIdTarget = Target::where('user_id', $user->id)->pluck('store_id');
 
     	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
                     ->where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
                     ->whereNotIn('stores.id', $storeIds)
-                    ->whereIn('stores.id', $storeIdTarget)
+                    // ->whereIn('stores.id', $storeIdTarget)
                     ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name');
 //                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');
 
+        // return response()->json($storeIdTarget);
+
         // This will calculate the distance in km
         // if you want in miles use 3959 instead of 6371
         $haversine = '( 6371 * acos( cos( radians('.$content['latitude'].') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('.$content['longitude'].') ) + sin( radians('.$content['latitude'].') ) * sin( radians( latitude ) ) ) ) * 1000';
-        $data = $data->selectRaw("{$haversine} AS distance")->orderBy('distance', 'asc')->whereRaw("{$haversine} <= ?", [$distance]);
-
+        $data = $data->selectRaw("{$haversine} AS distance")->orderBy('distance', 'asc')->whereRaw("{$haversine} <= ?", [$distance])
+            ->groupBy('store_id');
+            
         return response()->json($data->get());
     }
 
