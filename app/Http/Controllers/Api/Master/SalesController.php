@@ -52,9 +52,15 @@ class SalesController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
+        if(!isset($content['irisan'])){ // Set Default Irisan if doesn't exist
+            $content['irisan'] = 0;
+        }
+
+//        return response()->json($content);
+
         if($param == 1) { /* SELL IN(SELL THROUGH) */
 
-//            return response()->json($this->getPromoterTitle($user->id, $content['id']));
+         return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell in(Sell Through) header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -66,7 +72,10 @@ class SalesController extends Controller
 
                         foreach ($content['data'] as $data) {
 
-                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)->where('product_id', $data['product_id'])->first();
+                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)
+                                            ->where('product_id', $data['product_id'])
+                                            ->where('irisan', $content['irisan'])
+                                            ->first();
 
                             if ($sellInDetail) { // If data exist -> update
 
@@ -105,6 +114,7 @@ class SalesController extends Controller
                                     $summary_ta['value'] = $summary->value;
                                     $summary_ta['group'] = $summary->group;
                                     $summary_ta['sell_type'] = 'Sell In';
+                                    $summary_ta['irisan'] = $summary->irisan;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -140,7 +150,8 @@ class SalesController extends Controller
                                 $detail = SellInDetail::create([
                                     'sellin_id' => $sellInHeader->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
                                 ]);
 
                                 /** Insert Summary **/
@@ -281,6 +292,7 @@ class SalesController extends Controller
                                         'category' => $product->category->name,
                                         'product_name' => $product->name,
                                         'quantity' => $data['quantity'],
+                                        'irisan' => $content['irisan'],
                                         'unit_price' => $realPrice,
                                         'value' => $realPrice * $data['quantity'],
                                         'value_pf_mr' => $value_pf_mr,
@@ -300,6 +312,7 @@ class SalesController extends Controller
                                     $summary_ta['value'] = $summary->value;
                                     $summary_ta['group'] = $summary->group;
                                     $summary_ta['sell_type'] = 'Sell In';
+                                    $summary_ta['irisan'] = $summary->irisan;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -399,7 +412,8 @@ class SalesController extends Controller
                             $detail = SellInDetail::create([
                                     'sellin_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
                                 ]);
 
                             /** Insert Summary **/
@@ -540,6 +554,7 @@ class SalesController extends Controller
                                     'category' => $product->category->name,
                                     'product_name' => $product->name,
                                     'quantity' => $detail->quantity,
+                                    'irisan' => $content['irisan'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $detail->quantity,
                                     'value_pf_mr' => $value_pf_mr,
@@ -559,6 +574,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
 
 //                                return $summary_ta;
 
@@ -652,12 +668,15 @@ class SalesController extends Controller
 
             if ($sellOutHeader) { // If header exist (update and/or create detail)
 
-                try {
-                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
+//                try {
+//                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
 
                         foreach ($content['data'] as $data) {
 
-                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)->where('product_id', $data['product_id'])->first();
+                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)
+                                                ->where('product_id', $data['product_id'])
+                                                ->where('irisan', $content['irisan'])
+                                                ->first();
 
                             if ($sellOutDetail) { // If data exist -> update
 
@@ -694,6 +713,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell Out';
+                                $summary_ta['irisan'] = $summary->irisan;
 
                                 $this->changeActual($summary_ta, 'change');
 
@@ -702,7 +722,8 @@ class SalesController extends Controller
                                 $detail = SellOutDetail::create([
                                     'sellout_id' => $sellOutHeader->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                 ]);
 
                                 /** Insert Summary **/
@@ -824,6 +845,7 @@ class SalesController extends Controller
                                     'category' => $product->category->name,
                                     'product_name' => $product->name,
                                     'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
                                     'value_pf_mr' => $value_pf_mr,
@@ -843,6 +865,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell Out';
+                                $summary_ta['irisan'] = $summary->irisan;
 
                                 $this->changeActual($summary_ta, 'change');
 
@@ -850,17 +873,17 @@ class SalesController extends Controller
 
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+//                    });
+//                } catch (\Exception $e) {
+//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+//                }
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-                try {
-                    DB::transaction(function () use ($content, $user) {
+//                try {
+//                    DB::transaction(function () use ($content, $user) {
 
                         // HEADER
                         $transaction = SellOut::create([
@@ -876,7 +899,8 @@ class SalesController extends Controller
                             $detail = SellOutDetail::create([
                                     'sellout_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                 ]);
 
                             /** Insert Summary **/
@@ -998,6 +1022,7 @@ class SalesController extends Controller
                                 'category' => $product->category->name,
                                 'product_name' => $product->name,
                                 'quantity' => $detail->quantity,
+                                'irisan' => $content['irisan'],
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
                                 'value_pf_mr' => $value_pf_mr,
@@ -1017,15 +1042,16 @@ class SalesController extends Controller
                             $summary_ta['value'] = $summary->value;
                             $summary_ta['group'] = $summary->group;
                             $summary_ta['sell_type'] = 'Sell Out';
+                            $summary_ta['irisan'] = $summary->irisan;
 
+//                            return response()->json($this->changeActual($summary_ta, 'change'));
                             $this->changeActual($summary_ta, 'change');
-
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+//                    });
+//                } catch (\Exception $e) {
+//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+//                }
 
                 // Check sell in(Sell Through) header after insert
                 $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
