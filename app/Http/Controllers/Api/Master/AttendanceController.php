@@ -350,9 +350,16 @@ class AttendanceController extends Controller
 
                 if($attendanceDetails->first()->check_out == null) {
 
-                    $store = Store::find($attendanceDetails->first()->store_id);
+                    if($attendanceDetails->first()->is_store == 1){
+                        $store = Store::find($attendanceDetails->first()->store_id);
 
-                    return response()->json(['status' => true, 'id_store' => $store->id, 'nama_store' => $store->store_name_1, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                        return response()->json(['status' => true, 'id_store' => $store->id, 'nama_store' => $store->store_name_1, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                    }else{
+                        $place = Place::find($attendanceDetails->first()->store_id);
+
+                        return response()->json(['status' => true, 'id_store' => $place->id, 'nama_store' => $place->name, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                    }
+
                 }
 
             }

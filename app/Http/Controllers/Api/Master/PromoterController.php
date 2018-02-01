@@ -225,6 +225,8 @@ class PromoterController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
+        $result = new Collection();
+
         $details = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
                     ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
                     ->join('stores', 'attendance_details.store_id', '=', 'stores.id')
@@ -233,7 +235,33 @@ class PromoterController extends Controller
                         'stores.store_name_1 as store_name')
                     ->get();
 
-        return response()->json($details);
+        foreach ($details as $data){
+            $result->push([
+                'date' => $data->date,
+                'check_in' => $data->check_in,
+                'check_out' => $data->check_out,
+                'store_name' => $data->store_name,
+            ]);
+        }
+
+        $details2 = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
+                    ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
+                    ->join('places', 'attendance_details.store_id', '=', 'places.id')
+                    ->whereMonth('attendances.date', '=', Carbon::now()->format('m'))
+                    ->select('attendances.date as date', 'attendance_details.check_in as check_in', 'attendance_details.check_out as check_out',
+                        'places.name as store_name')
+                    ->get();
+
+        foreach ($details2 as $data){
+            $result->push([
+                'date' => $data->date,
+                'check_in' => $data->check_in,
+                'check_out' => $data->check_out,
+                'store_name' => $data->store_name,
+            ]);
+        }
+
+        return response()->json($result);
 
     }
 
