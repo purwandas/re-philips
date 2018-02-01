@@ -237,6 +237,7 @@ class SalesHistory extends Command
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
+                            'irisan' => $transactionDetail->irisan,
                             'unit_price' => $realPrice,
                             'value' => $realPrice*$transactionDetail->quantity,
                             'value_pf_mr' => $value_pf_mr,

@@ -13,6 +13,7 @@ use App\Store;
 use Carbon\Carbon;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use File;
 
 class AuthController extends Controller
 {
@@ -92,7 +93,7 @@ class AuthController extends Controller
 
 	public function tes(){
 		// $user = JWTAuth::parseToken()->authenticate();
-		return response()->json('test');	
+		return response()->json('test');
 	}
 
 	public function getUser()
