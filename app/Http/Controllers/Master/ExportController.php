@@ -22,27 +22,27 @@ class ExportController extends Controller
     //
     public function exportSellIn(Request $request){
 
-        $filename = 'Philips Retail Report Sell In ' . Carbon::now()->format('d-m-Y');
+        $filename = 'Philips Retail Report Sell Through ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
-            $excel->setTitle('Report Sell In');
+            $excel->setTitle('Report Sell Through');
 
             // Chain the setters
             $excel->setCreator('Philips')
                   ->setCompany('Philips');
 
             // Call them separately
-            $excel->setDescription('Sell In Data Reporting');
+            $excel->setDescription('Sell Through Data Reporting');
 
             $excel->getDefaultStyle()
                 ->getAlignment()
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-            $excel->sheet('SELL IN', function ($sheet) use ($data) {
+            $excel->sheet('SELL THROUGH', function ($sheet) use ($data) {
                 $sheet->setAutoFilter('A1:AB1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExport($data), null, 'A1', true, true);

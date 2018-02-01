@@ -89,9 +89,13 @@
                                 <th> User NIK </th>
                                 <th> User Role </th>
                                 <th> Store Name 1 </th>
-                                <th> Store Name 2 </th>
+                                <th> Customer Code </th>
                                 <th> Store ID </th>
                                 <th> Date </th>
+                                <th> Check IN</th>
+                                <th> Check Out </th>
+                                <th> Check In location </th>
+                                <th> Check Out location </th>
                                 <th> Status </th>
                             </tr>
                             </thead>
@@ -131,6 +135,10 @@
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'storeId', name: 'storeId'},
                             {data: 'date', name: 'date'},
+                            {data: 'check_in', name: 'check_in'},
+                            {data: 'check_out', name: 'check_out'},
+                            {data: 'check_in_location', name: 'check_in_location'},
+                            {data: 'check_out_location', name: 'check_out_location'},
                             {data: 'visit_status', name: 'visit_status'},
                             ];
 

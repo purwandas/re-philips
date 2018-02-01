@@ -536,7 +536,7 @@
 
 				$('#dedicate').attr('required', 'required');
 				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
-				$('#dedicateContent').removeClass('display-hide');
+				// $('#dedicateContent').removeClass('display-hide');
 			}else{
 				$('#dedicateContent').addClass('display-hide');
 			}

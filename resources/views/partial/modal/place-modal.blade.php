@@ -19,6 +19,16 @@
                         <br><br>
 
                         <div class="form-group">
+                          <label class="col-sm-3 control-label">Store ID.</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="store_id" name="store_id" class="form-control" placeholder="Input Place Name" />
+                            </div>
+                          </div>
+                        </div> 
+
+                        <div class="form-group">
                           <label class="col-sm-3 control-label">Name</label>
                           <div class="col-sm-8">
                             <div class="input-icon right">
@@ -26,7 +36,47 @@
                                 <input type="text" id="name" name="name" class="form-control" placeholder="Input Place Name" />
                             </div>
                           </div>
-                        </div>                                                     
+                        </div>   
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Longitude</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Input Place Name" />
+                            </div>
+                          </div>
+                        </div> 
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Latitude</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="latitude" name="latitude" class="form-control" placeholder="Input Place Name" />
+                            </div>
+                          </div>
+                        </div> 
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Address</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="address" name="address" class="form-control" placeholder="Input Place Name" />
+                            </div>
+                          </div>
+                        </div> 
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Description</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Input Place Name" />
+                            </div>
+                          </div>
+                        </div>                                                   
 
                         <div class="form-group" style="padding-top: 15pt;">
                           <div class="col-sm-9 col-sm-offset-3">

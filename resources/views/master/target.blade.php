@@ -306,12 +306,16 @@
                 $("#partnerCheck").prop( "checked", false);
         });
 
-        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
+        $('#store').select2(setOptions('{{ route("data.stores") }}', 'Store', function (params) {
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        if (obj.dedicate != null ){
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate }
+                        } else {
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" }
+                        }
 	                })
 	            }
 	        }));

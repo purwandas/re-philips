@@ -236,6 +236,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('quiz/{id}', 'Master\QuizController@update');
         Route::delete('quiz/{id}', 'Master\QuizController@destroy');
 
+        /** Attemdents **/
+        Route::get('attendance', 'Master\AttendanceController@index');
+        Route::get('attendance/create', 'Master\AttendanceController@create');
+        Route::post('attendance', 'Master\AttendanceController@store');
+        Route::get('attendance/edit/{id}', 'Master\AttendanceController@edit');
+        Route::patch('attendance/{id}', 'Master\AttendanceController@update');
+        Route::delete('attendance/{id}', 'Master\AttendanceController@destroy');
+
         /**
          * Reporting Module(s) Just For Admin, Master, REM
          */
@@ -256,7 +264,7 @@ Route::group(['middleware' => ['auth']], function () {
             Sales Edit & Delete (Input by API)
         */
 
-        /** Sell In **/
+        /** Sell In(Sell Through) **/
         Route::get('editsellin', 'Master\EditSellInController@index');
         Route::get('editsellin/edit/{id}', 'Master\EditSellInController@edit');
         Route::patch('editsellin/{id}', 'Master\EditSellInController@update');

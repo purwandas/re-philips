@@ -514,10 +514,10 @@ class AchievementController extends Controller
         }else if($param == 3) { // BY AREA
 
             $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
-            $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
-            if(in_array("HYBRID", $dedicates)){
-                array_push($dedicates, "DA", "PC");
-            }
+            // $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
+            // if(in_array("HYBRID", $dedicates)){
+            //     array_push($dedicates, "DA", "PC");
+            // }
 
             $supervisor = User::where(function ($query) {
                 return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
@@ -525,9 +525,9 @@ class AchievementController extends Controller
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
                         return $query->whereIn('id', $areaIds);
                     })
-                    ->whereHas('stores', function ($query) use ($dedicates){
-                        return $query->whereIn('dedicate', $dedicates);
-                    })
+                    // ->whereHas('stores', function ($query) use ($dedicates){
+                    //     return $query->whereIn('dedicate', $dedicates);
+                    // })
                     ->get();
 
             $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
@@ -763,6 +763,17 @@ class AchievementController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+//         $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
+// //        $area = Area::whereIn('id', $areaIds)->get();
+//         if(in_array("HYBRID", $dedicates)){
+//             array_push($dedicates, "DA", "PC");
+//         }
+
+        $stores = Store::whereHas('district.area', function ($query) use ($areaIds){
+                        return $query->whereIn('id', $areaIds);
+                    })
+                    // ->whereIn('dedicate', $dedicates)
+                    ->get();
         $area = Area::whereIn('id', $areaIds)->get();
 
         $totalTarget = 0;

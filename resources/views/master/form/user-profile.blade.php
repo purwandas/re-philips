@@ -117,6 +117,18 @@
 					        </div>
                			@endif				        
 
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label">Certificate</label>
+                          <div class="col-sm-9">
+                            <div class="input-icon right">
+                                <i class="fa"></i>
+                                <textarea id="certificate" name="certificate" class="form-control"  placeholder=" Does not have a certificate. " rows="10" disabled>{{ @$data->certificate }}</textarea>
+                            </div>
+        					<!-- <p class="help-block"> * Please add "<b> , </b>" to separate certificate &nbsp || &nbsp tolong tambahkan tanda "<b> , </b>" untuk memisahkan certificate </p> -->
+                            
+                          </div>
+                        </div>   
+
 				        <!-- View for old image * PHOTO * -->
 				        @if (!empty($data))
 				        	<div class="caption padding-caption">

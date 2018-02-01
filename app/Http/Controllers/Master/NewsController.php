@@ -72,15 +72,21 @@ class NewsController extends Controller
                     }else if($item->target_type == 'Store'){
 
                         $data = explode(',' , $item->target_detail);
-                        foreach ($data as $dataSplit) { 
+                        // foreach ($data as $dataSplit) { 
 
-                            $store = Store::find(trim($dataSplit));
-                            $result .= "(" . $store->store_id . ") " . $store->store_name_1;
-                            if($dataSplit != end($data)){
-                                $result .= ", ";
+                            $store = Store::where('stores.deleted_at', null)
+                                        ->whereIn('stores.id', $data)
+                                        ->groupBy('store_id')
+                                        ->select('stores.*')->get();
+                            $idx = 0;
+                            foreach ($store as $Store => $valueStore) {
+                                if ($idx > 0) {
+                                    $result .= ', '."(" . $valueStore->store_id . ") " . $valueStore->store_name_1;;
+                                }else{
+                                    $result = "(" . $valueStore->store_id . ") " . $valueStore->store_name_1;
+                                }
+                                $idx ++;
                             }
-
-                        }
 
                     }else if($item->target_type == 'Promoter'){
 
@@ -167,14 +173,18 @@ class NewsController extends Controller
         /* Store Targets */
         if($request['target_type'] == 'Store'){
             $target = null;
+            $x = 0;
             $data = $request['store'];
             foreach ($data as $store) {
-                $target .= $store;
-
-                if($store != end($data)){
-                    $target .= ", ";
-                }
+                $storess = Store::where('stores.id', $store)
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->join('stores as storeId', 'storeses.id', '=', 'storeId.id')->get();
+                    foreach ($storess as $key => $value) {
+                        $result[$x] = $value->id;
+                        $x ++;
+                    }
             }
+                $target .= implode(", ",$result);
         }
 
         /* Employee Targets */
@@ -222,6 +232,17 @@ class NewsController extends Controller
     public function edit($id)
     {
         $data = News::where('id', $id)->first();
+
+            if ($data->target_type == 'Store') {
+                    $StoreIds = explode(",", $data->target_detail);
+                
+                    $data->target_detail = Store::where('stores.deleted_at', null)
+                                ->whereIn('stores.id', $StoreIds)
+                                ->groupBy('store_id')
+                                ->pluck('stores.id')
+                                ->toArray();
+            }
+                $data->target_detail = implode(", ",$data->target_detail);
 
         return view('master.form.news-form', compact('data'));
     }
@@ -272,17 +293,21 @@ class NewsController extends Controller
             }
         }
 
-        /* Employee Targets */
-        if($request['target_type'] == 'Promoter'){
+        /* Store Targets */
+        if($request['target_type'] == 'Store'){
             $target = null;
-            $data = $request['employee'];
-            foreach ($data as $employee) {
-                $target .= $employee;
-
-                if($employee != end($data)){
-                    $target .= ", ";
-                }
+            $x = 0;
+            $data = $request['store'];
+            foreach ($data as $store) {
+                $storess = Store::where('stores.id', $store)
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->join('stores as storeId', 'storeses.id', '=', 'storeId.id')->get();
+                    foreach ($storess as $key => $value) {
+                        $result[$x] = $value->id;
+                        $x ++;
+                    }
             }
+                $target .= implode(", ",$result);
         }
 
         if($request['target_type'] != 'All'){
