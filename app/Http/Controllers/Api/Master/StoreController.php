@@ -96,9 +96,9 @@ class StoreController extends Controller
 
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 
-        $arinaId = Store::where('store_id', 'AR0001')->first()->id;
-
-        $storeIds->push($arinaId);
+//        $arinaId = Store::where('store_id', 'AR0001')->first()->id;
+//
+//        $storeIds->push($arinaId);
 
         $data = Store::whereIn('stores.id', $storeIds)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')

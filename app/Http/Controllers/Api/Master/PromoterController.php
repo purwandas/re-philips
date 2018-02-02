@@ -6,6 +6,7 @@ use App\Attendance;
 use App\AttendanceDetail;
 use App\DmArea;
 use App\EmployeeStore;
+use App\Reports\SummaryTargetActual;
 use App\RsmRegion;
 use App\SpvDemo;
 use App\Store;
@@ -175,7 +176,7 @@ class PromoterController extends Controller
         if($param == 1){
 
             if($attendances->status != 'Pending Sakit'){
-                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval sakit'], 500);
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval sakit'], 200);
             }
 
             $attendances->update(['status' => 'Sakit']);
@@ -184,7 +185,7 @@ class PromoterController extends Controller
         }else if($param == 2){
 
             if($attendances->status != 'Pending Izin'){
-                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval izin'], 500);
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval izin'], 200);
             }
 
             $attendances->update(['status' => 'Izin']);
@@ -192,7 +193,7 @@ class PromoterController extends Controller
         }else if($param == 3){
 
             if($attendances->status != 'Pending Off'){
-                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval off'], 500);
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval off'], 200);
             }
 
             $attendances->update(['status' => 'Off']);
