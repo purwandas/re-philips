@@ -229,6 +229,7 @@ class PromoterController extends Controller
         $result = new Collection();
 
         $details = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
+                    ->where('attendance_details.is_store', 1)
                     ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
                     ->join('stores', 'attendance_details.store_id', '=', 'stores.id')
                     ->whereMonth('attendances.date', '=', Carbon::now()->format('m'))
@@ -246,6 +247,7 @@ class PromoterController extends Controller
         }
 
         $details2 = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
+                    ->where('attendance_details.is_store', 0)
                     ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
                     ->join('places', 'attendance_details.store_id', '=', 'places.id')
                     ->whereMonth('attendances.date', '=', Carbon::now()->format('m'))
