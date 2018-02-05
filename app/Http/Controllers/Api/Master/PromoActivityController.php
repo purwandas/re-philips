@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\ProductPromos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -76,9 +77,15 @@ class PromoActivityController extends Controller
 
                         if(!$promoActivityDetail){ // Create
 
+                            $promo = 0;
+                            if(ProductPromos::where('product_id', $request->product_id[$i])->count() > 0){
+                                $promo = 1;
+                            }
+
                             PromoActivityDetail::create([
                                 'promoactivity_id' => $promoActivityHeader->id,
                                 'product_id' => $request->product_id[$i],
+                                'promo' => $promo,
                             ]);
 
                         }
@@ -147,9 +154,15 @@ class PromoActivityController extends Controller
                     /* Create Promo Activity Detail */
                     for ($i = 0; $i < $dataLength; $i++) {
 
+                        $promo = 0;
+                        if(ProductPromos::where('product_id', $request->product_id[$i])->count() > 0){
+                            $promo = 1;
+                        }
+
                         PromoActivityDetail::create([
                             'promoactivity_id' => $transaction->id,
                             'product_id' => $request->product_id[$i],
+                            'promo' => $promo,
                         ]);
 
                     }
