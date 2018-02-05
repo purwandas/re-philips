@@ -173,6 +173,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
         Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
 
+        /** Product Focus **/
+        Route::get('productpromo', 'Master\ProductPromoController@index');
+        Route::post('productpromo', 'Master\ProductPromoController@store');
+        Route::get('productpromo/edit/{id}', 'Master\ProductPromoController@edit');
+        Route::patch('productpromo/{id}', 'Master\ProductPromoController@update');
+        Route::delete('productpromo/{id}', 'Master\ProductPromoController@destroy');
+
         /** Product Focus Salesman **/
         Route::get('productfocussalesman', 'Master\ProductFocusSalesmanController@index');
         Route::post('productfocussalesman', 'Master\ProductFocusSalesmanController@store');

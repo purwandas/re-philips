@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/target', ['as'=> 'datatable.target','uses'=>'Master\TargetController@masterDataTable']);
     Route::post('datatable/targetsalesman', ['as'=> 'datatable.targetsalesman','uses'=>'Master\TargetSalesmanController@masterDataTable']);
     Route::post('datatable/productfocus', ['as'=> 'datatable.productfocus','uses'=>'Master\ProductFocusController@masterDataTable']);
+    Route::post('datatable/productpromo', ['as'=> 'datatable.productpromo','uses'=>'Master\ProductPromoController@masterDataTable']);
     Route::post('datatable/productfocussalesman', ['as'=> 'datatable.productfocussalesman','uses'=>'Master\ProductFocusSalesmanController@masterDataTable']);
     Route::post('datatable/messageToAdmin', ['as'=> 'datatable.messageToAdmin','uses'=>'MessageToAdminController@masterDataTable']);
     Route::post('datatable/feedbackCategory', ['as'=> 'datatable.feedbackCategory','uses'=>'Master\FeedbackCategoryController@masterDataTable']);

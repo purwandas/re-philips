@@ -22,6 +22,7 @@ use App\Reports\SummaryRetConsument;
 use App\RetDistributor;
 use App\RetDistributorDetail;
 use App\Reports\SummaryRetDistributor;
+use App\Target;
 use App\Tbat;
 use App\TbatDetail;
 use App\Reports\SummaryTbat;
@@ -2025,7 +2026,11 @@ class SalesHistory extends Command
                             'updated_at' => Carbon::now(),
                         ]);
                     }else{ // JIKA TIDAK ADA STORE MAKA HAPUS TARGET DAN SUMMARY ACTUAL
+                        $summary->delete();
 
+                        // DELETE TARGET
+                        $target = where('user_id', $detail->user_id)->where('store_id', $detail->storeId);
+                        $target->forceDelete();
                     }
 
 

@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
 
-class PromoActivityDetail extends Model
+class ProductPromos extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'promoactivity_id', 'product_id', 'promo'
+        'product_id',
     ];
 
     /**
@@ -27,11 +27,6 @@ class PromoActivityDetail extends Model
      * Relation Method(s).
      *
      */
-
-    public function promoActivity()
-    {
-        return $this->belongsTo('App\PromoActivity', 'promoactivity_id');
-    }
 
     public function product()
     {

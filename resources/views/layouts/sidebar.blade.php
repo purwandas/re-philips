@@ -172,6 +172,11 @@
                             <span class="title">Product Focus</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('productpromo') ? 'active open' : '' }}">
+                        <a href="{{ url('productpromo') }}" class="nav-link nav-toggle">
+                            <span class="title">Product Promo Tracking</span>
+                        </a>
+                    </li>
                     <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
                         <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
                             <span class="title">Salesman Target</span>
