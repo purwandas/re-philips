@@ -53,7 +53,7 @@
                             <th> No. </th>
                             <th> Store ID </th>
                             <th> Store Name 1 </th>
-                            <th> Store Name 2 </th>
+                            <th> Customer Code </th>
                             <th> Region </th>
                             <th> Area </th>
                             <th> District </th>

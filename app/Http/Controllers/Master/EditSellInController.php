@@ -89,7 +89,10 @@ class EditSellInController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VisitPlan extends Model
 {
     protected $fillable = [
-        'user_id', 'store_id', 'date', 'visit_status'
+        'user_id', 'store_id', 'date', 'visit_status', 'check_in', 'check_out', 'check_in_location', 'check_out_location'
     ];
 
 	/* Metode tambahan untuk model Branch Sport. */

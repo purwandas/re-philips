@@ -128,7 +128,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
                         '</li>' +
                         '<li>' +
-                        '<h5> Store Name 2 : ' + this.store_name_2 + '</h5>' +
+                        '<h5> Customer Code : ' + this.store_name_2 + '</h5>' +
                         '</li>' +
                         '<li>' +
                         '<h5> Region : ' + this.region_name + '</h5>' +
@@ -176,7 +176,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
                         '</li>' +
                         '<li>' +
-                        '<h5> Store Name 2 : ' + this.store_name_2 + '</h5>' +
+                        '<h5> Customer Code : ' + this.store_name_2 + '</h5>' +
                         '</li>' +
                         '<li>' +
                         '<h5> Region : ' + this.region_name + '</h5>' +
@@ -256,7 +256,7 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
                                                     '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
                                                 '</li>' +
                                                 '<li>' +
-                                                    '<h5> Store Name 2 : ' + this.store_name_2 + '</h5>' +
+                                                    '<h5> Customer Code : ' + this.store_name_2 + '</h5>' +
                                                 '</li>' +
                                                 '<li>' +
                                                     '<h5> Store ID : ' + this.storeId + '</h5>' +

@@ -9,6 +9,7 @@ use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Place;
 use App\Filters\PlaceFilters;
+use Validator;
 
 class PlaceController extends Controller
 {
@@ -77,9 +78,10 @@ class PlaceController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+            'store_id' => 'required',
             'name' => 'required|string|max:255',
-            'longitude' => 'number',
-            'latitude' => 'number',
+            'longitude' => 'numeric',
+            'latitude' => 'numeric',
             ]);
 
        	$place = Place::create($request->all());
@@ -121,9 +123,10 @@ class PlaceController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
+            'store_id' => 'required',
             'name' => 'required|string|max:255',
-            'longitude' => 'number',
-            'latitude' => 'number',
+            'longitude' => 'numeric',
+            'latitude' => 'numeric',
             ]);
 
         $place = Place::find($id)->update($request->all());

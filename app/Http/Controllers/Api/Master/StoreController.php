@@ -6,6 +6,7 @@ use App\DmArea;
 use App\District;
 use App\EmployeeStore;
 use App\RsmRegion;
+use App\SpvDemo;
 use App\Store;
 use App\Target;
 use App\Reports\StoreLocationActivity;
@@ -42,22 +43,25 @@ class StoreController extends Controller
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 
         // Check Target
-        $storeIdTarget = Target::where('user_id', $user->id)->pluck('store_id');
+        // $storeIdTarget = Target::where('user_id', $user->id)->pluck('store_id');
 
     	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
                     ->where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
                     ->whereNotIn('stores.id', $storeIds)
-                    ->whereIn('stores.id', $storeIdTarget)
+                    // ->whereIn('stores.id', $storeIdTarget)
                     ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name');
 //                    ->select('id', 'store_name_1 as nama', 'latitude', 'longitude');
 
+        // return response()->json($storeIdTarget);
+
         // This will calculate the distance in km
         // if you want in miles use 3959 instead of 6371
         $haversine = '( 6371 * acos( cos( radians('.$content['latitude'].') ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians('.$content['longitude'].') ) + sin( radians('.$content['latitude'].') ) * sin( radians( latitude ) ) ) ) * 1000';
-        $data = $data->selectRaw("{$haversine} AS distance")->orderBy('distance', 'asc')->whereRaw("{$haversine} <= ?", [$distance]);
-
+        $data = $data->selectRaw("{$haversine} AS distance")->orderBy('distance', 'asc')->whereRaw("{$haversine} <= ?", [$distance])
+            ->groupBy('store_id');
+            
         return response()->json($data->get());
     }
 
@@ -68,7 +72,19 @@ class StoreController extends Controller
         $data = Store::where('user_id', $user->id)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
-                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+                    'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+        // CHECK IN DEMO SPV
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+
+        if(count($spvDemoIds) > 0){
+
+            $data = Store::whereIn('stores.id', $spvDemoIds)
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                    'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+        }
 
     	return response()->json($data);
 
@@ -79,6 +95,10 @@ class StoreController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+
+//        $arinaId = Store::where('store_id', 'AR0001')->first()->id;
+//
+//        $storeIds->push($arinaId);
 
         $data = Store::whereIn('stores.id', $storeIds)
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -310,8 +330,16 @@ class StoreController extends Controller
     }
 
     public function getDistrict(){
-            $district = District::select('districts.id', 'districts.area_id','districts.name')->get();
+        $district = District::select('districts.id', 'districts.area_id','districts.name')->get();
 
         return $district;
+    }
+
+    public function getArina(){
+
+        $data = Store::where('store_id', 'AR001')->get();
+
+        return response()->json($data);
+
     }
 }

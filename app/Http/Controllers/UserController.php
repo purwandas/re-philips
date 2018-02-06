@@ -1236,9 +1236,11 @@ class UserController extends Controller
                 $dmArea = DmArea::where('user_id', $user->id);
                 if($dmArea->count() > 0){
                     $dmArea->first()->update(['area_id' => $request->area]);
-                    $dmArea->first()->update(['dedicate' => $request->dedicate]);
+                    // $dmArea->first()->update(['dedicate' => $request->dedicate]);
                 }else{
-                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 
+                        // 'dedicate' => $request->dedicate
+                        ]);
                 }
             }elseif($request['selectedRole'] == 'Trainer') {
                 $trainerArea = TrainerArea::where('user_id', $user->id);

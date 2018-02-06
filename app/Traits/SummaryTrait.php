@@ -28,8 +28,8 @@ use App\Reports\SummaryTbat;
 use App\SOH;
 use App\SOHDetail;
 use App\Reports\SummarySOH;
-use App\SOS;
-use App\SOSDetail;
+use App\Sos;
+use App\SosDetail;
 use App\Reports\SummarySOS;
 use App\ProductFocuses;
 
@@ -39,15 +39,26 @@ trait SummaryTrait {
 
     public function changeSummary($data, $change){
 
-        if($data['sell_type'] == 'Sell In'){
+        if(isset($data['sell_type'])) {
+            if ($data['sell_type'] == 'Sell In') {
+                $this->changeSummarySellIn($data, $change);
+                $this->changeSummaryRetConsument($data, $change);
+                $this->changeSummaryRetDistributor($data, $change);
+                $this->changeSummaryFreeProduct($data, $change);
+                $this->changeSummaryTbat($data, $change);
+//                $this->changeSummarySoh($data, $change);
+                $this->changeSummarySos($data, $change);
+            } elseif ($data['sell_type'] == 'Sell Out') {
+                $this->changeSummarySellOut($data, $change);
+            }
+        }else{
             $this->changeSummarySellIn($data, $change);
             $this->changeSummaryRetConsument($data, $change);
             $this->changeSummaryRetDistributor($data, $change);
             $this->changeSummaryFreeProduct($data, $change);
             $this->changeSummaryTbat($data, $change);
             $this->changeSummarySoh($data, $change);
-            $this->changeSummarySos($data, $change);
-        }elseif ($data['sell_type'] == 'Sell Out'){
+//            $this->changeSummarySos($data, $change);
             $this->changeSummarySellOut($data, $change);
         }
 
