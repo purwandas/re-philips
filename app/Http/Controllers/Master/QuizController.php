@@ -58,7 +58,9 @@ class QuizController extends Controller
                     $result = '';
                     $target = TargetQuiz::where('quiz_id',$item->id)
                         ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
-                        ->select('quiz_targets.role','quiz_targets.grading')
+                        ->join('roles','roles.id','quiz_targets.role_id')
+                        ->join('gradings','gradings.id','quiz_targets.grading_id')
+                        ->select('roles.role','gradings.grading')
                         ->get();
                     // if (count($target > 0)) 
                     // {

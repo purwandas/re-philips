@@ -47,7 +47,7 @@ class AreaController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(AreaFilters $filters){     
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
         $data = Area::filter($filters)->get();

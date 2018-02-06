@@ -15,6 +15,7 @@ use App\Store;
 use App\District;
 use App\EmployeeStore;
 use App\User;
+use App\SpvDemo;
 use DB;
 
 class FeedbackController extends Controller
@@ -24,12 +25,23 @@ class FeedbackController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+        if(count($spvDemoIds) > 0){
+            $storeIds = $spvDemoIds;
+        }
+        
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        $promoters = User::whereIn('id', $promoterIds)
-                        ->where('role', '<>', 'Salesman Explorer')
-                        ->get();
+        
+        $promoters = User::whereIn('id', $promoterIds);
+        if(count($spvDemoIds) > 0){
+            $promoters->where('role','Demonstrator DA');
+        }else{
+            $promoters->whereNotIn('role', ['Demonstrator DA']);
+        }
+        $promoters->where('role', '<>', 'Salesman Explorer');
 
-        return response()->json($promoters);
+        return response()->json($promoters->get());
     }
 
     public function getListPromoterFeedbackWithParam($param){
@@ -37,10 +49,22 @@ class FeedbackController extends Controller
         $user = User::where('id', $param)->first();
 
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
+
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+        if(count($spvDemoIds) > 0){
+            $storeIds = $spvDemoIds;
+        }
+
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
-        $promoters = User::whereIn('id', $promoterIds)
-                        ->where('role', '<>', 'Salesman Explorer')
-                        ->get();
+     
+        $promoters = User::whereIn('id', $promoterIds);
+        if(count($spvDemoIds) > 0){
+            $promoters->where('role','Demonstrator DA');
+        }else{
+            $promoters->whereNotIn('role', ['Demonstrator DA']);
+        }
+        $promoters->where('role', '<>', 'Salesman Explorer');
+        $promoters->get();
 
         return response()->json($promoters);
     }

@@ -33,7 +33,7 @@ var FormValidation = function () {
                              };
             rules['password']  = { minlength: 5, required: true };
             rules['password_confirmation']  = { minlength: 5, required: true, equalTo : "#password" };
-            rules['role']  = { required: true };
+            rules['role_id']  = { required: true };
 
 
             // Rules if update
@@ -80,7 +80,7 @@ var FormValidation = function () {
                 ignore: "",  // validate all fields including form hidden input
                 rules: rules,
                 messages:{
-                    role:{
+                    role_id:{
                         required: "Please select a Role!",
                     },
                     email:{
@@ -225,24 +225,24 @@ var FormValidation = function () {
                 submitHandler: function (form) {
 
                     // If Update
-                    if(!(typeof($('input[name=_method]').val()) === 'undefined')){
+                    // if(!(typeof($('input[name=_method]').val()) === 'undefined')){
 
-                        if(storeSpvChangeRelation(userId, $('#role').val()) > 0){
-                            swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                            return;
-                        }
-
-                        // if(salesEmployeeChangeRelation(userId, $('#role').val()) > 0){
+                        // if(storeSpvChangeRelation(userId, $('#selectedRole').val()) > 0){
                         //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
                         //     return;
                         // }
 
-                    }                  
+                        // if(salesEmployeeChangeRelation(userId, $('#selectedRole').val()) > 0){
+                        //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                        //     return;
+                        // }
+
+                    // }                  
 
                     // Check if employee is mobile and just select one store
                     if($('#stores').val() != null){
                         var storesLength = $('#stores').val().length;
-                        if ($('#role').val()!='Supervisor' && $('#role').val()!='Supervisor Hybrid') 
+                        if ($('#selectedRole').val()!='Supervisor' && $('#selectedRole').val()!='Supervisor Hybrid') 
                         {
                             if(storesLength == 1){
                                 swal("Warning", "Mobile employee must have at least 2 stores.", "warning");

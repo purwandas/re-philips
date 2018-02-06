@@ -126,6 +126,7 @@
                             <th> Join Date </th>
                             <th> Grading </th>
                             <th> Supervisor </th>
+                            <th> Area </th>
                             <th> Store </th>
                             <th> History </th>
                             <th> Options </th>                             
@@ -174,11 +175,12 @@
                 {data: 'id', name: 'id'}, 
                 {data: 'nik', name: 'nik'},               
                 {data: 'name', name: 'name'},
-                {data: 'role', name: 'role'},
+                {data: 'roles', name: 'roles'},
                 {data: 'status', name: 'status'},
                 {data: 'join_date', name: 'join_date'},
                 {data: 'grading', name: 'grading'},
                 {data: 'supervisor', name: 'supervisor'},
+                {data: 'area', name: 'area'},
                 {data: 'store', name: 'store'},
                 {data: 'history', name: 'history'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                

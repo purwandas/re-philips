@@ -546,7 +546,7 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('ATTENDANCE', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:AJ1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportAttendance($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {

@@ -82,7 +82,7 @@ class RelationController extends Controller
 
         // $countStore = 0;
 
-        if($user->role == 'Supervisor'){
+        if($user->role->role_group == 'Supervisor'){
 
             $checkStore = Store::where('user_id', $userId)->first();
 
@@ -141,7 +141,7 @@ class RelationController extends Controller
         $user = User::find($request->spvId);
 
         $countStore = 0;
-        if(($request->role != $user->role) && ($user->role == "Supervisor")){
+        if(($request->role != $user->role->role_group) && ($user->role->role_group == "Supervisor")){
             $countStore = $user->stores()->count();
         }
 
@@ -175,7 +175,7 @@ class RelationController extends Controller
             $isPromoter = 1;
         }        
 
-        if(($request->role != $user->role) && ($isPromoter == 0)){
+        if(($request->role != $user->role->role_group) && ($isPromoter == 0)){
 
             // COUNT IN SELL IN(Sell Through)
             $sellInCount = SellIn::where('user_id', $request->employeeId)->count();
@@ -701,5 +701,31 @@ class RelationController extends Controller
         return response()->json(false);
     }
     
+    public function checkRoleRelation(Request $request){
+        $count = User::where('role_id', $request->roleId)->first();
+        if ($count) {
+            response()->json(true);
+        }
+
+        return response()->json(false);
+    }
+
+    public function checkGradingRelation(Request $request){
+        $count = User::where('grading_id', $request->gradingId)->first();
+        if ($count) {
+            response()->json(true);
+        }
+
+        return response()->json(false);
+    }
+
+    public function checkClassificationRelation(Request $request){
+        $count = Store::where('classification_id', $request->classificationId)->first();
+        if ($count) {
+            response()->json(true);
+        }
+
+        return response()->json(false);
+    }
 
 }

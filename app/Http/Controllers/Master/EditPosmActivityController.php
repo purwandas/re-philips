@@ -11,6 +11,7 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Store;
+use App\RsmRegion;
 use App\PosmActivity;
 use App\PosmActivityDetail;
 use App\Filters\PosmActivityFilters;
@@ -37,7 +38,7 @@ class EditPosmActivityController extends Controller
      */
     public function masterDataTable(Request $request){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         $data = PosmActivity::

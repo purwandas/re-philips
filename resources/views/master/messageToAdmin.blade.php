@@ -37,7 +37,7 @@
                 <!-- MAIN CONTENT -->
 
                 <div class="row">
-                @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+                @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
                     <!-- <div class="table-toolbar">
                         <div class="row">
                             <div class="col-md-12">
