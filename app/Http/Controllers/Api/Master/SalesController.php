@@ -52,8 +52,12 @@ class SalesController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
-        if(!isset($content['irisan'])){ // Set Default Irisan if doesn't exist
+        if(!isset($content['irisan'])) { // Set Default Irisan if doesn't exist
             $content['irisan'] = 0;
+        }else{
+            if($content['irisan'] == null){
+                $content['irisan'] = 0;
+            }
         }
 
 //        return response()->json($content);

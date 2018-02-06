@@ -37,6 +37,12 @@ var FormValidation = function () {
                     classification: {
                         required: true,
                     },
+                    latitude:{
+                        number: true,
+                    },
+                    longitude:{
+                        number: true,
+                    },
 
                 },
                 messages:{
