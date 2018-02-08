@@ -65,7 +65,7 @@ class SalesController extends Controller
 
         if($param == 1) { /* SELL IN(SELL THROUGH) */
 
-         return response()->json($this->getPromoterTitle($user->id, $content['id']));
+//         return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell in(Sell Through) header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
