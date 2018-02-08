@@ -237,12 +237,17 @@ var FormValidation = function () {
                         //     return;
                         // }
 
-                    // }                  
+                    // }
+
+                    var selectedRolev = $('#selectedRole').val().split('`');
+                    // console.log(selectedRolev[1]);
+                    // return;
 
                     // Check if employee is mobile and just select one store
                     if($('#stores').val() != null){
                         var storesLength = $('#stores').val().length;
-                        if ($('#selectedRole').val()!='Supervisor' && $('#selectedRole').val()!='Supervisor Hybrid') 
+
+                        if (selectedRolev[1]!='Supervisor' && selectedRolev[1]!='Supervisor Hybrid')
                         {
                             if(storesLength == 1){
                                 swal("Warning", "Mobile employee must have at least 2 stores.", "warning");

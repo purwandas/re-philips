@@ -69,6 +69,8 @@ class StoreController extends Controller
             }
         }
 
+//        return response()->json($data);
+
         return $this->makeTable($data);
     }
 
