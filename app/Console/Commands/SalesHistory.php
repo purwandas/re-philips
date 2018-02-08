@@ -120,7 +120,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -270,7 +274,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -334,7 +340,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -483,7 +493,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -546,7 +558,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -694,7 +710,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -757,7 +775,10 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
 
         foreach ($users as $user){
 
@@ -905,7 +926,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -968,7 +991,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1116,7 +1143,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -1179,7 +1208,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1334,7 +1367,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'spv_destination_name' => $spvNameDestination,
                         'dm_name' => $dm_name,
@@ -1398,7 +1433,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1517,7 +1556,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -1579,7 +1620,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1728,7 +1773,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -1790,7 +1837,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -2067,7 +2118,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Salesman Explorer'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -2207,7 +2262,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -2269,7 +2326,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Salesman Explorer'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 

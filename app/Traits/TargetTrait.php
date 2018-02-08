@@ -61,7 +61,7 @@ trait TargetTrait {
                             'promoter_name' => $user->name,
                             'account_type' => $store->subChannel->channel->name,
                             'title_of_promoter' => $this->getPromoterTitle($user->id, $store->id, $data['sell_type']),
-                            'classification_store' => $store->classification,
+                            'classification_store' => $store->classification->classification,
                             'account' => $store->subChannel->name,
                             'store_id' => $store->store_id,
                             'store_name_1' => $store->store_name_1,

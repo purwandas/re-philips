@@ -118,6 +118,12 @@
 
 @section('additional-scripts')
 
+    <style type="text/css">
+        .cursor-pointer{
+            cursor: pointer;
+        }
+    </style>
+
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
@@ -134,7 +140,7 @@
         var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
         var url = 'datatable/attendancereport';
         var order = [ [0, 'desc'] ];
-        var columnDefs = [{"className": "dt-center", "targets": [0]}];
+        var columnDefs = [{"className": "dt-center", "targets": [0]},{ "width": "100%", "targets": 5 }];
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
                             {data: 'user_nik', name: 'user_nik'},
                             {data: 'user_name', name: 'user_name'},

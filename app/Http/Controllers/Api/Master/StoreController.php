@@ -141,12 +141,24 @@ class StoreController extends Controller
         if (isset($store->user_id)) {
             $user_name = $store->user->name;
             $nik = $store->user->nik;
-            $role = $store->user->role;
-            $grading = $store->user->grading;
+            $role_id = $store->user->role->id;
+            $role = $store->user->role->role;
+            $role_group = $store->user->role->role_group;
+            $grading = '';
+            $grading_id = '';
+            if (isset($store->user->grading->grading)) {
+                $grading = $store->user->grading->grading;
+            }
+            if (isset($store->user->grading->id)) {
+                $grading_id = $store->user->grading->id;
+            }
         }else{
             $user_name = '';
             $nik = '';
+            $role_id = '';
             $role = '';
+            $role_group = '';
+            $grading_id = '';
             $grading = '';
         }
 
@@ -183,7 +195,10 @@ class StoreController extends Controller
                 'user_id' => $store->user_id,
                 'user' => $user_name,
                 'nik' => $nik,
+                'role_id' => $role_id,
                 'role' => $role,
+                'role_group' => $role_group,
+                'grading_id' => $grading_id,
                 'grading' => $grading,
 
                 'lokasi_toko' => $store->lokasi_toko,
@@ -275,10 +290,11 @@ class StoreController extends Controller
                                 'longitude' => $request['longitude'],
                                 'latitude' => $request['latitude'],
                                 'address' => $request['address'],
-//                                'subchannel_id' => $request['subchannel_id'],
+
                                 'no_telp_toko' => $request['no_telp_toko'],
                                 'no_telp_pemilik_toko' => $request['no_telp_pemilik_toko'],
                                 'kepemilikan_toko' => $request['kepemilikan_toko'],
+
                                 'district_id' => $request['district_id'],
 
                                 'lokasi_toko' => $request['lokasi_toko'],
@@ -286,7 +302,7 @@ class StoreController extends Controller
                                 'tipe_transaksi' => $request['tipe_transaksi'],
                                 'kondisi_toko' => $request['kondisi_toko'],
                             ]
-                            );
+                        );
                         $EmployeeStore = EmployeeStore::create(
                             [
                                 'user_id' => $user->id,

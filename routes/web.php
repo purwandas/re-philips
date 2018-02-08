@@ -44,6 +44,7 @@ Route::match(['get', 'post'], 'password/email', function(){
 /* Method untuk daftar admin ketika aplikasi first run */
 Route::get('createadmin', 'Auth\OnceController@createAdmin');
 Route::get('createquiztarget', 'Auth\OnceController@createQuizTarget');
+Route::get('createrole', 'Auth\OnceController@createRole');
 
 /* Method untuk generate master */
 Route::get('createmaster', 'Auth\OnceController@createMaster');

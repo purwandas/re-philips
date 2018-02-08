@@ -9,7 +9,7 @@ use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
 use Auth;
-use Store;
+use App\Store;
 use Carbon\Carbon;
 use App\DisplayShare;
 use App\DisplayShareDetail;
@@ -37,7 +37,7 @@ class EditDisplayShareController extends Controller
      */
     public function masterDataTable(Request $request){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         $data = DisplayShare::

@@ -253,4 +253,46 @@ function distributorRelation(distributorId) {
     }).responseText);
 }
 
+function roleRelation(roleId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/rolerelation',
+        dataType: 'json',
+        data: { roleId: roleId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function gradingRelation(gradingId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/gradingrelation',
+        dataType: 'json',
+        data: { gradingId: gradingId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
+function classificationRelation(classificationId) {
+    return JSON.parse($.ajax({
+        type: 'POST',
+        url: 'relation/classificationrelation',
+        dataType: 'json',
+        data: { classificationId: classificationId },
+        global: false,
+        async: false,
+        success: function (data) {
+            return data;
+        }
+    }).responseText);
+}
+
 /* End Check Relation */

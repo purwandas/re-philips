@@ -48,7 +48,7 @@ class DistrictController extends Controller
     // Data for select2 with Filters
     public function getDataWithFilters(DistrictFilters $filters){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
         $data = District::filter($filters)->get();

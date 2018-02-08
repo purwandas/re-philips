@@ -105,14 +105,17 @@
 
 				        <div class="form-group">
 				          <label class="col-sm-2 control-label">Target</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
+				          <div class="col-sm-10" style="padding-left: unset;">
+				          	<div class="input-icon right col-sm-9">
 				          		<select class="select2select" name="target[]" id="target" multiple="multiple">
 				          			<option></option>
                                 </select>
 				            	<span class="input-group-addon display-hide">
                                     <i class="fa"></i>
                                 </span>
+				            </div>
+				            <div class=" col-sm-1 right">
+				            	<a href="#quizTarget" id="add-target" data-toggle="modal" class="btn btn-sm btn-info">New Target</a>
 				            </div>
 				          </div>
 				        </div>
@@ -131,6 +134,9 @@
 		<!-- END EXAMPLE TABLE PORTLET-->
 	</div>
 </div>
+
+@include('partial.modal.quiz-target-modal')
+
 @endsection
 
 @section('additional-scripts')
@@ -159,6 +165,26 @@
 	            return {
 	                results: $.map(data, function (obj) {                                
 	                    return {id: obj.id, text: obj.role +' ('+obj.grading+')'}
+	                })
+	            }
+	        }));
+
+	        $('#role').select2(setOptions('{{ route("data.role") }}', 'Role', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.role}
+	                })
+	            }
+	        }));
+
+	        $('#grading').select2(setOptions('{{ route("data.grading") }}', 'Grading', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.grading}
 	                })
 	            }
 	        }));
@@ -206,6 +232,28 @@
 
         	})
 		}
+
+		// Init add form
+	    $(document).on("click", "#add-target", function () {       
+	        
+	        // resetValidation();
+
+	        var modalTitle = document.getElementById('title');
+	        modalTitle.innerHTML = "ADD NEW ";
+
+	        select2Reset($("#role"));
+	        select2Reset($("#grading"));
+
+	        // Set action url form for add
+	        var postDataUrl = "{{ url('quiz-target') }}";    
+	        $("#form_quiz_target").attr("action", postDataUrl);
+
+	        // Delete Patch Method if Exist
+	        if($('input[name=_method]').length){
+	            $('input[name=_method]').remove();
+	        }
+
+	    });
 
 	</script>
 

@@ -56,7 +56,7 @@ class EditSalesController extends Controller
             $dataHeader = SellIn::where('id', $content['id'])->first();
 
             try {
-                $userRole = Auth::user()->role;
+                $userRole = Auth::user()->role->role_group;
                 $userId = Auth::user()->id;
 
                 DB::transaction(function () use ($dataHeader, $content, $userId) {
@@ -112,6 +112,8 @@ class EditSalesController extends Controller
                                     'user_id' => $summary->user_id,
                                     'date' => $summary->date,
                                     'role' => $summary->role,
+                                    'role_id' => $summary->role_id,
+                                    'role_group' => $summary->role_group,
                                     'spv_name' => $summary->spv_name,
                                     'dm_name' => $summary->dm_name,
                                     'trainer_name' => $summary->trainer_name,
@@ -182,7 +184,7 @@ class EditSalesController extends Controller
             $dataHeader = Sellout::where('id', $content['id'])->first();
 
             try {
-                $userRole = Auth::user()->role;
+                $userRole = Auth::user()->role->role_group;
                 $userId = Auth::user()->id;
 
                 DB::transaction(function () use ($dataHeader, $content, $userId) {
@@ -239,6 +241,8 @@ class EditSalesController extends Controller
                                 'user_id' => $summary->user_id,
                                 'date' => $summary->date,
                                 'role' => $summary->role,
+                                'role_id' => $summary->role_id,
+                                'role_group' => $summary->role_group,
                                 'spv_name' => $summary->spv_name,
                                 'dm_name' => $summary->dm_name,
                                 'trainer_name' => $summary->trainer_name,

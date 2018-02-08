@@ -68,7 +68,7 @@ class StoreFilters extends QueryFilters
             });
         }else{
             return $this->builder->where(function ($query) {
-                return $query->where('dedicate',$value)
+                return $query->where('dedicate',"MCC")
                             ->orwhereNull('dedicate');
             });
         }

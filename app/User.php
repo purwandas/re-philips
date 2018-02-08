@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nik', 'name', 'email', 'password', 'role', 'status', 'photo', 'join_date', 'grading', 'certificate'
+        'nik', 'name', 'email', 'password', 'role', 'status', 'photo', 'join_date', 'grading_id', 'certificate'
     ];
 
     /**
@@ -35,6 +35,16 @@ class User extends Authenticatable
      *
      */
 
+    public function role()
+    {
+        return $this->belongsTo('App\Role', 'role_id');
+    }
+
+    public function grading()
+    {
+        return $this->belongsTo('App\Grading', 'grading_id');
+    }
+  
     public function spvDemos()
     {
         return $this->hasMany('App\SpvDemo', 'user_id');
