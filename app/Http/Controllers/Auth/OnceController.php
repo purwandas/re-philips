@@ -15,6 +15,7 @@ use App\Account;
 use App\AccountType;
 use App\GroupCompetitor;
 use App\QuizTarget;
+use App\Role;
 use Auth;
 use Geotools;
 
@@ -39,7 +40,7 @@ class OnceController extends Controller
                 'name' => 'REM',
                 'email' => 'rem@gmail.com',            
                 'password' => bcrypt('admin'),
-                'role' => 'Master',
+                'role_id' => '28',
             ]);
         }
 
@@ -50,15 +51,32 @@ class OnceController extends Controller
         $target = DB::table('quiz_targets')->count();
 
         if($target == 0){
-            $role = array('Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC');
-            $grading = ['Associate', 'Starfour', 'Non-Starfour'];
-            foreach ($role as $key => $value) {
-                foreach ($grading as $key2 => $value2) {
-                    QuizTarget::create([
-                        'role' => $value,
-                        'grading' => $value2,
-                    ]);
-                }
+            // $role = array('Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC');
+            // $grading = ['Associate', 'Starfour', 'Non-Starfour'];
+            // foreach ($role as $key => $value) {
+            //     foreach ($grading as $key2 => $value2) {
+            //         QuizTarget::create([
+            //             'role_id' => $value,
+            //             'grading_id' => $value2,
+            //         ]);
+            //     }
+            // }
+        }
+
+        return redirect('/');
+    }
+
+    public function createRole(){
+        $role = DB::table('roles')->count();
+
+        if($role == 0){
+            $roles = array('Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'Driver', 'Helper', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'PCE', 'RE Executive', 'RE Support', 'Supervisor', 'Trainer', 'Head Trainer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'Supervisor Hybrid', 'SMD Additional', 'ASC', 'DM', 'RSM', 'Admin', 'Master');
+
+            foreach ($roles as $key => $value) {
+                Role::create([
+                    'role' => $value,
+                    'role_group' => $value,
+                ]);
             }
         }
 
@@ -67,7 +85,7 @@ class OnceController extends Controller
 
     public function createRegion(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $region = DB::table('regions')->count();
 
                 if($region == 0){
@@ -84,7 +102,7 @@ class OnceController extends Controller
 
     public function createGroupProduct(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $groupProduct = DB::table('group_products')->count();
 
                 if($groupProduct == 0){
@@ -100,7 +118,7 @@ class OnceController extends Controller
 
     public function createGroup(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $group = DB::table('groups')->count();
 
                 if($group == 0){
@@ -127,7 +145,7 @@ class OnceController extends Controller
 
     public function createGroupCompetitor(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $groupCompetitor = DB::table('group_competitors')->count();
 
                 if($groupCompetitor == 0){
@@ -157,7 +175,7 @@ class OnceController extends Controller
 
     public function createGlobalChannel(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $accountype = DB::table('global_channels')->count();
 
                 if($accountype == 0){
@@ -173,7 +191,7 @@ class OnceController extends Controller
 
     public function createAccountType(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $accountype = DB::table('account_types')->count();
 
                 if($accountype == 0){
@@ -190,7 +208,7 @@ class OnceController extends Controller
 
     public function createAccount(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $accountype = DB::table('accounts')->count();
 
                 if($accountype == 0){
@@ -222,7 +240,7 @@ class OnceController extends Controller
 
     public function createPosm(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $posm = DB::table('posms')->count();
 
                 if($posm == 0){
@@ -277,7 +295,7 @@ class OnceController extends Controller
 
     public function createMaster(){
         if(Auth::user()){
-            if(Auth::user()->role == 'Master'){
+            if(Auth::user()->role->role_group == 'Master'){
                 $this->createGlobalChannel();
                 $this->createRegion();
                 $this->createGroupProduct();
