@@ -11,7 +11,7 @@ class PromoActivityDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'promoactivity_id', 'product_id'
+        'promoactivity_id', 'product_id', 'promo'
     ];
 
     /**

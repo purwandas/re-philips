@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\ProductPromos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Filters\ProductFilters;
@@ -20,6 +21,14 @@ class ProductController extends Controller
     				   ->select('products.id', 'products.model' , 'products.name', 'categories.name as category', 'groups.name as group', 'group_products.name as group_product')
     				   ->get();
 
+    	foreach ($data as $item) {
+            $item['promo'] = 0;
+            if(ProductPromos::where('product_id', $item['id'])->count() > 0){
+                $item['promo'] = 1;
+            }
+    	}
+
     	return response()->json($data);
     }
+
 }

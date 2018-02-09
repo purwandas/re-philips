@@ -49,7 +49,7 @@ class AttendanceController extends Controller
         }else{
 
             if(!$attendanceHeader) {
-                return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 500);
+                return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 200);
             }
 
         }
@@ -79,7 +79,7 @@ class AttendanceController extends Controller
 
                 // Return if location longi and lati was not set
                 if ($location->longitude == null || $location->latitude == null) {
-                    return response()->json(['status' => false, 'message' => 'Tempat absensi yang anda pilih belum terkonfigurasi, silahkan hubungi administrator'], 500);
+                    return response()->json(['status' => false, 'message' => 'Tempat absensi yang anda pilih belum terkonfigurasi, silahkan hubungi administrator'], 200);
                 }
 
                 $coordStore = Geotools::coordinate([$location->latitude, $location->longitude]);
@@ -142,7 +142,11 @@ class AttendanceController extends Controller
                 $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
 
                 if ($visit) {
-                    $visit->update(['visit_status' => 1]);
+                    $visit->update([
+                        'visit_status' => 1,
+                        'check_in' => Carbon::now(),
+                        'check_in_location' => $content['location'],
+                        ]);
                 }
 
             }
@@ -186,6 +190,19 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
+            if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
+
+                /* Set Visit Status */
+                $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
+
+                if ($visit) {
+                    $visit->update([
+                        'check_out' => Carbon::now(),
+                        'check_out_location' => $content['location'],
+                        ]);
+                }
+
+            }
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Check Out)']);
 
         } elseif ($param == 3){ /* SAKIT */
@@ -282,7 +299,7 @@ class AttendanceController extends Controller
             }
 
             // Promoter can set status to 'Off' just if in 'Alpha'
-            if($attendanceHeader->status != 'Alpha' && $attendanceHeader->status != 'Pending Sakit' && $attendanceHeader->status != 'Pending Izin'){
+            if($attendanceHeader->status != 'Alpha' && $attendanceHeader->status != 'Pending Sakit' && $attendanceHeader->status != 'Pending Izin' && $attendanceHeader->status != 'Pending Off'){
                 return response()->json(['status' => false, 'message' => 'Maaf, anda tidak bisa mengganti status menjadi off(libur)'], 200);
             }
 
@@ -291,7 +308,7 @@ class AttendanceController extends Controller
 
                     // Attendance Header Update
                     $attendanceHeader->update([
-                        'status' => 'Off'
+                        'status' => 'Pending Off'
                     ]);
 
                 });
@@ -299,25 +316,7 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
-            /* Change Weekly Target */
-            $target = SummaryTargetActual::where('user_id', $user->id)->get();
-
-            if($target){ // If Had
-
-                foreach ($target as $data){
-
-                    /* Change Weekly Target */
-                    $total['da'] = $data['target_da'];
-                    $total['pc'] = $data['target_pc'];
-                    $total['mcc'] = $data['target_mcc'];
-
-                    $this->changeWeekly($data, $total);
-
-                }
-
-            }
-
-            return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off)']);
+            return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off : masih dalam tahap verifikasi)']);
         }
 
     }
@@ -351,9 +350,16 @@ class AttendanceController extends Controller
 
                 if($attendanceDetails->first()->check_out == null) {
 
-                    $store = Store::find($attendanceDetails->first()->store_id);
+                    if($attendanceDetails->first()->is_store == 1){
+                        $store = Store::find($attendanceDetails->first()->store_id);
 
-                    return response()->json(['status' => true, 'id_store' => $store->id, 'nama_store' => $store->store_name_1, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                        return response()->json(['status' => true, 'id_store' => $store->id, 'nama_store' => $store->store_name_1, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                    }else{
+                        $place = Place::find($attendanceDetails->first()->store_id);
+
+                        return response()->json(['status' => true, 'id_store' => $place->id, 'nama_store' => $place->name, 'jam_check_in' => $attendanceDetails->first()->check_in]);
+                    }
+
                 }
 
             }
@@ -374,9 +380,9 @@ class AttendanceController extends Controller
                     ->whereDate('date', '<=', Carbon::now()->format('Y-m-d'))
                     ->where('status', '<>', 'Off')->count('id');
 
-        if($countHK > 26){
-            $countHK = 26;
-        }
+//        if($countHK > 26){
+//            $countHK = 26;
+//        }
 
         return $countHK;
 

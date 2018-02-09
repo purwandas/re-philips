@@ -203,6 +203,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
         Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
 
+        /** Product Focus **/
+        Route::get('productpromo', 'Master\ProductPromoController@index');
+        Route::post('productpromo', 'Master\ProductPromoController@store');
+        Route::get('productpromo/edit/{id}', 'Master\ProductPromoController@edit');
+        Route::patch('productpromo/{id}', 'Master\ProductPromoController@update');
+        Route::delete('productpromo/{id}', 'Master\ProductPromoController@destroy');
+
         /** Product Focus Salesman **/
         Route::get('productfocussalesman', 'Master\ProductFocusSalesmanController@index');
         Route::post('productfocussalesman', 'Master\ProductFocusSalesmanController@store');
@@ -267,6 +274,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('quiz/{id}', 'Master\QuizController@destroy');
         Route::post('quiz-target', 'Api\Master\QuizTargetController@store');
 
+        /** Attemdents **/
+        Route::get('attendance', 'Master\AttendanceController@index');
+        Route::get('attendance/create', 'Master\AttendanceController@create');
+        Route::post('attendance', 'Master\AttendanceController@store');
+        Route::get('attendance/edit/{id}', 'Master\AttendanceController@edit');
+        Route::patch('attendance/{id}', 'Master\AttendanceController@update');
+        Route::delete('attendance/{id}', 'Master\AttendanceController@destroy');
+
         /**
          * Reporting Module(s) Just For Admin, Master, REM
          */
@@ -287,7 +302,7 @@ Route::group(['middleware' => ['auth']], function () {
             Sales Edit & Delete (Input by API)
         */
 
-        /** Sell In **/
+        /** Sell In(Sell Through) **/
         Route::get('editsellin', 'Master\EditSellInController@index');
         Route::get('editsellin/edit/{id}', 'Master\EditSellInController@edit');
         Route::patch('editsellin/{id}', 'Master\EditSellInController@update');

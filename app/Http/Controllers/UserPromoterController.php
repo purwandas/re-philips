@@ -214,6 +214,8 @@ class UserPromoterController extends Controller
      */
     public function store(Request $request)
     {
+//        return response()->json($request->all());
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -270,7 +272,9 @@ class UserPromoterController extends Controller
         // If DM or Trainer
         if(isset($request->area)){
             if($request['role'] == 'DM') {
-                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 
+                    // 'dedicate' => $request->dedicate
+                    ]);
             }elseif($request['role'] == 'Trainer') {
                 $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
             }
@@ -465,6 +469,8 @@ class UserPromoterController extends Controller
 
         }
 
+
+        $requestNew['certificate'] = $request['certificate'];
         $requestNew['name'] = $request['name'];
         $requestNew['email'] = $request['email'];
         $requestNew['role_id'] = $request['role_id'];

@@ -220,6 +220,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+//        return response()->json($request->all());
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -240,6 +242,8 @@ class UserController extends Controller
         $request['role_id'] = $role[0];
         $request['selectedRole'] = $role[1];
 
+//        return response()->json($request->all());
+
         $user = User::create(
             [
                 // $request->all()
@@ -253,6 +257,8 @@ class UserController extends Controller
                 'join_date' => $request['join_date'],
             ]
         );
+
+//        return response()->json($request->all());
 
         /* Insert user relation */
         if ($request['selectedRole'] == 'Supervisor') {
@@ -1236,9 +1242,11 @@ class UserController extends Controller
                 $dmArea = DmArea::where('user_id', $user->id);
                 if($dmArea->count() > 0){
                     $dmArea->first()->update(['area_id' => $request->area]);
-                    $dmArea->first()->update(['dedicate' => $request->dedicate]);
+                    // $dmArea->first()->update(['dedicate' => $request->dedicate]);
                 }else{
-                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 
+                        // 'dedicate' => $request->dedicate
+                        ]);
                 }
             }elseif($request['selectedRole'] == 'Trainer') {
                 $trainerArea = TrainerArea::where('user_id', $user->id);

@@ -53,11 +53,21 @@ class SalesController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
-        if($param == 1) { /* SELL IN */
+        if(!isset($content['irisan'])) { // Set Default Irisan if doesn't exist
+            $content['irisan'] = 0;
+        }else{
+            if($content['irisan'] == null){
+                $content['irisan'] = 0;
+            }
+        }
 
-//            return response()->json($this->getPromoterTitle($user->id, $content['id']));
+//        return response()->json($content);
 
-            // Check sell in header
+        if($param == 1) { /* SELL IN(SELL THROUGH) */
+
+//         return response()->json($this->getPromoterTitle($user->id, $content['id']));
+
+            // Check sell in(Sell Through) header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
             if ($sellInHeader) { // If header exist (update and/or create detail)
@@ -67,7 +77,10 @@ class SalesController extends Controller
 
                         foreach ($content['data'] as $data) {
 
-                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)->where('product_id', $data['product_id'])->first();
+                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)
+                                            ->where('product_id', $data['product_id'])
+                                            ->where('irisan', $content['irisan'])
+                                            ->first();
 
                             if ($sellInDetail) { // If data exist -> update
 
@@ -106,6 +119,7 @@ class SalesController extends Controller
                                     $summary_ta['value'] = $summary->value;
                                     $summary_ta['group'] = $summary->group;
                                     $summary_ta['sell_type'] = 'Sell In';
+                                    $summary_ta['irisan'] = $summary->irisan;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -141,7 +155,8 @@ class SalesController extends Controller
                                 $detail = SellInDetail::create([
                                     'sellin_id' => $sellInHeader->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
                                 ]);
 
                                 /** Insert Summary **/
@@ -177,9 +192,9 @@ class SalesController extends Controller
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
                                             ->where('global_channels.name',$dedicate->dedicate)
                                             ->where('sell_type', 'Sell In')
-                                            ->first();                                    
+                                            ->first();
                                     }
-                                        
+
                                 }else{
                                     $price = Price::where('product_id', $product->id)
                                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -273,10 +288,8 @@ class SalesController extends Controller
                                         'distributor_code' => $distributor_code,
                                         'distributor_name' => $distributor_name,
                                         'region' => $store->district->area->region->name,
-                                        
                                         'channel' => $channel,
                                         'sub_channel' => $subChannel,
-
                                         'area' => $store->district->area->name,
                                         'district' => $store->district->name,
                                         'store_name_1' => $store->store_name_1,
@@ -291,6 +304,7 @@ class SalesController extends Controller
                                         'category' => $product->category->name,
                                         'product_name' => $product->name,
                                         'quantity' => $data['quantity'],
+                                        'irisan' => $content['irisan'],
                                         'unit_price' => $realPrice,
                                         'value' => $realPrice * $data['quantity'],
                                         'value_pf_mr' => $value_pf_mr,
@@ -312,6 +326,7 @@ class SalesController extends Controller
                                     $summary_ta['value'] = $summary->value;
                                     $summary_ta['group'] = $summary->group;
                                     $summary_ta['sell_type'] = 'Sell In';
+                                    $summary_ta['irisan'] = $summary->irisan;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -337,6 +352,7 @@ class SalesController extends Controller
                                         $subChannel = '';
                                     }
 
+
                                     $summary = SalesmanSummarySales::create([
                                         'sellin_detail_id' => $detail->id,
                                         'region_id' => $store->district->area->region->id,
@@ -348,10 +364,8 @@ class SalesController extends Controller
                                         'distributor_code' => $distributor_code,
                                         'distributor_name' => $distributor_name,
                                         'region' => $store->district->area->region->name,
-                                        
                                         'channel' => $channel,
                                         'sub_channel' => $subChannel,
-
                                         'area' => $store->district->area->name,
                                         'district' => $store->district->name,
                                         'store_name_1' => $store->store_name_1,
@@ -388,7 +402,7 @@ class SalesController extends Controller
 
                         }
 
-                    });
+                       });
                 } catch (\Exception $e) {
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
@@ -414,7 +428,8 @@ class SalesController extends Controller
                             $detail = SellInDetail::create([
                                     'sellin_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
                                 ]);
 
                             /** Insert Summary **/
@@ -457,9 +472,9 @@ class SalesController extends Controller
                                         ->join('global_channels','global_channels.id','prices.globalchannel_id')
                                         ->where('global_channels.name',$dedicate->dedicate)
                                         ->where('sell_type', 'Sell In')
-                                        ->first();                                    
+                                        ->first();
                                 }
-                                    
+
                             }else{
                                 $price = Price::where('product_id', $product->id)
                                     ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -553,10 +568,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -571,6 +584,7 @@ class SalesController extends Controller
                                     'category' => $product->category->name,
                                     'product_name' => $product->name,
                                     'quantity' => $detail->quantity,
+                                    'irisan' => $content['irisan'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $detail->quantity,
                                     'value_pf_mr' => $value_pf_mr,
@@ -592,6 +606,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
 
 //                                return $summary_ta;
 
@@ -630,10 +645,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -673,7 +686,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in header after insert
+                // Check sell in(Sell Through) header after insert
                 $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -689,12 +702,15 @@ class SalesController extends Controller
 
             if ($sellOutHeader) { // If header exist (update and/or create detail)
 
-                try {
-                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
+//                try {
+//                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
 
                         foreach ($content['data'] as $data) {
 
-                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)->where('product_id', $data['product_id'])->first();
+                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)
+                                                ->where('product_id', $data['product_id'])
+                                                ->where('irisan', $content['irisan'])
+                                                ->first();
 
                             if ($sellOutDetail) { // If data exist -> update
 
@@ -731,6 +747,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell Out';
+                                $summary_ta['irisan'] = $summary->irisan;
 
                                 $this->changeActual($summary_ta, 'change');
 
@@ -739,7 +756,8 @@ class SalesController extends Controller
                                 $detail = SellOutDetail::create([
                                     'sellout_id' => $sellOutHeader->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                 ]);
 
                                 /** Insert Summary **/
@@ -852,10 +870,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -870,6 +886,7 @@ class SalesController extends Controller
                                     'category' => $product->category->name,
                                     'product_name' => $product->name,
                                     'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
                                     'value_pf_mr' => $value_pf_mr,
@@ -891,6 +908,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell Out';
+                                $summary_ta['irisan'] = $summary->irisan;
 
                                 $this->changeActual($summary_ta, 'change');
 
@@ -898,17 +916,17 @@ class SalesController extends Controller
 
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+//                    });
+//                } catch (\Exception $e) {
+//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+//                }
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-                try {
-                    DB::transaction(function () use ($content, $user) {
+//                try {
+//                    DB::transaction(function () use ($content, $user) {
 
                         // HEADER
                         $transaction = SellOut::create([
@@ -924,7 +942,8 @@ class SalesController extends Controller
                             $detail = SellOutDetail::create([
                                     'sellout_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                 ]);
 
                             /** Insert Summary **/
@@ -1037,10 +1056,8 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
-
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
@@ -1055,6 +1072,7 @@ class SalesController extends Controller
                                 'category' => $product->category->name,
                                 'product_name' => $product->name,
                                 'quantity' => $detail->quantity,
+                                'irisan' => $content['irisan'],
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
                                 'value_pf_mr' => $value_pf_mr,
@@ -1076,17 +1094,18 @@ class SalesController extends Controller
                             $summary_ta['value'] = $summary->value;
                             $summary_ta['group'] = $summary->group;
                             $summary_ta['sell_type'] = 'Sell Out';
+                            $summary_ta['irisan'] = $summary->irisan;
 
+//                            return response()->json($this->changeActual($summary_ta, 'change'));
                             $this->changeActual($summary_ta, 'change');
-
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+//                    });
+//                } catch (\Exception $e) {
+//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+//                }
 
-                // Check sell in header after insert
+                // Check sell in(Sell Through) header after insert
                 $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellOutHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -1226,10 +1245,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -1384,10 +1401,8 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
-
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
@@ -1422,7 +1437,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in header after insert
+                // Check sell in(Sell Through) header after insert
                 $retDistributorHeaderAfter = RetDistributor::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $retDistributorHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -1562,10 +1577,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -1720,10 +1733,8 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
-
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
@@ -1758,7 +1769,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in header after insert
+                // Check sell in(Sell Through) header after insert
                 $retConsumentHeaderAfter = RetConsument::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $retConsumentHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -1898,10 +1909,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -2056,10 +2065,8 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
-
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
@@ -2094,7 +2101,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in header after insert
+                // Check sell in(Sell Through) header after insert
                 $freeProductHeaderAfter = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $freeProductHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -2249,10 +2256,8 @@ class SalesController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    
                                     'channel' => $channel,
                                     'sub_channel' => $subChannel,
-
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -2430,10 +2435,10 @@ class SalesController extends Controller
                                 'distributor_code' => $distributor_code,
                                 'distributor_name' => $distributor_name,
                                 'region' => $store->district->area->region->name,
-                                
+
                                 'channel' => $channel,
                                 'sub_channel' => $subChannel,
-                                
+
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
@@ -2473,7 +2478,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in header after insert
+                // Check sell in(Sell Through) header after insert
                 $tbatHeaderAfter = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('store_destination_id', $content['destination_id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $tbatHeaderAfter->id, 'message' => 'Data berhasil di input']);

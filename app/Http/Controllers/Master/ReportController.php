@@ -241,8 +241,12 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
+                    // return response()->json($request['byStore']);
 
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
@@ -361,7 +365,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -458,7 +465,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -576,7 +586,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -671,7 +684,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -777,7 +793,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -870,7 +889,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -976,7 +998,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1071,11 +1096,18 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byStore2']){
-                $filter = $filter->where('storeDestinationId', $request['byStore2']);
+                $store = Store::where('stores.id', $request['byStore2'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeDestinationId', $store);
+                    // return response()->json($store);
             }
 
             if($request['byEmployee']){
@@ -1187,11 +1219,16 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byStore2']){
-                $filter = $filter->where('storeDestinationId', $request['byStore2']);
+                $store = Store::where('store_id', $request['byStore2'])
+                            ->pluck('stores.id');
+                $filter = $filter->where('storeDestinationId', $store);
             }
 
             if($request['byEmployee']){
@@ -1284,7 +1321,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1390,7 +1430,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1485,7 +1528,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1591,7 +1637,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1672,7 +1721,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1761,7 +1813,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1854,7 +1909,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -1954,7 +2012,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -2021,7 +2082,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('store_id', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byDistrict']){
@@ -2120,7 +2184,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('store_id', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byDistrict']){
@@ -2208,7 +2275,7 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'promo_activities.user_id', '=', 'users.id')
                     ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
-                    ->select('promo_activities.*', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
+                    ->select('promo_activities.*', 'promo_activity_details.promo as promo', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants')
                     ->get();
 
             $filter = $data;
@@ -2226,7 +2293,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('store_id', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byDistrict']){
@@ -2279,6 +2349,13 @@ class ReportController extends Controller
                 // }
                     return $images;
                 })
+            ->editColumn('promo', function ($item){
+                if($item->promo == 0){
+                    return '';
+                }else{
+                    return 'Promo Market';
+                }
+            })
             ->editColumn('photo2', function ($item) {
                 $folderPath = explode('/', $item->photo2);
                 $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
@@ -2314,7 +2391,7 @@ class ReportController extends Controller
                     ->join('users', 'posm_activities.user_id', '=', 'users.id')
                     ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
                     ->join('groups', 'posms.group_id', '=', 'groups.id')
-                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'stores.dedicate', 'users.name as user_name', 'posms.name as posm_name', 'groups.name as group_name', 'posm_activity_details.quantity', 'posm_activity_details.photo')
+                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'posms.name as posm_name', 'groups.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo')
                     ->get();
 
             $filter = $data;
@@ -2332,7 +2409,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('store_id', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byDistrict']){
@@ -2436,6 +2516,7 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+
            if($request['searchMonth']){
                $month = Carbon::parse($request['searchMonth'])->format('m');
                $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -2448,7 +2529,10 @@ class ReportController extends Controller
            }
 
             if($request['byStore']){
-                $filter = $filter->where('store_id', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byDistrict']){
@@ -2541,8 +2625,7 @@ class ReportController extends Controller
                         ->join('roles','roles.id','users.role_id')
                         ->whereIn('roles.role_group',$promoterGroup)
                         ->orderBy('id','asc')
-                        ->get()->all();
-                    // return response()->json($dataDetail);
+                        ->get()->all();                        
                     foreach ($dataDetail as $key => $value) {
                         $statusAttendance[] = $value->status;
                         if ($key == 0) {
@@ -2804,7 +2887,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){
@@ -2908,7 +2994,10 @@ class ReportController extends Controller
             }
 
             if($request['byStore']){
-                $filter = $filter->where('storeId', $request['byStore']);
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
             }
 
             if($request['byEmployee']){

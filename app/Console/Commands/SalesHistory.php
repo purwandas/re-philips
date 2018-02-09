@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\EmployeeStore;
 use App\Reports\HistorySalesmanSales;
 use App\Reports\HistorySalesmanTargetActual;
 use App\Reports\HistoryTargetActual;
@@ -21,6 +22,7 @@ use App\Reports\SummaryRetConsument;
 use App\RetDistributor;
 use App\RetDistributorDetail;
 use App\Reports\SummaryRetDistributor;
+use App\Target;
 use App\Tbat;
 use App\TbatDetail;
 use App\Reports\SummaryTbat;
@@ -108,7 +110,7 @@ class SalesHistory extends Command
     }
 
     /**
-     * History Sales : Sell In
+     * History Sales : Sell In (Sell Through)
      *
      */
     public function sellin(){
@@ -240,6 +242,7 @@ class SalesHistory extends Command
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
+                            'irisan' => $transactionDetail->irisan,
                             'unit_price' => $realPrice,
                             'value' => $realPrice*$transactionDetail->quantity,
                             'value_pf_mr' => $value_pf_mr,
@@ -322,7 +325,7 @@ class SalesHistory extends Command
 
         }
 
-        $this->info('History Sell In berhasil dibuat');
+        $this->info('History Sell Through berhasil dibuat');
 
     }
 
@@ -1867,6 +1870,8 @@ class SalesHistory extends Command
                         'district_id' => $detail->district_id,
                         'storeId' => $detail->storeId,
                         'user_id' => $detail->user_id,
+                        'user_role' => $detail->user_role,
+                        'partner' => $detail->partner,
                         'region' => $detail->region,
                         'area' => $detail->area,
                         'district' => $detail->district,
@@ -1928,16 +1933,157 @@ class SalesHistory extends Command
                         'actual_mcc_w5' => $detail->actual_mcc_w5,
                         'sum_target_store' => $detail->sum_target_store,
                         'sum_actual_store' => $detail->sum_actual_store,
+                        'sum_pf_target_store' => $detail->sum_pf_target_store,
+                        'sum_pf_actual_store' => $detail->sum_pf_actual_store,
+                        'sum_target_store_promo' => $detail->sum_target_store_promo,
+                        'sum_actual_store_promo' => $detail->sum_actual_store_promo,
+                        'sum_pf_target_store_promo' => $detail->sum_pf_target_store_promo,
+                        'sum_pf_actual_store_promo' => $detail->sum_pf_actual_store_promo,
+                        'sum_target_store_demo' => $detail->sum_target_store_demo,
+                        'sum_actual_store_demo' => $detail->sum_actual_store_demo,
+                        'sum_pf_target_store_demo' => $detail->sum_pf_target_store_demo,
+                        'sum_pf_actual_store_demo' => $detail->sum_pf_actual_store_demo,
                         'sum_target_area' => $detail->sum_target_area,
                         'sum_actual_area' => $detail->sum_actual_area,
+                        'sum_pf_target_area' => $detail->sum_pf_target_area,
+                        'sum_pf_actual_area' => $detail->sum_pf_actual_area,
                         'sum_target_region' => $detail->sum_target_region,
                         'sum_actual_region' => $detail->sum_actual_region,
+                        'sum_pf_target_region' => $detail->sum_pf_target_region,
+                        'sum_pf_actual_region' => $detail->sum_pf_actual_region,
                     ]);
                     $details->push($detailsData);
 
-                    /* Delete summary table */
+                    /* Truncate actual in summary table */
                     $summary = SummaryTargetActual::where('id', $detail->id);
-                    $summary->delete();
+
+                    $emp = EmployeeStore::where('user_id', $detail->user_id)
+                            ->where('store_id', $detail->storeId)->first();
+
+                    // GET ALL VALUE, AND UPDATE ALL STORE
+                    $totalValue = $summary->actual_da + $summary->actual_pc + $summary->actual_mcc;
+                    $totalValuePF = $summary->actual_pf_da + $summary->actual_pf_pc + $summary->actual_pf_mcc;
+
+                    $sumStore = SummaryTargetActual::where('storeId', $summary->storeId)->where('sell_type', $summary->sell_type);
+                    $sumStorePromo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Promoter');
+                    $sumStoreDemo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Demonstrator');
+                    $sumArea = SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $summary->sell_type);
+                    $sumRegion = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $summary->sell_type);
+                    $sumActualStore = SummaryTargetActual::where('storeId', $summary->storeId)->where('sell_type', $summary->sell_type)->first()->sum_actual_store;
+                    $sumActualArea = SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $summary->sell_type)->first()->sum_actual_area;
+                    $sumActualRegion = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $summary->sell_type)->first()->sum_actual_region;
+                    $sumActualStorePromo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Promoter');
+                    $sumActualStoreDemo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Demonstrator');
+                    // PF
+                    $sumActualStorePF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->first()->sum_pf_actual_store;
+                    $sumActualAreaPF =  SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $summary->sell_type)->first()->sum_pf_actual_area;
+                    $sumActualRegionPF = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $summary->sell_type)->first()->sum_pf_actual_region;
+                    $sumActualStorePromoPF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Promoter');
+                    $sumActualStoreDemoPF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Demonstrator');
+
+                    // Handler
+                    if($sumActualStorePromo->first()) $sumActualStorePromo = $sumActualStorePromo->first()->sum_actual_store_promo; else $sumActualStorePromo = 0;
+                    if($sumActualStoreDemo->first()) $sumActualStoreDemo = $sumActualStoreDemo->first()->sum_actual_store_demo; else $sumActualStoreDemo = 0;
+
+                    if($sumActualStorePromoPF->first()) $sumActualStorePromoPF = $sumActualStorePromoPF->first()->sum_pf_actual_store_promo; else $sumActualStorePromoPF = 0;
+                    if($sumActualStoreDemoPF->first()) $sumActualStoreDemoPF = $sumActualStoreDemoPF->first()->sum_pf_actual_store_demo; else $sumActualStoreDemoPF = 0;
+
+                    if($summary->irisan == 0){
+                        if($summary->user_role == 'Promoter'){
+                            $summary->update([
+                                'sum_actual_store' => $sumActualStore - $totalValue,
+                                'sum_actual_store_promo' => $sumActualStorePromo - $totalValue,
+                                'sum_actual_area' => $sumActualArea - $totalValue,
+                                'sum_actual_region' => $sumActualRegion - $totalValue,
+                                'sum_pf_actual_store' => $sumActualStorePF - $totalValuePF,
+                                'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $totalValuePF,
+                                'sum_pf_actual_area' => $sumActualAreaPF - $totalValuePF,
+                                'sum_pf_actual_region' => $sumActualRegionPF - $totalValuePF,
+                            ]);
+                        }else{
+                            $summary->update([
+                                'sum_actual_store' => $sumActualStore - $totalValue,
+                                'sum_actual_store_demo' => $sumActualStoreDemo - $totalValue,
+                                'sum_actual_area' => $sumActualArea - $totalValue,
+                                'sum_actual_region' => $sumActualRegion - $totalValue,
+                                'sum_pf_actual_store' => $sumActualStorePF - $totalValuePF,
+                                'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $totalValuePF,
+                                'sum_pf_actual_area' => $sumActualAreaPF - $totalValuePF,
+                                'sum_pf_actual_region' => $sumActualRegionPF - $totalValuePF,
+
+                            ]);
+                        }
+                    }else{
+                        $summary->update([
+                            'sum_actual_store_demo' => $sumActualStoreDemo - $totalValue,
+                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $totalValuePF,
+                        ]);
+                    }
+
+                    // UPDATE DATA TO ALL STORE IN RANGE
+                    if($summary->user_role == 'Demonstrator'){
+                        $sumStoreDemo->update([
+                            'sum_actual_store_demo' => $summary->sum_actual_store_demo,
+                            'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo,
+                        ]);
+                    }else{
+                        $sumStorePromo->update([
+                            'sum_actual_store_promo' => $summary->sum_actual_store_promo,
+                            'sum_pf_actual_store_promo' => $summary->sum_pf_actual_store_promo,
+                        ]);
+                    }
+
+                    $sumStore->update([
+                        'sum_actual_store' => $summary->sum_actual_store,
+                        'sum_pf_actual_store' => $summary->sum_pf_actual_store,
+                    ]);
+
+                    $sumArea->update([
+                        'sum_actual_area' => $summary->sum_actual_area,
+                        'sum_pf_actual_area' => $summary->sum_pf_actual_area,
+                    ]);
+
+                    $sumRegion->update([
+                        'sum_actual_region' => $summary->sum_actual_region,
+                        'sum_pf_actual_region' => $summary->sum_pf_actual_region,
+                    ]);
+
+                    if($emp){ // JIKA MASIH ADA LINK STORE HANYA RESET ACTUAL DARI SUMMARY ACTUAL
+//                        $summary->delete();
+                        $summary->update([
+                            'actual_dapc' => 0,
+                            'actual_da' => 0,
+                            'actual_pc' => 0,
+                            'actual_mcc' => 0,
+                            'actual_pf_da' => 0,
+                            'actual_pf_pc' => 0,
+                            'actual_pf_mcc' => 0,
+                            'actual_da_w1' => 0,
+                            'actual_da_w2' => 0,
+                            'actual_da_w3' => 0,
+                            'actual_da_w4' => 0,
+                            'actual_da_w5' => 0,
+                            'actual_pc_w1' => 0,
+                            'actual_pc_w2' => 0,
+                            'actual_pc_w3' => 0,
+                            'actual_pc_w4' => 0,
+                            'actual_pc_w5' => 0,
+                            'actual_mcc_w1' => 0,
+                            'actual_mcc_w2' => 0,
+                            'actual_mcc_w3' => 0,
+                            'actual_mcc_w4' => 0,
+                            'actual_mcc_w5' => 0,
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ]);
+                    }else{ // JIKA TIDAK ADA STORE MAKA HAPUS TARGET DAN SUMMARY ACTUAL
+                        $summary->delete();
+
+                        // DELETE TARGET
+                        $target = where('user_id', $detail->user_id)->where('store_id', $detail->storeId);
+                        $target->forceDelete();
+                    }
+
 
                 }
 

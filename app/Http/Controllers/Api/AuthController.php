@@ -13,6 +13,7 @@ use App\Store;
 use Carbon\Carbon;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use File;
 
 class AuthController extends Controller
 {
@@ -97,7 +98,7 @@ class AuthController extends Controller
 
 	public function tes(){
 		// $user = JWTAuth::parseToken()->authenticate();
-		return response()->json('test');	
+		return response()->json('test');
 	}
 
 	public function getUser()
@@ -154,10 +155,15 @@ class AuthController extends Controller
 		}
 
 		$data['photo'] = $user->photo;
+		$data['nik'] = $user->nik;
 	    $data['name'] = $user->name;
 	    $data['email'] = $user->email;
 	    $data['join_date'] = $user->join_date;
-	    $data['grading'] = $user->grading->grading;
+    $data['grading'] = '';
+    if(isset($user->grading->grading)){
+      $data['grading'] = $user->grading->grading;
+    }    
+	    $data['certificate'] = $user->certificate;
 
 		// the token is valid and we have found the user via the sub claim
 		return response()->json($data);
