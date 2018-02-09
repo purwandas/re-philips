@@ -103,6 +103,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/get-store-id', 'Api\Master\StoreController@getStoreId');
     Route::get('/get-district', 'Api\Master\StoreController@getDistrict');
     Route::get('/faq', 'Api\Master\FaqController@getFaq');
+    Route::get('/sellina', 'Api\Master\FaqController@sellin');
     // Route::get('/get-district/{param}', 'Api\Master\StoreController@nearby');
 
     /**

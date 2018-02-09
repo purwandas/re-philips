@@ -43,6 +43,27 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('faq/{id}', 'Master\FaqController@update');
         Route::delete('faq/{id}', 'Master\FaqController@destroy');
 
+        /** Role **/
+        Route::get('role', 'Master\RoleController@index');
+        Route::post('role', 'Master\RoleController@store');
+        Route::get('role/edit/{id}', 'Master\RoleController@edit');
+        Route::patch('role/{id}', 'Master\RoleController@update');
+        Route::delete('role/{id}', 'Master\RoleController@destroy');
+
+        /** Grading **/
+        Route::get('grading', 'Master\GradingController@index');
+        Route::post('grading', 'Master\GradingController@store');
+        Route::get('grading/edit/{id}', 'Master\GradingController@edit');
+        Route::patch('grading/{id}', 'Master\GradingController@update');
+        Route::delete('grading/{id}', 'Master\GradingController@destroy');
+
+        /** Classification **/
+        Route::get('classification', 'Master\ClassificationController@index');
+        Route::post('classification', 'Master\ClassificationController@store');
+        Route::get('classification/edit/{id}', 'Master\ClassificationController@edit');
+        Route::patch('classification/{id}', 'Master\ClassificationController@update');
+        Route::delete('classification/{id}', 'Master\ClassificationController@destroy');
+
         /** Area **/
         Route::get('area', 'Master\AreaController@index');
         Route::post('area', 'Master\AreaController@store');
@@ -235,6 +256,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('quiz/edit/{id}', 'Master\QuizController@edit');
         Route::patch('quiz/{id}', 'Master\QuizController@update');
         Route::delete('quiz/{id}', 'Master\QuizController@destroy');
+        Route::post('quiz-target', 'Api\Master\QuizTargetController@store');
 
         /**
          * Reporting Module(s) Just For Admin, Master, REM

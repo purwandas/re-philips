@@ -45,6 +45,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/feedbackQuestion', ['as'=> 'datatable.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@masterDataTable']);
     Route::post('datatable/feedbackAnswer', ['as'=> 'datatable.feedbackAnswer','uses'=>'Master\FeedbackAnswerController@masterDataTable']);
     Route::post('datatable/faq', ['as'=> 'datatable.faq','uses'=>'Master\FaqController@masterDataTable']);
+    Route::post('datatable/role', ['as'=> 'datatable.role','uses'=>'Master\RoleController@masterDataTable']);
+    Route::post('datatable/grading', ['as'=> 'datatable.grading','uses'=>'Master\GradingController@masterDataTable']);
+    Route::post('datatable/classification', ['as'=> 'datatable.classification','uses'=>'Master\ClassificationController@masterDataTable']);
 
     /**
      * Edit Sales
@@ -106,6 +109,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/userpromoter', ['as'=> 'data.userpromoter','uses'=>'UserPromoterController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/product', ['as'=> 'data.product','uses'=>'Master\ProductController@getDataWithFilters']);
+    Route::post('data/role', ['as'=> 'data.role','uses'=>'Master\RoleController@getDataWithFilters']);
+    Route::post('data/grading', ['as'=> 'data.grading','uses'=>'Master\GradingController@getDataWithFilters']);
+    Route::post('data/classification', ['as'=> 'data.classification','uses'=>'Master\ClassificationController@getDataWithFilters']);
     
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
@@ -159,6 +165,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('relation/channelrelation', ['as'=> 'relation.channelrelation','uses'=>'RelationController@checkChannelRelation']);
     Route::post('relation/subchannelrelation', ['as'=> 'relation.subchannelrelation','uses'=>'RelationController@checkSubChannelRelation']);
     Route::post('relation/distributorrelation', ['as'=> 'relation.distributorrelation','uses'=>'RelationController@checkDistributorRelation']);
+    
+    Route::post('relation/rolerelation', ['as'=> 'relation.rolerelation','uses'=>'RelationController@checkRoleRelation']);
+    Route::post('relation/gradingrelation', ['as'=> 'relation.gradingrelation','uses'=>'RelationController@checkGradingRelation']);
+    Route::post('relation/classificationrelation', ['as'=> 'relation.classificationrelation','uses'=>'RelationController@checkClassificationRelation']);
     
 
     /**
