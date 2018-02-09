@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nik', 'name', 'email', 'password', 'role', 'status', 'photo', 'join_date', 'grading'
+        'nik', 'name', 'email', 'password', 'role_id', 'status', 'photo', 'join_date', 'grading_id'
     ];
 
     /**
@@ -34,6 +34,16 @@ class User extends Authenticatable
      * Relation Method(s).
      *
      */
+
+    public function role()
+    {
+        return $this->belongsTo('App\Role', 'role_id');
+    }
+
+    public function grading()
+    {
+        return $this->belongsTo('App\Grading', 'grading_id');
+    }
 
     public function rsmRegion()
     {
