@@ -49,8 +49,10 @@ class UserController extends Controller
     public function masterDataTable(Request $request){
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::
-            where('id', '<>', Auth::user()->id)
-            ->whereNotIn('role',$roles);
+            join('roles','roles.id','users.role_id')
+            ->select('users.*','roles.role_group as role','roles.role as roles','roles.role_group')
+            ->where('users.id', '<>', Auth::user()->id)
+            ->whereNotIn('role_group',$roles);
 //        $data = User::all();
 
         $filter = $data;
@@ -71,9 +73,6 @@ class UserController extends Controller
     //     return $this->makeTable($filter);
     // }
 
-    
-    
-
     // // Datatable template
     // public function makeTable($data){
 
@@ -82,34 +81,55 @@ class UserController extends Controller
     //     //     ->make(true);
 
         return Datatables::of($filter->get())
-                ->editColumn('role',function ($item) {
+                ->editColumn('roles',function ($item) {
                     $dedicate = '';
                     $dmarea = DmArea::where('user_id', $item->id)->get();
                     foreach ($dmarea as $key => $value) {
                         $dedicate = $value->dedicate;
                     }
-                    if ($item->role == 'DM') {
-                        return $item->role.' - '.$dedicate;
+                    if ($item->role_group == 'DM') {
+                        return $item->roles.' - '.$dedicate;
                     }
 
-                    return $item->role;                    
+                    return $item->roles;
                     
                 })
                 ->addColumn('area', function ($item) {
                     
-                    if($item->role == 'DM') {
+                    if($item->role_group == 'DM') {
                         $area = DmArea::where('user_id', $item->id)->first();
-                    }elseif($item->role == 'Trainer') {
+                    }elseif($item->role_group == 'Trainer') {
                         $area = TrainerArea::where('user_id', $item->id)->first();
-                    }elseif($item->role == 'Supervisor' || $item->role == 'Supervisor Hybrid') {
-                        $store = Store::where('user_id', $item->id)->first();
-                        $area = (isset($store->district)) ? $store->district : '';
-                            $spvDemo = SpvDemo::where('user_id', $item->id)->first();
-                            if(count($spvDemo) > 0){
-                                $area = (isset($spvDemo->store->district)) ? $spvDemo->store->district : '';
+                    }elseif($item->role_group == 'Supervisor' || $item->role_group == 'Supervisor Hybrid') {
+                        $store = Store::where('user_id', $item->id)
+                                ->join('districts','districts.id','stores.district_id')
+                                ->join('areas','areas.id','districts.area_id')
+                                ->groupBy('areas.id')
+                                ->select('areas.name as area_name')
+                                ->get();
+                        $result = $store;
+                            $spvDemo = SpvDemo::where('spv_demos.user_id', $item->id)
+                                    ->join('stores','stores.id','spv_demos.store_id')
+                                    ->join('districts','districts.id','stores.district_id')
+                                    ->join('areas','areas.id','districts.area_id')
+                                    ->groupBy('areas.id')
+                                    ->select('areas.name as area_name')
+                                    ->get();
+                        if(count($spvDemo) > 0){
+                            $result = $spvDemo;
+                        }
+                        
+                        $area='';
+                        foreach ($result as $key => $value) {
+                            if ($key == 0) {
+                                $area = $value->area_name;
+                            }else{
+                                $area .= ", ".$value->area_name;
                             }
-                        // return $area;
+                        }
+                        return $area;
                     }
+
                     $area = (isset($area->area->name)) ? $area->area->name : '';
 
                     return $area;
@@ -129,7 +149,7 @@ class UserController extends Controller
     // Data for select2 with Filters
     public function getDataWithFilters(UserFilters $filters){ 
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
         $data = User::filter($filters)->get();
@@ -168,13 +188,17 @@ class UserController extends Controller
         return $data;
     }
     public function getDataPromoterWithFilters(UserFilters $filters){ 
-        $data = User::filter($filters)->where('role','=','Promoter')->get();
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->where('role','=','Promoter')->get();
 
         return $data;
     }
     public function getDataNonPromoterWithFilters(UserFilters $filters){ 
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
-        $data = User::filter($filters)->whereNotIn('role',$roles)->get();
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->whereNotIn('role',$roles)->get();
 
         return $data;
     }
@@ -200,7 +224,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:3|confirmed',
-            'role' => 'required|string',
+            'role_id' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
@@ -212,10 +236,26 @@ class UserController extends Controller
         
         if($request->photo_file != null) $request['photo'] = $photo_url;
 
-        $user = User::create($request->all());
+        $role = explode('`',$request['role_id']);
+        $request['role_id'] = $role[0];
+        $request['selectedRole'] = $role[1];
+
+        $user = User::create(
+            [
+                // $request->all()
+                'nik' => $request['nik'],
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => $request['password'],
+                'role_id' => $request['role_id'],
+                'status' => $request['status'],
+                'photo' => $request['photo'],
+                'join_date' => $request['join_date'],
+            ]
+        );
 
         /* Insert user relation */
-        if ($request['role'] == 'Supervisor') {
+        if ($request['selectedRole'] == 'Supervisor') {
 
             /* SPV Multiple Store */
             if($request['store_ids']){
@@ -286,7 +326,7 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification;
+                            $classification = $value->classification->classification;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
 
@@ -308,7 +348,7 @@ class UserController extends Controller
                                 'latitude' => $latitude,
                                 'longitude' => $longitude,
                                 'address' => $address,
-                                'classification' => $classification,
+                                'classification_id' => $classification,
                                 'subchannel_id' => $subchannel_id,
                                 'district_id' => $district_id,
                                 'user_id' => $user->id,
@@ -330,7 +370,7 @@ class UserController extends Controller
                             
                 }
             }
-        }else if ($request['role'] == 'Supervisor Hybrid') {
+        }else if ($request['selectedRole'] == 'Supervisor Hybrid') {
             if($request['store_ids']){
                 // return response()->json($request['store_ids']);
                 foreach ($request['store_ids'] as $storeId) {
@@ -350,19 +390,20 @@ class UserController extends Controller
                         $classification     = '';
                         $subchannel_id  = '';
                         $district_id    = '';
-                            $no_telp_toko = '';
-                            $no_telp_pemilik_toko = '';
-                            $kepemilikan_toko = '';
-                            $district_id = '';
-                            $lokasi_toko = '';
-                            $tipe_transaksi_2 = '';
-                            $tipe_transaksi = '';
-                            $kondisi_toko = '';
                         $hybrid = false;
                         $hybridData = false;
                         $mccData = false;
                         $dedicateStored = '';
+                        $no_telp_toko = '';
+                        $no_telp_pemilik_toko = '';
+                        $kepemilikan_toko = '';
+                        $district_id = '';
+                        $lokasi_toko = '';
+                        $tipe_transaksi_2 = '';
+                        $tipe_transaksi = '';
+                        $kondisi_toko = '';
                         
+                        // return response()->json($store);
                         foreach ($store as $key => $value) {
                             /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
                             $storesDedicate = '';
@@ -372,7 +413,7 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification;
+                            $classification = $value->classification->classification;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
                                 $no_telp_toko = $value->no_telp_toko;
@@ -400,20 +441,20 @@ class UserController extends Controller
                                         'latitude' => $latitude,
                                         'longitude' => $longitude,
                                         'address' => $address,
-                                        'classification' => $classification,
+                                        'classification_id' => $classification,
                                         'subchannel_id' => $subchannel_id,
                                         'district_id' => $district_id,
                                         'user_id' => $user->id,
                                         'dedicate' => 'MCC',
 
                                         'no_telp_toko' => $no_telp_toko,
-                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
-                                    'kepemilikan_toko' => $kepemilikan_toko,
-                                    'district_id' => $district_id,
-                                    'lokasi_toko' => $lokasi_toko,
-                                    'tipe_transaksi_2' => $tipe_transaksi_2,
-                                    'tipe_transaksi' => $tipe_transaksi,
-                                    'kondisi_toko' => $kondisi_toko,
+                                        'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                        'kepemilikan_toko' => $kepemilikan_toko,
+                                        'district_id' => $district_id,
+                                        'lokasi_toko' => $lokasi_toko,
+                                        'tipe_transaksi_2' => $tipe_transaksi_2,
+                                        'tipe_transaksi' => $tipe_transaksi,
+                                        'kondisi_toko' => $kondisi_toko,
                                     ]);
                                 }
                                 $status = true;
@@ -426,12 +467,14 @@ class UserController extends Controller
                                 $status = true;
                             }
 
-                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC') && $status == false)
+                            if ( ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC') && $status == false)
                             {
-                                $hybridData = true;
-                                $dedicateStored = $storesDedicate;
-                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC')
+                                
+                                if ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID')
                                 {
+                                    $hybridData = true;
+                                    $dedicateStored = $storesDedicate;
+
                                     Store::where('id',$value->id)
                                     ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                     $status = true;
@@ -456,6 +499,16 @@ class UserController extends Controller
                                 $hybridData = true;
                                 $dedicateStored = 'HYBRID';
                             }
+                            if ( ($storesDedicate == 'DA') && $status == false ) 
+                            {
+                                $hybridData = true;
+                                $dedicateStored = 'DA';
+                            }
+                            if ( ($storesDedicate == 'PC') && $status == false ) 
+                            {
+                                $hybridData = true;
+                                $dedicateStored = 'PC';
+                            }
                             if ( ($storesDedicate == 'MCC') && $status == false ) 
                             {
                                 $mccData = true;
@@ -465,6 +518,7 @@ class UserController extends Controller
 
                         if ($hybrid == true) 
                         {
+                            // return response()->json($hybridData);
                             if ($hybridData == true) 
                             {
                                 Store::where('deleted_at',null)
@@ -488,28 +542,41 @@ class UserController extends Controller
                             }
 
                             if ($hybridData == false) {
-                                Store::create([
-                                    'store_id' => $store_id,
-                                    'store_name_1' => $store_name_1,
-                                    'store_name_2' => $store_name_2,
-                                    'latitude' => $latitude,
-                                    'longitude' => $longitude,
-                                    'address' => $address,
-                                    'classification' => $classification,
-                                    'subchannel_id' => $subchannel_id,
-                                    'district_id' => $district_id,
-                                    'user_id' => $user->id,
-                                    'dedicate' => 'HYBRID',
+                                $checkStore = Store::where('deleted_at',null)
+                                        ->where('store_id',$stores[1])
+                                        ->whereIn('dedicate',['HYBRID','DA','PC'])
+                                        ->get();
+                                if ($checkStore->count() == 0 ) {
+                                    Store::create([
+                                        'store_id' => $store_id,
+                                        'store_name_1' => $store_name_1,
+                                        'store_name_2' => $store_name_2,
+                                        'latitude' => $latitude,
+                                        'longitude' => $longitude,
+                                        'address' => $address,
+                                        'classification_id' => $classification,
+                                        'subchannel_id' => $subchannel_id,
+                                        'district_id' => $district_id,
+                                        'user_id' => $user->id,
+                                        'dedicate' => 'HYBRID',
 
-                                    'no_telp_toko' => $no_telp_toko,
-                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
-                                    'kepemilikan_toko' => $kepemilikan_toko,
-                                    'district_id' => $district_id,
-                                    'lokasi_toko' => $lokasi_toko,
-                                    'tipe_transaksi_2' => $tipe_transaksi_2,
-                                    'tipe_transaksi' => $tipe_transaksi,
-                                    'kondisi_toko' => $kondisi_toko,
-                                ]);
+                                        'no_telp_toko' => $no_telp_toko,
+                                        'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                        'kepemilikan_toko' => $kepemilikan_toko,
+                                        'district_id' => $district_id,
+                                        'lokasi_toko' => $lokasi_toko,
+                                        'tipe_transaksi_2' => $tipe_transaksi_2,
+                                        'tipe_transaksi' => $tipe_transaksi,
+                                        'kondisi_toko' => $kondisi_toko,
+                                    ]);
+                                }else{
+                                    Store::where('deleted_at',null)
+                                        ->where('store_id',$stores[1])
+                                        ->whereIn('dedicate',['HYBRID','DA','PC'])
+                                        ->update([
+                                            'user_id'=>$user->id,'dedicate'=>'HYBRID',
+                                        ]);
+                                }
                                 $status = true;
                             }
                             
@@ -521,7 +588,7 @@ class UserController extends Controller
                                     'latitude' => $latitude,
                                     'longitude' => $longitude,
                                     'address' => $address,
-                                    'classification' => $classification,
+                                    'classification_id' => $classification,
                                     'subchannel_id' => $subchannel_id,
                                     'district_id' => $district_id,
                                     'user_id' => $user->id,
@@ -550,11 +617,12 @@ class UserController extends Controller
                                 'latitude' => $latitude,
                                 'longitude' => $longitude,
                                 'address' => $address,
-                                'classification' => $classification,
+                                'classification_id' => $classification,
                                 'subchannel_id' => $subchannel_id,
                                 'district_id' => $district_id,
                                 'user_id' => $user->id,
                                 'dedicate' => 'MCC',
+
                                 'no_telp_toko' => $no_telp_toko,
                                 'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
                                 'kepemilikan_toko' => $kepemilikan_toko,
@@ -573,9 +641,9 @@ class UserController extends Controller
 
         // If DM or Trainer
         if(isset($request->area)){
-            if($request['role'] == 'DM') {
+            if($request['selectedRole'] == 'DM') {
                 $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
-            }elseif($request['role'] == 'Trainer') {
+            }elseif($request['selectedRole'] == 'Trainer') {
                 $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
             }
         }
@@ -639,7 +707,7 @@ class UserController extends Controller
             ->select('users.*')//, 'stores.dedicate as dedicate')
             ->first();
         
-        if ($data->role == 'Supervisor' || $data->role == 'Supervisor Hybrid' ) {
+        if ($data->role->role_group == 'Supervisor' || $data->role->role_group == 'Supervisor Hybrid' ) {
             $spvDedicate = Store::
                 where('user_id',$data->id)
                 ->first();
@@ -666,7 +734,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users'. ($id ? ",id,$id" : ''),
-            'role' => 'required|string',
+            'role_id' => 'required|string',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
@@ -693,8 +761,10 @@ class UserController extends Controller
         // If Exists Spv Data
         // Store::where('user_id',$user->id)
         //     ->update(['user_id'=>null]);    
+        $role = explode('`',$request['selectedRole']);
+        $request['selectedRole'] = $role[1];
 
-        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
+        if ($request['selectedRole'] == 'Supervisor' || $request['selectedRole'] == 'Supervisor Hybrid') {
             /* SPV Multiple Store */
             if($request['store_ids']){
                 foreach ($request['store_ids'] as $storeId) {
@@ -752,7 +822,7 @@ class UserController extends Controller
 
         $requestNew['name'] = $request['name'];
         $requestNew['email'] = $request['email'];
-        $requestNew['role'] = $request['role'];
+        $requestNew['role_id'] = $role[0];
 
         $requestNew['status'] = null;
         $requestNew['nik'] = null;
@@ -773,7 +843,7 @@ class UserController extends Controller
         $user->update($requestNew->all()); 
 
         /* Insert user relation */
-        if ($request['role'] == 'Supervisor') {
+        if ($request['selectedRole'] == 'Supervisor') {
 
             /* SPV Multiple Store */
             if($request['store_ids']){
@@ -808,6 +878,15 @@ class UserController extends Controller
                         $district_id    = '';
                         $history = '';
                         
+                        $no_telp_toko = '';
+                        $no_telp_pemilik_toko = '';
+                        $kepemilikan_toko = '';
+                        $district_id = '';
+                        $lokasi_toko = '';
+                        $tipe_transaksi_2 = '';
+                        $tipe_transaksi = '';
+                        $kondisi_toko = '';
+                        
                         foreach ($store as $key => $value) {
                             /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
                             $storesDedicate = '';
@@ -836,9 +915,18 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification;
+                            $classification = $value->classification->classification;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
+
+                            $no_telp_toko = $value->no_telp_toko;
+                            $no_telp_pemilik_toko = $value->no_telp_pemilik_toko;
+                            $kepemilikan_toko = $value->kepemilikan_toko;
+                            $district_id = $value->district_id;
+                            $lokasi_toko = $value->lokasi_toko;
+                            $tipe_transaksi_2 = $value->tipe_transaksi_2;
+                            $tipe_transaksi = $value->tipe_transaksi;
+                            $kondisi_toko = $value->kondisi_toko;
                         }
 
                         if ($status == false) {
@@ -849,11 +937,20 @@ class UserController extends Controller
                                 'latitude' => $latitude,
                                 'longitude' => $longitude,
                                 'address' => $address,
-                                'classification' => $classification,
+                                'classification_id' => $classification,
                                 'subchannel_id' => $subchannel_id,
                                 'district_id' => $district_id,
                                 'user_id' => $user->id,
                                 'dedicate' => $request['dedicate'],
+
+                                'no_telp_toko' => $no_telp_toko,
+                                'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                'kepemilikan_toko' => $kepemilikan_toko,
+                                'district_id' => $district_id,
+                                'lokasi_toko' => $lokasi_toko,
+                                'tipe_transaksi_2' => $tipe_transaksi_2,
+                                'tipe_transaksi' => $tipe_transaksi,
+                                'kondisi_toko' => $kondisi_toko,
                             ]);
                             $status = true;
                         }
@@ -862,7 +959,8 @@ class UserController extends Controller
                             
                 }
             }
-        }else if ($request['role'] == 'Supervisor Hybrid') {
+        }else if ($request['selectedRole'] == 'Supervisor Hybrid') {
+            // return response()->json($request['store_ids']);
             if($request['store_ids']){
                 // return response()->json($request['store_ids']);
                 foreach ($request['store_ids'] as $storeId) {
@@ -886,7 +984,16 @@ class UserController extends Controller
                         $hybridData = false;
                         $mccData = false;
                         $dedicateStored = '';
+                        $no_telp_toko = '';
+                        $no_telp_pemilik_toko = '';
+                        $kepemilikan_toko = '';
+                        $district_id = '';
+                        $lokasi_toko = '';
+                        $tipe_transaksi_2 = '';
+                        $tipe_transaksi = '';
+                        $kondisi_toko = '';
                         
+                        // return response()->json($store);
                         foreach ($store as $key => $value) {
                             /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
                             $storesDedicate = '';
@@ -896,9 +1003,17 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification;
+                            $classification = $value->classification->classification;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
+                                $no_telp_toko = $value->no_telp_toko;
+                                $no_telp_pemilik_toko = $value->no_telp_pemilik_toko;
+                                $kepemilikan_toko = $value->kepemilikan_toko;
+                                $district_id = $value->district_id;
+                                $lokasi_toko = $value->lokasi_toko;
+                                $tipe_transaksi_2 = $value->tipe_transaksi_2;
+                                $tipe_transaksi = $value->tipe_transaksi;
+                                $kondisi_toko = $value->kondisi_toko;
 
                             if (isset($value->dedicate)) {
                                 $storesDedicate = $value->dedicate;
@@ -916,11 +1031,20 @@ class UserController extends Controller
                                         'latitude' => $latitude,
                                         'longitude' => $longitude,
                                         'address' => $address,
-                                        'classification' => $classification,
+                                        'classification_id' => $classification,
                                         'subchannel_id' => $subchannel_id,
                                         'district_id' => $district_id,
                                         'user_id' => $user->id,
                                         'dedicate' => 'MCC',
+
+                                        'no_telp_toko' => $no_telp_toko,
+                                        'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                        'kepemilikan_toko' => $kepemilikan_toko,
+                                        'district_id' => $district_id,
+                                        'lokasi_toko' => $lokasi_toko,
+                                        'tipe_transaksi_2' => $tipe_transaksi_2,
+                                        'tipe_transaksi' => $tipe_transaksi,
+                                        'kondisi_toko' => $kondisi_toko,
                                     ]);
                                 }
                                 $status = true;
@@ -933,12 +1057,14 @@ class UserController extends Controller
                                 $status = true;
                             }
 
-                            if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC') && $status == false)
+                            if ( ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC') && $status == false)
                             {
-                                $hybridData = true;
-                                $dedicateStored = $storesDedicate;
-                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC')
+                                
+                                if ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID')
                                 {
+                                    $hybridData = true;
+                                    $dedicateStored = $storesDedicate;
+
                                     Store::where('id',$value->id)
                                     ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
                                     $status = true;
@@ -963,6 +1089,16 @@ class UserController extends Controller
                                 $hybridData = true;
                                 $dedicateStored = 'HYBRID';
                             }
+                            if ( ($storesDedicate == 'DA') && $status == false ) 
+                            {
+                                $hybridData = true;
+                                $dedicateStored = 'DA';
+                            }
+                            if ( ($storesDedicate == 'PC') && $status == false ) 
+                            {
+                                $hybridData = true;
+                                $dedicateStored = 'PC';
+                            }
                             if ( ($storesDedicate == 'MCC') && $status == false ) 
                             {
                                 $mccData = true;
@@ -972,6 +1108,7 @@ class UserController extends Controller
 
                         if ($hybrid == true) 
                         {
+                            // return response()->json($hybridData);
                             if ($hybridData == true) 
                             {
                                 Store::where('deleted_at',null)
@@ -995,19 +1132,41 @@ class UserController extends Controller
                             }
 
                             if ($hybridData == false) {
-                                Store::create([
-                                    'store_id' => $store_id,
-                                    'store_name_1' => $store_name_1,
-                                    'store_name_2' => $store_name_2,
-                                    'latitude' => $latitude,
-                                    'longitude' => $longitude,
-                                    'address' => $address,
-                                    'classification' => $classification,
-                                    'subchannel_id' => $subchannel_id,
-                                    'district_id' => $district_id,
-                                    'user_id' => $user->id,
-                                    'dedicate' => 'HYBRID',
-                                ]);
+                                $checkStore = Store::where('deleted_at',null)
+                                        ->where('store_id',$stores[1])
+                                        ->whereIn('dedicate',['HYBRID','DA','PC'])
+                                        ->get();
+                                if ($checkStore->count() == 0 ) {
+                                    Store::create([
+                                        'store_id' => $store_id,
+                                        'store_name_1' => $store_name_1,
+                                        'store_name_2' => $store_name_2,
+                                        'latitude' => $latitude,
+                                        'longitude' => $longitude,
+                                        'address' => $address,
+                                        'classification_id' => $classification,
+                                        'subchannel_id' => $subchannel_id,
+                                        'district_id' => $district_id,
+                                        'user_id' => $user->id,
+                                        'dedicate' => 'HYBRID',
+
+                                        'no_telp_toko' => $no_telp_toko,
+                                        'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                        'kepemilikan_toko' => $kepemilikan_toko,
+                                        'district_id' => $district_id,
+                                        'lokasi_toko' => $lokasi_toko,
+                                        'tipe_transaksi_2' => $tipe_transaksi_2,
+                                        'tipe_transaksi' => $tipe_transaksi,
+                                        'kondisi_toko' => $kondisi_toko,
+                                    ]);
+                                }else{
+                                    Store::where('deleted_at',null)
+                                        ->where('store_id',$stores[1])
+                                        ->whereIn('dedicate',['HYBRID','DA','PC'])
+                                        ->update([
+                                            'user_id'=>$user->id,'dedicate'=>'HYBRID',
+                                        ]);
+                                }
                                 $status = true;
                             }
                             
@@ -1019,11 +1178,20 @@ class UserController extends Controller
                                     'latitude' => $latitude,
                                     'longitude' => $longitude,
                                     'address' => $address,
-                                    'classification' => $classification,
+                                    'classification_id' => $classification,
                                     'subchannel_id' => $subchannel_id,
                                     'district_id' => $district_id,
                                     'user_id' => $user->id,
                                     'dedicate' => 'MCC',
+
+                                    'no_telp_toko' => $no_telp_toko,
+                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                    'kepemilikan_toko' => $kepemilikan_toko,
+                                    'district_id' => $district_id,
+                                    'lokasi_toko' => $lokasi_toko,
+                                    'tipe_transaksi_2' => $tipe_transaksi_2,
+                                    'tipe_transaksi' => $tipe_transaksi,
+                                    'kondisi_toko' => $kondisi_toko,
                                 ]);
                                 $status = true;
                             }
@@ -1039,11 +1207,20 @@ class UserController extends Controller
                                 'latitude' => $latitude,
                                 'longitude' => $longitude,
                                 'address' => $address,
-                                'classification' => $classification,
+                                'classification_id' => $classification,
                                 'subchannel_id' => $subchannel_id,
                                 'district_id' => $district_id,
                                 'user_id' => $user->id,
                                 'dedicate' => 'MCC',
+
+                                'no_telp_toko' => $no_telp_toko,
+                                'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                'kepemilikan_toko' => $kepemilikan_toko,
+                                'district_id' => $district_id,
+                                'lokasi_toko' => $lokasi_toko,
+                                'tipe_transaksi_2' => $tipe_transaksi_2,
+                                'tipe_transaksi' => $tipe_transaksi,
+                                'kondisi_toko' => $kondisi_toko,
                             ]);
                             $status = true;
                         }
@@ -1054,7 +1231,8 @@ class UserController extends Controller
 
         // If DM
         if($request->area){
-            if($request['role'] == 'DM') {
+            
+            if($request['selectedRole'] == 'DM') {
                 $dmArea = DmArea::where('user_id', $user->id);
                 if($dmArea->count() > 0){
                     $dmArea->first()->update(['area_id' => $request->area]);
@@ -1062,7 +1240,7 @@ class UserController extends Controller
                 }else{
                     DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
                 }
-            }elseif($request['role'] == 'Trainer') {
+            }elseif($request['selectedRole'] == 'Trainer') {
                 $trainerArea = TrainerArea::where('user_id', $user->id);
                 if($trainerArea->count() > 0){
                     $trainerArea->first()->update(['area_id' => $request->area]);

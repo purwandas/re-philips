@@ -50,9 +50,13 @@ class UserPromoterController extends Controller
      */
     public function masterDataTable(Request $request){
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        
         $data = User::
-            where('id', '<>', Auth::user()->id)
-            ->whereIn('role',$roles);
+            join('roles','roles.id','users.role_id')
+            ->leftJoin('gradings','gradings.id','users.grading_id')
+            ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->where('users.id', '<>', Auth::user()->id)
+            ->whereIn('role_group',$roles);
 
 //        $data = User::all();
 
@@ -136,11 +140,23 @@ class UserPromoterController extends Controller
                 })
                 ->addColumn('area', function ($item) {
                     $store = EmployeeStore::
-                                        with('store.district.area')
-                                        ->where('user_id', $item->id)
-                                        ->first();
-
-                    $area = (isset($store->store->district->area->name)) ? $store->store->district->area->name : '';
+                                        where('employee_stores.user_id', $item->id)
+                                        ->join('stores','stores.id','employee_stores.store_id')
+                                        ->join('districts','districts.id','stores.district_id')
+                                        ->join('areas','areas.id','districts.area_id')
+                                        ->groupBy('areas.id')
+                                        ->select('areas.name as area_name')
+                                        ->get();
+                        
+                        $area='';
+                        foreach ($store as $key => $value) {
+                            if ($key == 0) {
+                                $area = $value->area_name;
+                            }else{
+                                $area .= ", ".$value->area_name;
+                            }
+                        }
+                        return $area;
 
                     return $area;
 
@@ -202,7 +218,7 @@ class UserPromoterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:3|confirmed',
-            'role' => 'required|string',
+            'role_id' => 'required',
             'join_date' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
@@ -283,7 +299,7 @@ class UserPromoterController extends Controller
 
         $promoterArray = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        if(in_array($user->role, $promoterArray)){
+        if(in_array($user->role->role_group, $promoterArray)){
             $this->generateAttendace($user->id);
         }
         
@@ -341,18 +357,22 @@ class UserPromoterController extends Controller
     {
         $data = User::
             where('users.id', $id)
+            ->join('roles','roles.id','users.role_id')
+            ->leftJoin('gradings','gradings.id','users.grading_id')
             ->join('employee_stores','users.id','employee_stores.user_id')
             ->join('stores','employee_stores.store_id','stores.id')
-            ->select('users.*', 'stores.dedicate as dedicate')
+            ->select('users.*', 'stores.dedicate as dedicate', 'roles.id as role_id', 'roles.role_group as role_group', 'roles.role as role', 'gradings.id as grading_id', 'gradings.grading as grading')
             ->first();
 
-        if ($data->role == 'Salesman Explorer') {
+        if ($data->role_group == 'Salesman Explorer') {
             $salesmanDedicate = SalesmanDedicate::
                 with('store')
                 ->where('user_id',$data->id)
                 ->first();
             // $salesmanDedicate = $data->id;
         }
+
+        // return response()->json($data);  
 
         return view('master.form.userpromoter-form', compact('data','SalesmanDedicate'));
     }
@@ -366,10 +386,12 @@ class UserPromoterController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return response()->json($request['store_id']);
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users'. ($id ? ",id,$id" : ''),
-            'role' => 'required|string',
+            'email' => 'required|string|email|max:255|unique:users'. ($id ? ",email,$id" : ''),
+            'role_id' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
@@ -445,7 +467,7 @@ class UserPromoterController extends Controller
 
         $requestNew['name'] = $request['name'];
         $requestNew['email'] = $request['email'];
-        $requestNew['role'] = $request['role'];
+        $requestNew['role_id'] = $request['role_id'];
 
         $requestNew['status'] = null;
         $requestNew['nik'] = null;
@@ -458,10 +480,10 @@ class UserPromoterController extends Controller
             $requestNew['nik'] = $request['nik'];
         }
 
-        $requestNew['grading'] = null;
+        $requestNew['grading_id'] = null;
 
-        if($request['grading']){
-            $requestNew['grading'] = $request['grading'];
+        if($request['grading_id']){
+            $requestNew['grading_id'] = $request['grading_id'];
         }
 
         $requestNew['join_date'] = $request['join_date'];
