@@ -129,7 +129,7 @@ trait SummaryTrait {
 
             foreach ($sellInDetail as $detail){
 
-                if($detail->sellIn->user->role != 'Salesman Explorer') {
+                if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
 
                     $summary = SummarySellIn::where('sellin_detail_id', $detail->id)->first();
 
