@@ -35,6 +35,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('userpromoter/{id}', 'UserPromoterController@update');
         Route::delete('userpromoter/{id}', 'UserPromoterController@destroy');
 
+        /** Sell In **/
+        Route::get('sellin', 'Master\SellInController@index');
+        Route::get('sellin/create', 'Master\SellInController@create');
+        Route::post('sellin', 'Master\SellInController@store');
+        // Route::get('sellin/edit/{id}', 'Master\SellInController@edit');
+        // Route::patch('sellin/{id}', 'Master\SellInController@update');
+        Route::delete('sellin/{id}', 'Master\SellInController@destroy');
+
+
         /** FAQ **/
         Route::get('faq', 'Master\FaqController@index');
         Route::get('faq/create', 'Master\FaqController@create');

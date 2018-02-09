@@ -18,6 +18,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/user', ['as'=> 'datatable.user','uses'=>'UserController@masterDataTable']);
     Route::post('datatable/userpromoter', ['as'=> 'datatable.userpromoter','uses'=>'UserPromoterController@masterDataTable']);
     Route::post('datatable/area', ['as'=> 'datatable.area','uses'=>'Master\AreaController@masterDataTable']);
+    Route::post('datatable/sellin', ['as'=> 'datatable.sellin','uses'=>'Master\SellinController@masterDataTable']);
     Route::post('datatable/district', ['as'=> 'datatable.district','uses'=>'Master\DistrictController@masterDataTable']);
     Route::post('datatable/channel', ['as'=> 'datatable.channel','uses'=>'Master\ChannelController@masterDataTable']);
     Route::post('datatable/subchannel', ['as'=> 'datatable.subchannel','uses'=>'Master\SubChannelController@masterDataTable']);
