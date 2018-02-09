@@ -100,7 +100,9 @@ class InitAttendance extends Command
 
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $employee = User::whereIn('role', $role)->get();
+        $employee = User::whereHas('role', function($query) use ($role){
+                        return $query->whereIn('role_group', $role);
+                    })->get();
 
         return $employee;
     }
