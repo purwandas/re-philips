@@ -11,6 +11,7 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Store;
+use App\RsmRegion;
 use App\Tbat;
 use App\TbatDetail;
 use App\Filters\TbatFilters;
@@ -37,7 +38,7 @@ class EditTbatController extends Controller
      */
     public function masterDataTable(Request $request){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         $data = Tbat::
                     where('tbats.deleted_at', null)

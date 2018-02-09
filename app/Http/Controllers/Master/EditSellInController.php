@@ -11,6 +11,7 @@ use App\Traits\SalesTrait;
 use DB;
 use Auth;
 use App\Store;
+use App\RsmRegion;
 use Carbon\Carbon;
 use App\SellIn;
 use App\SellInDetail;
@@ -36,7 +37,7 @@ class EditSellInController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function masterDataTable(Request $request){
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         $data = SellIn::
