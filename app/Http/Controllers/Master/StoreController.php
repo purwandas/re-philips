@@ -75,7 +75,7 @@ class StoreController extends Controller
     // Data for select2 with Filters
     public function getDataWithFilters(StoreFilters $filters){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
         $data = Store::filter($filters)->get();
@@ -136,6 +136,12 @@ class StoreController extends Controller
                 ->addColumn('globalchannel_name', function ($item) {
                     if (isset($item->subchannel_id)) {
                         return $item->subChannel->channel->globalChannel->name;
+                    }
+                    return '';
+                })
+                ->addColumn('classification_id', function ($item) {
+                    if (isset($item->classification->classification)) {
+                        return $item->classification->classification;
                     }
                     return '';
                 })
