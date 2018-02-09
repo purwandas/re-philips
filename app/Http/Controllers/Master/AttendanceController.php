@@ -48,7 +48,7 @@ class AttendanceController extends Controller
         $attendanceHeader = Attendance::where('user_id', $user->id)->where('date', '=', date('Y-m-d'))->first();
 
         // Response if header was not set (command -> init:attendance)
-        if($user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid' || $user->role == 'DM' || $user->role == 'Trainer' || $user->role == 'RSM' || $user->role == 'Salesman Explorer'){
+        if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'DM' || $user->role->role_group == 'Trainer' || $user->role->role_group == 'RSM' || $user->role->role_group == 'Salesman Explorer'){
 
             if(!$attendanceHeader) {
                 $attendanceHeader = Attendance::create([
@@ -113,7 +113,7 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
             
-            if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
+            if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid') {
 
                 /* Set Visit Status */
                 $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $request['store_id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
