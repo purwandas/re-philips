@@ -80,22 +80,10 @@
 
 				          <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="role" id="role" required>
-
-                                	<option value="Driver" {{ (@$data->role == 'Driver') ? "selected" : "" }}>Driver</option>
-                                	<option value="Helper" {{ (@$data->role == 'Helper') ? "selected" : "" }}>Helper</option>
-                                	<option value="PCE" {{ (@$data->role == 'PCE') ? "selected" : "" }}>PCE</option>
-                                	<option value="RE Executive" {{ (@$data->role == 'RE Executive') ? "selected" : "" }}>RE Executive</option>
-                                	<option value="RE Support" {{ (@$data->role == 'RE Support') ? "selected" : "" }}>RE Support</option>
-                                	<option value="Supervisor" {{ (@$data->role == 'Supervisor') ? "selected" : "" }}>Supervisor</option>
-                                	<option value="Trainer" {{ (@$data->role == 'Trainer') ? "selected" : "" }}>Trainer</option>
-                                	<option value="Head Trainer" {{ (@$data->role == 'Head Trainer') ? "selected" : "" }}>Head Trainer</option>
-                                	<option value="Supervisor Hybrid" {{ (@$data->role == 'Supervisor Hybrid') ? "selected" : "" }}>Supervisor Hybrid</option>
-                                	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
-                                	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>Admin</option>                                	
+                                <select class="select2select" name="role_id" id="role" required>
+                                	<option></option>                                	
                                 </select>
-                               	
+                               	<input type="hidden" id="selectedRole" name="selectedRole">
                                 <span class="input-group-addon display-hide">
                                 	<i class="fa"></i>
                                 </span>
@@ -455,7 +443,9 @@
 	        }));
 
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
-	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
+	         	var selectedRolev = $('#selectedRole').val();
+				selectedRolev = selectedRolev.split('`');
+	         	if (selectedRolev[1] == 'Supervisor' || selectedRolev[1] == 'Supervisor Hybrid') {
 		        	filters['bySpvNew'] = $('#penampungUserId').val();
 		        	var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
 		        	if (statusSpv == "Demonstrator") {
@@ -473,17 +463,28 @@
 	            }
 	        }));
 
-	       	$('#role').select2({
-                width: '100%',
-                placeholder: 'Role'
-            });
+	       	$('#role').select2(setOptions('{{ route("data.role") }}', 'Role', function (params) {
+	       		filters['nonPromoterGroup'] = '1';
+	       		@if (Auth::user()->role->role_group != 'Master')
+		          filters['nonMaster'] = '1';
+		        @endif
+	            return filterData('role', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {            
+	                    return {id: obj.id+"`"+obj.role_group, text: obj.role}
+	                })
+	            }
+	        }));
+			setSelect2IfPatch($("#role"), "{{ @$data->role->id }}`{{ @$data->role->role_group }}", "{{ @$data->role->role }}");
+			$('#selectedRole').val("{{ @$data->role->id }}`{{ @$data->role->role_group }}");
 
             $('#dedicate').select2({
                 width: '100%',
                 placeholder: 'Dedicate'
             });
 
-            setForm($('#role').val());
+            setForm($('#selectedRole').val());
 
 		});
 
@@ -527,7 +528,9 @@
 			resetForm();
 			resetStore();
 
-			if(role == 'DM'){
+			role = role.split('`');
+
+			if(role[1] == 'DM'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
 				setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
@@ -541,27 +544,27 @@
 				$('#dedicateContent').addClass('display-hide');
 			}
 
-			if(role == 'Trainer'){
+			if(role[1] == 'Trainer'){
 				$('#area').attr('required', 'required');
 				setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
 				document.getElementById('areaTitle').innerHTML = "TRAINER AREA";
 				$('#dmContent').removeClass('display-hide');
 			}
 
-			if(role == 'RSM'){
+			if(role[1] == 'RSM'){
 				$('#region').attr('required', 'required');
 				setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
 				$('#rsmContent').removeClass('display-hide');
 			}
 
-			if (role == 'Supervisor' || role == 'Supervisor Hybrid') {
+			if (role[1] == 'Supervisor' || role[1] == 'Supervisor Hybrid') {
 
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
 	            $('#stores').attr('required', 'required');
 	            $('#dedicateContent').removeClass('display-hide');
 
-	            if (role == 'Supervisor') {
+	            if (role[1] == 'Supervisor') {
 			       	$('#statusSpv').removeClass('display-hide');
 			       	$('#dedicate').attr('required', 'required');
 			       	$('#statusSpvCheck').attr('required', 'required');
@@ -588,7 +591,7 @@
 			if(checkPromoter()){
 				$('#statusCheck').attr('required', 'required');
 
-				if(role == 'Salesman Explorer'){
+				if(role[1] == 'Salesman Explorer'){
 					$('input[type=radio][name=status][value=mobile]').attr('checked', 'checked');
 //				    $('#statusContent').removeClass('display-hide');
 				}else{
@@ -610,7 +613,9 @@
 
 		// Reset store
 		function resetStore(){
-			var role = $('#role').val();
+			var role = $('#selectedRole').val();
+			var selectedRolev = role.split('`');
+			console.log("role"+selectedRolev[1]);
 
 			$('#store').removeAttr('required');
 			$('#stores').removeAttr('required');
@@ -633,7 +638,7 @@
 			}			
 
 			
-			if($('input[name=_method]').val() == "PATCH" && (role == 'Supervisor' || role == 'Supervisor Hybrid')){
+			if($('input[name=_method]').val() == "PATCH" && (selectedRolev[1] == 'Supervisor' || selectedRolev[1] == 'Supervisor Hybrid')){
 				select2Reset($('#stores'));
 				updateStoreSpv();
 				updateStoreSpvDemo();
@@ -689,9 +694,10 @@
 
 		// Check admin
 		function checkAdmin(){
-			var role = $('#role').val();
+			var role = $('#selectedRole').val();
+			var selectedRolev = role.split('`');
 
-			if(role == 'DM' || role == 'RSM' || role == 'Admin'){
+			if(selectedRolev[1] == 'DM' || selectedRolev[1] == 'RSM' || selectedRolev[1] == 'Admin'){
 				return true;
 			}
 
@@ -700,9 +706,10 @@
 
 		// Check promoter group
 		function checkPromoter(){
-			var role = $('#role').val();
+			var role = $('#selectedRole').val();
+			var selectedRolev = role.split('`');
 
-			if(role == 'Promoter' || role == 'Promoter Additional' || role == 'Promoter Event' || role == 'Demonstrator MCC' || role == 'Demonstrator DA' || role == 'ACT'  || role == 'PPE' || role == 'BDT' || role == 'Salesman Explorer' || role == 'SMD' || role == 'SMD Coordinator' || role == 'HIC' || role == 'HIE' || role == 'SMD Additional' || role == 'ASC'){
+			if(selectedRolev[1] == 'Promoter' || selectedRolev[1] == 'Promoter Additional' || selectedRolev[1] == 'Promoter Event' || selectedRolev[1] == 'Demonstrator MCC' || selectedRolev[1] == 'Demonstrator DA' || selectedRolev[1] == 'ACT'  || selectedRolev[1] == 'PPE' || selectedRolev[1] == 'BDT' || selectedRolev[1] == 'Salesman Explorer' || selectedRolev[1] == 'SMD' || selectedRolev[1] == 'SMD Coordinator' || selectedRolev[1] == 'HIC' || selectedRolev[1] == 'HIE' || selectedRolev[1] == 'SMD Additional' || selectedRolev[1] == 'ASC'){
 				return true;
 			}
 
@@ -734,7 +741,7 @@
 		 */ 
 		$(document.body).on("change","#role",function(){
 
-		    setForm($('#role').val());
+		    setForm($('#selectedRole').val());
 		    
 		});
 
@@ -772,11 +779,10 @@
 		    //     setStore(this.value);
 		    // });
 
-		    // On Change Dedicate
-		    // $('#dedicate').change(function() {
-		    //     $("#store").val('').change();
-		    //     $("#stores").val('').change();
-		    // });
+		    // On Change Role
+		    $('#role').change(function() {
+		        $("#selectedRole").val($("#role option:selected").val());
+		    });
 
 		    // $('div').removeClass('display-hide');
 		});

@@ -180,7 +180,7 @@
                 {data: 'id', name: 'id'}, 
                 {data: 'nik', name: 'nik'},               
                 {data: 'name', name: 'name'},
-                {data: 'role', name: 'role'},
+                {data: 'roles', name: 'roles'},
                 {data: 'area', name: 'area'},
                 {data: 'join_date', name: 'join_date'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                

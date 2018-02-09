@@ -57,7 +57,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Input Username" disabled />
+				            	<input type="text" id="name" name="name" class="form-control" value="{{ @$data->name }}" placeholder="Username" disabled />
 				            </div>
 				          </div>
 				        </div>
@@ -67,7 +67,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="email" name="email" class="form-control" value="{{ @$data->email }}" placeholder="Input Email" disabled />
+				            	<input type="text" id="email" name="email" class="form-control" value="{{ @$data->email }}" placeholder="Email" disabled />
 				            </div>
 				          </div>
 				        </div>
@@ -75,24 +75,10 @@
 				        <div class="form-group">
 				          <label class="col-sm-2 control-label">Role</label>
 				          <div class="col-sm-9">
-
-				          <div class="input-group" style="width: 100%;">
-     
-                                <select class="select2select" name="role" id="role" required disabled>
-                                	<option value="DM" {{ (@$data->role == 'DM') ? "selected" : "" }}>DM</option>
-                                	<option value="RSM" {{ (@$data->role == 'RSM') ? "selected" : "" }}>RSM</option>
-                                	<option value="Admin" {{ (@$data->role == 'Admin') ? "selected" : "" }}>ADMIN</option>
-                                	@if(Auth::user()->role == 'Master')
-                                	<option value="Master" {{ (@$data->role == 'Master') ? "selected" : "" }}>Master Admin</option>
-                                	@endif
-                                </select>
-                               	
-                                <span class="input-group-addon display-hide">
-                                	<i class="fa"></i>
-                                </span>
-
-              				</div>
-				            
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="role" name="role" class="form-control" value="{{ @$data->role->role_group }}" placeholder="Role" disabled />
+				            </div>
 				          </div>
 				        </div>
 				        <div class="form-group">
@@ -105,13 +91,13 @@
 				          </div>
 				        </div>
 
-                		@if(Auth::user()->role == 'Promoter' || Auth::user()->role == 'Promoter Additional' || Auth::user()->role == 'Promoter Event' || Auth::user()->role == 'Demonstrator MCC' || Auth::user()->role == 'Demonstrator DA' || Auth::user()->role == 'ACT'  || Auth::user()->role == 'PPE' || Auth::user()->role == 'BDT' || Auth::user()->role == 'Salesman Explorer' || Auth::user()->role == 'SMD' || Auth::user()->role == 'SMD Coordinator' || Auth::user()->role == 'HIC' || Auth::user()->role == 'HIE' || Auth::user()->role == 'SMD Additional' || Auth::user()->role == 'ASC')
+                		@if(Auth::user()->role->role_group == 'Promoter' || Auth::user()->role->role_group == 'Promoter Additional' || Auth::user()->role->role_group == 'Promoter Event' || Auth::user()->role->role_group == 'Demonstrator MCC' || Auth::user()->role->role_group == 'Demonstrator DA' || Auth::user()->role->role_group == 'ACT'  || Auth::user()->role->role_group == 'PPE' || Auth::user()->role->role_group == 'BDT' || Auth::user()->role->role_group == 'Salesman Explorer' || Auth::user()->role->role_group == 'SMD' || Auth::user()->role->role_group == 'SMD Coordinator' || Auth::user()->role->role_group == 'HIC' || Auth::user()->role->role_group == 'HIE' || Auth::user()->role->role_group == 'SMD Additional' || Auth::user()->role->role_group == 'ASC')
 							<div class="form-group">
 					          <label class="col-sm-2 control-label">Grading</label>
 					          <div class="col-sm-9">
 					          	<div class="input-icon right">
 					          		<i class="fa"></i>
-					            	<input type="text" id="grading" name="grading" class="form-control" value="{{ @$data->grading }}" placeholder="Grading" disabled/>
+					            	<input type="text" id="grading" name="grading" class="form-control" value="{{ @$data->grading->grading }}" placeholder="Grading" disabled/>
 					            </div>
 					          </div>
 					        </div>
@@ -206,13 +192,6 @@
 	            	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 	            }
 	        });
-
-
-	       $('#role').select2({
-                        width: '100%',
-                        placeholder: 'Role'
-                    })      	     
-
 		});
 
 	</script>

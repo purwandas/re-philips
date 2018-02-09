@@ -250,13 +250,8 @@
 
 					          <div class="input-group" style="width: 100%;">
 
-	                                <select class="select2select" name="classification" id="classification" required>
+	                                <select class="select2select" name="classification_id" id="classification" required>
 	                                	<option></option>
-										<option value="New Store">New Store</option>
-										<option value="Gold">Gold</option>
-										<option value="Platinum">Platinum</option>
-										<option value="Silver">Silver</option>
-										<option value="Don`t have any classification">Don`t have any classification</option>
 	                                </select>
 
 	                                <span class="input-group-addon display-hide">
@@ -404,10 +399,16 @@
 	            }
 	        }));
 
-	        $('#classification').select2({
-                width: '100%',
-                placeholder: 'Classification'
-            });
+
+            $('#classification').select2(setOptions('{{ route("data.classification") }}', 'Classification', function (params) {
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {
+	                    return {id: obj.id, text: obj.classification}
+	                })
+	            }
+	        }));
 
             $('#kepemilikan_toko').select2({
                 width: '100%',
@@ -437,7 +438,7 @@
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
-	       setSelect2IfPatch($("#classification"), "{{ @$data->classification }}", "{{ @$data->classification }}");
+	       setSelect2IfPatch($("#classification"), "{{ @$data->classification->id }}", "{{ @$data->classification->classification }}");
 
 	       setSelect2IfPatch($("#kepemilikan_toko"), "{{ @$data->kepemilikan_toko }}", "{{ @$data->kepemilikan_toko }}");
 	       setSelect2IfPatch($("#lokasi_toko"), "{{ @$data->lokasi_toko }}", "{{ @$data->lokasi_toko }}");

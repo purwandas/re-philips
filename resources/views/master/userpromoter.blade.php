@@ -175,7 +175,7 @@
                 {data: 'id', name: 'id'}, 
                 {data: 'nik', name: 'nik'},               
                 {data: 'name', name: 'name'},
-                {data: 'role', name: 'role'},
+                {data: 'roles', name: 'roles'},
                 {data: 'status', name: 'status'},
                 {data: 'join_date', name: 'join_date'},
                 {data: 'grading', name: 'grading'},

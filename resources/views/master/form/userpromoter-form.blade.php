@@ -58,7 +58,7 @@
 	        <div class="portlet-body" style="padding: 15px;">
 
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_user" class="form-horizontal" action="{{ url('userpromoter', @$data->id) }}" method="POST">	        	
+	        	<form id="form_user" class="form-horizontal" action="{{ url('userpromoter', @$data->id) }}" method="POST">	
 			        {{ csrf_field() }}
 			        @if (!empty($data))
 			          {{ method_field('PATCH') }}
@@ -81,26 +81,10 @@
 
 				          <div class="input-group" style="width: 100%;">
      
-                                <select class="select2select" name="role" id="role" required>
-                                	<option></option>
-                                	<option value="Promoter" {{ (@$data->role == 'Promoter') ? "selected" : "" }}>Promoter</option>
-                                	<option value="Promoter Additional" {{ (@$data->role == 'Promoter Additional') ? 
-                                	"selected" : "" }}>Promoter Additional</option>
-                                	<option value="Promoter Event" {{ (@$data->role == 'Promoter Event') ? "selected" : "" }}>Promoter Event</option>
-                                	<option value="Demonstrator MCC" {{ (@$data->role == 'Demonstrator MCC') ? "selected" : "" }}>Demonstrator MCC</option>
-                                	<option value="Demonstrator DA" {{ (@$data->role == 'Demonstrator DA') ? "selected" : "" }}>Demonstrator DA</option>
-                                	<option value="ACT" {{ (@$data->role == 'ACT') ? "selected" : "" }}>ACT</option>
-                                	<option value="PPE" {{ (@$data->role == 'PPE') ? "selected" : "" }}>PPE</option>
-                                	<option value="BDT" {{ (@$data->role == 'BDT') ? "selected" : "" }}>BDT</option>
-                                	<option value="Salesman Explorer" {{ (@$data->role == 'Salesman Explorer') ? "selected" : "" }}>Salesman Explorer</option>
-                                	<option value="SMD" {{ (@$data->role == 'SMD') ? "selected" : "" }}>SMD</option>
-                                	<option value="SMD Coordinator" {{ (@$data->role == 'SMD Coordinator') ? "selected" : "" }}>SMD Coordinator</option>
-                                	<option value="HIC" {{ (@$data->role == 'HIC') ? "selected" : "" }}>HIC</option>
-                                	<option value="HIE" {{ (@$data->role == 'HIE') ? "selected" : "" }}>HIE</option>
-                                	<option value="SMD Additional" {{ (@$data->role == 'SMD Additional') ? "selected" : "" }}>SMD Additional</option>
-                                	<option value="ASC" {{ (@$data->role == 'ASC') ? "selected" : "" }}>ASC</option>
+                                <select class="select2select" name="role_id" id="role" required>
+                                	<option></option>                                	
                                 </select>
-                               	
+                               	<input type="hidden" id="selectedRole" name="selectedRole">
                                 <span class="input-group-addon display-hide">
                                 	<i class="fa"></i>
                                 </span>
@@ -167,11 +151,8 @@
 					          <div class="col-sm-9">
 					          	<div style="width: 100%;" class="input-group input-icon right">
 						          		<i class="fa"></i>
-	                                        <select class="select2select" name="grading" id="grading">
+	                                        <select class="select2select" name="grading_id" id="grading">
 	                                        	<option></option>
-												<option value="Associate">Associate</option>
-												<option value="Starfour">Starfour</option>
-												<option value="Non-Starfour">Non-Starfour</option>
 											</select>
 	                                        <span></span>
 	                                </div>
@@ -188,7 +169,7 @@
 	                                        <span></span>
 	                                    </label>
 	                                    <label class="mt-radio">
-	                                        <input type="radio" name="status" value="mobile" {{ (@$data->status == 'mobile') ? "checked" : "" }}> Mobile
+	                                        <input id="statusCheck2" type="radio" name="status" value="mobile" {{ (@$data->status == 'mobile') ? "checked" : "" }}> Mobile
 	                                        <span></span>
 	                                    </label>
 	                                </div>
@@ -420,13 +401,13 @@
 
     <script>
     	var userId = "{{ collect(request()->segments())->last() }}";
-    	var kampret = '{{ @$salesmanDedicate->dedicate }}';
-
-
+    	
 		$(document).ready(function () {
 
 			var x = unescape("{{ @$salesmanDedicate->dedicate }}");
-			console.log(x);
+
+			// $( "#statusCheck2" ).prop( "checked", true );
+			$('input:radio[name=status]:nth(0)').attr('checked',true);
 
 			$.ajaxSetup({
 	        	headers: {
@@ -457,7 +438,9 @@
 	        }));
 
 	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
-	            if($('#role').val() != 'Salesman Explorer')
+	        	var role = $('#selectedRole').val();
+	        	role = role.split('`');
+	            if(role[1] != 'Salesman Explorer')
 	            {
             		// filters['byDedicate'] = $('#dedicate').val();
             		filters['byDedicateSpv'] = $('#dedicate').val();
@@ -472,10 +455,13 @@
 	        }));
 
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
-	         	if ($('#role').val() == 'Supervisor' || $('#role').val() == 'Supervisor Hybrid') {
+	         	var role = $('#selectedRole').val();
+	        	role = role.split('`');
+
+	         	if (role[1] == 'Supervisor' || role[1] == 'Supervisor Hybrid') {
 		        	filters['bySpv'] = $('#penampungUserId').val();
 		        }
-		        if($('#role').val() != 'Salesman Explorer')
+		        if(role[1] != 'Salesman Explorer')
 		        {
 	        		// filters['byDedicate'] = $('#dedicate').val();
 	        		filters['byDedicateSpv'] = $('#dedicate').val();
@@ -489,35 +475,47 @@
 	            }
 	        }));
 
-	       	$('#role').select2({
-                width: '100%',
-                placeholder: 'Role'
-            });
+	       	$('#role').select2(setOptions('{{ route("data.role") }}', 'Role', function (params) {
+	       		filters['promoterGroup'] = '1';
+	            return filterData('role', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {            
+	                    return {id: obj.id+"`"+obj.role_group, text: obj.role}
+	                })
+	            }
+	        }));
+			
+			$('#selectedRole').val("{{ @$data->role_id }}`{{ @$data->role_group }}");				
+
+			setSelect2IfPatch($("#role"), $('#selectedRole').val(), "{{ @$data->role }}");
 
             $('#dedicate').select2({
                 width: '100%',
                 placeholder: 'Dedicate'
             });
 
-            $('#grading').select2({
-                width: '100%',
-                placeholder: 'Grading'
-            });
+            
+            $('#grading').select2(setOptions('{{ route("data.grading") }}', 'Grading', function (params) {
+	            return filterData('grading', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {            
+	                    return {id: obj.id, text: obj.grading}
+	                })
+	            }
+	        }));
+            setSelect2IfPatch(
+		    	$("#grading"),'{{( @$data->grading_id ) ? @$data->grading_id  : "" }}','{{( @$data->grading ) ? @$data->grading  : "" }}'
+			    );
 
             $('#salesman_dedicate').select2({
                 width: '100%',
                 placeholder: 'Dedicate'
             });            
 
-            setForm($('#role').val());
 
-            setSelect2IfPatch(
-		    	$("#grading"),
-		    	'{{( @$data->grading ) ? @$data->grading  : "" }}',
-		    	'{{( @$data->grading ) ? @$data->grading  : "" }}'
-		    );
-
-		  	
+            setForm($('#selectedRole').val());		  	
 
 		});
 
@@ -554,6 +552,9 @@
 			resetForm();
 			resetStore();
 
+
+			role = role.split('`');
+
 			if(!checkPromoter()){
 				$('input[type=radio][name=status]').prop('checked', false);
 			}
@@ -561,7 +562,7 @@
 			if(checkPromoter()){
 				$('#statusCheck').attr('required', 'required');
 
-				if(role == 'Salesman Explorer'){
+				if(role[1] == 'Salesman Explorer'){
 					$('input[type=radio][name=status][value=mobile]').prop('checked', true);
 					status = 'mobile';
 				    $('#multipleStoreContent').removeClass('display-hide');
@@ -621,7 +622,7 @@
 		function updateStore(){
 			var getDataUrl = "{{ url('util/empstore/') }}";
 			var status = $('input[name=status]:checked').val();
-                    console.log(status);
+                    // console.log(status);
 
 			$.get(getDataUrl + '/' + userId, function (data) {
 				if(data){
@@ -657,9 +658,10 @@
 
 		// Check promoter group
 		function checkPromoter(){
-			var role = $('#role').val();
+			var role = $('#selectedRole').val();
+			role = role.split('`');
 
-			if(role == 'Promoter' || role == 'Promoter Additional' || role == 'Promoter Event' || role == 'Demonstrator MCC' || role == 'Demonstrator DA' || role == 'ACT'  || role == 'PPE' || role == 'BDT' || role == 'Salesman Explorer' || role == 'SMD' || role == 'SMD Coordinator' || role == 'HIC' || role == 'HIE' || role == 'SMD Additional' || role == 'ASC'){
+			if(role[1] == 'Promoter' || role[1] == 'Promoter Additional' || role[1] == 'Promoter Event' || role[1] == 'Demonstrator MCC' || role[1] == 'Demonstrator DA' || role[1] == 'ACT'  || role[1] == 'PPE' || role[1] == 'BDT' || role[1] == 'Salesman Explorer' || role[1] == 'SMD' || role[1] == 'SMD Coordinator' || role[1] == 'HIC' || role[1] == 'HIE' || role[1] == 'SMD Additional' || role[1] == 'ASC'){
 				return true;
 			}
 
@@ -690,7 +692,7 @@
 		 */ 
 		$(document.body).on("change","#role",function(){
 
-		    setForm($('#role').val());
+		    setForm($('#selectedRole').val());
 		    
 		});
 
@@ -702,6 +704,11 @@
 		    $('input[type=radio][name=status]').change(function() {
 		        resetStore();
 		        setStore(this.value);
+		    });
+
+		    // On Change Role
+		    $('#role').change(function() {
+		        $("#selectedRole").val($("#role option:selected").val());
 		    });
 
 		    // On Change Dedicate
