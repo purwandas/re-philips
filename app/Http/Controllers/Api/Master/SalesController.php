@@ -77,7 +77,7 @@ class SalesController extends Controller
 
                                 /** Update Summary **/
 
-                                if($user->role != 'Salesman Explorer') {
+                                if($user->role->role_group != 'Salesman Explorer') {
 
                                     $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
 
@@ -164,7 +164,7 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role == 'Salesman Explorer') {
+                                if($user->role->role_group == 'Salesman Explorer') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -249,7 +249,7 @@ class SalesController extends Controller
                                     }
                                 }
 
-                                if($user->role != 'Salesman Explorer') {
+                                if($user->role->role_group != 'Salesman Explorer') {
                                     if (isset($store->subChannel->channel->name)){
                                         $channel = $store->subChannel->channel->name;
                                     }else{
@@ -296,7 +296,9 @@ class SalesController extends Controller
                                         'value_pf_mr' => $value_pf_mr,
                                         'value_pf_tr' => $value_pf_tr,
                                         'value_pf_ppe' => $value_pf_ppe,
-                                        'role' => $user->role,
+                                        'role' => $user->role->role,
+                                        'role_id' => $user->role->id,
+                                        'role_group' => $user->role->role_group,
                                         'spv_name' => $spvName,
                                         'dm_name' => $dm_name,
                                         'trainer_name' => $trainer_name,
@@ -367,7 +369,9 @@ class SalesController extends Controller
                                         'unit_price' => $realPrice,
                                         'value' => $realPrice * $detail->quantity,
                                         'value_pf' => $value_pf,
-                                        'role' => $user->role,
+                                        'role' => $user->role->role,
+                                        'role_id' => $user->role->id,
+                                        'role_group' => $user->role->role_group,
                                     ]);
 
                                     // Actual Summary
@@ -440,7 +444,7 @@ class SalesController extends Controller
 
                             /* Price */
                             $realPrice = 0;
-                            if($user->role == 'Salesman Explorer') {
+                            if($user->role->role_group == 'Salesman Explorer') {
                                 if (isset($store->subChannel->channel->globalChannel->id)) {
                                     $price = Price::where('product_id', $product->id)
                                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -525,7 +529,7 @@ class SalesController extends Controller
                                 }
                             }
 
-                            if($user->role != 'Salesman Explorer') {
+                            if($user->role->role_group != 'Salesman Explorer') {
                                 if (isset($store->subChannel->channel->name)){
                                     $channel = $store->subChannel->channel->name;
                                 }else{
@@ -572,7 +576,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => $value_pf_mr,
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -645,7 +651,9 @@ class SalesController extends Controller
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $detail->quantity,
                                     'value_pf' => $value_pf,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                 ]);
 
                                 // Actual Summary
@@ -867,7 +875,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => $value_pf_mr,
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -1050,7 +1060,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => $value_pf_mr,
                                 'value_pf_tr' => $value_pf_tr,
                                 'value_pf_ppe' => $value_pf_ppe,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -1237,7 +1249,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -1393,7 +1407,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -1569,7 +1585,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -1725,7 +1743,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -1901,7 +1921,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -2057,7 +2079,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -2252,7 +2276,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'spv_name2' => $spvName2,
                                     'dm_name' => $dm_name,
@@ -2431,7 +2457,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'spv_name2' => $spvName2,
                                 'dm_name' => $dm_name,
