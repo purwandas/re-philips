@@ -181,7 +181,9 @@ class UtilController extends Controller
         $quiz = TargetQuiz::where('target_quizs.deleted_at', null)
                     ->where('target_quizs.quiz_id', $quizId)
                     ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
-                    ->select('quiz_targets.id','quiz_targets.role','quiz_targets.grading')
+                    ->join('roles','roles.id','quiz_targets.role_id')
+                    ->join('gradings','gradings.id','quiz_targets.grading_id')
+                    ->select('quiz_targets.id','quiz_targets.role_id','quiz_targets.grading_id','roles.role','gradings.grading')
                     ->get();
 
         return response()->json($quiz);
@@ -255,7 +257,8 @@ class UtilController extends Controller
                     whereNull('sales_activities.status')
                     ->orwhere('sales_activities.status',0)
                     ->join('users','users.id','sales_activities.user_id')
-                    ->select('sales_activities.*','users.name','users.role');
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('sales_activities.*','users.name','roles.role');
 
         return response()->json([
             'count' => $activity->count(),
