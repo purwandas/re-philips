@@ -189,11 +189,9 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
-
-
 
             if ($userRole == 'RSM') {
                 $region = RsmRegion::where('user_id', $userId)
@@ -274,7 +272,7 @@ class ReportController extends Controller
         }else{ // Fetch data from history
 
             $historyData = new Collection();
-
+            // return response()->json("kampret");
             $history = HistorySellIn::where('year', $yearRequest)
                         ->where('month', $monthRequest)->get();
 
@@ -313,13 +311,15 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
+                        $collection['value_pf_mr'] = number_format($transaction->value_pf_mr);
+                        $collection['value_pf_tr'] = number_format($transaction->value_pf_tr);
+                        $collection['value_pf_ppe'] = number_format($transaction->value_pf_ppe);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -331,6 +331,8 @@ class ReportController extends Controller
                 }
 
             }
+
+            // return response()->json($historyData);
 
             $filter = $historyData;
 
@@ -384,27 +386,9 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
 
-
+            // return response()->json($filter);
 
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
-            ->editColumn('value_pf_mr', function ($item) {
-               return number_format($item->value_pf_mr);
-            })
-            ->editColumn('value_pf_tr', function ($item) {
-               return number_format($item->value_pf_tr);
-            })
-            ->editColumn('value_pf_ppe', function ($item) {
-               return number_format($item->value_pf_ppe);
-            })
             ->make(true);
 
         }
@@ -420,7 +404,7 @@ class ReportController extends Controller
         $yearNow = Carbon::now()->format('Y');
 
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -544,13 +528,15 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
-                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
-                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
-                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
+                        $collection['value_pf_mr'] = number_format($transaction->value_pf_mr);
+                        $collection['value_pf_tr'] = number_format($transaction->value_pf_tr);
+                        $collection['value_pf_ppe'] = number_format($transaction->value_pf_ppe);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -615,24 +601,6 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
-            ->editColumn('value_pf_mr', function ($item) {
-               return number_format($item->value_pf_mr);
-            })
-            ->editColumn('value_pf_tr', function ($item) {
-               return number_format($item->value_pf_tr);
-            })
-            ->editColumn('value_pf_ppe', function ($item) {
-               return number_format($item->value_pf_ppe);
-            })
             ->make(true);
 
         }
@@ -648,7 +616,7 @@ class ReportController extends Controller
         $yearNow = Carbon::now()->format('Y');
 
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -764,10 +732,12 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -832,15 +802,6 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             } 
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
             ->make(true);
 
         }
@@ -856,7 +817,7 @@ class ReportController extends Controller
         $yearNow = Carbon::now()->format('Y');
 
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -970,10 +931,12 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -1039,15 +1002,6 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
             ->make(true);
 
         }
@@ -1062,7 +1016,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -1188,10 +1142,12 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -1261,15 +1217,6 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
             ->make(true);
 
         }
@@ -1284,7 +1231,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -1398,10 +1345,12 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -1467,15 +1416,6 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
             ->make(true);
 
         }
@@ -1491,7 +1431,7 @@ class ReportController extends Controller
         $yearNow = Carbon::now()->format('Y');
 
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -1606,10 +1546,12 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -1674,15 +1616,6 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
             ->make(true);
 
         }
@@ -1697,7 +1630,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -1798,6 +1731,8 @@ class ReportController extends Controller
                         $collection['value_pf_tr'] = $transaction->value_pf_tr;
                         $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -1866,7 +1801,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -1974,10 +1909,12 @@ class ReportController extends Controller
                         $collection['promoter_name'] = $detail->promoter_name;
                         $collection['date'] = $detail->date;
                         $collection['category'] = $transaction->category;
-                        $collection['philips'] = $transaction->philips;
-                        $collection['all'] = $transaction->all;
+                        $collection['philips'] = number_format($transaction->philips);
+                        $collection['all'] = number_format($transaction->all);
                         $collection['percentage'] = $transaction->percentage;
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
                         $collection['spv_name'] = $detail->spv_name;
                         $collection['dm_name'] = $detail->dm_name;
                         $collection['trainer_name'] = $detail->trainer_name;
@@ -2043,12 +1980,6 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->editColumn('philips', function ($item) {
-               return number_format($item->philips);
-            })
-            ->editColumn('all', function ($item) {
-               return number_format($item->all);
-            })
             ->make(true);
 
         }
@@ -2063,11 +1994,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
-        $userId = Auth::user()->id;
-            // $withFilter = MaintenanceRequest::filter($filters)->get();
-
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
             $data = MaintenanceRequest::filter($filters)
@@ -2166,7 +2093,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
             $data = CompetitorActivity::
                       join('stores', 'competitor_activities.store_id', '=', 'stores.id')
@@ -2270,7 +2197,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
             $data = PromoActivity::
@@ -2375,7 +2302,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
             $data = PosmActivity::
@@ -2490,7 +2417,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         
             $data = Attendance::
@@ -2500,24 +2427,25 @@ class ReportController extends Controller
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'attendances.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
                     ->groupBy('attendances.user_id')
-                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'users.role as user_role')//,DB::raw('count(*) as total_hk'))
+                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')//,DB::raw('count(*) as total_hk'))
                     // ->where('attendances.status', '!=', 'Off')
                     ->get();
 
             $filter = $data;
 
             /* If filter */
-//            if($request['searchMonth']){
-//                $month = Carbon::parse($request['searchMonth'])->format('m');
-//                $year = Carbon::parse($request['searchMonth'])->format('Y');
-//                // $filter = $data->where('month', $month)->where('year', $year);
-//                $date1 = "$year-$month-01";
-//                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-//                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-//
-//                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-//            }
+           if($request['searchMonth']){
+               $month = Carbon::parse($request['searchMonth'])->format('m');
+               $year = Carbon::parse($request['searchMonth'])->format('Y');
+               // $filter = $data->where('month', $month)->where('year', $year);
+               $date1 = "$year-$month-01";
+               $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+               $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+               $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+           }
 
             if($request['byStore']){
                 $filter = $filter->where('store_id', $request['byStore']);
@@ -2597,7 +2525,7 @@ class ReportController extends Controller
                     $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
                     $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
-                // return $minDate.' / '.$maxDate;, 
+                // return $minDate.' / '.$maxDate; 
 
                     // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
                     $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
@@ -2610,19 +2538,30 @@ class ReportController extends Controller
                         ->where('attendances.date','<=',$maxDate)
                         ->where('attendances.user_id',$item->user_id)
                         ->join('users','users.id','attendances.user_id')
-                        ->whereIn('users.role',$promoterGroup)
+                        ->join('roles','roles.id','users.role_id')
+                        ->whereIn('roles.role_group',$promoterGroup)
                         ->orderBy('id','asc')
                         ->get()->all();
                     // return response()->json($dataDetail);
                     foreach ($dataDetail as $key => $value) {
                         $statusAttendance[] = $value->status;
+                        if ($key == 0) {
+                            if (substr($value->date,-2) > 1) {
+                                $joinDate = substr($value->date, -2);
+                                $execOnce = false;
+                            }
+                        }
                     }
                     // return $statusAttendance;
                     $report = '<table><tr>';
 
                     /* Repeat as much as max day in month */
                     
+                    // return $startNumber;
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    if (isset($joinDate)) {
+                        $totalDay -= ($joinDate-1);
+                    }
                     for ($i=1; $i <= $totalDay ; $i++) { 
 
                         $index = 0;
@@ -2630,14 +2569,14 @@ class ReportController extends Controller
                         $textColor = $text[0];
                         foreach ($status as $key => $value) {
                             // $index = $key;
-                            // if (isset($statusAttendance[$i-1])) {
+                            if (isset($statusAttendance[$i-1])) {
                                 if ($value == $statusAttendance[$i-1]) {
                                     $bgColor = $warna[$key];
                                     $textColor = $text[$key];
                                     $index = $key;
                                     break;
                                 }
-                            // }
+                            }
                         }
 
                         $dateNow = Carbon::now()->format('Y-m-d');
@@ -2656,18 +2595,37 @@ class ReportController extends Controller
                         }
 
                         if ($index == 1) {
+                            if (isset($joinDate)) {
+                                $data_id = ($item->id+1);
+                            }else{
+                                $data_id = $item->id;
+                            }
                             $report .= "<td 
-                            class='col-md-12 text-center open-attendance-detail-modal btn btn-primary' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$item->id."'
-                            style='background-color: $bgColor;color:$textColor;'
+                            class='text-center open-attendance-detail-modal cursor-pointer' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
+                            style='background-color: $bgColor;color:$textColor;width:200px;'
                             >";
                         }else{
+                            if (isset($joinDate) && $execOnce==false) {
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $report .= "<td 
+                                        class='text-center'
+                                        style='background-color: $tomorrowColor;color:black;width:200px;'
+                                        >";
+                                    $report .= "<b>$jd</b><br>-<td>";
+                                }
+                                $execOnce = true;
+                            }
                             $report .= "<td 
-                            class='col-md-12 text-center'
-                            style='background-color: $bgColor;color:$textColor;'
+                            class='text-center'
+                            style='background-color: $bgColor;color:$textColor;width:200px;'
                             >";
                         }
-                        
-                        $report .= "<b>$i</b><br>".$status[$index]."<td>";
+                        if (isset($joinDate)) {
+                            $displayDate = $i+$joinDate-1;
+                        }else{
+                            $displayDate = $i;
+                        }
+                        $report .= "<b>$displayDate</b><br>".$status[$index]."<td>";
                     }
 
                     $report .= '</tr></table>';
@@ -2677,11 +2635,11 @@ class ReportController extends Controller
                 $month = Carbon::parse($item->date)->format('m');
                 $year = Carbon::parse($item->date)->format('Y');
                 $minDate = "$year-$month-01";
-                $maxDate = date('Y-m-d');
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
 
                     $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
 
-                    /* Get data from attendanceDetails then convert them into colored table */
                     $dataDetail = Attendance::
                         select('attendances.*')
                         ->where('attendances.date','>=',$minDate)
@@ -2689,10 +2647,23 @@ class ReportController extends Controller
                         ->where('attendances.user_id',$item->user_id)
                         ->orderBy('id','asc')
                         ->get()->all();
+
                         $statusAttendance = '';
                     foreach ($dataDetail as $key => $value) {
                         if ($key==0) {
-                            $statusAttendance .= $value->status;
+                            if (substr($value->date,-2) > 1) {
+                                $joinDate = substr($value->date, -2);
+                                $execOnce = false;
+                            }
+
+                            if (isset($joinDate)) {
+                                $statusAttendance .= '-';
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $statusAttendance .= ',-';
+                                }
+                            }else{
+                                $statusAttendance .= $value->status;
+                            }
                         }else{
                             $statusAttendance .= ','.$value->status;
                         }
@@ -2709,13 +2680,14 @@ class ReportController extends Controller
 
 
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
             $data = VisitPlan::
                     join('stores', 'visit_plans.store_id', '=', 'stores.id')
                     ->join('users', 'visit_plans.user_id', '=', 'users.id')
-                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'users.role as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
                     ->get();
 
             $filter = $data;
@@ -2738,7 +2710,7 @@ class ReportController extends Controller
             }
 
             if($request['byRole'] != ''){
-                $filter = $filter->where('users.role', $request['byRole']);
+                $filter = $filter->where('roles.role_group', $request['byRole']);
             }
             
             // if ($userRole == 'RSM') {
@@ -2783,7 +2755,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
@@ -2893,11 +2865,13 @@ class ReportController extends Controller
                         $collection['group'] = $transaction->group;
                         $collection['category'] = $transaction->category;
                         $collection['product_name'] = $transaction->product_name;
-                        $collection['quantity'] = $transaction->quantity;
-                        $collection['unit_price'] = $transaction->unit_price;
-                        $collection['value'] = $transaction->value;
-                        $collection['value_pf'] = $transaction->value_pf;
+                        $collection['quantity'] = number_format($transaction->quantity);
+                        $collection['unit_price'] = number_format($transaction->unit_price);
+                        $collection['value'] = number_format($transaction->value);
+                        $collection['value_pf'] = number_format($transaction->value_pf);
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
 
                         $historyData->push($collection);
 
@@ -2957,15 +2931,6 @@ class ReportController extends Controller
             }
 
             return Datatables::of($filter->all())
-            ->editColumn('quantity', function ($item) {
-               return number_format($item->quantity);
-            })
-            ->editColumn('unit_price', function ($item) {
-               return number_format($item->unit_price);
-            })
-            ->editColumn('value', function ($item) {
-               return number_format($item->value);
-            })
             ->make(true);
 
         }
@@ -2980,7 +2945,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         
             // Fetch data from history
@@ -3036,16 +3001,16 @@ class ReportController extends Controller
                         $collection['category'] =  $detail->category; //
                         $collection['product_name'] =  $detail->product_name; //
                         $collection['unit_price'] =  $detail->unit_price; //
-                        $collection['quantity'] =  $detail->quantity; //
-                        $collection['value'] =  $detail->value; //
-                        $collection['value_pf_mr'] =  $detail->value_pf_mr; //
-                        $collection['value_pf_tr'] =  $detail->value_pf_tr; //
-                        $collection['value_pf_ppe'] =  $detail->value_pf_ppe; //
-                        $collection['new_quantity'] =  $detail->new_quantity;
-                        $collection['new_value'] =  $detail->new_value;
-                        $collection['new_value_pf_mr'] =  $detail->new_value_pf_mr;
-                        $collection['new_value_pf_tr'] =  $detail->new_value_pf_tr;
-                        $collection['new_value_pf_ppe'] =  $detail->new_value_pf_ppe;
+                        $collection['quantity'] =  number_format($detail->quantity); //
+                        $collection['value'] =  number_format($detail->value); //
+                        $collection['value_pf_mr'] =  number_format($detail->value_pf_mr); //
+                        $collection['value_pf_tr'] =  number_format($detail->value_pf_tr); //
+                        $collection['value_pf_ppe'] =  number_format($detail->value_pf_ppe); //
+                        $collection['new_quantity'] =  number_format($detail->new_quantity);
+                        $collection['new_value'] =  number_format($detail->new_value);
+                        $collection['new_value_pf_mr'] =  number_format($detail->new_value_pf_mr);
+                        $collection['new_value_pf_tr'] =  number_format($detail->new_value_pf_tr);
+                        $collection['new_value_pf_ppe'] =  number_format($detail->new_value_pf_ppe);
 
                         $historyData->push($collection);
 
@@ -3125,7 +3090,7 @@ class ReportController extends Controller
         $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
         
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         
             // Fetch data from history
@@ -3179,6 +3144,9 @@ class ReportController extends Controller
                         $collection['user'] = $detail->user;
                         $collection['nik'] = $detail->nik;
                         $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
+                        $collection['grading_id'] = $detail->grading_id;
                         $collection['grading'] = $detail->grading;
 
                         $collection['lokasi_toko'] = $detail->lokasi_toko;
@@ -3247,8 +3215,6 @@ class ReportController extends Controller
                                     ->pluck('stores.store_id');
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
-
-
 
             return Datatables::of($filter->all())
             ->make(true);
