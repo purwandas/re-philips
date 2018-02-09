@@ -36,14 +36,18 @@ class PromoterController extends Controller
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group', '<>', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
 
         if(count($spvDemoIds) > 0){
             $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
         }
@@ -90,14 +94,18 @@ class PromoterController extends Controller
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role', '<>', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
 
         if(count($spvDemoIds) > 0){
             $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
         }
@@ -296,7 +304,9 @@ class PromoterController extends Controller
         if($param == 1) { // BY NATIONAL
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
             })->with('stores.district.area.region')->get();
 
 //            return response()->json($supervisor);
@@ -308,7 +318,9 @@ class PromoterController extends Controller
             $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                    return $query->whereHas('role', function($query2){
+                        return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                    });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
                         return $query->whereIn('id', $regionIds);
@@ -326,7 +338,9 @@ class PromoterController extends Controller
             $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                    return $query->whereHas('role', function($query2){
+                        return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                    });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
                         return $query->whereIn('id', $areaIds);
@@ -469,10 +483,14 @@ class PromoterController extends Controller
 
         $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $partner = User::whereIn('id', $userIds)
-                    ->whereIn('role', $promoterGroup)
-                    ->where('id', '<>', $user->id)
-                    ->select('users.id', 'users.nik', 'users.name', 'users.role')
+        $partner = User::whereIn('users.id', $userIds)
+//                    ->whereHas('role', function($query) use ($promoterGroup){
+//                        return $query->whereIn('role_group', $promoterGroup);
+//                    })
+                    ->join('roles','roles.id','users.role_id')
+                    ->where('roles.role_group', $promoterGroup)
+                    ->where('users.id', '<>', $user->id)
+                    ->select('users.id', 'users.nik', 'users.name', 'roles.role')
                     ->get();
 
         return response()->json($partner);
