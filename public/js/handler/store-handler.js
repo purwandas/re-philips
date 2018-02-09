@@ -34,7 +34,7 @@ var FormValidation = function () {
                     district_id:{
                         required: true,
                     },
-                    classification: {
+                    classification_id: {
                         required: true,
                     },
 
@@ -43,7 +43,7 @@ var FormValidation = function () {
                     district_id:{
                         required: "Please select a District!"
                     },
-                    classification: {
+                    classification_id: {
                         required: "Please select a classification!"
                     },
                 },
