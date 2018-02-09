@@ -42,7 +42,7 @@ trait TargetTrait {
             }
 
             $user_role = 'Promoter';
-            if($user->role == 'Demonstrator DA'){
+            if($user->role->role_group == 'Demonstrator DA'){
                 $user_role = 'Demonstrator';
             }
 
@@ -287,7 +287,7 @@ trait TargetTrait {
         $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
         // Check if promoter or demonstrator group
-        $role = User::where('id', $target->user_id)->first()->role;
+        $role = User::where('id', $target->user_id)->first()->role->role_group;
 
 //        $sumStorePromo = 0;
 //        $sumStoreDemo = 0;

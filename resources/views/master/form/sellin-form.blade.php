@@ -158,16 +158,6 @@
 	            }
 	        });   
 
-			 $('#product').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
-	            return filterData('name', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.name}
-	                })
-	            }
-	        }));
-
 	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
                 return filterData('store', params.term);
             }, function (data, params) {
@@ -178,6 +168,7 @@
                 }
             }));
 
+	        initSelect2Product();
 
             $("#addItem").click(function(){
             	var myRoute = "data.store";
@@ -203,6 +194,108 @@
 		    });
 
 		});
+
+		function initSelect2Product(){
+			$('#product').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product1').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product2').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product3').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product4').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product5').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product6').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product7').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product8').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+
+	        $('#product9').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {            
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
+		}
 
 
 	</script>

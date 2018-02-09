@@ -35,11 +35,17 @@ class FeedbackController extends Controller
         
         $promoters = User::whereIn('id', $promoterIds);
         if(count($spvDemoIds) > 0){
-            $promoters->where('role','Demonstrator DA');
+            $promoters->whereHas('role', function($query){
+               return $query->where('role_group','Demonstrator DA');
+            });
         }else{
-            $promoters->whereNotIn('role', ['Demonstrator DA']);
+            $promoters->whereHas('role', function($query){
+                return $query->whereNotIn('role_group', ['Demonstrator DA']);
+            });
         }
-        $promoters->where('role', '<>', 'Salesman Explorer');
+        $promoters->whereHas('role', function($query){
+           return $query->where('role_group', '<>', 'Salesman Explorer');
+        });
 
         return response()->json($promoters->get());
     }
@@ -59,11 +65,18 @@ class FeedbackController extends Controller
      
         $promoters = User::whereIn('id', $promoterIds);
         if(count($spvDemoIds) > 0){
-            $promoters->where('role','Demonstrator DA');
+            $promoters->whereHas('role', function($query){
+               return $query->where('role_group','Demonstrator DA');
+            });
         }else{
-            $promoters->whereNotIn('role', ['Demonstrator DA']);
+            $promoters->whereHas('role', function($query){
+                return $query->whereNotIn('role_group', ['Demonstrator DA']);
+            });
         }
-        $promoters->where('role', '<>', 'Salesman Explorer');
+        $promoters->whereHas('role', function($query){
+           return $query->where('role_group', '<>', 'Salesman Explorer');
+        });
+
         $promoters->get();
 
         return response()->json($promoters);
@@ -99,7 +112,9 @@ class FeedbackController extends Controller
         $storeIds = Store::where('store_id', $param)->pluck('id');
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)->pluck('user_id');
         $promoters = User::whereIn('id', $promoterIds)
-                        ->where('role', '<>', 'Salesman Explorer')
+                        ->whereHas('role', function($query){
+                            return $query->where('role_group', '<>', 'Salesman Explorer');
+                        })
                         ->get();
 
         return response()->json($promoters);
