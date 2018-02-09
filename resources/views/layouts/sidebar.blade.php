@@ -15,11 +15,11 @@
             <li class="nav-item start {{ Request::is('/') ? 'active open' : '' }}">
                 <a href="{{ url('/') }}" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
-                    <span class="title">Dashboard</span>                 
+                    <span class="title">Dashboard</span>
                 </a>                
             </li>
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+            @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 
             <li class="heading">
                 <h3 class="uppercase">MASTER DATA</h3>
@@ -195,9 +195,31 @@
                 </a>
             </li>
 
+
+            <li class="nav-item {{ Request::is('role') ? 'active open' : '' }}">
+                <a href="{{ url('role') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Employee Role</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('grading') ? 'active open' : '' }}">
+                <a href="{{ url('grading') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Employee Grading</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('classification') ? 'active open' : '' }}">
+                <a href="{{ url('classification') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Store Classification</span>
+                </a>
+            </li>
+
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid')
+            @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid')
 
             <li class="heading">
                 <h3 class="uppercase">EDIT/DELETE SALES DATA</h3>
@@ -289,8 +311,8 @@
 
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid'
-            || Auth::user()->role == 'DM' || Auth::user()->role == 'RSM')
+            @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid'
+            || Auth::user()->role->role_group == 'DM' || Auth::user()->role->role_group == 'RSM')
 
             <li class="heading">
                 <h3 class="uppercase">REPORTING</h3>
@@ -415,7 +437,7 @@
                 </a>
             </li>
 
-                @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+                @if (Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 
                     <li class="nav-item {{ Request::is('visitplan') ? 'active open' : '' }}">
                         <a href="{{ url('visitplan') }}" class="nav-link nav-toggle">
@@ -463,7 +485,7 @@
 
             @endif
 
-            @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+            @if (Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 
             <li class="heading">
                 <h3 class="uppercase">UTILITIES</h3>
@@ -484,7 +506,7 @@
 
             <li class="nav-item {{ Request::is('faq') ? 'active' : '' }}">
                 <a href="{{ url('faq') }}" class="nav-link ">
-                    <i class="fa fa-book"></i>
+                    <i class="fa fa-commenting-o"></i>
                     <span class="title">Frequently Asked Question (FAQ)</span>
                 </a>
             </li>
