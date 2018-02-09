@@ -215,9 +215,9 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
     var getDataUrl = $(this).data('url');
     var attendanceId = $(this).data('id');
     content.innerHTML = "";
-    console.log(getDataUrl+'/'+attendanceId);
+    console.log("url: "+getDataUrl+'/'+attendanceId);
     $.get(getDataUrl + '/' + attendanceId, function (data) {
-            console.log(data);
+            console.log("data: "+data);
         if(data) {
             $.each(data, function() {
 
@@ -287,7 +287,7 @@ $(document).on("click", ".open-history-employee-store-modal", function () {
 
     var getDataUrl = $(this).data('url');
     var userId = $(this).data('id');
-    var bgAktif = 'style="background-color: yellow;"';
+    var bgAktif = 'style="background-color: #90CAF9;"';
     var storeAktif = '<p> << NOW </p>';
     var cek = 0;
     content.innerHTML = "";
