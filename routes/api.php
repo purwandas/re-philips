@@ -174,4 +174,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/quiz-list', 'Api\Master\QuizController@getListQuiz');
     Route::get('/quiz-read/{param}', 'Api\Master\QuizController@read');
 
+    /**
+     * Suggestion Order Module(s)
+     */
+    Route::get('/get-store-so', 'Api\Master\SuggestionOrderController@getStorePO');
+    Route::get('/get-product-so/{param}', 'Api\Master\SuggestionOrderController@checkNeededPO');
+
 });
