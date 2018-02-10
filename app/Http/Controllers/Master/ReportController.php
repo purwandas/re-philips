@@ -1084,7 +1084,7 @@ class ReportController extends Controller
                         $collection['store_name_1'] = $detail->store_name_1;
                         $collection['store_name_2'] = $detail->store_name_2;
                         $collection['store_id'] = $detail->store_id;
-                        $collection['dedicate'] = $detail->dedicate;
+                        // $collection['dedicate'] = $detail->dedicate;
                         $collection['store_destination_name_1'] = $detail->store_destination_name_1;
                         $collection['store_destination_name_2'] = $detail->store_destination_name_2;
                         $collection['store_destination_id'] = $detail->store_destination_id;
