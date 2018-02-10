@@ -247,7 +247,7 @@
                 }
             }));
             $('#filterDistrict').on('select2:select', function () {
-                self.selected('byAreaApp', $('#filterDistrict').val());
+                self.selected('byDistrict', $('#filterDistrict').val());
             });
 
             $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
