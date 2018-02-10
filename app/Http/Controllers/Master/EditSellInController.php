@@ -10,6 +10,7 @@ use App\Traits\StringTrait;
 use App\Traits\SalesTrait;
 use DB;
 use Auth;
+use Carbon\Carbon;
 use App\SellIn;
 use App\SellInDetail;
 
@@ -42,12 +43,30 @@ class EditSellInController extends Controller
                     ->where('sell_in_details.deleted_at', null)
         			->join('sell_in_details', 'sell_ins.id', '=', 'sell_in_details.sellin_id')
                     ->join('stores', 'sell_ins.store_id', '=', 'stores.id')
+                    
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+
                     ->join('users', 'sell_ins.user_id', '=', 'users.id')
                     ->join('products', 'sell_in_details.product_id', '=', 'products.id')
-                    ->select('sell_ins.week as week', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product')->get();
-        $filter = $data;
+                    ->select('sell_ins.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.id as storeId', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product',
+                     'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
+                    ->get();
+
+           $filter = $data;
 
             /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
