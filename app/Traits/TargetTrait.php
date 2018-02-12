@@ -46,6 +46,8 @@ trait TargetTrait {
                 $user_role = 'Demonstrator';
             }
 
+            $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
             $target = SummaryTargetActual::create([
                             'region_id' => $store->district->area->region->id,
                             'area_id' => $store->district->area->id,
@@ -66,7 +68,7 @@ trait TargetTrait {
                             'store_id' => $store->store_id,
                             'store_name_1' => $store->store_name_1,
                             'store_name_2' => $store->store_name_2,
-                            'spv_name' => ($store->user->name != '') ? $store->user->name : '',
+                            'spv_name' => $spvName,
                             'trainer' => $trainer_name,
                             'sell_type' => $data['sell_type'],
                         ]);
