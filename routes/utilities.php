@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/role', ['as'=> 'datatable.role','uses'=>'Master\RoleController@masterDataTable']);
     Route::post('datatable/grading', ['as'=> 'datatable.grading','uses'=>'Master\GradingController@masterDataTable']);
     Route::post('datatable/classification', ['as'=> 'datatable.classification','uses'=>'Master\ClassificationController@masterDataTable']);
+    Route::post('datatable/leadtime', ['as'=> 'datatable.leadtime','uses'=>'Master\LeadtimeController@masterDataTable']);
 
     /**
      * Edit Sales
