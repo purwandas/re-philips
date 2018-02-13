@@ -1,4 +1,4 @@
-<!-- BEGIN SIDEBAR -->
+    <!-- BEGIN SIDEBAR -->
 <div class="page-sidebar-wrapper">
     <!-- BEGIN SIDEBAR -->
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
@@ -15,11 +15,11 @@
             <li class="nav-item start {{ Request::is('/') ? 'active open' : '' }}">
                 <a href="{{ url('/') }}" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
-                    <span class="title">Dashboard</span>                 
+                    <span class="title">Dashboard</span>
                 </a>                
             </li>
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+            @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 
             <li class="heading">
                 <h3 class="uppercase">MASTER DATA</h3>
@@ -114,7 +114,7 @@
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
-                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
+                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
@@ -140,6 +140,11 @@
                     <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
                         <a href="{{ url('price') }}" class="nav-link nav-toggle">
                             <span class="title">Price</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('leadtime') ? 'active open' : '' }}">
+                        <a href="{{ url('leadtime') }}" class="nav-link nav-toggle">
+                            <span class="title">Leadtime</span>
                         </a>
                     </li>
                 </ul>
@@ -172,6 +177,11 @@
                             <span class="title">Product Focus</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('productpromo') ? 'active open' : '' }}">
+                        <a href="{{ url('productpromo') }}" class="nav-link nav-toggle">
+                            <span class="title">Product Promo Tracking</span>
+                        </a>
+                    </li>
                     <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
                         <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
                             <span class="title">Salesman Target</span>
@@ -183,6 +193,36 @@
                         </a>
                     </li>
 
+                </ul>
+            </li>
+
+            <li class="nav-item 
+                {{ Request::is('target') ? 'active open' : '' }}
+                {{ Request::is('productfocus') ? 'active open' : '' }}
+                {{ Request::is('targetsalesman') ? 'active open' : '' }}
+                {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-line-chart"></i>
+                    <span class="title">Sales</span>
+                    <span class="arrow 
+                        {{ Request::is('sellin') ? 'active open' : '' }}
+                        {{ Request::is('selout') ? 'active open' : '' }}
+                        {{ Request::is('targetsalesman') ? 'active open' : '' }}
+                        {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+                    "></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('sellin') ? 'active open' : '' }}">
+                        <a href="{{ url('sellin') }}" class="nav-link nav-toggle">
+                            <span class="title">Sell in</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('sellout') ? 'active open' : '' }}">
+                        <a href="{{ url('sellout') }}" class="nav-link nav-toggle">
+                            <span class="title">Sell Out</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             
@@ -200,9 +240,31 @@
                 </a>
             </li>
 
+
+            <li class="nav-item {{ Request::is('role') ? 'active open' : '' }}">
+                <a href="{{ url('role') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Employee Role</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('grading') ? 'active open' : '' }}">
+                <a href="{{ url('grading') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Employee Grading</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ Request::is('classification') ? 'active open' : '' }}">
+                <a href="{{ url('classification') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Store Classification</span>
+                </a>
+            </li>
+
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid')
+            @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid')
 
             <li class="heading">
                 <h3 class="uppercase">EDIT/DELETE SALES DATA</h3>
@@ -294,7 +356,6 @@
 
             @endif
 
-
             @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
 
             <li class="heading">
@@ -310,8 +371,9 @@
 
             @endif
 
-            @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid'
-            || Auth::user()->role == 'DM' || Auth::user()->role == 'RSM')
+            @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid'
+            || Auth::user()->role->role_group == 'DM' || Auth::user()->role->role_group == 'RSM')
+
 
             <li class="heading">
                 <h3 class="uppercase">REPORTING</h3>
@@ -436,7 +498,7 @@
                 </a>
             </li>
 
-                @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+                @if (Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 
                     <li class="nav-item {{ Request::is('visitplan') ? 'active open' : '' }}">
                         <a href="{{ url('visitplan') }}" class="nav-link nav-toggle">
@@ -480,11 +542,18 @@
                         </a>
                     </li>
 
+                    <li class="nav-item {{ Request::is('konfig-promoter') ? 'active open' : '' }}">
+                        <a href="{{ url('konfig-promoter') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Konfigurasi Promoter</span>
+                        </a>
+                    </li>
+
                 @endif
 
             @endif
 
-            @if (Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+            @if (Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 
             <li class="heading">
                 <h3 class="uppercase">UTILITIES</h3>
@@ -505,7 +574,7 @@
 
             <li class="nav-item {{ Request::is('faq') ? 'active' : '' }}">
                 <a href="{{ url('faq') }}" class="nav-link ">
-                    <i class="fa fa-book"></i>
+                    <i class="fa fa-commenting-o"></i>
                     <span class="title">Frequently Asked Question (FAQ)</span>
                 </a>
             </li>

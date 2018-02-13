@@ -16,7 +16,7 @@ class Supervisor
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && (Auth::user()->role == 'Admin' || Auth::user()->role == 'Master' || Auth::user()->role == 'Supervisor' || Auth::user()->role == 'Supervisor Hybrid') )
+        if (Auth::check() && (Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid') )
         {
             return $next($request);
         }

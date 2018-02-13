@@ -35,6 +35,18 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('userpromoter/{id}', 'UserPromoterController@update');
         Route::delete('userpromoter/{id}', 'UserPromoterController@destroy');
 
+        /** Sell In **/
+        Route::get('sellin', ['as'=>'sellin', 'uses'=>'Master\SellInController@index']);
+        Route::get('sellin/create', 'Master\SellInController@create');
+        Route::post('sellin', 'Master\SellInController@store');
+        Route::delete('sellin/{id}', 'Master\SellInController@destroy');
+
+        /** Sell Out **/
+        Route::get('sellout', ['as'=>'sellout', 'uses'=>'Master\SellOutController@index']);
+        Route::get('sellout/create', 'Master\SellOutController@create');
+        Route::post('sellout', 'Master\SellOutController@store');
+        Route::delete('sellout/{id}', 'Master\SellOutController@destroy');
+
         /** FAQ **/
         Route::get('faq', 'Master\FaqController@index');
         Route::get('faq/create', 'Master\FaqController@create');
@@ -42,6 +54,27 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('faq/edit/{id}', 'Master\FaqController@edit');
         Route::patch('faq/{id}', 'Master\FaqController@update');
         Route::delete('faq/{id}', 'Master\FaqController@destroy');
+
+        /** Role **/
+        Route::get('role', 'Master\RoleController@index');
+        Route::post('role', 'Master\RoleController@store');
+        Route::get('role/edit/{id}', 'Master\RoleController@edit');
+        Route::patch('role/{id}', 'Master\RoleController@update');
+        Route::delete('role/{id}', 'Master\RoleController@destroy');
+
+        /** Grading **/
+        Route::get('grading', 'Master\GradingController@index');
+        Route::post('grading', 'Master\GradingController@store');
+        Route::get('grading/edit/{id}', 'Master\GradingController@edit');
+        Route::patch('grading/{id}', 'Master\GradingController@update');
+        Route::delete('grading/{id}', 'Master\GradingController@destroy');
+
+        /** Classification **/
+        Route::get('classification', 'Master\ClassificationController@index');
+        Route::post('classification', 'Master\ClassificationController@store');
+        Route::get('classification/edit/{id}', 'Master\ClassificationController@edit');
+        Route::patch('classification/{id}', 'Master\ClassificationController@update');
+        Route::delete('classification/{id}', 'Master\ClassificationController@destroy');
 
         /** Area **/
         Route::get('area', 'Master\AreaController@index');
@@ -173,6 +206,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('productfocus/{id}', 'Master\ProductFocusController@update');
         Route::delete('productfocus/{id}', 'Master\ProductFocusController@destroy');
 
+        /** Product Focus **/
+        Route::get('productpromo', 'Master\ProductPromoController@index');
+        Route::post('productpromo', 'Master\ProductPromoController@store');
+        Route::get('productpromo/edit/{id}', 'Master\ProductPromoController@edit');
+        Route::patch('productpromo/{id}', 'Master\ProductPromoController@update');
+        Route::delete('productpromo/{id}', 'Master\ProductPromoController@destroy');
+
         /** Product Focus Salesman **/
         Route::get('productfocussalesman', 'Master\ProductFocusSalesmanController@index');
         Route::post('productfocussalesman', 'Master\ProductFocusSalesmanController@store');
@@ -235,8 +275,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('quiz/edit/{id}', 'Master\QuizController@edit');
         Route::patch('quiz/{id}', 'Master\QuizController@update');
         Route::delete('quiz/{id}', 'Master\QuizController@destroy');
+        Route::post('quiz-target', 'Api\Master\QuizTargetController@store');
 
-        /** Attemdents **/
+        /** Attendance **/
         Route::get('attendance', 'Master\AttendanceController@index');
         Route::get('attendance/create', 'Master\AttendanceController@create');
         Route::post('attendance', 'Master\AttendanceController@store');
@@ -244,17 +285,26 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('attendance/{id}', 'Master\AttendanceController@update');
         Route::delete('attendance/{id}', 'Master\AttendanceController@destroy');
 
+        /** Leadtime **/
+        Route::get('leadtime', 'Master\LeadtimeController@index');
+        Route::post('leadtime', 'Master\LeadtimeController@store');
+        Route::get('leadtime/edit/{id}', 'Master\LeadtimeController@edit');
+        Route::patch('leadtime/{id}', 'Master\LeadtimeController@update');
+        Route::delete('leadtime/{id}', 'Master\LeadtimeController@destroy');
+
         /**
          * Reporting Module(s) Just For Admin, Master, REM
          */
         Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
         Route::get('salesactivity', 'Master\ReportController@salesActivityIndex');
         Route::get('storelocationactivity', 'Master\ReportController@storeLocationActivityIndex');
+        Route::get('konfig-promoter', 'Master\KonfigController@konfigPromoterIndex');
 
         /**
          * Salesman Module (Reporting)
          */
         Route::get('salesmanreport', 'Master\ReportController@salesmanIndex');
+
 
     });
 

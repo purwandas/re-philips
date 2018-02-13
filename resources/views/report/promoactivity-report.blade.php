@@ -117,6 +117,7 @@
                                 <th> Product Model </th>
                                 <th> Product Variants </th>
                                 <th> Date </th>
+                                <th> Status </th>
                             </tr>
                             </thead>
                         </table>
@@ -164,7 +165,8 @@
                             {data: 'product_name', name: 'product_name'},
                             {data: 'product_model', name: 'product_model'},
                             {data: 'product_variants', name: 'product_variants'},
-                            {data: 'date', name: 'date'}
+                            {data: 'date', name: 'date'},
+                            {data: 'promo', name: 'promo'},
                             ];
 
         var paramFilter = ['competitorActivity', $('#competitorActivity'), url, tableColumns, columnDefs, order];

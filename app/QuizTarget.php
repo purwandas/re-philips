@@ -11,13 +11,23 @@ class QuizTarget extends Model
     use SoftDeletes;
     
     protected $fillable = [
-        'role', 'grading'
+        'role_id', 'grading_id'
     ];
 
     /**
      * Relation Method(s).
      *
-     */   
+     */
+
+    public function role()
+    {
+        return $this->belongsTo('App\Role', 'role_id');
+    }
+
+    public function grading()
+    {
+        return $this->belongsTo('App\Grading', 'grading_id');
+    }
 
     /**
      * Filtering Berdasarakan Request User

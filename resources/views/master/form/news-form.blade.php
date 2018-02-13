@@ -50,7 +50,7 @@
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md bg-yellow-lemon" href="{{ url('news') }}">
+                	<a class="btn btn-md btn-primary" href="{{ url('news') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>

@@ -122,7 +122,7 @@
                 {data: 'channel_name', name: 'channel_name'},
                 {data: 'subchannel_name', name: 'subchannel_name'},
                 {data: 'distributor', name: 'distributor'},
-                {data: 'classification', name: 'classification'},
+                {data: 'classification_id', name: 'classification_id'},
                 {data: 'longitude', name: 'longitude'},
                 {data: 'latitude', name: 'latitude'},
                 {data: 'address', name: 'address'},
@@ -140,7 +140,7 @@
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [15]},
             ],
-            "order": [ [0, 'desc'] ],            
+            "order": [ [0, 'desc'] ],
         });
 
 

@@ -39,7 +39,7 @@ trait SalesTrait {
     use ActualTrait;
 
     public function deleteSellIn($detailId){
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         // Find Detail then delete
@@ -141,7 +141,7 @@ trait SalesTrait {
     }
 
     public function updateSellIn($id, $qty){
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         $sellInDetail = SellInDetail::where('id',$id)->update(['quantity'=> $qty]);
@@ -255,7 +255,7 @@ trait SalesTrait {
     }
 
     public function deleteSellOut($detailId){
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         // Find Detail then delete
@@ -356,7 +356,7 @@ trait SalesTrait {
     }
 
     public function updateSellOut($id, $qty){
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         $sellOutDetail = SellOutDetail::where('id',$id)->update(['quantity'=> $qty]);

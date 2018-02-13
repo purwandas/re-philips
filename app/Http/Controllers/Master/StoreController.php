@@ -46,6 +46,8 @@ class StoreController extends Controller
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
+//                    ->join('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
+//                    ->join('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
 //                    ->join('users', 'stores.user_id', '=', 'users.id')
 //                    ->where(function($query) {
 //                        return $query->orWhere('stores.user_id', null);
@@ -56,18 +58,20 @@ class StoreController extends Controller
                     ->get();
 
         foreach ($data as $detail){
-            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
-            $dist = Distributor::whereIn('id', $distIds)->get();
-
-            $detail['distributor'] = '';
-            foreach ($dist as $distDetail){
-                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
-
-                if($distDetail->id != $dist->last()->id){
-                    $detail['distributor'] .= ', ';
-                }
-            }
+//            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
+//            $dist = Distributor::whereIn('id', $distIds)->get();
+//
+//            $detail['distributor'] = '';
+//            foreach ($dist as $distDetail){
+//                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
+//
+//                if($distDetail->id != $dist->last()->id){
+//                    $detail['distributor'] .= ', ';
+//                }
+//            }
         }
+
+//        return response()->json($data);
 
         return $this->makeTable($data);
     }
@@ -75,7 +79,7 @@ class StoreController extends Controller
     // Data for select2 with Filters
     public function getDataWithFilters(StoreFilters $filters){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
         $data = Store::filter($filters)->groupBy('store_id')->get();
@@ -173,6 +177,18 @@ class StoreController extends Controller
                     }
                     return '';
                 })
+                ->addColumn('classification_id', function ($item) {
+                    if (isset($item->classification->classification)) {
+                        return $item->classification->classification;
+                    }
+                    return '';
+                })
+                ->addColumn('distributor', function ($item) {
+                    if ($item->storeDistributors()->count() > 0) {
+                        return "(".$item->storeDistributors()->first()->distributor->code.") ".$item->storeDistributors()->first()->distributor->name;
+                    }
+                    return '';
+                })
                 ->addColumn('action', function ($item) {
 
                     return
@@ -209,8 +225,6 @@ class StoreController extends Controller
             $this->validate($request, [
                 'store_name_1' => 'required|string|max:255',
                 'store_name_2' => 'max:255',
-                'longitude' => 'numeric',
-                'latitude' => 'numeric',
                 'district_id' => 'required',
             ]);
 
@@ -268,9 +282,6 @@ class StoreController extends Controller
         $this->validate($request, [
             'store_name_1' => 'required|string|max:255',
             'store_name_2' => 'max:255',
-            'longitude' => 'numeric',
-            'latitude' => 'numeric',
-            'subchannel_id' => 'required',
             'district_id' => 'required'
         ]);
 

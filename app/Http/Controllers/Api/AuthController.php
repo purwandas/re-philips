@@ -13,6 +13,7 @@ use App\Store;
 use Carbon\Carbon;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use File;
 
 class AuthController extends Controller
 {
@@ -44,7 +45,7 @@ class AuthController extends Controller
 
 		// Check Promoter Group
 		$isPromoter = 0;
-		if($user->role == 'Promoter' || $user->role == 'Promoter Additional' || $user->role == 'Promoter Event' || $user->role == 'Demonstrator MCC' || $user->role == 'Demonstrator DA' || $user->role == 'ACT'  || $user->role == 'PPE' || $user->role == 'BDT' || $user->role == 'Salesman Explorer' || $user->role == 'SMD' || $user->role == 'SMD Coordinator' || $user->role == 'HIC' || $user->role == 'HIE' || $user->role == 'SMD Additional' || $user->role == 'ASC'){
+		if($user->role->role_group == 'Promoter' || $user->role->role_group == 'Promoter Additional' || $user->role->role_group == 'Promoter Event' || $user->role->role_group == 'Demonstrator MCC' || $user->role->role_group == 'Demonstrator DA' || $user->role->role_group == 'ACT'  || $user->role->role_group == 'PPE' || $user->role->role_group == 'BDT' || $user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'HIC' || $user->role->role_group == 'HIE' || $user->role->role_group == 'SMD Additional' || $user->role->role_group == 'ASC'){
 			$isPromoter = 1;
 		}
 
@@ -55,7 +56,7 @@ class AuthController extends Controller
 		// Generate access for mobile
         $access = "";
 
-        if($user->role == 'Promoter' || $user->role == 'Promoter Additional' || $user->role == 'Promoter Event' || $user->role == 'Demonstrator MCC' || $user->role == 'Demonstrator DA' || $user->role == 'ACT'  || $user->role == 'PPE' || $user->role == 'BDT' || $user->role == 'SMD' || $user->role == 'SMD Coordinator' || $user->role == 'HIC' || $user->role == 'HIE' || $user->role == 'SMD Additional' || $user->role == 'ASC'){
+        if($user->role->role_group == 'Promoter' || $user->role->role_group == 'Promoter Additional' || $user->role->role_group == 'Promoter Event' || $user->role->role_group == 'Demonstrator MCC' || $user->role->role_group == 'Demonstrator DA' || $user->role->role_group == 'ACT'  || $user->role->role_group == 'PPE' || $user->role->role_group == 'BDT' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'HIC' || $user->role->role_group == 'HIE' || $user->role->role_group == 'SMD Additional' || $user->role->role_group == 'ASC'){
             $access = "Promoter";
         }
 
@@ -76,23 +77,28 @@ class AuthController extends Controller
             }
         }
 
-        if($user->role == 'Salesman Explorer'){
+        if($user->role->role_group == 'Salesman Explorer'){
             $kpi = 'Sell In';
         }
 
-        if($user->role == 'Salesman Explorer') $access = "Salesman";
-        if($user->role == 'Supervisor') $access = "Supervisor";
-        if($user->role == 'DM') $access = "DM";
-        if($user->role == 'RSM') $access = "RSM";
-        if($user->role == 'REM') $access = "REM";
+        if($user->role->role_group == 'Salesman Explorer') $access = "Salesman";
+        if($user->role->role_group == 'Supervisor') $access = "Supervisor";
+        if($user->role->role_group == 'DM') $access = "DM";
+        if($user->role->role_group == 'RSM') $access = "RSM";
+        if($user->role->role_group == 'REM') $access = "REM";
+
+        $grading = '';
+        if (isset($user->grading->grading)) {
+        	$grading = $user->grading->grading;
+        }
 
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role, 'grading' => $user->grading, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role->role, 'grading' => $grading, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){
 		// $user = JWTAuth::parseToken()->authenticate();
-		return response()->json('test');	
+		return response()->json('test');
 	}
 
 	public function getUser()
@@ -153,7 +159,10 @@ class AuthController extends Controller
 	    $data['name'] = $user->name;
 	    $data['email'] = $user->email;
 	    $data['join_date'] = $user->join_date;
-	    $data['grading'] = $user->grading;
+    $data['grading'] = '';
+    if(isset($user->grading->grading)){
+      $data['grading'] = $user->grading->grading;
+    }    
 	    $data['certificate'] = $user->certificate;
 
 		// the token is valid and we have found the user via the sub claim

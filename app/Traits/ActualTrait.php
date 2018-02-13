@@ -35,11 +35,30 @@ trait ActualTrait {
         if ($summary) {
 
             $sumStore = SummaryTargetActual::where('storeId', $summary->storeId)->where('sell_type', $data['sell_type']);
+            $sumStorePromo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            $sumStoreDemo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
             $sumArea = SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $data['sell_type']);
             $sumRegion = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $data['sell_type']);
             $sumActualStore = SummaryTargetActual::where('storeId', $summary->storeId)->where('sell_type', $data['sell_type'])->first()->sum_actual_store;
             $sumActualArea = SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $data['sell_type'])->first()->sum_actual_area;
             $sumActualRegion = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $data['sell_type'])->first()->sum_actual_region;
+            $sumActualStorePromo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            $sumActualStoreDemo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // PF
+            $sumActualStorePF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_actual_store;
+            $sumActualAreaPF =  SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_actual_area;
+            $sumActualRegionPF = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_actual_region;
+            $sumActualStorePromoPF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            $sumActualStoreDemoPF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+
+            // Handler
+            if($sumActualStorePromo->first()) $sumActualStorePromo = $sumActualStorePromo->first()->sum_actual_store_promo; else $sumActualStorePromo = 0;
+            if($sumActualStoreDemo->first()) $sumActualStoreDemo = $sumActualStoreDemo->first()->sum_actual_store_demo; else $sumActualStoreDemo = 0;
+
+            if($sumActualStorePromoPF->first()) $sumActualStorePromoPF = $sumActualStorePromoPF->first()->sum_pf_actual_store_promo; else $sumActualStorePromoPF = 0;
+            if($sumActualStoreDemoPF->first()) $sumActualStoreDemoPF = $sumActualStoreDemoPF->first()->sum_pf_actual_store_demo; else $sumActualStoreDemoPF = 0;
+
+//            return $sumStore->get();
 
             /* Add / Sum All Target */
             if ($change == 'change') { // INSERT / UPDATE
@@ -51,28 +70,80 @@ trait ActualTrait {
 
                         if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
 
-                            $summary->update([ // SUBSTRACT OLD VALUE
-                                'actual_da' => $summary->actual_da - $data['value_old'],
-                                'sum_actual_store' => $sumActualStore - $data['value_old'],
-                                'sum_actual_area' => $sumActualArea - $data['value_old'],
-                                'sum_actual_region' => $sumActualRegion - $data['value_old'],
-                            ]);
+                            if($data['irisan'] == 0){
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_da' => $summary->actual_da - $data['value_old'],
+                                        'sum_actual_store' => $sumActualStore - $data['value_old'],
+                                        'sum_actual_store_promo' => $sumActualStorePromo - $data['value_old'],
+                                        'sum_actual_area' => $sumActualArea - $data['value_old'],
+                                        'sum_actual_region' => $sumActualRegion - $data['value_old'],
+                                    ]);
 
-                            $summary->update([ // ADD NEW VALUE
-                                'actual_da' => $summary->actual_da + $data['value'],
-                                'sum_actual_store' => $summary->sum_actual_store + $data['value'],
-                                'sum_actual_area' => $summary->sum_actual_area + $data['value'],
-                                'sum_actual_region' => $summary->sum_actual_region + $data['value'],
-                            ]);
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_da' => $summary->actual_da + $data['value'],
+                                        'sum_actual_store' => $summary->sum_actual_store + $data['value'],
+                                        'sum_actual_store_promo' => $summary->sum_actual_store_promo + $data['value'],
+                                        'sum_actual_area' => $summary->sum_actual_area + $data['value'],
+                                        'sum_actual_region' => $summary->sum_actual_region + $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_da' => $summary->actual_da - $data['value_old'],
+                                        'sum_actual_store' => $sumActualStore - $data['value_old'],
+                                        'sum_actual_store_demo' => $sumActualStoreDemo - $data['value_old'],
+                                        'sum_actual_area' => $sumActualArea - $data['value_old'],
+                                        'sum_actual_region' => $sumActualRegion - $data['value_old'],
+                                    ]);
+
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_da' => $summary->actual_da + $data['value'],
+                                        'sum_actual_store' => $summary->sum_actual_store + $data['value'],
+                                        'sum_actual_store_demo' => $summary->sum_actual_store_demo + $data['value'],
+                                        'sum_actual_area' => $summary->sum_actual_area + $data['value'],
+                                        'sum_actual_region' => $summary->sum_actual_region + $data['value'],
+                                    ]);
+                                }
+                            }else{
+                                $summary->update([ // SUBSTRACT OLD VALUE
+                                    'actual_da' => $summary->actual_da - $data['value_old'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo - $data['value_old'],
+                                ]);
+
+                                $summary->update([ // ADD NEW VALUE
+                                    'actual_da' => $summary->actual_da + $data['value'],
+                                    'sum_actual_store_demo' => $summary->sum_actual_store_demo + $data['value'],
+                                ]);
+                            }
 
                         } else { // INSERT
 
-                            $summary->update([ // ADD NEW VALUE
-                                'actual_da' => $summary->actual_da + $data['value'],
-                                'sum_actual_store' => $sumActualStore + $data['value'],
-                                'sum_actual_area' => $sumActualArea + $data['value'],
-                                'sum_actual_region' => $sumActualRegion + $data['value'],
-                            ]);
+                            if($data['irisan'] == 0){
+
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_da' => $summary->actual_da + $data['value'],
+                                        'sum_actual_store' => $sumActualStore + $data['value'],
+                                        'sum_actual_store_promo' => $sumActualStorePromo + $data['value'],
+                                        'sum_actual_area' => $sumActualArea + $data['value'],
+                                        'sum_actual_region' => $sumActualRegion + $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_da' => $summary->actual_da + $data['value'],
+                                        'sum_actual_store' => $sumActualStore + $data['value'],
+                                        'sum_actual_store_demo' => $sumActualStoreDemo + $data['value'],
+                                        'sum_actual_area' => $sumActualArea + $data['value'],
+                                        'sum_actual_region' => $sumActualRegion + $data['value'],
+                                    ]);
+                                }
+
+                            }else{ // IRISAN
+                                $summary->update([ // ADD NEW VALUE
+                                    'actual_da' => $summary->actual_da + $data['value'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo + $data['value'],
+                                ]);
+                            }
 
                         }
 
@@ -85,19 +156,79 @@ trait ActualTrait {
 
                             if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
 
-                                $summary->update([ // SUBSTRACT OLD VALUE
-                                    'actual_pf_da' => $summary->actual_pf_da - $data['value_old']
-                                ]);
+                                if($data['irisan'] == 0){
+                                    if($summary->user_role == 'Promoter'){
+                                        $summary->update([ // SUBSTRACT OLD VALUE
+                                            'actual_pf_da' => $summary->actual_pf_da - $data['value_old'],
+                                            'sum_pf_actual_store' => $sumActualStorePF - $data['value_old'],
+                                            'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $data['value_old'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF - $data['value_old'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF - $data['value_old'],
+                                        ]);
 
-                                $summary->update([ // ADD NEW VALUE
-                                    'actual_pf_da' => $summary->actual_pf_da + $data['value']
-                                ]);
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_da' => $summary->actual_pf_da + $data['value'],
+                                            'sum_pf_actual_store' => $summary->sum_pf_actual_store + $data['value'],
+                                            'sum_pf_actual_store_promo' => $summary->sum_pf_actual_store_promo + $data['value'],
+                                            'sum_pf_actual_area' => $summary->sum_pf_actual_area + $data['value'],
+                                            'sum_pf_actual_region' => $summary->sum_pf_actual_region + $data['value'],
+                                        ]);
+                                    }else{
+                                        $summary->update([ // SUBSTRACT OLD VALUE
+                                            'actual_pf_da' => $summary->actual_pf_da - $data['value_old'],
+                                            'sum_pf_actual_store' => $sumActualStorePF - $data['value_old'],
+                                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value_old'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF - $data['value_old'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF - $data['value_old'],
+                                        ]);
+
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_da' => $summary->actual_pf_da + $data['value'],
+                                            'sum_pf_actual_store' => $summary->sum_pf_actual_store + $data['value'],
+                                            'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo + $data['value'],
+                                            'sum_pf_actual_area' => $summary->sum_pf_actual_area + $data['value'],
+                                            'sum_pf_actual_region' => $summary->sum_pf_actual_region + $data['value'],
+                                        ]);
+                                    }
+                                }else{
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_pf_da' => $summary->actual_pf_da - $data['value_old'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value_old'],
+                                    ]);
+
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pf_da' => $summary->actual_pf_da + $data['value'],
+                                        'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo + $data['value'],
+                                    ]);
+                                }
+
 
                             } else { // INSERT
 
-                                $summary->update([ // ADD NEW VALUE
-                                    'actual_pf_da' => $summary->actual_pf_da + $data['value']
-                                ]);
+                                if($data['irisan'] == 0){
+                                    if($summary->user_role == 'Promoter'){
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_da' => $summary->actual_pf_da + $data['value'],
+                                            'sum_pf_actual_store' => $sumActualStorePF + $data['value'],
+                                            'sum_pf_actual_store_promo' => $sumActualStorePromoPF + $data['value'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF + $data['value'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF + $data['value'],
+                                        ]);
+                                    }else{
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_da' => $summary->actual_pf_da + $data['value'],
+                                            'sum_pf_actual_store' => $sumActualStorePF + $data['value'],
+                                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF + $data['value'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF + $data['value'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF + $data['value'],
+                                        ]);
+                                    }
+                                }else{
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pf_da' => $summary->actual_pf_da + $data['value'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF + $data['value'],
+                                    ]);
+                                }
 
                             }
                         }
@@ -233,28 +364,80 @@ trait ActualTrait {
 
                         if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
 
-                            $summary->update([ // SUBSTRACT OLD VALUE
-                                'actual_pc' => $summary->actual_pc - $data['value_old'],
-                                'sum_actual_store' => $sumActualStore - $data['value_old'],
-                                'sum_actual_area' => $sumActualArea - $data['value_old'],
-                                'sum_actual_region' => $sumActualRegion - $data['value_old'],
-                            ]);
+                            if($data['irisan'] == 0){
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_pc' => $summary->actual_pc - $data['value_old'],
+                                        'sum_actual_store' => $sumActualStore - $data['value_old'],
+                                        'sum_actual_store_promo' => $sumActualStorePromo - $data['value_old'],
+                                        'sum_actual_area' => $sumActualArea - $data['value_old'],
+                                        'sum_actual_region' => $sumActualRegion - $data['value_old'],
+                                    ]);
 
-                            $summary->update([ // ADD NEW VALUE
-                                'actual_pc' => $summary->actual_pc + $data['value'],
-                                'sum_actual_store' => $summary->sum_actual_store + $data['value'],
-                                'sum_actual_area' => $summary->sum_actual_area + $data['value'],
-                                'sum_actual_region' => $summary->sum_actual_region + $data['value'],
-                            ]);
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pc' => $summary->actual_pc + $data['value'],
+                                        'sum_actual_store' => $summary->sum_actual_store + $data['value'],
+                                        'sum_actual_store_promo' => $summary->sum_actual_store_promo + $data['value'],
+                                        'sum_actual_area' => $summary->sum_actual_area + $data['value'],
+                                        'sum_actual_region' => $summary->sum_actual_region + $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_pc' => $summary->actual_pc - $data['value_old'],
+                                        'sum_actual_store' => $sumActualStore - $data['value_old'],
+                                        'sum_actual_store_demo' => $sumActualStoreDemo - $data['value_old'],
+                                        'sum_actual_area' => $sumActualArea - $data['value_old'],
+                                        'sum_actual_region' => $sumActualRegion - $data['value_old'],
+                                    ]);
+
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pc' => $summary->actual_pc + $data['value'],
+                                        'sum_actual_store' => $summary->sum_actual_store + $data['value'],
+                                        'sum_actual_store_demo' => $summary->sum_actual_store_demo + $data['value'],
+                                        'sum_actual_area' => $summary->sum_actual_area + $data['value'],
+                                        'sum_actual_region' => $summary->sum_actual_region + $data['value'],
+                                    ]);
+                                }
+                            }else{
+                                $summary->update([ // SUBSTRACT OLD VALUE
+                                    'actual_pc' => $summary->actual_pc - $data['value_old'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo - $data['value_old'],
+                                ]);
+
+                                $summary->update([ // ADD NEW VALUE
+                                    'actual_pc' => $summary->actual_pc + $data['value'],
+                                    'sum_actual_store_demo' => $summary->sum_actual_store_demo + $data['value'],
+                                ]);
+                            }
 
                         } else { // INSERT
 
-                            $summary->update([ // ADD NEW VALUE
-                                'actual_pc' => $summary->actual_pc + $data['value'],
-                                'sum_actual_store' => $sumActualStore + $data['value'],
-                                'sum_actual_area' => $sumActualArea + $data['value'],
-                                'sum_actual_region' => $sumActualRegion + $data['value'],
-                            ]);
+                            if($data['irisan'] == 0){
+
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pc' => $summary->actual_pc + $data['value'],
+                                        'sum_actual_store' => $sumActualStore + $data['value'],
+                                        'sum_actual_store_promo' => $sumActualStorePromo + $data['value'],
+                                        'sum_actual_area' => $sumActualArea + $data['value'],
+                                        'sum_actual_region' => $sumActualRegion + $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pc' => $summary->actual_pc + $data['value'],
+                                        'sum_actual_store' => $sumActualStore + $data['value'],
+                                        'sum_actual_store_demo' => $sumActualStoreDemo + $data['value'],
+                                        'sum_actual_area' => $sumActualArea + $data['value'],
+                                        'sum_actual_region' => $sumActualRegion + $data['value'],
+                                    ]);
+                                }
+
+                            }else{ // IRISAN
+                                $summary->update([ // ADD NEW VALUE
+                                    'actual_pc' => $summary->actual_pc + $data['value'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo + $data['value'],
+                                ]);
+                            }
 
                         }
 
@@ -267,19 +450,78 @@ trait ActualTrait {
 
                             if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
 
-                                $summary->update([ // SUBSTRACT OLD VALUE
-                                    'actual_pf_pc' => $summary->actual_pf_pc - $data['value_old']
-                                ]);
+                                if($data['irisan'] == 0){
+                                    if($summary->user_role == 'Promoter'){
+                                        $summary->update([ // SUBSTRACT OLD VALUE
+                                            'actual_pf_pc' => $summary->actual_pf_pc - $data['value_old'],
+                                            'sum_pf_actual_store' => $sumActualStorePF - $data['value_old'],
+                                            'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $data['value_old'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF - $data['value_old'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF - $data['value_old'],
+                                        ]);
 
-                                $summary->update([ // ADD NEW VALUE
-                                    'actual_pf_pc' => $summary->actual_pf_pc + $data['value']
-                                ]);
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_pc' => $summary->actual_pf_pc + $data['value'],
+                                            'sum_pf_actual_store' => $summary->sum_pf_actual_store + $data['value'],
+                                            'sum_pf_actual_store_promo' => $summary->sum_pf_actual_store_promo + $data['value'],
+                                            'sum_pf_actual_area' => $summary->sum_pf_actual_area + $data['value'],
+                                            'sum_pf_actual_region' => $summary->sum_pf_actual_region + $data['value'],
+                                        ]);
+                                    }else{
+                                        $summary->update([ // SUBSTRACT OLD VALUE
+                                            'actual_pf_pc' => $summary->actual_pf_pc - $data['value_old'],
+                                            'sum_pf_actual_store' => $sumActualStorePF - $data['value_old'],
+                                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value_old'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF - $data['value_old'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF - $data['value_old'],
+                                        ]);
+
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_pc' => $summary->actual_pf_pc + $data['value'],
+                                            'sum_pf_actual_store' => $summary->sum_pf_actual_store + $data['value'],
+                                            'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo + $data['value'],
+                                            'sum_pf_actual_area' => $summary->sum_pf_actual_area + $data['value'],
+                                            'sum_pf_actual_region' => $summary->sum_pf_actual_region + $data['value'],
+                                        ]);
+                                    }
+                                }else{
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_pf_pc' => $summary->actual_pf_pc - $data['value_old'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value_old'],
+                                    ]);
+
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pf_pc' => $summary->actual_pf_pc + $data['value'],
+                                        'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo + $data['value'],
+                                    ]);
+                                }
 
                             } else { // INSERT
 
-                                $summary->update([ // ADD NEW VALUE
-                                    'actual_pf_pc' => $summary->actual_pf_pc + $data['value']
-                                ]);
+                                if($data['irisan'] == 0){
+                                    if($summary->user_role == 'Promoter'){
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_pc' => $summary->actual_pf_pc + $data['value'],
+                                            'sum_pf_actual_store' => $sumActualStorePF + $data['value'],
+                                            'sum_pf_actual_store_promo' => $sumActualStorePromoPF + $data['value'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF + $data['value'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF + $data['value'],
+                                        ]);
+                                    }else{
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_pc' => $summary->actual_pf_pc + $data['value'],
+                                            'sum_pf_actual_store' => $sumActualStorePF + $data['value'],
+                                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF + $data['value'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF + $data['value'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF + $data['value'],
+                                        ]);
+                                    }
+                                }else{
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pf_pc' => $summary->actual_pf_pc + $data['value'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF + $data['value'],
+                                    ]);
+                                }
 
                             }
                         }
@@ -415,28 +657,80 @@ trait ActualTrait {
 
                         if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
 
-                            $summary->update([ // SUBSTRACT OLD VALUE
-                                'actual_mcc' => $summary->actual_mcc - $data['value_old'],
-                                'sum_actual_store' => $sumActualStore - $data['value_old'],
-                                'sum_actual_area' => $sumActualArea - $data['value_old'],
-                                'sum_actual_region' => $sumActualRegion - $data['value_old'],
-                            ]);
+                            if($data['irisan'] == 0){
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_mcc' => $summary->actual_mcc - $data['value_old'],
+                                        'sum_actual_store' => $sumActualStore - $data['value_old'],
+                                        'sum_actual_store_promo' => $sumActualStorePromo - $data['value_old'],
+                                        'sum_actual_area' => $sumActualArea - $data['value_old'],
+                                        'sum_actual_region' => $sumActualRegion - $data['value_old'],
+                                    ]);
 
-                            $summary->update([ // ADD NEW VALUE
-                                'actual_mcc' => $summary->actual_mcc + $data['value'],
-                                'sum_actual_store' => $summary->sum_actual_store + $data['value'],
-                                'sum_actual_area' => $summary->sum_actual_area + $data['value'],
-                                'sum_actual_region' => $summary->sum_actual_region + $data['value'],
-                            ]);
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_mcc' => $summary->actual_mcc + $data['value'],
+                                        'sum_actual_store' => $summary->sum_actual_store + $data['value'],
+                                        'sum_actual_store_promo' => $summary->sum_actual_store_promo + $data['value'],
+                                        'sum_actual_area' => $summary->sum_actual_area + $data['value'],
+                                        'sum_actual_region' => $summary->sum_actual_region + $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_mcc' => $summary->actual_mcc - $data['value_old'],
+                                        'sum_actual_store' => $sumActualStore - $data['value_old'],
+                                        'sum_actual_store_demo' => $sumActualStoreDemo - $data['value_old'],
+                                        'sum_actual_area' => $sumActualArea - $data['value_old'],
+                                        'sum_actual_region' => $sumActualRegion - $data['value_old'],
+                                    ]);
+
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_mcc' => $summary->actual_mcc + $data['value'],
+                                        'sum_actual_store' => $summary->sum_actual_store + $data['value'],
+                                        'sum_actual_store_demo' => $summary->sum_actual_store_demo + $data['value'],
+                                        'sum_actual_area' => $summary->sum_actual_area + $data['value'],
+                                        'sum_actual_region' => $summary->sum_actual_region + $data['value'],
+                                    ]);
+                                }
+                            }else{
+                                $summary->update([ // SUBSTRACT OLD VALUE
+                                    'actual_mcc' => $summary->actual_mcc - $data['value_old'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo - $data['value_old'],
+                                ]);
+
+                                $summary->update([ // ADD NEW VALUE
+                                    'actual_mcc' => $summary->actual_mcc + $data['value'],
+                                    'sum_actual_store_demo' => $summary->sum_actual_store_demo + $data['value'],
+                                ]);
+                            }
 
                         } else { // INSERT
 
-                            $summary->update([ // ADD NEW VALUE
-                                'actual_mcc' => $summary->actual_mcc + $data['value'],
-                                'sum_actual_store' => $sumActualStore + $data['value'],
-                                'sum_actual_area' => $sumActualArea + $data['value'],
-                                'sum_actual_region' => $sumActualRegion + $data['value'],
-                            ]);
+                            if($data['irisan'] == 0){
+
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_mcc' => $summary->actual_mcc + $data['value'],
+                                        'sum_actual_store' => $sumActualStore + $data['value'],
+                                        'sum_actual_store_promo' => $sumActualStorePromo + $data['value'],
+                                        'sum_actual_area' => $sumActualArea + $data['value'],
+                                        'sum_actual_region' => $sumActualRegion + $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_mcc' => $summary->actual_mcc + $data['value'],
+                                        'sum_actual_store' => $sumActualStore + $data['value'],
+                                        'sum_actual_store_demo' => $sumActualStoreDemo + $data['value'],
+                                        'sum_actual_area' => $sumActualArea + $data['value'],
+                                        'sum_actual_region' => $sumActualRegion + $data['value'],
+                                    ]);
+                                }
+
+                            }else{ // IRISAN
+                                $summary->update([ // ADD NEW VALUE
+                                    'actual_mcc' => $summary->actual_mcc + $data['value'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo + $data['value'],
+                                ]);
+                            }
 
                         }
 
@@ -449,19 +743,78 @@ trait ActualTrait {
 
                             if (isset($data['value_old']) && $data['value_old'] > 0) { // UPDATE
 
-                                $summary->update([ // SUBSTRACT OLD VALUE
-                                    'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value_old']
-                                ]);
+                                if($data['irisan'] == 0){
+                                    if($summary->user_role == 'Promoter'){
+                                        $summary->update([ // SUBSTRACT OLD VALUE
+                                            'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value_old'],
+                                            'sum_pf_actual_store' => $sumActualStorePF - $data['value_old'],
+                                            'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $data['value_old'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF - $data['value_old'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF - $data['value_old'],
+                                        ]);
 
-                                $summary->update([ // ADD NEW VALUE
-                                    'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value']
-                                ]);
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value'],
+                                            'sum_pf_actual_store' => $summary->sum_pf_actual_store + $data['value'],
+                                            'sum_pf_actual_store_promo' => $summary->sum_pf_actual_store_promo + $data['value'],
+                                            'sum_pf_actual_area' => $summary->sum_pf_actual_area + $data['value'],
+                                            'sum_pf_actual_region' => $summary->sum_pf_actual_region + $data['value'],
+                                        ]);
+                                    }else{
+                                        $summary->update([ // SUBSTRACT OLD VALUE
+                                            'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value_old'],
+                                            'sum_pf_actual_store' => $sumActualStorePF - $data['value_old'],
+                                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value_old'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF - $data['value_old'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF - $data['value_old'],
+                                        ]);
+
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value'],
+                                            'sum_pf_actual_store' => $summary->sum_pf_actual_store + $data['value'],
+                                            'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo + $data['value'],
+                                            'sum_pf_actual_area' => $summary->sum_pf_actual_area + $data['value'],
+                                            'sum_pf_actual_region' => $summary->sum_pf_actual_region + $data['value'],
+                                        ]);
+                                    }
+                                }else{
+                                    $summary->update([ // SUBSTRACT OLD VALUE
+                                        'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value_old'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value_old'],
+                                    ]);
+
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value'],
+                                        'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo + $data['value'],
+                                    ]);
+                                }
 
                             } else { // INSERT
 
-                                $summary->update([ // ADD NEW VALUE
-                                    'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value']
-                                ]);
+                                if($data['irisan'] == 0){
+                                    if($summary->user_role == 'Promoter'){
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value'],
+                                            'sum_pf_actual_store' => $sumActualStorePF + $data['value'],
+                                            'sum_pf_actual_store_promo' => $sumActualStorePromoPF + $data['value'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF + $data['value'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF + $data['value'],
+                                        ]);
+                                    }else{
+                                        $summary->update([ // ADD NEW VALUE
+                                            'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value'],
+                                            'sum_pf_actual_store' => $sumActualStorePF + $data['value'],
+                                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF + $data['value'],
+                                            'sum_pf_actual_area' => $sumActualAreaPF + $data['value'],
+                                            'sum_pf_actual_region' => $sumActualRegionPF + $data['value'],
+                                        ]);
+                                    }
+                                }else{
+                                    $summary->update([ // ADD NEW VALUE
+                                        'actual_pf_mcc' => $summary->actual_pf_mcc + $data['value'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF + $data['value'],
+                                    ]);
+                                }
 
                             }
                         }
@@ -599,12 +952,30 @@ trait ActualTrait {
 
                     if ($summary->target_da > 0) {
 
-                        $summary->update([
-                            'actual_da' => $summary->actual_da - $data['value'],
-                            'sum_actual_store' => $sumActualStore - $data['value'],
-                            'sum_actual_area' => $sumActualArea - $data['value'],
-                            'sum_actual_region' => $sumActualRegion - $data['value'],
-                        ]);
+                        if($data['irisan'] == 0){
+                            if($summary->user_role == 'Promoter'){
+                                $summary->update([
+                                    'actual_da' => $summary->actual_da - $data['value'],
+                                    'sum_actual_store' => $sumActualStore - $data['value'],
+                                    'sum_actual_store_promo' => $sumActualStorePromo - $data['value'],
+                                    'sum_actual_area' => $sumActualArea - $data['value'],
+                                    'sum_actual_region' => $sumActualRegion - $data['value'],
+                                ]);
+                            }else{
+                                $summary->update([
+                                    'actual_da' => $summary->actual_da - $data['value'],
+                                    'sum_actual_store' => $sumActualStore - $data['value'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo - $data['value'],
+                                    'sum_actual_area' => $sumActualArea - $data['value'],
+                                    'sum_actual_region' => $sumActualRegion - $data['value'],
+                                ]);
+                            }
+                        }else{
+                            $summary->update([
+                                'actual_da' => $summary->actual_da - $data['value'],
+                                'sum_actual_store_demo' => $sumActualStoreDemo - $data['value'],
+                            ]);
+                        }
 
                     }
 
@@ -613,9 +984,30 @@ trait ActualTrait {
 
                         if ($data['pf'] > 0) {
 
-                            $summary->update([
-                                'actual_pf_da' => $summary->actual_pf_da - $data['value']
-                            ]);
+                            if($data['irisan'] == 0){
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([
+                                        'actual_pf_da' => $summary->actual_pf_da - $data['value'],
+                                        'sum_pf_actual_store' => $sumActualStorePF - $data['value'],
+                                        'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $data['value'],
+                                        'sum_pf_actual_area' => $sumActualAreaPF - $data['value'],
+                                        'sum_pf_actual_region' => $sumActualRegionPF - $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([
+                                        'actual_pf_da' => $summary->actual_pf_da - $data['value'],
+                                        'sum_pf_actual_store' => $sumActualStorePF - $data['value'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value'],
+                                        'sum_pf_actual_area' => $sumActualAreaPF - $data['value'],
+                                        'sum_pf_actual_region' => $sumActualRegionPF - $data['value'],
+                                    ]);
+                                }
+                            }else{
+                                $summary->update([
+                                    'actual_pf_da' => $summary->actual_pf_da - $data['value'],
+                                    'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value'],
+                                ]);
+                            }
 
                         }
                     }
@@ -679,12 +1071,30 @@ trait ActualTrait {
 
                     if ($summary->target_pc > 0) {
 
-                        $summary->update([
-                            'actual_pc' => $summary->actual_pc - $data['value'],
-                            'sum_actual_store' => $sumActualStore - $data['value'],
-                            'sum_actual_area' => $sumActualArea - $data['value'],
-                            'sum_actual_region' => $sumActualRegion - $data['value'],
-                        ]);
+                        if($data['irisan'] == 0){
+                            if($summary->user_role == 'Promoter'){
+                                $summary->update([
+                                    'actual_pc' => $summary->actual_pc - $data['value'],
+                                    'sum_actual_store' => $sumActualStore - $data['value'],
+                                    'sum_actual_store_promo' => $sumActualStorePromo - $data['value'],
+                                    'sum_actual_area' => $sumActualArea - $data['value'],
+                                    'sum_actual_region' => $sumActualRegion - $data['value'],
+                                ]);
+                            }else{
+                                $summary->update([
+                                    'actual_pc' => $summary->actual_pc - $data['value'],
+                                    'sum_actual_store' => $sumActualStore - $data['value'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo - $data['value'],
+                                    'sum_actual_area' => $sumActualArea - $data['value'],
+                                    'sum_actual_region' => $sumActualRegion - $data['value'],
+                                ]);
+                            }
+                        }else{
+                            $summary->update([
+                                'actual_pc' => $summary->actual_pc - $data['value'],
+                                'sum_actual_store_demo' => $sumActualStoreDemo - $data['value'],
+                            ]);
+                        }
 
                     }
 
@@ -692,9 +1102,30 @@ trait ActualTrait {
                     if ($summary->target_pf_pc > 0) {
 
                         if ($data['pf'] > 0){
-                            $summary->update([
-                                'actual_pf_pc' => $summary->actual_pf_pc - $data['value']
-                            ]);
+                            if($data['irisan'] == 0){
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([
+                                        'actual_pf_pc' => $summary->actual_pf_pc - $data['value'],
+                                        'sum_pf_actual_store' => $sumActualStorePF - $data['value'],
+                                        'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $data['value'],
+                                        'sum_pf_actual_area' => $sumActualAreaPF - $data['value'],
+                                        'sum_pf_actual_region' => $sumActualRegionPF - $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([
+                                        'actual_pf_pc' => $summary->actual_pf_pc - $data['value'],
+                                        'sum_pf_actual_store' => $sumActualStorePF - $data['value'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value'],
+                                        'sum_pf_actual_area' => $sumActualAreaPF - $data['value'],
+                                        'sum_pf_actual_region' => $sumActualRegionPF - $data['value'],
+                                    ]);
+                                }
+                            }else{
+                                $summary->update([
+                                    'actual_pf_pc' => $summary->actual_pf_pc - $data['value'],
+                                    'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value'],
+                                ]);
+                            }
                         }
                     }
 
@@ -756,12 +1187,30 @@ trait ActualTrait {
 
                     if ($summary->target_mcc > 0) {
 
-                        $summary->update([
-                            'actual_mcc' => $summary->actual_mcc - $data['value'],
-                            'sum_actual_store' => $sumActualStore - $data['value'],
-                            'sum_actual_area' => $sumActualArea - $data['value'],
-                            'sum_actual_region' => $sumActualRegion - $data['value'],
-                        ]);
+                        if($data['irisan'] == 0){
+                            if($summary->user_role == 'Promoter'){
+                                $summary->update([
+                                    'actual_mcc' => $summary->actual_mcc - $data['value'],
+                                    'sum_actual_store' => $sumActualStore - $data['value'],
+                                    'sum_actual_store_promo' => $sumActualStorePromo - $data['value'],
+                                    'sum_actual_area' => $sumActualArea - $data['value'],
+                                    'sum_actual_region' => $sumActualRegion - $data['value'],
+                                ]);
+                            }else{
+                                $summary->update([
+                                    'actual_mcc' => $summary->actual_mcc - $data['value'],
+                                    'sum_actual_store' => $sumActualStore - $data['value'],
+                                    'sum_actual_store_demo' => $sumActualStoreDemo - $data['value'],
+                                    'sum_actual_area' => $sumActualArea - $data['value'],
+                                    'sum_actual_region' => $sumActualRegion - $data['value'],
+                                ]);
+                            }
+                        }else{
+                            $summary->update([
+                                'actual_mcc' => $summary->actual_mcc - $data['value'],
+                                'sum_actual_store_demo' => $sumActualStoreDemo - $data['value'],
+                            ]);
+                        }
 
                     }
 
@@ -770,9 +1219,30 @@ trait ActualTrait {
 
                         if ($data['pf'] > 0) {
 
-                            $summary->update([
-                                'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value']
-                            ]);
+                            if($data['irisan'] == 0){
+                                if($summary->user_role == 'Promoter'){
+                                    $summary->update([
+                                        'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value'],
+                                        'sum_pf_actual_store' => $sumActualStorePF - $data['value'],
+                                        'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $data['value'],
+                                        'sum_pf_actual_area' => $sumActualAreaPF - $data['value'],
+                                        'sum_pf_actual_region' => $sumActualRegionPF - $data['value'],
+                                    ]);
+                                }else{
+                                    $summary->update([
+                                        'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value'],
+                                        'sum_pf_actual_store' => $sumActualStorePF - $data['value'],
+                                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value'],
+                                        'sum_pf_actual_area' => $sumActualAreaPF - $data['value'],
+                                        'sum_pf_actual_region' => $sumActualRegionPF - $data['value'],
+                                    ]);
+                                }
+                            }else{
+                                $summary->update([
+                                    'actual_pf_mcc' => $summary->actual_pf_mcc - $data['value'],
+                                    'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $data['value'],
+                                ]);
+                            }
 
                         }
                     }
@@ -835,16 +1305,43 @@ trait ActualTrait {
             }
 
             // Update Sum Target Store to All Summary
+//            $sumStore->update([
+//                'sum_actual_store' => $summary->sum_actual_store,
+//            ]);
+//
+//            $sumArea->update([
+//                'sum_actual_area' => $summary->sum_actual_area,
+//            ]);
+//
+//            $sumRegion->update([
+//                'sum_actual_region' => $summary->sum_actual_region,
+//            ]);
+
+            if($summary->user_role == 'Demonstrator'){
+                $sumStoreDemo->update([
+                    'sum_actual_store_demo' => $summary->sum_actual_store_demo,
+                    'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo,
+                ]);
+            }else{
+                $sumStorePromo->update([
+                    'sum_actual_store_promo' => $summary->sum_actual_store_promo,
+                    'sum_pf_actual_store_promo' => $summary->sum_pf_actual_store_promo,
+                ]);
+            }
+
             $sumStore->update([
                 'sum_actual_store' => $summary->sum_actual_store,
+                'sum_pf_actual_store' => $summary->sum_pf_actual_store,
             ]);
 
             $sumArea->update([
                 'sum_actual_area' => $summary->sum_actual_area,
+                'sum_pf_actual_area' => $summary->sum_pf_actual_area,
             ]);
 
             $sumRegion->update([
                 'sum_actual_region' => $summary->sum_actual_region,
+                'sum_pf_actual_region' => $summary->sum_pf_actual_region,
             ]);
 
             /* Check if Promoter was hybrid or not */
@@ -881,64 +1378,200 @@ trait ActualTrait {
             $sumActualStore = SummaryTargetActual::where('storeId', $summary_ta->storeId)->where('sell_type', $sellType)->where('id', '!=', $summary_ta->id)->first();
             $sumActualArea = SummaryTargetActual::where('area_id', $summary_ta->area_id)->where('sell_type', $sellType)->where('id', '!=', $summary_ta->id)->first();
             $sumActualRegion = SummaryTargetActual::where('region_id', $summary_ta->region_id)->where('sell_type', $sellType)->where('id', '!=', $summary_ta->id)->first();
+            $sumActualStorePromo = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->where('user_role', 'Promoter');
+            $sumActualStoreDemo = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->where('user_role', 'Demonstrator');
+            // PF
+            $sumActualStorePF = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->first();
+            $sumActualAreaPF =  SummaryTargetActual::where('area_id', $summary_ta->area_id)->where('sell_type', $sellType)->first();
+            $sumActualRegionPF = SummaryTargetActual::where('region_id', $summary_ta->region_id)->where('sell_type', $sellType)->first();
+            $sumActualStorePromoPF = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->where('user_role', 'Promoter');
+            $sumActualStoreDemoPF = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->where('user_role', 'Demonstrator');
+
+            // Handler
+            if($sumActualStorePromo->first()) $sumActualStorePromo = $sumActualStorePromo->first(); else $sumActualStorePromo = 0;
+            if($sumActualStoreDemo->first()) $sumActualStoreDemo = $sumActualStoreDemo->first(); else $sumActualStoreDemo = 0;
+
+            if($sumActualStorePromoPF->first()) $sumActualStorePromoPF = $sumActualStorePromoPF->first(); else $sumActualStorePromoPF = 0;
+            if($sumActualStoreDemoPF->first()) $sumActualStoreDemoPF = $sumActualStoreDemoPF->first(); else $sumActualStoreDemoPF = 0;
 
             $totalActual = $summary_ta->actual_da + $summary_ta->actual_pc + $summary_ta->actual_mcc;
+            $totalActualPF = $summary_ta->actual_pf_da + $summary_ta->actual_pf_pc + $summary_ta->actual_pf_mcc;
 
-            $sumActualStore = ($sumActualStore) ? $sumActualStore->sum_actual_store - $totalActual : 0;
-            $sumActualArea = ($sumActualArea) ? $sumActualArea->sum_actual_area - $totalActual : 0;
-            $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
 
-            /* Delete Actual Data */
-            $summary_ta->update([
-                'actual_dapc' => 0,
-                'actual_da' => 0,
-                'actual_pc' => 0,
-                'actual_mcc' => 0,
-                'actual_pf_da' => 0,
-                'actual_pf_pc' => 0,
-                'actual_pf_mcc' => 0,
-                'actual_da_w1' => 0,
-                'actual_da_w2' => 0,
-                'actual_da_w3' => 0,
-                'actual_da_w4' => 0,
-                'actual_da_w5' => 0,
-                'actual_pc_w1' => 0,
-                'actual_pc_w2' => 0,
-                'actual_pc_w3' => 0,
-                'actual_pc_w4' => 0,
-                'actual_pc_w5' => 0,
-                'actual_mcc_w1' => 0,
-                'actual_mcc_w2' => 0,
-                'actual_mcc_w3' => 0,
-                'actual_mcc_w4' => 0,
-                'actual_mcc_w5' => 0,
-                'sum_actual_store' => $sumActualStore,
-                'sum_actual_area' => $sumActualArea,
-                'sum_actual_region' => $sumActualRegion,
-            ]);
+            if($summary_ta->user_role == 'Promoter'){
+                $sumActualStore = ($sumActualStore) ? $sumActualStore->sum_actual_store - $totalActual : 0;
+                $sumActualStorePromo = ($sumActualStorePromo) ? $sumActualStorePromo->sum_actual_store_promo - $totalActual : 0;
+                $sumActualArea = ($sumActualArea) ? $sumActualArea->sum_actual_area - $totalActual : 0;
+                $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
+
+                $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
+                $sumActualStorePromoPF = ($sumActualStorePromoPF) ? $sumActualStorePromoPF->sum_pf_actual_store_promo - $totalActual : 0;
+                $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
+                $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
+
+                /* Delete Actual Data */
+                $summary_ta->update([
+                    'actual_dapc' => 0,
+                    'actual_da' => 0,
+                    'actual_pc' => 0,
+                    'actual_mcc' => 0,
+                    'actual_pf_da' => 0,
+                    'actual_pf_pc' => 0,
+                    'actual_pf_mcc' => 0,
+                    'actual_da_w1' => 0,
+                    'actual_da_w2' => 0,
+                    'actual_da_w3' => 0,
+                    'actual_da_w4' => 0,
+                    'actual_da_w5' => 0,
+                    'actual_pc_w1' => 0,
+                    'actual_pc_w2' => 0,
+                    'actual_pc_w3' => 0,
+                    'actual_pc_w4' => 0,
+                    'actual_pc_w5' => 0,
+                    'actual_mcc_w1' => 0,
+                    'actual_mcc_w2' => 0,
+                    'actual_mcc_w3' => 0,
+                    'actual_mcc_w4' => 0,
+                    'actual_mcc_w5' => 0,
+                    'sum_actual_store' => $sumActualStore,
+                    'sum_actual_store_promo' => $sumActualStorePromo,
+                    'sum_actual_area' => $sumActualArea,
+                    'sum_actual_region' => $sumActualRegion,
+                    'sum_pf_actual_store' => $sumActualStorePF,
+                    'sum_pf_actual_store_promo' => $sumActualStorePromoPF,
+                    'sum_pf_actual_area' => $sumActualAreaPF,
+                    'sum_pf_actual_region' => $sumActualRegionPF,
+                ]);
+            }else{
+                if($summary_ta->partner == 0){
+                    $sumActualStore = ($sumActualStore) ? $sumActualStore->sum_actual_store - $totalActual : 0;
+                    $sumActualStoreDemo = ($sumActualStoreDemo) ? $sumActualStoreDemo->sum_actual_store_demo - $totalActual : 0;
+                    $sumActualArea = ($sumActualArea) ? $sumActualArea->sum_actual_area - $totalActual : 0;
+                    $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
+
+                    $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
+                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActual : 0;
+                    $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
+                    $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
+
+                    /* Delete Actual Data */
+                    $summary_ta->update([
+                        'actual_dapc' => 0,
+                        'actual_da' => 0,
+                        'actual_pc' => 0,
+                        'actual_mcc' => 0,
+                        'actual_pf_da' => 0,
+                        'actual_pf_pc' => 0,
+                        'actual_pf_mcc' => 0,
+                        'actual_da_w1' => 0,
+                        'actual_da_w2' => 0,
+                        'actual_da_w3' => 0,
+                        'actual_da_w4' => 0,
+                        'actual_da_w5' => 0,
+                        'actual_pc_w1' => 0,
+                        'actual_pc_w2' => 0,
+                        'actual_pc_w3' => 0,
+                        'actual_pc_w4' => 0,
+                        'actual_pc_w5' => 0,
+                        'actual_mcc_w1' => 0,
+                        'actual_mcc_w2' => 0,
+                        'actual_mcc_w3' => 0,
+                        'actual_mcc_w4' => 0,
+                        'actual_mcc_w5' => 0,
+                        'sum_actual_store' => $sumActualStore,
+                        'sum_actual_store_demo' => $sumActualStoreDemo,
+                        'sum_actual_area' => $sumActualArea,
+                        'sum_actual_region' => $sumActualRegion,
+                        'sum_pf_actual_store' => $sumActualStorePF,
+                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF,
+                        'sum_pf_actual_area' => $sumActualAreaPF,
+                        'sum_pf_actual_region' => $sumActualRegionPF,
+                    ]);
+                }else{
+                    $sumActualStoreDemo = ($sumActualStoreDemo) ? $sumActualStoreDemo->sum_actual_store_demo - $totalActual : 0;
+                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActual : 0;
+
+                    /* Delete Actual Data */
+                    $summary_ta->update([
+                        'actual_dapc' => 0,
+                        'actual_da' => 0,
+                        'actual_pc' => 0,
+                        'actual_mcc' => 0,
+                        'actual_pf_da' => 0,
+                        'actual_pf_pc' => 0,
+                        'actual_pf_mcc' => 0,
+                        'actual_da_w1' => 0,
+                        'actual_da_w2' => 0,
+                        'actual_da_w3' => 0,
+                        'actual_da_w4' => 0,
+                        'actual_da_w5' => 0,
+                        'actual_pc_w1' => 0,
+                        'actual_pc_w2' => 0,
+                        'actual_pc_w3' => 0,
+                        'actual_pc_w4' => 0,
+                        'actual_pc_w5' => 0,
+                        'actual_mcc_w1' => 0,
+                        'actual_mcc_w2' => 0,
+                        'actual_mcc_w3' => 0,
+                        'actual_mcc_w4' => 0,
+                        'actual_mcc_w5' => 0,
+                        'sum_actual_store_demo' => $sumActualStoreDemo,
+                        'sum_pf_actual_store_demo' => $sumActualStoreDemoPF,
+                    ]);
+                }
+            }
 
             /* Update all summary for store, area, region */
             $sumStore = SummaryTargetActual::where('storeId', $summary_ta->storeId)->where('sell_type', $sellType);
             $sumArea = SummaryTargetActual::where('area_id', $summary_ta->area_id)->where('sell_type', $sellType);
             $sumRegion = SummaryTargetActual::where('region_id', $summary_ta->region_id)->where('sell_type', $sellType);
+            $sumStorePromo = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->where('user_role', 'Promoter');
+            $sumStoreDemo = SummaryTargetActual::where('storeId',$summary_ta->storeId)->where('sell_type', $sellType)->where('user_role', 'Demonstrator');
+
+            if($summary_ta->user_role == 'Demonstrator'){
+                $sumStoreDemo->update([
+                    'sum_target_store_demo' => $summary_ta->sum_target_store_demo,
+                    'sum_pf_target_store_demo' => $summary_ta->sum_pf_target_store_demo,
+                ]);
+            }else{
+                $sumStorePromo->update([
+                    'sum_target_store_promo' => $summary_ta->sum_target_store_promo,
+                    'sum_pf_target_store_promo' => $summary_ta->sum_pf_target_store_promo,
+                ]);
+            }
 
             $sumStore->update([
-                'sum_actual_store' => $sumActualStore,
+                'sum_target_store' => $summary_ta->sum_target_store,
+                'sum_pf_target_store' => $summary_ta->sum_pf_target_store,
             ]);
 
             $sumArea->update([
-                'sum_actual_area' => $sumActualArea,
+                'sum_target_area' => $summary_ta->sum_target_area,
+                'sum_pf_target_area' => $summary_ta->sum_pf_target_area,
             ]);
 
             $sumRegion->update([
-                'sum_actual_region' => $sumActualRegion,
+                'sum_target_region' => $summary_ta->sum_target_region,
+                'sum_pf_target_region' => $summary_ta->sum_pf_target_region,
             ]);
 
+//            $sumStore->update([
+//                'sum_actual_store' => $sumActualStore,
+//            ]);
+//
+//            $sumArea->update([
+//                'sum_actual_area' => $sumActualArea,
+//            ]);
+//
+//            $sumRegion->update([
+//                'sum_actual_region' => $sumActualRegion,
+//            ]);
+
             /* Add Summary from User */
-            $summaryData = SummarySellIn::where('user_id', $userId)->where('storeId', $storeId)->where('irisan', null)->get();
+            $summaryData = SummarySellIn::where('user_id', $userId)->where('storeId', $storeId)->get();
 
             if ($sellType == 'Sell Out') {
-                $summaryData = SummarySellOut::where('user_id', $userId)->where('storeId', $storeId)->where('irisan', null)->get();
+                $summaryData = SummarySellOut::where('user_id', $userId)->where('storeId', $storeId)->get();
             }
 
             if ($summaryData) {
@@ -952,6 +1585,7 @@ trait ActualTrait {
                     $detail['value'] = $data['value'];
                     $detail['group'] = $data['group'];
                     $detail['sell_type'] = $sellType;
+                    $detail['irisan'] = $data['irisan'];
 
                     $this->changeActual($detail, 'change');
 

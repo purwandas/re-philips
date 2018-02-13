@@ -134,7 +134,11 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            	<input type="text" id="kepemilikan_toko" name="kepemilikan_toko" class="form-control" value="{{ @$data->kepemilikan_toko }}" placeholder="Input Ownership Status" />
+					            	<select class="select2select" name="kepemilikan_toko" id="kepemilikan_toko" required>
+	                                	<option></option>
+										<option value="Milik Sendiri">Milik Sendiri</option>
+										<option value="Sewa">Sewa</option>
+	                                </select>
 				            </div>
 				          </div>
 				        </div>
@@ -246,15 +250,8 @@
 
 					          <div class="input-group" style="width: 100%;">
 
-	                                <select class="select2select" name="classification" id="classification" required>
+	                                <select class="select2select" name="classification_id" id="classification" required>
 	                                	<option></option>
-										<option value="New Store">New Store</option>
-										<option value="Gold">Gold</option>
-										<option value="Platinum">Platinum</option>
-										<option value="Silver">Silver</option>
-										<option value="Bronze">Bronze</option>
-										<option value="Risna">Risna</option>
-										<option value="Don`t have classification">Don`t have classification</option>
 	                                </select>
 
 	                                <span class="input-group-addon display-hide">
@@ -402,9 +399,20 @@
 	            }
 	        }));
 
-	        $('#classification').select2({
+
+            $('#classification').select2(setOptions('{{ route("data.classification") }}', 'Classification', function (params) {
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {
+	                    return {id: obj.id, text: obj.classification}
+	                })
+	            }
+	        }));
+
+            $('#kepemilikan_toko').select2({
                 width: '100%',
-                placeholder: 'Classification'
+                placeholder: 'Store Ownership'
             });
 
             $('#lokasi_toko').select2({
@@ -430,8 +438,9 @@
             // Set select2 if method PATCH            
 	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
-	       setSelect2IfPatch($("#classification"), "{{ @$data->classification }}", "{{ @$data->classification }}");
+	       setSelect2IfPatch($("#classification"), "{{ @$data->classification->id }}", "{{ @$data->classification->classification }}");
 
+	       setSelect2IfPatch($("#kepemilikan_toko"), "{{ @$data->kepemilikan_toko }}", "{{ @$data->kepemilikan_toko }}");
 	       setSelect2IfPatch($("#lokasi_toko"), "{{ @$data->lokasi_toko }}", "{{ @$data->lokasi_toko }}");
 	       setSelect2IfPatch($("#tipe_transaksi_2"), "{{ @$data->tipe_transaksi_2 }}", "{{ @$data->tipe_transaksi_2 }}");
 	       setSelect2IfPatch($("#tipe_transaksi"), "{{ @$data->tipe_transaksi }}", "{{ @$data->tipe_transaksi }}");

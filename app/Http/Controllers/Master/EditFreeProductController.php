@@ -11,6 +11,7 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Store;
+use App\RsmRegion;
 use App\FreeProduct;
 use App\FreeProductDetail;
 use App\Filters\FreeProductFilters;
@@ -37,7 +38,7 @@ class EditFreeProductController extends Controller
      */
     public function masterDataTable(Request $request){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
         $data = FreeProduct::

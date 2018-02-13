@@ -14,11 +14,7 @@ class ChangeAnswerOnFaqsTable extends Migration
     public function up()
     {
         Schema::table('faqs', function (Blueprint $table) {
-            $table->dropColumn('answer');
-        });
-
-        Schema::table('faqs', function (Blueprint $table) {
-            $table->text('answer')->after('question');
+            $table->text('answer')->change();
         });
     }
 
@@ -29,6 +25,8 @@ class ChangeAnswerOnFaqsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('faqs', function (Blueprint $table) {
+            $table->string('answer')->change();
+        });
     }
 }

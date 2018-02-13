@@ -31,9 +31,11 @@ class QuizController extends Controller
         $resultQuiz = Quiz::
                     join('target_quizs','target_quizs.quiz_id','quizs.id')
                     ->join('quiz_targets','quiz_targets.id','target_quizs.quiz_target_id')
-                    ->where('quiz_targets.role',$user->role)
-                    ->where('quiz_targets.grading',$user->grading)
+                    ->where('quiz_targets.role_id',$user->role_id)
+                    ->where('quiz_targets.grading_id',$user->grading_id)
                     ->get();
+
+                    // return response()->json($user->role_id.'--'.$user->grading_id);
 
         // Set has read
         $resultQuiz->map(function ($detail) use ($user) {

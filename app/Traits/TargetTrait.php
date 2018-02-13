@@ -42,9 +42,11 @@ trait TargetTrait {
             }
 
             $user_role = 'Promoter';
-            if($user->role == 'Demonstrator DA'){
+            if($user->role->role_group == 'Demonstrator DA'){
                 $user_role = 'Demonstrator';
             }
+
+            $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
             $target = SummaryTargetActual::create([
                             'region_id' => $store->district->area->region->id,
@@ -61,12 +63,12 @@ trait TargetTrait {
                             'promoter_name' => $user->name,
                             'account_type' => $store->subChannel->channel->name,
                             'title_of_promoter' => $this->getPromoterTitle($user->id, $store->id, $data['sell_type']),
-                            'classification_store' => $store->classification,
+                            'classification_store' => $store->classification->classification,
                             'account' => $store->subChannel->name,
                             'store_id' => $store->store_id,
                             'store_name_1' => $store->store_name_1,
                             'store_name_2' => $store->store_name_2,
-                            'spv_name' => ($store->user->name != '') ? $store->user->name : '',
+                            'spv_name' => $spvName,
                             'trainer' => $trainer_name,
                             'sell_type' => $data['sell_type'],
                         ]);
@@ -287,7 +289,7 @@ trait TargetTrait {
         $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
         // Check if promoter or demonstrator group
-        $role = User::where('id', $target->user_id)->first()->role;
+        $role = User::where('id', $target->user_id)->first()->role->role_group;
 
 //        $sumStorePromo = 0;
 //        $sumStoreDemo = 0;

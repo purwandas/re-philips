@@ -19,6 +19,7 @@ use App\Distributor;
 use App\ProductFocuses;
 use App\DmArea;
 use App\User;
+use App\SpvDemo;
 use App\TrainerArea;
 use DB;
 
@@ -77,6 +78,13 @@ class DisplayShareController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $displayShareHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                                 /* Category */
                                 $category = Category::where('id', $data['category_id'])->first();
@@ -141,7 +149,7 @@ class DisplayShareController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'nik' => $user->nik,
                                     'promoter_name' => $user->name,
@@ -150,7 +158,9 @@ class DisplayShareController extends Controller
                                     'philips' => $data['philips'],
                                     'all' => $data['all'],
                                     'percentage' => (($data['philips'] / $data['all']) * 100),
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -197,6 +207,13 @@ class DisplayShareController extends Controller
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Category */
                             $category = Category::where('id', $detail->category_id)->first();
@@ -259,7 +276,7 @@ class DisplayShareController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'nik' => $user->nik,
                                 'promoter_name' => $user->name,
@@ -268,7 +285,9 @@ class DisplayShareController extends Controller
                                 'philips' => $data['philips'],
                                 'all' => $data['all'],
                                 'percentage' => (($data['philips'] / $data['all']) * 100),
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
