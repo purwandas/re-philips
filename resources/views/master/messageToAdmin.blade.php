@@ -35,7 +35,7 @@
             </div>
                 <div class="portlet-title">
                 <!-- MAIN CONTENT -->
-                @if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+                @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
                     <div class="actions" style="text-align: left">
                         <a id="export" class="btn green-dark" >
                             <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>

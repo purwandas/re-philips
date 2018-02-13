@@ -40,6 +40,7 @@ use App\Tbat;
 use App\TbatDetail;
 use DB;
 use App\User;
+use App\SpvDemo;
 use App\TrainerArea;
 
 class SalesController extends Controller
@@ -52,9 +53,19 @@ class SalesController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
+        if(!isset($content['irisan'])) { // Set Default Irisan if doesn't exist
+            $content['irisan'] = 0;
+        }else{
+            if($content['irisan'] == null){
+                $content['irisan'] = 0;
+            }
+        }
+
+//        return response()->json($content);
+
         if($param == 1) { /* SELL IN(SELL THRU) */
 
-//            return response()->json($this->getPromoterTitle($user->id, $content['id']));
+//         return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell in(Sell Thru) header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -66,7 +77,10 @@ class SalesController extends Controller
 
                         foreach ($content['data'] as $data) {
 
-                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)->where('product_id', $data['product_id'])->first();
+                            $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)
+                                            ->where('product_id', $data['product_id'])
+                                            ->where('irisan', $content['irisan'])
+                                            ->first();
 
                             if ($sellInDetail) { // If data exist -> update
 
@@ -76,7 +90,7 @@ class SalesController extends Controller
 
                                 /** Update Summary **/
 
-                                if($user->role != 'Salesman Explorer') {
+                                if($user->role->role_group != 'Salesman Explorer') {
 
                                     $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
 
@@ -105,6 +119,7 @@ class SalesController extends Controller
                                     $summary_ta['value'] = $summary->value;
                                     $summary_ta['group'] = $summary->group;
                                     $summary_ta['sell_type'] = 'Sell In';
+                                    $summary_ta['irisan'] = $summary->irisan;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -140,7 +155,8 @@ class SalesController extends Controller
                                 $detail = SellInDetail::create([
                                     'sellin_id' => $sellInHeader->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
                                 ]);
 
                                 /** Insert Summary **/
@@ -150,13 +166,20 @@ class SalesController extends Controller
                                             ->where('id', $sellInHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
                                             ->where('id', $data['product_id'])->first();
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role == 'Salesman Explorer') {
+                                if($user->role->role_group == 'Salesman Explorer') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -241,7 +264,7 @@ class SalesController extends Controller
                                     }
                                 }
 
-                                if($user->role != 'Salesman Explorer') {
+                                if($user->role->role_group != 'Salesman Explorer') {
                                     if (isset($store->subChannel->channel->name)){
                                         $channel = $store->subChannel->channel->name;
                                     }else{
@@ -270,7 +293,7 @@ class SalesController extends Controller
                                         'area' => $store->district->area->name,
                                         'district' => $store->district->name,
                                         'store_name_1' => $store->store_name_1,
-                                        'store_name_2' => $store->store_name_2,
+                                        'store_name_2' => $customerCode,
                                         'store_id' => $store->store_id,
                                         'dedicate' => $store->dedicate,
                                         'nik' => $user->nik,
@@ -279,14 +302,18 @@ class SalesController extends Controller
                                         'model' => $product->model . '/' . $product->variants,
                                         'group' => $product->category->group->groupProduct->name,
                                         'category' => $product->category->name,
+                                        'product_id' => $product->id,
                                         'product_name' => $product->name,
                                         'quantity' => $data['quantity'],
+                                        'irisan' => $content['irisan'],
                                         'unit_price' => $realPrice,
                                         'value' => $realPrice * $data['quantity'],
                                         'value_pf_mr' => $value_pf_mr,
                                         'value_pf_tr' => $value_pf_tr,
                                         'value_pf_ppe' => $value_pf_ppe,
-                                        'role' => $user->role,
+                                        'role' => $user->role->role,
+                                        'role_id' => $user->role->id,
+                                        'role_group' => $user->role->role_group,
                                         'spv_name' => $spvName,
                                         'dm_name' => $dm_name,
                                         'trainer_name' => $trainer_name,
@@ -300,6 +327,7 @@ class SalesController extends Controller
                                     $summary_ta['value'] = $summary->value;
                                     $summary_ta['group'] = $summary->group;
                                     $summary_ta['sell_type'] = 'Sell In';
+                                    $summary_ta['irisan'] = $summary->irisan;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -342,7 +370,7 @@ class SalesController extends Controller
                                         'area' => $store->district->area->name,
                                         'district' => $store->district->name,
                                         'store_name_1' => $store->store_name_1,
-                                        'store_name_2' => $store->store_name_2,
+                                        'store_name_2' => $customerCode,
                                         'store_id' => $store->store_id,
                                         'dedicate' => $store->dedicate,
                                         'nik' => $user->nik,
@@ -356,7 +384,9 @@ class SalesController extends Controller
                                         'unit_price' => $realPrice,
                                         'value' => $realPrice * $detail->quantity,
                                         'value_pf' => $value_pf,
-                                        'role' => $user->role,
+                                        'role' => $user->role->role,
+                                        'role_id' => $user->role->id,
+                                        'role_group' => $user->role->role_group,
                                     ]);
 
                                     // Actual Summary
@@ -399,7 +429,8 @@ class SalesController extends Controller
                             $detail = SellInDetail::create([
                                     'sellin_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
                                 ]);
 
                             /** Insert Summary **/
@@ -409,13 +440,27 @@ class SalesController extends Controller
                                         ->where('id', $transaction->store_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
+                            $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                            $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
                                         ->where('id', $detail->product_id)->first();
 
                             /* Price */
                             $realPrice = 0;
-                            if($user->role == 'Salesman Explorer') {
+                            if($user->role->role_group == 'Salesman Explorer') {
                                 if (isset($store->subChannel->channel->globalChannel->id)) {
                                     $price = Price::where('product_id', $product->id)
                                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -500,7 +545,7 @@ class SalesController extends Controller
                                 }
                             }
 
-                            if($user->role != 'Salesman Explorer') {
+                            if($user->role->role_group != 'Salesman Explorer') {
                                 if (isset($store->subChannel->channel->name)){
                                     $channel = $store->subChannel->channel->name;
                                 }else{
@@ -529,7 +574,7 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'nik' => $user->nik,
@@ -538,14 +583,18 @@ class SalesController extends Controller
                                     'model' => $product->model . '/' . $product->variants,
                                     'group' => $product->category->group->groupProduct->name,
                                     'category' => $product->category->name,
+                                    'product_id' => $product->id,
                                     'product_name' => $product->name,
                                     'quantity' => $detail->quantity,
+                                    'irisan' => $content['irisan'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $detail->quantity,
                                     'value_pf_mr' => $value_pf_mr,
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -559,6 +608,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
 
 //                                return $summary_ta;
 
@@ -602,7 +652,7 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'nik' => $user->nik,
@@ -616,7 +666,9 @@ class SalesController extends Controller
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $detail->quantity,
                                     'value_pf' => $value_pf,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                 ]);
 
                                 // Actual Summary
@@ -652,12 +704,15 @@ class SalesController extends Controller
 
             if ($sellOutHeader) { // If header exist (update and/or create detail)
 
-                try {
-                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
+               try {
+                   DB::transaction(function () use ($content, $sellOutHeader, $user) {
 
                         foreach ($content['data'] as $data) {
 
-                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)->where('product_id', $data['product_id'])->first();
+                            $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)
+                                                ->where('product_id', $data['product_id'])
+                                                ->where('irisan', $content['irisan'])
+                                                ->first();
 
                             if ($sellOutDetail) { // If data exist -> update
 
@@ -694,6 +749,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell Out';
+                                $summary_ta['irisan'] = $summary->irisan;
 
                                 $this->changeActual($summary_ta, 'change');
 
@@ -702,7 +758,8 @@ class SalesController extends Controller
                                 $detail = SellOutDetail::create([
                                     'sellout_id' => $sellOutHeader->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                 ]);
 
                                 /** Insert Summary **/
@@ -711,6 +768,13 @@ class SalesController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $sellOutHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -813,7 +877,7 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'nik' => $user->nik,
@@ -822,14 +886,18 @@ class SalesController extends Controller
                                     'model' => $product->model . '/' . $product->variants,
                                     'group' => $product->category->group->groupProduct->name,
                                     'category' => $product->category->name,
+                                    'product_id' => $product->id,
                                     'product_name' => $product->name,
                                     'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                     'unit_price' => $realPrice,
                                     'value' => $realPrice * $data['quantity'],
                                     'value_pf_mr' => $value_pf_mr,
                                     'value_pf_tr' => $value_pf_tr,
                                     'value_pf_ppe' => $value_pf_ppe,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -843,6 +911,7 @@ class SalesController extends Controller
                                 $summary_ta['value'] = $summary->value;
                                 $summary_ta['group'] = $summary->group;
                                 $summary_ta['sell_type'] = 'Sell Out';
+                                $summary_ta['irisan'] = $summary->irisan;
 
                                 $this->changeActual($summary_ta, 'change');
 
@@ -850,17 +919,17 @@ class SalesController extends Controller
 
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+                   });
+               } catch (\Exception $e) {
+                   return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+               }
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-                try {
-                    DB::transaction(function () use ($content, $user) {
+               try {
+                   DB::transaction(function () use ($content, $user) {
 
                         // HEADER
                         $transaction = SellOut::create([
@@ -876,7 +945,8 @@ class SalesController extends Controller
                             $detail = SellOutDetail::create([
                                     'sellout_id' => $transaction->id,
                                     'product_id' => $data['product_id'],
-                                    'quantity' => $data['quantity']
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
                                 ]);
 
                             /** Insert Summary **/
@@ -885,6 +955,13 @@ class SalesController extends Controller
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -987,7 +1064,7 @@ class SalesController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'dedicate' => $store->dedicate,
                                 'nik' => $user->nik,
@@ -996,14 +1073,18 @@ class SalesController extends Controller
                                 'model' => $product->model . '/' . $product->variants,
                                 'group' => $product->category->group->groupProduct->name,
                                 'category' => $product->category->name,
+                                'product_id' => $product->id,
                                 'product_name' => $product->name,
                                 'quantity' => $detail->quantity,
+                                'irisan' => $content['irisan'],
                                 'unit_price' => $realPrice,
                                 'value' => $realPrice * $detail->quantity,
                                 'value_pf_mr' => $value_pf_mr,
                                 'value_pf_tr' => $value_pf_tr,
                                 'value_pf_ppe' => $value_pf_ppe,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -1017,15 +1098,16 @@ class SalesController extends Controller
                             $summary_ta['value'] = $summary->value;
                             $summary_ta['group'] = $summary->group;
                             $summary_ta['sell_type'] = 'Sell Out';
+                            $summary_ta['irisan'] = $summary->irisan;
 
+//                            return response()->json($this->changeActual($summary_ta, 'change'));
                             $this->changeActual($summary_ta, 'change');
-
                         }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                }
+                   });
+               } catch (\Exception $e) {
+                   return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+               }
 
                 // Check sell in(Sell Thru) header after insert
                 $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -1079,6 +1161,13 @@ class SalesController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $retDistributorHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -1165,7 +1254,7 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'nik' => $user->nik,
@@ -1181,7 +1270,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -1230,6 +1321,13 @@ class SalesController extends Controller
                             $product = Product::with('category.group.groupProduct')
                                         ->where('id', $detail->product_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Price */
                             $realPrice = 0;
@@ -1312,7 +1410,7 @@ class SalesController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'dedicate' => $store->dedicate,
                                 'nik' => $user->nik,
@@ -1328,7 +1426,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -1397,6 +1497,13 @@ class SalesController extends Controller
                                 $product = Product::with('category.group.groupProduct')
                                             ->where('id', $data['product_id'])->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                                 /* Price */
                                 $realPrice = 0;
@@ -1479,7 +1586,7 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'nik' => $user->nik,
@@ -1495,7 +1602,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -1540,6 +1649,13 @@ class SalesController extends Controller
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1626,7 +1742,7 @@ class SalesController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'dedicate' => $store->dedicate,
                                 'nik' => $user->nik,
@@ -1642,7 +1758,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -1707,6 +1825,13 @@ class SalesController extends Controller
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $freeProductHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -1793,7 +1918,7 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'nik' => $user->nik,
@@ -1809,7 +1934,9 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
@@ -1854,6 +1981,13 @@ class SalesController extends Controller
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_id)->first();
                             $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -1940,7 +2074,7 @@ class SalesController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'dedicate' => $store->dedicate,
                                 'nik' => $user->nik,
@@ -1956,7 +2090,9 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
@@ -2022,9 +2158,27 @@ class SalesController extends Controller
                                             ->where('id', $tbatHeader->store_id)->first();
                                 $spvName = (isset($store->user->name)) ? $store->user->name : '';
 
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
                                 /* Store Destination */
                                 $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $tbatHeader->store_destination_id)->first();
+                                $spvName2='';
+                                if (isset($storeDestination->user->name)) {
+                                    $spvName2=$storeDestination->user->name;
+                                }
+                                
+                                $spvDemoName2 = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName2) > 0){
+                                    $spvName2 = (isset($spvDemoName2->user->name)) ? $spvDemoName2->user->name : '';
+                                }
+
+                                $customerCode2 = (isset($storeDestination->store_name_2)) ? $storeDestination->store_name_2 : '';
 
                                 /* Product */
                                 $product = Product::with('category.group.groupProduct')
@@ -2111,11 +2265,11 @@ class SalesController extends Controller
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
-                                    'store_name_2' => $store->store_name_2,
+                                    'store_name_2' => $customerCode,
                                     'store_id' => $store->store_id,
                                     'dedicate' => $store->dedicate,
                                     'store_destination_name_1' => $storeDestination->store_name_1,
-                                    'store_destination_name_2' => $storeDestination->store_name_2,
+                                    'store_destination_name_2' => $customerCode2,
                                     'store_destination_id' => $storeDestination->store_id,
                                     'destination_dedicate' => $storeDestination->dedicate,
                                     'nik' => $user->nik,
@@ -2131,8 +2285,11 @@ class SalesController extends Controller
                                     'value_pf_mr' => 0,
                                     'value_pf_tr' => 0,
                                     'value_pf_ppe' => 0,
-                                    'role' => $user->role,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
                                     'spv_name' => $spvName,
+                                    'spv_name2' => $spvName2,
                                     'dm_name' => $dm_name,
                                     'trainer_name' => $trainer_name,
                                 ]);
@@ -2180,9 +2337,27 @@ class SalesController extends Controller
                                     $spvName=$store->user->name;
                                 }
 
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
                             /* Store Destination */
                             $storeDestination = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                         ->where('id', $transaction->store_destination_id)->first();
+                                $spvName2='';
+                                if (isset($storeDestination->user->name)) {
+                                    $spvName2=$storeDestination->user->name;
+                                }
+                                
+                                $spvDemoName2 = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName2) > 0){
+                                    $spvName2 = (isset($spvDemoName2->user->name)) ? $spvDemoName2->user->name : '';
+                                }
+
+                                $customerCode2 = (isset($storeDestination->store_name_2)) ? $storeDestination->store_name_2 : '';
 
                             // /* Product */
                             $product = Product::with('category.group.groupProduct')
@@ -2271,11 +2446,11 @@ class SalesController extends Controller
                                 'area' => $store->district->area->name,
                                 'district' => $store->district->name,
                                 'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $store->store_name_2,
+                                'store_name_2' => $customerCode,
                                 'store_id' => $store->store_id,
                                 'dedicate' => $store->dedicate,
                                 'store_destination_name_1' => $storeDestination->store_name_1,
-                                'store_destination_name_2' => $storeDestination->store_name_2,
+                                'store_destination_name_2' => $customerCode2,
                                 'store_destination_id' => $storeDestination->store_id,
                                 'destination_dedicate' => $storeDestination->dedicate,
                                 'nik' => $user->nik,
@@ -2291,8 +2466,11 @@ class SalesController extends Controller
                                 'value_pf_mr' => 0,
                                 'value_pf_tr' => 0,
                                 'value_pf_ppe' => 0,
-                                'role' => $user->role,
+                                'role' => $user->role->role,
+                                'role_id' => $user->role->id,
+                                'role_group' => $user->role->role_group,
                                 'spv_name' => $spvName,
+                                'spv_name2' => $spvName2,
                                 'dm_name' => $dm_name,
                                 'trainer_name' => $trainer_name,
                             ]);

@@ -18,6 +18,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/user', ['as'=> 'datatable.user','uses'=>'UserController@masterDataTable']);
     Route::post('datatable/userpromoter', ['as'=> 'datatable.userpromoter','uses'=>'UserPromoterController@masterDataTable']);
     Route::post('datatable/area', ['as'=> 'datatable.area','uses'=>'Master\AreaController@masterDataTable']);
+    Route::post('datatable/sellin', ['as'=> 'datatable.sellin','uses'=>'Master\SellInController@masterDataTable']);
+    Route::post('datatable/sellout', ['as'=> 'datatable.sellout','uses'=>'Master\SellOutController@masterDataTable']);
     Route::post('datatable/district', ['as'=> 'datatable.district','uses'=>'Master\DistrictController@masterDataTable']);
     Route::post('datatable/channel', ['as'=> 'datatable.channel','uses'=>'Master\ChannelController@masterDataTable']);
     Route::post('datatable/subchannel', ['as'=> 'datatable.subchannel','uses'=>'Master\SubChannelController@masterDataTable']);
@@ -39,12 +41,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/target', ['as'=> 'datatable.target','uses'=>'Master\TargetController@masterDataTable']);
     Route::post('datatable/targetsalesman', ['as'=> 'datatable.targetsalesman','uses'=>'Master\TargetSalesmanController@masterDataTable']);
     Route::post('datatable/productfocus', ['as'=> 'datatable.productfocus','uses'=>'Master\ProductFocusController@masterDataTable']);
+    Route::post('datatable/productpromo', ['as'=> 'datatable.productpromo','uses'=>'Master\ProductPromoController@masterDataTable']);
     Route::post('datatable/productfocussalesman', ['as'=> 'datatable.productfocussalesman','uses'=>'Master\ProductFocusSalesmanController@masterDataTable']);
     Route::post('datatable/messageToAdmin', ['as'=> 'datatable.messageToAdmin','uses'=>'MessageToAdminController@masterDataTable']);
     Route::post('datatable/feedbackCategory', ['as'=> 'datatable.feedbackCategory','uses'=>'Master\FeedbackCategoryController@masterDataTable']);
     Route::post('datatable/feedbackQuestion', ['as'=> 'datatable.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@masterDataTable']);
     Route::post('datatable/feedbackAnswer', ['as'=> 'datatable.feedbackAnswer','uses'=>'Master\FeedbackAnswerController@masterDataTable']);
     Route::post('datatable/faq', ['as'=> 'datatable.faq','uses'=>'Master\FaqController@masterDataTable']);
+    Route::post('datatable/role', ['as'=> 'datatable.role','uses'=>'Master\RoleController@masterDataTable']);
+    Route::post('datatable/grading', ['as'=> 'datatable.grading','uses'=>'Master\GradingController@masterDataTable']);
+    Route::post('datatable/classification', ['as'=> 'datatable.classification','uses'=>'Master\ClassificationController@masterDataTable']);
+    Route::post('datatable/leadtime', ['as'=> 'datatable.leadtime','uses'=>'Master\LeadtimeController@masterDataTable']);
 
     /**
      * Edit Sales
@@ -85,6 +92,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
     Route::post('datatable/salesactivityreport', ['as'=> 'datatable.salesactivityreport','uses'=>'Master\ReportController@salesActivityData']);
     Route::post('datatable/storelocationactivityreport', ['as'=> 'datatable.storelocationactivityreport','uses'=>'Master\ReportController@storeLocationActivityData']);
+    Route::post('datatable/konfigpromoter', ['as'=> 'datatable.konfigpromoter','uses'=>'Master\KonfigController@promoterData']);
 
     
 
@@ -114,9 +122,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/salesmantarget', ['as'=> 'data.salesmantarget','uses'=>'Master\TargetSalesmanController@getDataWithFilters']);
     Route::post('data/salesmanproductfocus', ['as'=> 'data.salesmanproductfocus','uses'=>'Master\ProductFocusSalesmanController@getDataWithFilters']);
     Route::post('data/posm', ['as'=> 'data.posm','uses'=>'Master\PosmController@getDataWithFilters']);
-    Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
     Route::post('data/messagetoadmin', ['as'=> 'data.messagetoadmin','uses'=>'MessageToAdminController@getDataWithFilters']);
-
+    Route::post('data/role', ['as'=> 'data.role','uses'=>'Master\RoleController@getDataWithFilters']);
+    Route::post('data/grading', ['as'=> 'data.grading','uses'=>'Master\GradingController@getDataWithFilters']);
+    Route::post('data/classification', ['as'=> 'data.classification','uses'=>'Master\ClassificationController@getDataWithFilters']);
     
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
@@ -170,6 +179,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('relation/channelrelation', ['as'=> 'relation.channelrelation','uses'=>'RelationController@checkChannelRelation']);
     Route::post('relation/subchannelrelation', ['as'=> 'relation.subchannelrelation','uses'=>'RelationController@checkSubChannelRelation']);
     Route::post('relation/distributorrelation', ['as'=> 'relation.distributorrelation','uses'=>'RelationController@checkDistributorRelation']);
+    
+    Route::post('relation/rolerelation', ['as'=> 'relation.rolerelation','uses'=>'RelationController@checkRoleRelation']);
+    Route::post('relation/gradingrelation', ['as'=> 'relation.gradingrelation','uses'=>'RelationController@checkGradingRelation']);
+    Route::post('relation/classificationrelation', ['as'=> 'relation.classificationrelation','uses'=>'RelationController@checkClassificationRelation']);
     
 
     /**

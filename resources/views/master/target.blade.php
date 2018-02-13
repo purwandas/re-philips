@@ -331,7 +331,7 @@
          */
 
         $('#promoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+	        	filters['promoterGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {

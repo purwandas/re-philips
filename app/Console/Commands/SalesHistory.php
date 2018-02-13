@@ -22,6 +22,7 @@ use App\Reports\SummaryRetConsument;
 use App\RetDistributor;
 use App\RetDistributorDetail;
 use App\Reports\SummaryRetDistributor;
+use App\Target;
 use App\Tbat;
 use App\TbatDetail;
 use App\Reports\SummaryTbat;
@@ -119,7 +120,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -237,6 +242,7 @@ class SalesHistory extends Command
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
+                            'irisan' => $transactionDetail->irisan,
                             'unit_price' => $realPrice,
                             'value' => $realPrice*$transactionDetail->quantity,
                             'value_pf_mr' => $value_pf_mr,
@@ -268,7 +274,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -332,7 +340,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -447,6 +459,7 @@ class SalesHistory extends Command
                         $transactionDetailsData = ([
                             'group' => $product->category->group->groupProduct->name,
                             'category' => $product->category->name,
+                            'product_id' => $product->id,
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
@@ -481,7 +494,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -544,7 +559,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -692,7 +711,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -755,7 +776,10 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
 
         foreach ($users as $user){
 
@@ -903,7 +927,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -966,7 +992,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1114,7 +1144,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -1177,7 +1209,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1332,7 +1368,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'spv_destination_name' => $spvNameDestination,
                         'dm_name' => $dm_name,
@@ -1396,7 +1434,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1515,7 +1557,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -1577,7 +1621,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1692,6 +1740,7 @@ class SalesHistory extends Command
                         $transactionDetailsData = ([
                             'group' => $product->category->group->groupProduct->name,
                             'category' => $product->category->name,
+                            'product_id' => $product->id,
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
@@ -1726,7 +1775,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -1788,7 +1839,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -1907,6 +1962,94 @@ class SalesHistory extends Command
                     $emp = EmployeeStore::where('user_id', $detail->user_id)
                             ->where('store_id', $detail->storeId)->first();
 
+                    // GET ALL VALUE, AND UPDATE ALL STORE
+                    $totalValue = $summary->actual_da + $summary->actual_pc + $summary->actual_mcc;
+                    $totalValuePF = $summary->actual_pf_da + $summary->actual_pf_pc + $summary->actual_pf_mcc;
+
+                    $sumStore = SummaryTargetActual::where('storeId', $summary->storeId)->where('sell_type', $summary->sell_type);
+                    $sumStorePromo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Promoter');
+                    $sumStoreDemo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Demonstrator');
+                    $sumArea = SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $summary->sell_type);
+                    $sumRegion = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $summary->sell_type);
+                    $sumActualStore = SummaryTargetActual::where('storeId', $summary->storeId)->where('sell_type', $summary->sell_type)->first()->sum_actual_store;
+                    $sumActualArea = SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $summary->sell_type)->first()->sum_actual_area;
+                    $sumActualRegion = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $summary->sell_type)->first()->sum_actual_region;
+                    $sumActualStorePromo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Promoter');
+                    $sumActualStoreDemo = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Demonstrator');
+                    // PF
+                    $sumActualStorePF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->first()->sum_pf_actual_store;
+                    $sumActualAreaPF =  SummaryTargetActual::where('area_id', $summary->area_id)->where('sell_type', $summary->sell_type)->first()->sum_pf_actual_area;
+                    $sumActualRegionPF = SummaryTargetActual::where('region_id', $summary->region_id)->where('sell_type', $summary->sell_type)->first()->sum_pf_actual_region;
+                    $sumActualStorePromoPF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Promoter');
+                    $sumActualStoreDemoPF = SummaryTargetActual::where('storeId',$summary->storeId)->where('sell_type', $summary->sell_type)->where('user_role', 'Demonstrator');
+
+                    // Handler
+                    if($sumActualStorePromo->first()) $sumActualStorePromo = $sumActualStorePromo->first()->sum_actual_store_promo; else $sumActualStorePromo = 0;
+                    if($sumActualStoreDemo->first()) $sumActualStoreDemo = $sumActualStoreDemo->first()->sum_actual_store_demo; else $sumActualStoreDemo = 0;
+
+                    if($sumActualStorePromoPF->first()) $sumActualStorePromoPF = $sumActualStorePromoPF->first()->sum_pf_actual_store_promo; else $sumActualStorePromoPF = 0;
+                    if($sumActualStoreDemoPF->first()) $sumActualStoreDemoPF = $sumActualStoreDemoPF->first()->sum_pf_actual_store_demo; else $sumActualStoreDemoPF = 0;
+
+                    if($summary->irisan == 0){
+                        if($summary->user_role == 'Promoter'){
+                            $summary->update([
+                                'sum_actual_store' => $sumActualStore - $totalValue,
+                                'sum_actual_store_promo' => $sumActualStorePromo - $totalValue,
+                                'sum_actual_area' => $sumActualArea - $totalValue,
+                                'sum_actual_region' => $sumActualRegion - $totalValue,
+                                'sum_pf_actual_store' => $sumActualStorePF - $totalValuePF,
+                                'sum_pf_actual_store_promo' => $sumActualStorePromoPF - $totalValuePF,
+                                'sum_pf_actual_area' => $sumActualAreaPF - $totalValuePF,
+                                'sum_pf_actual_region' => $sumActualRegionPF - $totalValuePF,
+                            ]);
+                        }else{
+                            $summary->update([
+                                'sum_actual_store' => $sumActualStore - $totalValue,
+                                'sum_actual_store_demo' => $sumActualStoreDemo - $totalValue,
+                                'sum_actual_area' => $sumActualArea - $totalValue,
+                                'sum_actual_region' => $sumActualRegion - $totalValue,
+                                'sum_pf_actual_store' => $sumActualStorePF - $totalValuePF,
+                                'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $totalValuePF,
+                                'sum_pf_actual_area' => $sumActualAreaPF - $totalValuePF,
+                                'sum_pf_actual_region' => $sumActualRegionPF - $totalValuePF,
+
+                            ]);
+                        }
+                    }else{
+                        $summary->update([
+                            'sum_actual_store_demo' => $sumActualStoreDemo - $totalValue,
+                            'sum_pf_actual_store_demo' => $sumActualStoreDemoPF - $totalValuePF,
+                        ]);
+                    }
+
+                    // UPDATE DATA TO ALL STORE IN RANGE
+                    if($summary->user_role == 'Demonstrator'){
+                        $sumStoreDemo->update([
+                            'sum_actual_store_demo' => $summary->sum_actual_store_demo,
+                            'sum_pf_actual_store_demo' => $summary->sum_pf_actual_store_demo,
+                        ]);
+                    }else{
+                        $sumStorePromo->update([
+                            'sum_actual_store_promo' => $summary->sum_actual_store_promo,
+                            'sum_pf_actual_store_promo' => $summary->sum_pf_actual_store_promo,
+                        ]);
+                    }
+
+                    $sumStore->update([
+                        'sum_actual_store' => $summary->sum_actual_store,
+                        'sum_pf_actual_store' => $summary->sum_pf_actual_store,
+                    ]);
+
+                    $sumArea->update([
+                        'sum_actual_area' => $summary->sum_actual_area,
+                        'sum_pf_actual_area' => $summary->sum_pf_actual_area,
+                    ]);
+
+                    $sumRegion->update([
+                        'sum_actual_region' => $summary->sum_actual_region,
+                        'sum_pf_actual_region' => $summary->sum_pf_actual_region,
+                    ]);
+
                     if($emp){ // JIKA MASIH ADA LINK STORE HANYA RESET ACTUAL DARI SUMMARY ACTUAL
 //                        $summary->delete();
                         $summary->update([
@@ -1936,7 +2079,11 @@ class SalesHistory extends Command
                             'updated_at' => Carbon::now(),
                         ]);
                     }else{ // JIKA TIDAK ADA STORE MAKA HAPUS TARGET DAN SUMMARY ACTUAL
+                        $summary->delete();
 
+                        // DELETE TARGET
+                        $target = where('user_id', $detail->user_id)->where('store_id', $detail->storeId);
+                        $target->forceDelete();
                     }
 
 
@@ -1973,7 +2120,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Salesman Explorer'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 
@@ -2113,7 +2264,9 @@ class SalesHistory extends Command
                         'promoter_name' => $user->name,
                         'user_id' => $user->id,
                         'date' => $detail->date,
+                        'role_id' => $user->role_id,
                         'role' => $user->role,
+                        'role_group' => $user->role_group,
                         'spv_name' => $spvName,
                         'dm_name' => $dm_name,
                         'trainer_name' => $trainer_name,
@@ -2175,7 +2328,11 @@ class SalesHistory extends Command
         /* Init */
         $role = ['Salesman Explorer'];
 
-        $users = User::whereIn('role', $role)->get();
+        $users = User::whereIn('role_group', $role)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.id','users.nik','users.name','users.role_id','roles.role','roles.role_group')
+                ->get();
+
 
         foreach ($users as $user){
 

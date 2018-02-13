@@ -157,7 +157,7 @@
 
 						</div>
 
-						@if(Auth::user()->role == 'Master' || Auth::user()->role == 'Admin')
+						@if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
 						<div class="row">
 							<div class="col-md-12" style="text-align: center;padding-bottom:20px;padding-top: 20px;">
 								<h3>Salesman Achievement</h3>
@@ -320,7 +320,7 @@
 			},
 		};
 
-		var role = '{{ Auth::user()->role  }}';
+		var role = '{{ Auth::user()->role->role_group  }}';
 
 		var getDataUrl = "{{ url('chart/data-national') }}";
 

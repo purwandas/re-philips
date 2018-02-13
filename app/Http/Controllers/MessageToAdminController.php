@@ -41,10 +41,10 @@ class MessageToAdminController extends Controller
      */
     public function masterDataTable(){
 
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
-        if (($userRole == 'Master') || ($userRole == 'Master')) {
+        if (($userRole == 'Master') || ($userRole == 'Admin')) {
             $data = MessageToAdmin::where('message_to_admin.deleted_at', null)
                         ->join('users', 'message_to_admin.user_id', '=', 'users.id')
                         ->select('message_to_admin.*', 'users.email as user')
@@ -134,7 +134,7 @@ class MessageToAdminController extends Controller
      */
     public function show($id)
     {   
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
             
         if (($userRole == 'Admin') or ($userRole == 'Master')) {

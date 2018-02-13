@@ -38,7 +38,7 @@ class RegionController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(RegionFilters $filters){      
-        $userRole = Auth::user()->role;
+        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;  
 
         $data = Region::filter($filters)->get();

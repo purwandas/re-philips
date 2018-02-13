@@ -87,7 +87,7 @@
                     <!-- BEGIN TOP NAVIGATION MENU -->
                     <div class="top-menu">
                         <ul class="nav navbar-nav pull-right">
-                            @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Master')
+                            @if(Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Master')
                             <li class="dropdown dropdown-extended dropdown-notification dropdown-dark"
                                 id="header_notification_bar">
                                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
@@ -282,7 +282,7 @@
                     $.each(data.users, function (index, item) {
 //                        console.log(item);
 
-                        var li = $(`<li><a><img width='30px' height='30px' src='${item.user.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.user.role}) &nbsp;${item.user.name}</a></li>`);
+                        var li = $(`<li><a><img width='30px' height='30px' src='${item.user.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.user.role.role}) &nbsp;${item.user.name}</a></li>`);
                         $('#datanotif').append(li);
                     });
                 });
@@ -330,8 +330,8 @@
                           data-nik='${item2.nik}'
                           data-promoter_name='${item2.promoter_name}'
                           data-user_id='${item2.user_id}'
-                          data-date='${item2.date}'
-                          data-role='${item2.role}'
+                          // data-date='${item2.date}'
+                          // data-role='${item2.role}'
                           data-spv_name='${item2.spv_name}'
                           data-dm_name='${item2.dm_name}'
                           data-trainer_name='${item2.trainer_name}'

@@ -54,12 +54,12 @@ $(document).on("click", ".open-sales-history-modal", function () {
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> Category </div><div class='col-md-8'>" + $(this).data('category')      + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> Group </div><div class='col-md-8'>" + $(this).data('group')      + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> Unit Price </div><div class='col-md-8'>" + $(this).data('unit_price')        + "</div></a>";
-    content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> Quantity </div><div class='col-md-8'>" + $(this).data('quantity')      + "</div></a>";
+    content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> Quantity </div><div class='col-md-8'> <b>" + $(this).data('quantity')      + "</b></div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> Value </div><div class='col-md-8'>" + $(this).data('value')     + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> Value PF MR </div><div class='col-md-8'>" + $(this).data('value_pf_mr')       + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> Value PF TR </div><div class='col-md-8'>" + $(this).data('value_pf_tr')       + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> Value PF PPE </div><div class='col-md-8'>" + $(this).data('value_pf_ppe')      + "</div></a>";
-    content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> New Quantity </div><div class='col-md-8'>" + $(this).data('new_quantity')      + "</div></a>";
+    content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> New Quantity </div><div class='col-md-8'><b>" + $(this).data('new_quantity')      + "</b></div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> New Value </div><div class='col-md-8'>" + $(this).data('new_value')     + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item list-group-item-info'><div class='col-md-4'> New Value PF MR </div><div class='col-md-8'>" + $(this).data('new_value_pf_mr')       + "</div></a>";
     content.innerHTML += "<a href='#' class='col-md-12 list-group-item'><div class='col-md-4'> New Value PF TR </div><div class='col-md-8'>" + $(this).data('new_value_pf_tr')       + "</div></a>";

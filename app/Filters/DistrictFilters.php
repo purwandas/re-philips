@@ -2,7 +2,7 @@
 
 namespace App\Filters;
 
-use App\AreaApp;
+use App\Area;
 use Illuminate\Http\Request;
 
 class DistrictFilters extends QueryFilters

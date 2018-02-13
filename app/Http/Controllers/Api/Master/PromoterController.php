@@ -6,6 +6,7 @@ use App\Attendance;
 use App\AttendanceDetail;
 use App\DmArea;
 use App\EmployeeStore;
+use App\Reports\SummaryTargetActual;
 use App\RsmRegion;
 use App\SpvDemo;
 use App\Store;
@@ -35,21 +36,26 @@ class PromoterController extends Controller
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group', '<>', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
 
         if(count($spvDemoIds) > 0){
             $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
         }
 
         $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
                      ->join('users', 'attendances.user_id', '=', 'users.id')
-                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.role as role', 'users.photo as photo', 'attendances.status as status', 'attendances.reject as reject')->get();
+                     ->join('roles','roles.id','users.role_id')
+                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'roles.role as role', 'users.photo as photo', 'attendances.status as status', 'attendances.reject as reject')->get();
 
         foreach($attendances as $attendance){
 
@@ -88,21 +94,26 @@ class PromoterController extends Controller
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role', '<>', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
 
         if(count($spvDemoIds) > 0){
             $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role', 'Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
         }
 
         $attendances = Attendance::whereIn('user_id', $promoterIds)->where('date', Carbon::parse($request->date)->format('Y-m-d'))
                      ->join('users', 'attendances.user_id', '=', 'users.id')
-                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'users.role as role', 'users.photo as photo', 'attendances.status as status', 'attendances.reject as reject')->get();
+                     ->join('roles','roles.id','users.role_id')
+                     ->select('attendances.id as attendance_id', 'users.name as name', 'users.nik as nik', 'roles.role as role', 'users.photo as photo', 'attendances.status as status', 'attendances.reject as reject')->get();
 
         foreach($attendances as $attendance){
 
@@ -175,7 +186,7 @@ class PromoterController extends Controller
         if($param == 1){
 
             if($attendances->status != 'Pending Sakit'){
-                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval sakit'], 500);
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval sakit'], 200);
             }
 
             $attendances->update(['status' => 'Sakit']);
@@ -184,7 +195,7 @@ class PromoterController extends Controller
         }else if($param == 2){
 
             if($attendances->status != 'Pending Izin'){
-                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval izin'], 500);
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval izin'], 200);
             }
 
             $attendances->update(['status' => 'Izin']);
@@ -192,7 +203,7 @@ class PromoterController extends Controller
         }else if($param == 3){
 
             if($attendances->status != 'Pending Off'){
-                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval off'], 500);
+                return response()->json(['status' => false, 'message' => 'Promoter tidak membutuhkan approval off'], 200);
             }
 
             $attendances->update(['status' => 'Off']);
@@ -225,7 +236,10 @@ class PromoterController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
+        $result = new Collection();
+
         $details = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
+                    ->where('attendance_details.is_store', 1)
                     ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
                     ->join('stores', 'attendance_details.store_id', '=', 'stores.id')
                     ->whereMonth('attendances.date', '=', Carbon::now()->format('m'))
@@ -233,7 +247,34 @@ class PromoterController extends Controller
                         'stores.store_name_1 as store_name')
                     ->get();
 
-        return response()->json($details);
+        foreach ($details as $data){
+            $result->push([
+                'date' => $data->date,
+                'check_in' => $data->check_in,
+                'check_out' => $data->check_out,
+                'store_name' => $data->store_name,
+            ]);
+        }
+
+        $details2 = AttendanceDetail::where('attendances.status', 'Masuk')->where('attendances.user_id', $user->id)
+                    ->where('attendance_details.is_store', 0)
+                    ->join('attendances', 'attendance_details.attendance_id', '=', 'attendances.id')
+                    ->join('places', 'attendance_details.store_id', '=', 'places.id')
+                    ->whereMonth('attendances.date', '=', Carbon::now()->format('m'))
+                    ->select('attendances.date as date', 'attendance_details.check_in as check_in', 'attendance_details.check_out as check_out',
+                        'places.name as store_name')
+                    ->get();
+
+        foreach ($details2 as $data){
+            $result->push([
+                'date' => $data->date,
+                'check_in' => $data->check_in,
+                'check_out' => $data->check_out,
+                'store_name' => $data->store_name,
+            ]);
+        }
+
+        return response()->json($result);
 
     }
 
@@ -263,7 +304,9 @@ class PromoterController extends Controller
         if($param == 1) { // BY NATIONAL
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
             })->with('stores.district.area.region')->get();
 
 //            return response()->json($supervisor);
@@ -275,7 +318,9 @@ class PromoterController extends Controller
             $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                    return $query->whereHas('role', function($query2){
+                        return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                    });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
                         return $query->whereIn('id', $regionIds);
@@ -293,7 +338,9 @@ class PromoterController extends Controller
             $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                    return $query->whereHas('role', function($query2){
+                        return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                    });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
                         return $query->whereIn('id', $areaIds);
@@ -436,10 +483,14 @@ class PromoterController extends Controller
 
         $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
-        $partner = User::whereIn('id', $userIds)
-                    ->whereIn('role', $promoterGroup)
-                    ->where('id', '<>', $user->id)
-                    ->select('users.id', 'users.nik', 'users.name', 'users.role')
+        $partner = User::whereIn('users.id', $userIds)
+//                    ->whereHas('role', function($query) use ($promoterGroup){
+//                        return $query->whereIn('role_group', $promoterGroup);
+//                    })
+                    ->join('roles','roles.id','users.role_id')
+                    ->where('roles.role_group', $promoterGroup)
+                    ->where('users.id', '<>', $user->id)
+                    ->select('users.id', 'users.nik', 'users.name', 'roles.role')
                     ->get();
 
         return response()->json($partner);
