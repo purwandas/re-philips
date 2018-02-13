@@ -59,7 +59,7 @@
                     <div class="col-md-4">
                         <select id="filterSellTyppe" class="select2select">
                             <option></option>
-                            <option value="Sell In">Sell In</option>
+                            <option value="Sell In">Sell Thru</option>
                             <option value="Sell Out">Sell Out</option>
                         </select>
                     </div>

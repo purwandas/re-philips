@@ -19,11 +19,11 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Store ID.</label>
+                          <label class="col-sm-3 control-label">Place ID.</label>
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="store_id" name="store_id" class="form-control" placeholder="Input Place Name" />
+                                <input type="text" id="store_id" name="store_id" class="form-control" placeholder="Input ID Place" />
                             </div>
                           </div>
                         </div> 
@@ -43,7 +43,7 @@
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Input Place Name" />
+                                <input type="text" id="longitude" name="longitude" class="form-control" placeholder="Input Place Longitude" />
                             </div>
                           </div>
                         </div> 
@@ -53,7 +53,7 @@
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="latitude" name="latitude" class="form-control" placeholder="Input Place Name" />
+                                <input type="text" id="latitude" name="latitude" class="form-control" placeholder="Input Place Latitude" />
                             </div>
                           </div>
                         </div> 
@@ -63,7 +63,7 @@
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="address" name="address" class="form-control" placeholder="Input Place Name" />
+                                <input type="text" id="address" name="address" class="form-control" placeholder="Input Place Address" />
                             </div>
                           </div>
                         </div> 
@@ -73,7 +73,7 @@
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="description" name="description" class="form-control" placeholder="Input Place Name" />
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Input Place Description" />
                             </div>
                           </div>
                         </div>                                                   

@@ -137,9 +137,17 @@ class UserController extends Controller
                 })
                 ->addColumn('action', function ($item) {
 
+                    if ( $item->hp_id == null) {
                     return 
                     "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    } else {
+                    return 
+                    "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    <button class='btn btn-success btn-sm openAccessButton' data-toggle='confirmation' data-singleton='true' title='Open access new Phone' value='".$item->id." '><i class='fa fa-unlock'></i></button>
+                    <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    }
                     
                 })
                 ->rawColumns(['action'])
@@ -1300,6 +1308,20 @@ class UserController extends Controller
                 'method' => $request->_method
             ]);
     }
+
+    // update new phone for user
+    public function updatehp($id)
+    {   
+        $user = User::find($id);            
+        $user->update([
+            'status_login' => null,
+            'hp_id' => null,
+            'jenis_hp' => null,
+            ]);
+
+        return response()->json($id);
+    }
+    
     /**
      * Remove the specified resource from storage.
      *

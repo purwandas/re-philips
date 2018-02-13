@@ -54,6 +54,14 @@ class TargetController extends Controller
     public function makeTable($data){
 
            return Datatables::of($data)
+
+                ->editColumn('sell_type',function ($item) {
+                    
+                    if ($item->sell_type == 'Sell In') {
+                        $item->sell_type = 'Sell Thru';
+                    }
+                    return $item->sell_type;
+                })
            		->addColumn('action', function ($item) {
 
                    return
@@ -79,7 +87,7 @@ class TargetController extends Controller
                 ->editColumn('target_pf_mcc', function ($item) {
                    return number_format($item->target_pf_mcc);
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['sell_type','action'])
                 ->make(true);
 
     }

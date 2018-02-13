@@ -63,11 +63,11 @@ class SalesController extends Controller
 
 //        return response()->json($content);
 
-        if($param == 1) { /* SELL IN(SELL THROUGH) */
+        if($param == 1) { /* SELL IN(SELL THRU) */
 
 //         return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
-            // Check sell in(Sell Through) header
+            // Check sell in(Sell Thru) header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
             if ($sellInHeader) { // If header exist (update and/or create detail)
@@ -688,7 +688,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -704,8 +704,8 @@ class SalesController extends Controller
 
             if ($sellOutHeader) { // If header exist (update and/or create detail)
 
-//                try {
-//                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
+               try {
+                   DB::transaction(function () use ($content, $sellOutHeader, $user) {
 
                         foreach ($content['data'] as $data) {
 
@@ -919,17 +919,17 @@ class SalesController extends Controller
 
                         }
 
-//                    });
-//                } catch (\Exception $e) {
-//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-//                }
+                   });
+               } catch (\Exception $e) {
+                   return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+               }
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
 
             } else { // If header didn't exist (create header & detail)
 
-//                try {
-//                    DB::transaction(function () use ($content, $user) {
+               try {
+                   DB::transaction(function () use ($content, $user) {
 
                         // HEADER
                         $transaction = SellOut::create([
@@ -1104,12 +1104,12 @@ class SalesController extends Controller
                             $this->changeActual($summary_ta, 'change');
                         }
 
-//                    });
-//                } catch (\Exception $e) {
-//                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-//                }
+                   });
+               } catch (\Exception $e) {
+                   return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+               }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $sellOutHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -1441,7 +1441,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $retDistributorHeaderAfter = RetDistributor::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $retDistributorHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -1773,7 +1773,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $retConsumentHeaderAfter = RetConsument::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $retConsumentHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -2105,7 +2105,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $freeProductHeaderAfter = FreeProduct::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $freeProductHeaderAfter->id, 'message' => 'Data berhasil di input']);
@@ -2482,7 +2482,7 @@ class SalesController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $tbatHeaderAfter = Tbat::where('user_id', $user->id)->where('store_id', $content['id'])->where('store_destination_id', $content['destination_id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $tbatHeaderAfter->id, 'message' => 'Data berhasil di input']);
