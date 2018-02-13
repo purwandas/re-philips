@@ -4,7 +4,7 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Sell In
+        <h1>Sell Out
             <small>manage sell in</small>
         </h1>
     </div>
@@ -16,15 +16,15 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <a href="{{ url('sellin') }}">Sell In Management</a>
+        <a href="{{ url('sellout') }}">Sell Out Management</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>
 		<span>
 			@if (empty($data))
-				Add More Sell In
+				Add More Sell Out
 			@else
-				Update Sell In
+				Update Sell Out
 			@endif
 		</span>
 	</li>
@@ -42,22 +42,22 @@
 					<i class="fa fa-newspaper-o font-blue"></i>
 					<span class="caption-subject font-blue bold uppercase">
 						@if (empty($data))
-							ADD MORE Sell In
+							ADD MORE Sell Out
 						@else
-							UPDATE Sell In
+							UPDATE Sell Out
 						@endif
 					</span>
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md green" href="{{ url('sellin') }}">
+                	<a class="btn btn-md green" href="{{ url('sellout') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
-	        	<form id="form_sellin" class="form-horizontal" action="{{ url('sellin', @$data->id) }}" method="POST">	        	
+	        	<form id="form_sellout" class="form-horizontal" action="{{ url('sellout', @$data->id) }}" method="POST">	        	
 			        {{ csrf_field() }}
 			        @if (!empty($data))
 			          {{ method_field('PATCH') }}
@@ -75,7 +75,7 @@
 
 				      	<!-- <div class="form-group note note-info"> -->
                           
-                        <div class="note note-info">
+                        <div class="form-group note note-info">
 	                      <div class="form-group">
 	                          <label class="col-sm-3 control-label">User</label>
 	                          <div class="col-sm-8">
@@ -94,7 +94,7 @@
 	                          <div class="col-sm-8">
 	                            <div class="input-group" style="width: 100%;">
 	     
-	                                <select class="select2select" name="store_id" id="store_id" required></select>
+	                                <select class="select2select" name="store_id" id="store" required></select>
 	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
@@ -413,7 +413,7 @@
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->	
 	<!-- BEGIN PAGE VALIDATION SCRIPTS -->
-    <script src="{{ asset('js/handler/sellin-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/sellout-handler.js') }}" type="text/javascript"></script>
     <!-- END PAGE VALIDATION SCRIPTS -->
     
     <script id="scriptId">
@@ -426,6 +426,7 @@
 	            }
 	        });   
 
+            
             $('#user_id').select2(setOptions('{{ route("data.employee") }}', 'User', function (params) {
             	filters['promoterGroup'] = '1';
 	            return filterData('name', params.term);
@@ -437,7 +438,7 @@
 	            }
 	        }));
 
-            $('#store_id').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+            $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
@@ -469,7 +470,7 @@
 		        
 		    });
 
-            $('#user_id').on('change', function() { 
+           $('#user_id').on('change', function() { 
             	var user = this.value.split('`');
             	var role = user[1];
             	if ( role == "Demonstrator DA") {

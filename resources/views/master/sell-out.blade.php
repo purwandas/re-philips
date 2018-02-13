@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Sell In
-            <small>manage sell in</small>
+        <h1>Sell Out
+            <small>manage sell out</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Sell In Management</span>
+        <span class="active">Sell Out Management</span>
     </li>
 </ul>
 @endsection
@@ -30,7 +30,7 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-map-o font-blue"></i>
-                    <span class="caption-subject font-blue bold uppercase">Sell In</span>
+                    <span class="caption-subject font-blue bold uppercase">Sell Out</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
@@ -42,7 +42,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="btn-group col-md-12">
-                                    <a class="btn green" href="{{ url('sellin/create') }}"><i
+                                    <a class="btn green" href="{{ url('sellout/create') }}"><i
                                     class="fa fa-plus"></i> Add New </a>
                                     @if(Session::has('status'))
                                     <div class="col-md-10 alert alert-info text-center" style="float: right;">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
 
-                    <table class="table table-striped table-hover table-bordered" id="sellInTable" style="white-space: nowrap;">
+                    <table class="table table-striped table-hover table-bordered" id="sellOutTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
                                 <th> No. </th>                            
@@ -90,7 +90,7 @@
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
-<script src="{{ asset('js/handler/sellin-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/handler/sellout-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <div id="additionalScripts">
@@ -111,11 +111,11 @@
         });
 
         // Set data for Data Table
-        var table = $('#sellInTable').dataTable({
+        var table = $('#sellOutTable').dataTable({
             "processing": true,
             "serverSide": true,           
             "ajax": {
-                url: "{{ route('datatable.sellin') }}",
+                url: "{{ route('datatable.sellout') }}",
                 type: 'POST',
             },
             "rowId": "id",
@@ -148,7 +148,7 @@
 
 
         // Delete data with sweet alert
-        $('#sellInTable').on('click', 'tr td button.deleteButton', function () {
+        $('#sellOutTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
             if(areaRelation(id)){
@@ -195,7 +195,7 @@
         });
 
 
-        initSelect2SellIn();
+        initSelect2SellOut();
 
     });
 
@@ -212,8 +212,8 @@
         // select2Reset($("#product"));
 
         // Set action url form for add
-        var postDataUrl = "{{ url('sellin') }}";    
-        $("#form_sell-in").attr("action", postDataUrl);
+        var postDataUrl = "{{ url('sellout') }}";    
+        $("#form_sell-out").attr("action", postDataUrl);
 
         // Delete Patch Method if Exist
         if($('input[name=_method]').length){
@@ -253,7 +253,7 @@
 
     // });
 
-    function initSelect2SellIn(){
+    function initSelect2SellOut(){
 
         /*
          * Select 2 init

@@ -8,7 +8,7 @@ var FormValidation = function () {
     // Master Validation
     var areaValidation = function() {
 
-            var form = $('#form_sell-in');
+            var form = $('#form_sell-out');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
@@ -21,16 +21,11 @@ var FormValidation = function () {
                     store_id:{
                         required: true,
                     },
-                    user_id:{
-                        required: true,
-                    },
+
                 },
                 messages:{
                     store_id:{
                         required: "Please select a Store!"
-                    },
-                    user_id:{
-                        required: "Please select User!"
                     },
                 },
 
@@ -199,10 +194,10 @@ var FormValidation = function () {
                                     // window.location.href = data.url;
                                     // console.log(data);
 
-                                    $('#sellInTable').DataTable().search('').draw();
-                                    $('#sellInTable').DataTable().ajax.reload();
+                                    $('#sellOutTable').DataTable().search('').draw();
+                                    $('#sellOutTable').DataTable().ajax.reload();
 
-                                    $('#sell-in').modal('hide');                                    
+                                    // $('#sell-out').modal('hide');                                    
                                 }
                             )
                             // console.log(data.method);
@@ -248,17 +243,18 @@ jQuery(document).ready(function() {
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($(this), $('#form_sell-in'));
+    select2Change($('#store'), $('#form_sell-out'));
+    select2Change($('#product'), $('#form_sell-out'));
 
 });
 
 // Reset Validation
 function resetValidation(){
-    $('#form_sell-in').each(function(){
+    $('#form_sell-out').each(function(){
         $(this).find('.form-group').removeClass('has-error').removeClass('has-success');            
         $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
     });
 
-    $('.alert-danger', $('#form_sell-in'));
-    $('.alert-success', $('#form_sell-in'));
+    $('.alert-danger', $('#form_sell-out'));
+    $('.alert-success', $('#form_sell-out'));
 }
