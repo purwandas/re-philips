@@ -282,7 +282,6 @@ class StoreController extends Controller
         $this->validate($request, [
             'store_name_1' => 'required|string|max:255',
             'store_name_2' => 'max:255',
-            'subchannel_id' => 'required',
             'district_id' => 'required'
         ]);
 
