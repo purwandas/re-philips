@@ -542,6 +542,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item {{ Request::is('konfig-promoter') ? 'active open' : '' }}">
+                        <a href="{{ url('konfig-promoter') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Konfigurasi Promoter</span>
+                        </a>
+                    </li>
+
                 @endif
 
             @endif

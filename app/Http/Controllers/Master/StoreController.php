@@ -46,6 +46,8 @@ class StoreController extends Controller
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
+//                    ->join('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
+//                    ->join('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
 //                    ->join('users', 'stores.user_id', '=', 'users.id')
 //                    ->where(function($query) {
 //                        return $query->orWhere('stores.user_id', null);
@@ -56,17 +58,17 @@ class StoreController extends Controller
                     ->get();
 
         foreach ($data as $detail){
-            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
-            $dist = Distributor::whereIn('id', $distIds)->get();
-
-            $detail['distributor'] = '';
-            foreach ($dist as $distDetail){
-                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
-
-                if($distDetail->id != $dist->last()->id){
-                    $detail['distributor'] .= ', ';
-                }
-            }
+//            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
+//            $dist = Distributor::whereIn('id', $distIds)->get();
+//
+//            $detail['distributor'] = '';
+//            foreach ($dist as $distDetail){
+//                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
+//
+//                if($distDetail->id != $dist->last()->id){
+//                    $detail['distributor'] .= ', ';
+//                }
+//            }
         }
 
 //        return response()->json($data);
@@ -178,6 +180,12 @@ class StoreController extends Controller
                 ->addColumn('classification_id', function ($item) {
                     if (isset($item->classification->classification)) {
                         return $item->classification->classification;
+                    }
+                    return '';
+                })
+                ->addColumn('distributor', function ($item) {
+                    if ($item->storeDistributors()->count() > 0) {
+                        return "(".$item->storeDistributors()->first()->distributor->code.") ".$item->storeDistributors()->first()->distributor->name;
                     }
                     return '';
                 })

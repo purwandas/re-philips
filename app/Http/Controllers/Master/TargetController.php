@@ -61,6 +61,24 @@ class TargetController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 })
+                ->editColumn('target_da', function ($item) {
+                   return number_format($item->target_da);
+                })
+                ->editColumn('target_pf_da', function ($item) {
+                   return number_format($item->target_pf_da);
+                })
+                ->editColumn('target_pc', function ($item) {
+                   return number_format($item->target_pc);
+                })
+                ->editColumn('target_pf_pc', function ($item) {
+                   return number_format($item->target_pf_pc);
+                })
+                ->editColumn('target_mcc', function ($item) {
+                   return number_format($item->target_mcc);
+                })
+                ->editColumn('target_pf_mcc', function ($item) {
+                   return number_format($item->target_pf_mcc);
+                })
                 ->rawColumns(['action'])
                 ->make(true);
 

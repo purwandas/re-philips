@@ -459,6 +459,7 @@ class SalesHistory extends Command
                         $transactionDetailsData = ([
                             'group' => $product->category->group->groupProduct->name,
                             'category' => $product->category->name,
+                            'product_id' => $product->id,
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
@@ -1739,6 +1740,7 @@ class SalesHistory extends Command
                         $transactionDetailsData = ([
                             'group' => $product->category->group->groupProduct->name,
                             'category' => $product->category->name,
+                            'product_id' => $product->id,
                             'model' => $product->model . '/' . $product->variants,
                             'product_name' => $product->name,
                             'quantity' => $transactionDetail->quantity,
