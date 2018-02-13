@@ -146,7 +146,10 @@ class MessageToAdminController extends Controller
                     ->join('users', 'message_to_admin.user_id', '=', 'users.id')
                     ->select('message_to_admin.*', 'users.email as user')->find($id);
 
-        return response()->json($data);
+        return response()->json(
+            [
+                'url' => url('/messageToAdmin'),
+            ]);
     }
 
     /**

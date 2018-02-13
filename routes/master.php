@@ -26,6 +26,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('usernon', 'UserController@store');
         Route::get('usernon/edit/{id}', 'UserController@edit');
         Route::patch('usernon/{id}', 'UserController@update');
+        Route::patch('usernon/openhp/{id}', 'UserController@updatehp');
         Route::delete('usernon/{id}', 'UserController@destroy');
 
         Route::get('userpromoter', 'UserPromoterController@index');
@@ -33,6 +34,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('userpromoter', 'UserPromoterController@store');
         Route::get('userpromoter/edit/{id}', 'UserPromoterController@edit');
         Route::patch('userpromoter/{id}', 'UserPromoterController@update');
+        Route::patch('userpromoter/openhp/{id}', 'UserPromoterController@updatehp');
         Route::delete('userpromoter/{id}', 'UserPromoterController@destroy');
 
         /** FAQ **/
@@ -264,7 +266,7 @@ Route::group(['middleware' => ['auth']], function () {
             Sales Edit & Delete (Input by API)
         */
 
-        /** Sell In(Sell Through) **/
+        /** Sell In(Sell Thru) **/
         Route::get('editsellin', 'Master\EditSellInController@index');
         Route::get('editsellin/edit/{id}', 'Master\EditSellInController@edit');
         Route::patch('editsellin/{id}', 'Master\EditSellInController@update');

@@ -33,20 +33,20 @@
                     <span class="caption-subject font-blue bold uppercase">STORE</span>
                 </div>
             </div>
-            <div class="portlet-body" style="padding: 15px;">
-                <!-- MAIN CONTENT -->            
-                <div class="table-toolbar">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="btn-group">
-                                <a class="btn green" href="{{ url('store/create') }}"><i
-                                    class="fa fa-plus"></i> Add Store </a>
-                                
-                            </div>
-                        </div>
-                    </div>
+            <div class="portlet-title">
+            <!-- MAIN CONTENT -->
+                <div class="btn-group">
+                    <a class="btn green" href="{{ url('store/create') }}"><i
+                        class="fa fa-plus"></i> Add Store </a>
+                    
                 </div>
+                <div class="actions" style="text-align: left">
+                    <a id="export" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                </div>
+            </div>
 
+            <div class="portlet-body" >
                 <table class="table table-striped table-hover table-bordered" id="storeTable" style="white-space: nowrap;">
                     <thead>
                         <tr>
@@ -93,11 +93,24 @@
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
+    var data = {};
     $(document).ready(function () {     
 
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/stores',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                data = results;
             }
         });
 
@@ -195,6 +208,48 @@
                 });
         });
 
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-store',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
     });
 
 </script>

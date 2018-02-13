@@ -306,7 +306,7 @@ class SOHController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $sohHeaderAfter = SOH::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $sohHeaderAfter->id, 'message' => 'Data berhasil di input']);

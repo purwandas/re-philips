@@ -46,7 +46,7 @@
 						<div id="notSellIn" class="display-hide">
 							<div class="row">
 								<div class="col-md-12" style="text-align: center;padding-bottom: 20px;padding-top: 120px;">
-									<h4>Tidak Ada Achievement - Sell Through</h4>
+									<h4>Tidak Ada Achievement - Sell Thru</h4>
 								</div>
 							</div>
 						</div>
@@ -67,7 +67,7 @@
 											<div class="portlet-title" style="text-align: center">
 												<div style="font-size: 11pt;padding-top: 10px;">
 													<i class="fa fa-bar-chart"></i>
-													Total Achievement - Sell Through </div>
+													Total Achievement - Sell Thru </div>
 											</div>
 											<div id="portlet1" class="portlet-body" style="display: block;">
 													<div class="table-scrollable">
@@ -424,7 +424,7 @@
 
         }
 
-		//---------------------- SELL IN (Sell Through)--------------------------------//
+		//---------------------- SELL IN (Sell Thru)--------------------------------//
 
         $.get(getDataUrl, function (data) {
 
@@ -455,7 +455,7 @@
 
 		chartSellinTotal.unbind();
 
-		$("#titleSellinTotal").text("ACTUAL vs TARGET (%) - SELL THROUGH");
+		$("#titleSellinTotal").text("ACTUAL vs TARGET (%) - SELL THRU");
 
 		$.plot(chartSellinTotal, data, options);
 

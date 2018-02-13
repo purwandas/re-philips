@@ -105,10 +105,10 @@
             </li>
 
             <li class="nav-item 
+            {{ Request::is('groupproduct') ? 'active open' : '' }}
             {{ Request::is('group') ? 'active open' : '' }} 
             {{ Request::is('category') ? 'active open' : '' }} 
             {{ Request::is('product') ? 'active open' : '' }}
-            {{ Request::is('groupproduct') ? 'active open' : '' }}
             {{ Request::is('price') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
@@ -117,11 +117,11 @@
                     <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
+                    <!-- <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
                         <a href="{{ url('groupproduct') }}" class="nav-link ">
                             <span class="title">Group Product</span>
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item {{ Request::is('group') ? 'active open' : '' }}">
                         <a href="{{ url('group') }}" class="nav-link ">
                             <span class="title">Group</span>
@@ -232,7 +232,7 @@
 
                     <li class="nav-item {{ Request::is('editsellin') ? 'active open' : '' }}">
                         <a href="{{ url('editsellin') }}" class="nav-link nav-toggle">
-                            <span class="title">Sell Through</span>
+                            <span class="title">Sell Thru</span>
                         </a>
                     </li>
 
@@ -340,7 +340,7 @@
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('sellinreport') ? 'active open' : '' }}  ">
                         <a href="{{ url('sellinreport') }}" class="nav-link ">
-                            <span class="title">Sell Through</span>
+                            <span class="title">Sell Thru</span>
                         </a>
                     </li>
                     <li class="nav-item {{ Request::is('selloutreport') ? 'active open' : '' }}">

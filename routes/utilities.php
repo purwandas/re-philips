@@ -106,7 +106,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/userpromoter', ['as'=> 'data.userpromoter','uses'=>'UserPromoterController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/stores', ['as'=> 'data.stores','uses'=>'Master\StoreController@getStoresDataWithFilters']);
+    Route::post('data/place', ['as'=> 'data.place','uses'=>'Master\PlaceController@getDataWithFilters']);
     Route::post('data/product', ['as'=> 'data.product','uses'=>'Master\ProductController@getDataWithFilters']);
+    Route::post('data/price', ['as'=> 'data.price','uses'=>'Master\PriceController@getDataWithFilters']);
+    Route::post('data/target', ['as'=> 'data.target','uses'=>'Master\TargetController@getDataWithFilters']);
+    Route::post('data/productfocus', ['as'=> 'data.productfocus','uses'=>'Master\ProductFocusController@getDataWithFilters']);
+    Route::post('data/salesmantarget', ['as'=> 'data.salesmantarget','uses'=>'Master\TargetSalesmanController@getDataWithFilters']);
+    Route::post('data/salesmanproductfocus', ['as'=> 'data.salesmanproductfocus','uses'=>'Master\ProductFocusSalesmanController@getDataWithFilters']);
+    Route::post('data/posm', ['as'=> 'data.posm','uses'=>'Master\PosmController@getDataWithFilters']);
+    Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
+    Route::post('data/messagetoadmin', ['as'=> 'data.messagetoadmin','uses'=>'MessageToAdminController@getDataWithFilters']);
+
     
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
@@ -206,6 +216,27 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
     Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
+                    // -------- MASTER --------
+    Route::post('util/export-area', ['uses'=>'Master\ExportController@exportArea']);
+    Route::post('util/export-district', ['uses'=>'Master\ExportController@exportDistrict']);
+    Route::post('util/export-channel', ['uses'=>'Master\ExportController@exportChannel']);
+    Route::post('util/export-subchannel', ['uses'=>'Master\ExportController@exportSubchannel']);
+    Route::post('util/export-distributor', ['uses'=>'Master\ExportController@exportDistributor']);
+    Route::post('util/export-place', ['uses'=>'Master\ExportController@exportPlace']);
+    Route::post('util/export-promoter', ['uses'=>'Master\ExportController@exportUserPromoter']);
+    Route::post('util/export-nonpromoter', ['uses'=>'Master\ExportController@exportUserNonPromoter']);
+    Route::post('util/export-group', ['uses'=>'Master\ExportController@exportGroup']);
+    Route::post('util/export-category', ['uses'=>'Master\ExportController@exportCategory']);
+    Route::post('util/export-product', ['uses'=>'Master\ExportController@exportProduct']);
+    Route::post('util/export-price', ['uses'=>'Master\ExportController@exportPrice']);
+    Route::post('util/export-target', ['uses'=>'Master\ExportController@exportTarget']);
+    Route::post('util/export-productfocus', ['uses'=>'Master\ExportController@exportProductFocus']);
+    Route::post('util/export-salesmantarget', ['uses'=>'Master\ExportController@exportSalesmanTarget']);
+    Route::post('util/export-salesmanproductfocus', ['uses'=>'Master\ExportController@exportSalesmanProductFocus']);
+    Route::post('util/export-posm', ['uses'=>'Master\ExportController@exportPosm']);
+    Route::post('util/export-groupcompetitor', ['uses'=>'Master\ExportController@exportGroupCompetitor']);
+    Route::post('util/export-messagetoadmin', ['uses'=>'Master\ExportController@exportMessageToAdmin']);
+
 
     /**
      * Dashboard
