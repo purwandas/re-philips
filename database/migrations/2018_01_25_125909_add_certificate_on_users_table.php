@@ -14,7 +14,7 @@ class AddCertificateOnUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->text('certificate')->nullable()->after('grading');
+            $table->text('certificate')->nullable()->after('grading_id');
         });
     }
 

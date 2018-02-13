@@ -36,6 +36,13 @@ class UserFilters extends QueryFilters
         // return $this->builder->whereIn('role', $value);
     }
 
+    public function promoterGroup($value) {
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        return $this->builder->whereHas('role', function ($query) use ($roles) {
+            return $query->whereIn('roles.role_group',$roles);
+        });
+    }
+
     // Ordering by store
     public function byStore($value) {
         return $this->builder->whereHas('employeeStores.store', function ($query) use ($value) {

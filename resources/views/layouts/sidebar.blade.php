@@ -1,4 +1,4 @@
-<!-- BEGIN SIDEBAR -->
+    <!-- BEGIN SIDEBAR -->
 <div class="page-sidebar-wrapper">
     <!-- BEGIN SIDEBAR -->
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
@@ -193,6 +193,36 @@
                         </a>
                     </li>
 
+                </ul>
+            </li>
+
+            <li class="nav-item 
+                {{ Request::is('target') ? 'active open' : '' }}
+                {{ Request::is('productfocus') ? 'active open' : '' }}
+                {{ Request::is('targetsalesman') ? 'active open' : '' }}
+                {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-line-chart"></i>
+                    <span class="title">Sales</span>
+                    <span class="arrow 
+                        {{ Request::is('sellin') ? 'active open' : '' }}
+                        {{ Request::is('selout') ? 'active open' : '' }}
+                        {{ Request::is('targetsalesman') ? 'active open' : '' }}
+                        {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+                    "></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('sellin') ? 'active open' : '' }}">
+                        <a href="{{ url('sellin') }}" class="nav-link nav-toggle">
+                            <span class="title">Sell in</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('sellout') ? 'active open' : '' }}">
+                        <a href="{{ url('sellout') }}" class="nav-link nav-toggle">
+                            <span class="title">Sell Out</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             
