@@ -152,7 +152,9 @@ class UserController extends Controller
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
-        $data = User::filter($filters)->get();
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->select('users.*','roles.role_group as role_group');
 
         if ($userRole == 'RSM') {
             $region = RsmRegion::where('rsm_regions.user_id', $userId)
@@ -185,12 +187,13 @@ class UserController extends Controller
             $data = $data->whereIn('id', $store);
         }
 
-        return $data;
+        return $data->get();
     }
     public function getDataPromoterWithFilters(UserFilters $filters){ 
+        // $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::filter($filters)
                 ->join('roles','roles.id','users.role_id')
-                ->where('role','=','Promoter')->get();
+                ->where('roles.role_group','=','Promoter')->get();
 
         return $data;
     }
@@ -198,7 +201,7 @@ class UserController extends Controller
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::filter($filters)
                 ->join('roles','roles.id','users.role_id')
-                ->whereNotIn('role',$roles)->get();
+                ->whereNotIn('roles.role_group',$roles)->get();
 
         return $data;
     }

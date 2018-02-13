@@ -184,13 +184,17 @@ class UserPromoterController extends Controller
         return $data;
     }
     public function getDataPromoterWithFilters(UserFilters $filters){ 
-        $data = User::filter($filters)->where('role','=','Promoter')->get();
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->whereIn('roles.role_group','=','Promoter')->get();
 
         return $data;
     }
     public function getDataGroupPromoterWithFilters(UserFilters $filters){ 
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
-        $data = User::filter($filters)->where('role',$roles)->get();
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->whereIn('roles.role_group',$roles)->get();
 
         return $data;
     }
