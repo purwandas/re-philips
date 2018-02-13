@@ -44,9 +44,9 @@ class PromoActivityController extends Controller
             return response()->json(['status' => false, 'message' => 'Harus memilih salah satu item atau lebih'], 500);
         }
 
-        if(!isset($request->photo) || $request->photo == null){
-            return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
-        }
+//        if(!isset($request->photo) || $request->photo == null){
+//            return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
+//        }
 
         // Check promo activity header
         $promoActivityHeader = PromoActivity::where('user_id', $user->id)
@@ -101,7 +101,7 @@ class PromoActivityController extends Controller
                     /* Upload image again, anda again, and again~ */
                     $photo_url = "";
 
-                    if($request->photo){
+                    if(isset($request->photo) && $request->photo != null){
                         $photo_url = $this->getUploadPathName($request->photo, "promo/".$this->getRandomPath(), 'PROMO');
                     }
 
@@ -116,13 +116,17 @@ class PromoActivityController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
             }
 
-            // Upload image process
-            $imagePath = explode('/', $promoActivityHeader->photo);
-            $count = count($imagePath);
-            $imageFolder = "promo/" . $imagePath[$count - 2];
-            $imageName = $imagePath[$count - 1];
+            if(isset($request->photo) && $request->photo != null) {
 
-            $this->upload($request->photo, $imageFolder, $imageName);
+                // Upload image process
+                $imagePath = explode('/', $promoActivityHeader->photo);
+                $count = count($imagePath);
+                $imageFolder = "promo/" . $imagePath[$count - 2];
+                $imageName = $imagePath[$count - 1];
+
+                $this->upload($request->photo, $imageFolder, $imageName);
+
+            }
 
             return response()->json(['status' => true, 'id_transaksi' => $promoActivityHeader->id, 'message' => 'Data berhasil di input']);
 
@@ -134,7 +138,7 @@ class PromoActivityController extends Controller
 
                     $photo_url = "";
 
-                    if ($request->photo) {
+                    if(isset($request->photo) && $request->photo != null){
                         $photo_url = $this->getUploadPathName($request->photo, "promo/" . $this->getRandomPath(), 'PROMO');
                     }
 
@@ -183,13 +187,17 @@ class PromoActivityController extends Controller
                                     ->where('end_period', Carbon::parse($end_period)->format('Y-m-d'))
                                     ->first();
 
-            // Upload image process
-            $imagePath = explode('/', $promoActivityHeaderAfter->photo);
-            $count = count($imagePath);
-            $imageFolder = "promo/" . $imagePath[$count - 2];
-            $imageName = $imagePath[$count - 1];
+            if(isset($request->photo) && $request->photo != null) {
 
-            $this->upload($request->photo, $imageFolder, $imageName);
+                // Upload image process
+                $imagePath = explode('/', $promoActivityHeaderAfter->photo);
+                $count = count($imagePath);
+                $imageFolder = "promo/" . $imagePath[$count - 2];
+                $imageName = $imagePath[$count - 1];
+
+                $this->upload($request->photo, $imageFolder, $imageName);
+
+            }
 
             return response()->json(['status' => true, 'id_transaksi' => $promoActivityHeaderAfter->id, 'message' => 'Data berhasil di input']);
 
