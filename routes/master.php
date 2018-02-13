@@ -277,13 +277,20 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('quiz/{id}', 'Master\QuizController@destroy');
         Route::post('quiz-target', 'Api\Master\QuizTargetController@store');
 
-        /** Attemdents **/
+        /** Attendance **/
         Route::get('attendance', 'Master\AttendanceController@index');
         Route::get('attendance/create', 'Master\AttendanceController@create');
         Route::post('attendance', 'Master\AttendanceController@store');
         Route::get('attendance/edit/{id}', 'Master\AttendanceController@edit');
         Route::patch('attendance/{id}', 'Master\AttendanceController@update');
         Route::delete('attendance/{id}', 'Master\AttendanceController@destroy');
+
+        /** Leadtime **/
+        Route::get('leadtime', 'Master\LeadtimeController@index');
+        Route::post('leadtime', 'Master\LeadtimeController@store');
+        Route::get('leadtime/edit/{id}', 'Master\LeadtimeController@edit');
+        Route::patch('leadtime/{id}', 'Master\LeadtimeController@update');
+        Route::delete('leadtime/{id}', 'Master\LeadtimeController@destroy');
 
         /**
          * Reporting Module(s) Just For Admin, Master, REM

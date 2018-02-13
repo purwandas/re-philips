@@ -114,7 +114,7 @@
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
-                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }}"></span>
+                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
@@ -140,6 +140,11 @@
                     <li class="nav-item {{ Request::is('price') ? 'active open' : '' }}">
                         <a href="{{ url('price') }}" class="nav-link nav-toggle">
                             <span class="title">Price</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('leadtime') ? 'active open' : '' }}">
+                        <a href="{{ url('leadtime') }}" class="nav-link nav-toggle">
+                            <span class="title">Leadtime</span>
                         </a>
                     </li>
                 </ul>
