@@ -117,11 +117,6 @@
                     <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
-                        <a href="{{ url('groupproduct') }}" class="nav-link ">
-                            <span class="title">Group Product</span>
-                        </a>
-                    </li>
                     <li class="nav-item {{ Request::is('group') ? 'active open' : '' }}">
                         <a href="{{ url('group') }}" class="nav-link ">
                             <span class="title">Group</span>
