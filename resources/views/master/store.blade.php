@@ -140,7 +140,7 @@
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [15]},
             ],
-            "order": [ [0, 'desc'] ],            
+            "order": [ [0, 'desc'] ],
         });
 
 

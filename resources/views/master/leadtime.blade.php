@@ -178,7 +178,7 @@
         var modalTitle = document.getElementById('title');
         modalTitle.innerHTML = "ADD NEW ";
 
-        $('#leadtime').val('');
+        $('#name').val('');
         select2Reset($("#area"));
 
         // Set action url form for add
@@ -215,7 +215,7 @@
 
         $.get(getDataUrl + '/' + id, function (data) {
 
-                    $('#leadtime').val(data.leadtime);
+                    $('#name').val(data.leadtime);
 
                     setSelect2IfPatchModal($("#area"), data.area_id, data.area.name);
 

@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\InitAttendance',
         'App\Console\Commands\GetInfo',
         'App\Console\Commands\SalesHistory',
+        'App\Console\Commands\UpdateApm',
     ];
 
     /**

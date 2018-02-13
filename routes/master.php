@@ -286,11 +286,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('visitplan', 'Master\ReportController@visitPlanIndex');
         Route::get('salesactivity', 'Master\ReportController@salesActivityIndex');
         Route::get('storelocationactivity', 'Master\ReportController@storeLocationActivityIndex');
+        Route::get('konfig-promoter', 'Master\KonfigController@konfigPromoterIndex');
 
         /**
          * Salesman Module (Reporting)
          */
         Route::get('salesmanreport', 'Master\ReportController@salesmanIndex');
+
 
     });
 
