@@ -33,40 +33,36 @@
                     <span class="caption-subject font-blue bold uppercase">CHANNEL</span>
                 </div>
             </div>
-            <div class="portlet-body" style="padding: 15px;">
-                <!-- MAIN CONTENT -->
-
-                <div class="row">
-
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <a id="add-channel" class="btn green" data-toggle="modal" href="#channel"><i
-                                        class="fa fa-plus"></i> Add Channel</a>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <table class="table table-striped table-hover table-bordered" id="channelTable" style="white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th> No. </th>
-                                <th> Channel Name</th>
-                                <th> Global Channel </th>
-                                <th> Options </th>
-                            </tr>
-                        </thead>
-                    </table>
+            <div class="portlet-title">
+            <!-- MAIN CONTENT -->
+                <div class="btn-group">
+                    <a id="add-channel" class="btn green" data-toggle="modal" href="#channel"><i
+                        class="fa fa-plus"></i> Add Channel</a>
 
                 </div>
+                <div class="actions" style="text-align: left">
+                    <a id="export" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                </div>
+            </div>
+
+            <div class="portlet-body" >
+                <table class="table table-striped table-hover table-bordered" id="channelTable" style="white-space: nowrap;">
+                    <thead>
+                        <tr>
+                            <th> No. </th>
+                            <th> Channel Name</th>
+                            <th> Global Channel </th>
+                            <th> Options </th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
 
                 @include('partial.modal.channel-modal')
 
                 <!-- END MAIN CONTENT -->
-            </div>
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->
     </div>
@@ -87,6 +83,7 @@
 
 <script>
 
+    var data = {};
     /*
      * ACCOUNT
      *
@@ -96,6 +93,18 @@
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/channel',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                data = results;
             }
         });
 
@@ -170,6 +179,48 @@
                 });
         });
 
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-channel',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
 
         initSelect2Account();
 

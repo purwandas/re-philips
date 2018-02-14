@@ -20,6 +20,7 @@ Route::get('tes', 'Api\AuthController@tes');
 /* JWT Authentication */
 
 Route::post('login', 'Api\AuthController@login');
+Route::post('logout/{id}', 'Api\AuthController@logout');
 
 /* End point module(s) */
 
