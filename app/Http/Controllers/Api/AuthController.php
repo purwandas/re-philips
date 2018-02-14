@@ -43,6 +43,26 @@ class AuthController extends Controller
 		// Get user data
 		$user = Auth::user();
 
+		// If user has not login
+		if ( $user->status_login != 'Login') {
+			// if hp login pertama berbeda
+			if ( $user->hp_id != null and $user->hp_id != $request->hp_id ) {
+				return response()->json(['status' => 'false', 'message' => 'cant_login_in_other_HP' ], 200);
+			}
+			// update status, jenis_hp and id hp ketika null
+			if ( $user->hp_id == null ) {
+		        $user->update([
+					'status_login' => 'Login',
+					'jenis_hp' => $request->jenis_hp,
+					'hp_id' => $request->hp_id
+				]);
+		    }
+
+		} else {
+			// user has login
+			return response()->json(['status' => 'false', 'message' => 'user_has_been_login'], 200);
+		}
+
 		// Check Promoter Group
 		$isPromoter = 0;
 		if($user->role->role_group == 'Promoter' || $user->role->role_group == 'Promoter Additional' || $user->role->role_group == 'Promoter Event' || $user->role->role_group == 'Demonstrator MCC' || $user->role->role_group == 'Demonstrator DA' || $user->role->role_group == 'ACT'  || $user->role->role_group == 'PPE' || $user->role->role_group == 'BDT' || $user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'HIC' || $user->role->role_group == 'HIE' || $user->role->role_group == 'SMD Additional' || $user->role->role_group == 'ASC'){
@@ -93,7 +113,7 @@ class AuthController extends Controller
         }
 
 		// all good so return the token
-		return response()->json(['status' => true, 'token' => $token, 'name' => $user->name, 'role' => $user->role->role, 'grading' => $grading, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
+		return response()->json(['status' => true, 'token' => $token, 'user_id' => $user->id, 'name' => $user->name, 'role' => $user->role->role, 'grading' => $grading, 'is_promoter' => $isPromoter, 'kpi' => $kpi, 'mobile_access' => $access, 'status_promoter' => $user->status, 'store' => $store]);
 	}
 
 	public function tes(){
@@ -239,5 +259,19 @@ class AuthController extends Controller
         return response()->json(['status' => false, 'message' => 'Profil Gagal di update'], 500);
 
     }
+
+	public function logout($id){
+		//user logout
+        $userData = User::where('id', $id)->first();
+        if (!isset($userData)) {
+			return response()->json(['status' => false, 'message' => 'User not found'], 404);
+        }
+
+        $userData->update([
+            'status_login' => 'Logout'
+        ]);
+
+			return response()->json(['status' => true, 'message' => 'logout berhasil'], 200);
+	}
 
 }

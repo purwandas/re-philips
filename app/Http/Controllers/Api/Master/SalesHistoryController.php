@@ -54,7 +54,7 @@ class SalesHistoryController extends Controller
             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-        if($param == 1) { /* SELL IN */
+        if($param == 1) { /* SELL IN (SELL THRU) */
 
             $header = SellIn::whereNull('sell_ins.deleted_at')
                     ->where('date','>=',$date1)
@@ -392,7 +392,7 @@ class SalesHistoryController extends Controller
             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-        if($param == 1) { /* SELL IN */
+        if($param == 1) { /* SELL IN (SELL THRU)*/
 
         } else if($param == 2) { /* SELL OUT */
 

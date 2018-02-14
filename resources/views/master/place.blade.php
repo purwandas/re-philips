@@ -33,28 +33,25 @@
                     <span class="caption-subject font-blue bold uppercase">PLACE</span>
                 </div>
             </div>
-            <div class="portlet-body" style="padding: 15px;">
-                <!-- MAIN CONTENT -->
+            <div class="portlet-title">
+            <!-- MAIN CONTENT -->
+                <div class="btn-group">
+                    <a id="add-place" class="btn green" data-toggle="modal" href="#place"><i
+                        class="fa fa-plus"></i> Add Place </a>
 
-                <div class="row">
+                </div>
+                <div class="actions" style="text-align: left">
+                    <a id="export" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                </div>
+            </div>
 
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <a id="add-place" class="btn green" data-toggle="modal" href="#place"><i
-                                        class="fa fa-plus"></i> Add Place </a>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+            <div class="portlet-body" >
                     <table class="table table-striped table-hover table-bordered" id="placeTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
                                 <th> No. </th>        
-                                <th> Store ID. </th>                          
+                                <th> Place ID. </th>                          
                                 <th> Place Name </th>
                                 <th> Longitude </th>
                                 <th> Latitude </th>
@@ -65,12 +62,11 @@
                         </thead>
                     </table>                 
 
-                </div>
-
-                @include('partial.modal.place-modal')
-
-                <!-- END MAIN CONTENT -->
             </div>
+
+            @include('partial.modal.place-modal')
+
+            <!-- END MAIN CONTENT -->
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->
     </div>
@@ -88,6 +84,7 @@
 
 <script>
 
+    var data = {};
     /*
      * PLACE
      *
@@ -97,6 +94,18 @@
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/place',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                data = results;
             }
         });
 
@@ -168,6 +177,49 @@
                         swal("Cancelled", "Data is safe ", "success");
                     }
                 });
+        });
+
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-place',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
         });
 
     });

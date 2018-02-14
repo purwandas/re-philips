@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Sell In Report
-                <small>report sell in</small>
+            <h1>Sell Thru Report
+                <small>report sell thru</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Sell In Reporting</span>
+            <span class="active">Sell Thru Reporting</span>
         </li>
     </ul>
 @endsection
@@ -82,7 +82,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Sell In</span>
+                            <span class="caption-subject font-blue bold uppercase">Sell Thru</span>
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >

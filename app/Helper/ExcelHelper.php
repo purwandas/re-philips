@@ -352,4 +352,359 @@ class ExcelHelper
             ];
         });
     }
+
+    public function mapForExportArea(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'REGION ID' => @$item['region_id'],
+            ];
+        });
+    }
+
+    public function mapForExportDistrict(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'AREA ID' => @$item['area_id'],
+            ];
+        });
+    }
+
+    public function mapForExportStore(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'STORE ID' => @$item['store_id'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'DEDICATE' => @$item['dedicate'],
+                'LONGITUDE' => @$item['longitude'],
+                'LATITUDE' => @$item['latitude'],
+                // 'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['subchannel_id'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'DISTRICT' => @$item['district_id'],
+                'SPV NAME' => @$item['user_id'],
+                'ADDRESS' => @$item['address'],
+                'CLASSIFICATION' => @$item['classification'],
+                'NO TELPON TOKO' => @$item['no_telp_toko'],
+                'NO TELPON PEMILIK TOKO' => @$item['no_telp_pemilik_toko'],
+                'KEPEMILIK TOKO' => @$item['kepemilikan_toko'],
+                'KONDISI TOKO' => @$item['kondisi_toko'],
+                'LOKASI TOKO' => @$item['lokasi_toko'],
+                'TIPE TANSAKSI PEMBAYARAN' => @$item['tipe_transaksi'],
+                'TIPE TANSAKSI PEMBELIAN' => @$item['tipe_transaksi_2'],
+            ];
+        });
+    }
+    public function mapForExportChannel(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'GLOBAL CHANNEL ID' => @$item['globalchannel_id'],
+            ];
+        });
+    }
+    public function mapForExportSubchannel(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'CHANNEL ID' => @$item['channel_id'],
+            ];
+        });
+    }
+    public function mapForExportDistributor(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'CODE' => @$item['code'],
+                'NAME' => @$item['name'],
+            ];
+        });
+    }
+
+    public function mapForExportPlace(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'STORE ID' => @$item['store_id'],
+                'NAME' => @$item['name'],
+                'LONGITUDE' => @$item['longitude'],
+                'LATITUDE' => @$item['latitude'],
+                'ADDRESS' => @$item['address'],
+                'DESCRIPTION' => @$item['description'],
+            ];
+        });
+    }
+
+    public function mapForExportUser(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NIK' => @$item['nik'],
+                'NAME' => @$item['name'],
+                'EMAIL' => @$item['email'],
+                'ROLE' => @$item['role'],
+                'STATUS' => @$item['status'],
+                'PHOTO' => @$item['photo'],
+                'JOIN DATE' => @$item['join_date'],
+                'GRADING' => @$item['grading'],
+                'CERTIFICATE' => @$item['certificate'],
+            ];
+        });
+    }
+    public function mapForExportGroup(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'GLOBAL CHANNEL ID' => @$item['groupproduct_id'],
+            ];
+        });
+    }
+    public function mapForExportCategory(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'GLOBAL CHANNEL ID' => @$item['group_id'],
+            ];
+        });
+    }
+    public function mapForExportProduct(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'CATEGORY ID' => @$item['category_id'],
+                'MODEL' => @$item['model'],
+                'NAME' => @$item['name'],
+                'VARIANTS' => @$item['variants'],
+            ];
+        });
+    }
+    public function mapForExportPrice(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'PRODUCT ID' => @$item['product_id'],
+                'GLOBAL CHANNEL ID' => @$item['globalchannel_id'],
+                'SELL TYPE' => @$item['sell_type'],
+                'PRICE' => @$item['price'],
+            ];
+        });
+    }
+    public function mapForExportTarget(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'USER ID' => @$item['user_id'],
+                'STORE ID' => @$item['store_id'],
+                'SELL TYPE' => @$item['sell_type'],
+                'PARTNER' => @$item['partner'],
+                'TARGET DA'=> @$item['target_da'],
+                'TARGET PF DA'=> @$item['target_pf_da'],
+                'TARGET PC'=> @$item['target_pc'],
+                'TARGET PF PC'=> @$item['target_pf_pc'],
+                'TARGET MCC'=> @$item['target_mcc'],
+                'TARGET PF MCC'=> @$item['target_pf_mcc'],
+            ];
+        });
+    }
+    public function mapForExportProductFocus(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'PRODUCT ID' => @$item['product_id'],
+                'TYPE' => @$item['type'],
+            ];
+        });
+    }
+    public function mapForExportSalesmanTarget(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'USER ID' => @$item['user_id'],
+                'TARGER CELL' => @$item['target_call'],
+                'TARGET ACTIVE OUTLET'=> @$item['target_active_outlet'],
+                'TARGET EFFECTIVE CALL'=> @$item['target_effective_call'],
+                'TARGET SALES'=> @$item['target_sales'],
+                'TARGET SALES PF'=> @$item['target_sales_pf'],
+            ];
+        });
+    }
+    public function mapForExportSalesmanProductFocus(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'PRODUCT ID' => @$item['product_id'],
+            ];
+        });
+    }
+    public function mapForExportPosm(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'GROUP ID' => @$item['group_id'],
+                'NAME' => @$item['name'],
+            ];
+        });
+    }
+    public function mapForExportGroupCompetitor(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+            ];
+        });
+    }
+    public function mapForExportNews(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'USER ID' => @$item['user_id'],
+                'NAME' => @$item['name'],
+                'FROM' => @$item['from'],
+                'SUBJECT' => @$item['subject'],
+                'DATE' => @$item['date'],
+                'FIlENAME' => @$item['filename'],
+                'CONTENT' => @$item['content'],
+                'TARGET TYPE' => @$item['target_type'],
+                'TARGET DETAIL' => @$item['target_detail'],
+            ];
+        });
+    }
+    public function mapForExportProductKnowledge(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'USER ID' => @$item['user_id'],
+                'TYPE' => @$item['type'],
+                'FROM' => @$item['from'],
+                'SUBJECT' => @$item['subject'],
+                'DATE' => @$item['date'],
+                'FIlENAME' => @$item['filename'],
+                'FILE' => @$item['file'],
+                'TARGET TYPE' => @$item['target_type'],
+                'TARGET DETAIL' => @$item['target_detail'],
+                'TOTAL READ' => @$item['total_read'],
+            ];
+        });
+    }
+    public function mapForExportFaq(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'QUESTION' => @$item['question'],
+                'ANSWER' => @$item['answer'],
+            ];
+        });
+    }
+    public function mapForExportQuiz(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'TITLE' => @$item['title'],
+                'DESCRIPTION' => @$item['description'],
+                'LINK' => @$item['link'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
+    public function mapForExportFanspage(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'NAME' => @$item['name'],
+                'URL' => @$item['url'],
+            ];
+        });
+    }
+    public function mapForExportMessageToAdmin(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'USER ID' => @$item['user_id'],
+                'SUBJECT' => @$item['subject'],
+                'MESSAGE' => @$item['message'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
 }

@@ -115,20 +115,20 @@
 					<span class="caption-subject font-blue bold uppercase">EMPLOYEE</span>
 				</div>
 	        </div>
-	        <div class="portlet-body" style="padding: 15px;">
-	        	<!-- MAIN CONTENT -->            
-	        	<div class="table-toolbar">
-                	<div class="row">
-                    	<div class="col-md-6">
-                        	<div class="btn-group">
-                             	<a class="btn green" href="{{ url('usernon/create') }}"><i
-									class="fa fa-plus"></i> Add Employee </a>
-                                
-                            </div>
-                    	</div>
-                    </div>
+            <div class="portlet-title">
+            <!-- MAIN CONTENT -->
+                <div class="btn-group">
+                    <a class="btn green" href="{{ url('usernon/create') }}"><i
+                        class="fa fa-plus"></i> Add Employee </a>
+                    
                 </div>
+                <div class="actions" style="text-align: left">
+                    <a id="export" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                </div>
+            </div>
 
+            <div class="portlet-body" >
 	        	<table class="table table-striped table-hover table-bordered" id="userTable" style="white-space: nowrap;">
                 	<thead>
                     	<tr>
@@ -168,6 +168,7 @@
 <!-- END TEXT MODAL SCRIPTS -->
 
 <script>
+    var data = {};
         var filterId = ['#filterNik', '#filterName', '#filterRole'];
         var url = 'datatable/user';
         var order = [ [0, 'desc'] ];
@@ -197,6 +198,18 @@
             }
         });
 
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/nonPromoter',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                data = results;
+            }
+        });
+        
      //    // Set data for Data Table '#athletesTable'
      //    var table = $('#userTable').dataTable({
 	    //     "processing": true,
@@ -285,10 +298,97 @@
                 });
         });
 
+        // open new hp data with sweet alert
+        $('#userTable').on('click', 'tr td button.openAccessButton', function () {
+            var id = $(this).val();
+
+                swal({
+                    title: "Are you sure to open?",
+                    text: "You will allow new phone to this user?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, Allow it",
+                    cancelButtonText: "No, cancel",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        })
+
+
+                        $.ajax({
+
+                            type: "PATCH",
+                            url:  'userpromoter/openhp/' + id,
+                            success: function (data) {
+                                console.log(data);
+
+                                $('#userTable').DataTable().ajax.reload( null, false );;
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
+                        });                        
+
+                        swal("Open!", "User allow new phone.", "success");
+                    } else {
+                        swal("Cancelled", "User keep not allow", "success");
+                    }
+                });
+        });
 
         initSelect2();       
 
     });
+
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-nonpromoter',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
 
      function initSelect2(){
 
