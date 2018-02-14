@@ -114,6 +114,111 @@ function filteringReport(arrayOfData) {
     })
 }
 
+// Reset all filter for search
+function triggerResetKonfig (arrayOfData) {
+
+    var data = arrayOfData[0];
+    var table = arrayOfData[1];
+    var element = arrayOfData[2];
+    var url = arrayOfData[3];
+    var tableColumns = arrayOfData[4];
+    var columnDefs = arrayOfData[5];
+    var order = arrayOfData[6];
+
+    data.map((id) => {
+        $(id).val('').trigger('change');
+    });
+
+    this.filters = {};
+
+     // Datatable setup
+
+    if($.fn.dataTable.isDataTable('#'+table)){
+        element.DataTable().clear();
+        element.DataTable().destroy();
+    }
+    element.dataTable({
+        "fnCreatedRow": function (nRow, data) {
+            $(nRow).attr('class', data.id);
+        },
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+        },
+        "rowId": "id",
+        "columns": tableColumns,
+        "columnDefs": columnDefs,
+        "order": order,
+        "searching": false,
+    })
+}
+
+// Filtering data
+function filteringKonfig(arrayOfData) {
+
+    var table = arrayOfData[0];
+    var element = arrayOfData[1];
+    var url = arrayOfData[2];
+    var tableColumns = arrayOfData[3];
+    var columnDefs = arrayOfData[4];
+    var order = arrayOfData[5];
+
+    this.moreParams = [];
+    this.moreParamsPost  = {};
+
+    for (filter in this.filters) {
+        this.moreParams.push(filter + '=' + this.filters[filter]);
+        this.moreParamsPost[filter] = this.filters[filter];
+    }
+
+    var self = this;
+    $(document).ready(function () {
+        // console.log(self.moreParamsPost);
+        if($.fn.dataTable.isDataTable('#'+table)){
+            element.DataTable().clear();
+            element.DataTable().destroy();
+        }
+        element.dataTable({
+            "fnCreatedRow": function( nRow, data ) {
+                $(nRow).attr('class', data.id);
+            },
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: url,
+                data: self.moreParamsPost,
+                type: 'POST',
+                dataType: 'json',
+                dataSrc: function(result){
+
+                    if(typeof arrayOfData[6] !== 'undefined') {
+                        // export option exist
+
+                        var count = result.data.length;
+
+                        if(count > 0){
+                            $(arrayOfData[6]).removeAttr('disabled');
+                        }else{
+                            $(arrayOfData[6]).attr('disabled','disabled');
+                        }
+                    }
+
+                    data = result.data;
+                    return result.data;
+                }
+            },
+            "rowId": "id",
+            "columns": tableColumns,
+            "columnDefs": columnDefs,
+            "order": order,
+            "searching": false,
+        })
+    })
+}
+
 // Filtering data
 function filteringAttendanceReport(arrayOfData) {
 

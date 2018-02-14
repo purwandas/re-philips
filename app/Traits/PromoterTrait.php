@@ -30,4 +30,9 @@ trait PromoterTrait {
 
     }
 
+    public function getPromoterGroup(){
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        return $roles;
+    }
+
 }

@@ -92,7 +92,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
     Route::post('datatable/salesactivityreport', ['as'=> 'datatable.salesactivityreport','uses'=>'Master\ReportController@salesActivityData']);
     Route::post('datatable/storelocationactivityreport', ['as'=> 'datatable.storelocationactivityreport','uses'=>'Master\ReportController@storeLocationActivityData']);
-    Route::post('datatable/konfigpromoter', ['as'=> 'datatable.konfigpromoter','uses'=>'Master\KonfigController@promoterData']);
 
     
 
@@ -128,6 +127,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
 
     Route::post('data/quiztarget', ['as'=> 'data.quiztarget','uses'=>'Api\Master\QuizTargetController@getDataWithFilters']);
+    Route::post('data/konfigpromoter', ['as'=> 'data.konfigpromoter','uses'=>'Master\KonfigController@promoterData']);
 
     /**
      * Relation

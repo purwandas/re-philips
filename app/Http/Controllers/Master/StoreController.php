@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Distributor;
+use App\SpvDemo;
 use App\StoreDistributor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -40,6 +41,7 @@ class StoreController extends Controller
     public function masterDataTable(){
 
         $data = Store::where('stores.deleted_at', null)
+//                    ->with('storeDistributors.distributor')
         			// ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
            //          ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
            //          ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
@@ -80,7 +82,7 @@ class StoreController extends Controller
     public function getDataWithFilters(StoreFilters $filters){
 
         $userRole = Auth::user()->role->role_group;
-        $userId = Auth::user()->id;       
+        $userId = Auth::user()->id;
 
         $data = Store::filter($filters)->groupBy('store_id')->get();
 
@@ -155,6 +157,15 @@ class StoreController extends Controller
                         $data = User::where('id', $item->user_id)
                                     ->select('users.name as spv_name')->first();
                         return $data->spv_name;
+                    }else{
+                        $data = SpvDemo::where('store_id', $item->id)
+                                ->join('users', 'users.id', 'spv_demos.user_id')
+                                ->select('users.name as spv_name')
+                                ->first();
+
+                        if($data){
+                            return $data->spv_name;
+                        }
                     }
                     return "";
 
@@ -184,10 +195,29 @@ class StoreController extends Controller
                     return '';
                 })
                 ->addColumn('distributor', function ($item) {
-                    if ($item->storeDistributors()->count() > 0) {
-                        return "(".$item->storeDistributors()->first()->distributor->code.") ".$item->storeDistributors()->first()->distributor->name;
+//                    return 'ok';
+//                    return $item->storeDistributors()->count();
+//                    if ($item->storeDistributors()->count() > 0) {
+//                        return "(".$item->storeDistributors()->first()->distributor->code.") ".$item->storeDistributors()->first()->distributor->name;
+//                    }
+//                    if($item->storeDistributors){
+//                        if ($item->storeDistributors->count() > 0) {
+//                            return "(".$item->storeDistributors->first->distributor->code.") ".$item->storeDistributors->first->distributor->name;
+//                        }
+//                        return $item->storeDistributors->first()->distributor->name;
+//                    }
+//                    return 'GA ADA';
+
+                    if($item->storeDistributors()->count() > 0){
+                        $data = Distributor::whereHas('storeDistributors', function ($query) use ($item){
+                            return $query->where('store_id', $item->id);
+                        })->first();
+                        if($data){
+                            return "(".$data->code.") ".$data->name;
+                        }
+                        return "";
                     }
-                    return '';
+                    return "";
                 })
                 ->addColumn('action', function ($item) {
 
