@@ -159,8 +159,8 @@ class KonfigController extends Controller
                 return "";
             })
             ->addColumn('spv_name', function ($item) {
-                if($item->spv_id != null){
-                    $data = User::where('id', $item->spv_id)
+                if($item->store->user_id != null){
+                    $data = User::where('id', $item->store->user_id)
                                 ->select('users.name as spv_name')->first();
                     return $data->spv_name;
                 }else{
@@ -175,7 +175,7 @@ class KonfigController extends Controller
                 return "";
             })
             ->addColumn('dm_name', function ($item) {
-                $data = DmArea::where('area_id', $item->area_id)
+                $data = DmArea::where('area_id', $item->store->district->area->id)
                                 ->join('users', 'users.id', 'dm_areas.user_id')
                                 ->select('users.name as dm_name')->first();
                 if($data){
@@ -184,7 +184,7 @@ class KonfigController extends Controller
                 return "";
             })
             ->addColumn('trainer_name', function ($item) {
-                $data = TrainerArea::where('area_id', $item->area_id)
+                $data = TrainerArea::where('area_id', $item->store->district->area->id)
                                 ->join('users', 'users.id', 'trainer_areas.user_id')
                                 ->select('users.name as trainer_name')->first();
                 if($data){
