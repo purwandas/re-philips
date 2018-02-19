@@ -30,6 +30,10 @@ class SOHController extends Controller
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
 
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
         // Check SOH header
         $sohHeader = SOH::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 

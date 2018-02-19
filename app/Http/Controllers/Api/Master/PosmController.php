@@ -145,6 +145,10 @@ class PosmController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
         // if(!isset($request->photo)){
         //     return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);
         // }
