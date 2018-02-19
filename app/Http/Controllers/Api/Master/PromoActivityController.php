@@ -32,6 +32,10 @@ class PromoActivityController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
         if(!isset($request->promo_type) || $request->promo_type == null){
             return response()->json(['status' => false, 'message' => 'Jenis Promo tidak boleh kosong'], 500);
         }

@@ -60,15 +60,17 @@ class UserPromoterController extends Controller
 
 //        $data = User::all();
 
+
+
         $filter = $data;
 
         /* If filter */
             if($request['byName']){
-                $filter = $data->where('id', $request['byName']);
+                $filter = $data->where('users.id', $request['byName']);
             }
 
             if($request['byNik']){
-                $filter = $data->where('id', $request['byNik']);
+                $filter = $data->where('users.id', $request['byNik']);
             }
 
             if($request['byRole']){

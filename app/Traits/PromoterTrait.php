@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\EmployeeStore;
 use App\Store;
 use App\Target;
+use App\Attendance;
 
 trait PromoterTrait {
 
@@ -33,6 +34,22 @@ trait PromoterTrait {
     public function getPromoterGroup(){
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         return $roles;
+    }
+
+    public function getReject($user_id){
+
+        $attendance = Attendance::where('user_id', $user_id)->where('date', date('Y-m-d'))->first();
+
+        if($attendance){
+
+            if($attendance->reject == '1'){
+                return true;
+            }
+
+        }
+
+        return false;
+
     }
 
 }
