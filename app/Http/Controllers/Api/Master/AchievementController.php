@@ -538,7 +538,7 @@ class AchievementController extends Controller
                 // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
                  return $query->whereHas('role', function($query2){
                     return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
-                })
+                });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
                         return $query->whereIn('id', $areaIds);
