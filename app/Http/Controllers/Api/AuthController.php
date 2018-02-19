@@ -90,7 +90,7 @@ class AuthController extends Controller
             	$channel = '';
             }
 
-            if($channel == 'Traditional Retail'){
+            if($channel == 'TR'){
                 $kpi = 'Sell In';
             }else{
                 $kpi = 'Sell Out';
