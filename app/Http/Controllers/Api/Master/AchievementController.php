@@ -396,9 +396,9 @@ class AchievementController extends Controller
         if($param == 1) { // BY NATIONAL
 
             $supervisor = User::where(function ($query) {
-                return $query->whereHas('role', function($query){
-                    return $query->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
-                })
+                return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
             })->with('stores.district.area.region')->get();
 
             $result = $this->getSupervisorCollection($supervisor);
@@ -466,9 +466,9 @@ class AchievementController extends Controller
 
             $supervisor = User::where(function ($query) {
                 // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
-                 return $query->whereHas('role', function($query){
-                    return $query->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
-                })
+                 return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
                         return $query->whereIn('id', $regionIds);
@@ -536,8 +536,8 @@ class AchievementController extends Controller
 
             $supervisor = User::where(function ($query) {
                 // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
-                 return $query->whereHas('role', function($query){
-                    return $query->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                 return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
                 })
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
