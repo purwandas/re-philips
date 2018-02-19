@@ -111,7 +111,11 @@ class AuthController extends Controller
         		$firstStore = Store::where('user_id', $user->id)->first();
         	}
 
-        	$kpi = $firstStore->subChannel->channel->globalChannel->name;
+        	if($firstStore->subChannel->channel->globalChannel->name == 'TR'){
+                $kpi = 'Sell In';
+            }else{
+                $kpi = 'Sell Out';
+            }
 
         }
 
