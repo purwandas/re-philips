@@ -88,7 +88,7 @@ class UserController extends Controller
                         $dedicate = $value->dedicate;
                     }
                     if ($item->role_group == 'DM') {
-                        return $item->roles.' - '.$dedicate;
+                        return $item->roles;
                     }
 
                     return $item->roles;

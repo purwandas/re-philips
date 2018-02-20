@@ -205,6 +205,12 @@ class UserPromoterController extends Controller
                 ->join('roles','roles.id','users.role_id')
                 ->whereIn('roles.role_group',$roles)->get();
 
+        $data = User::filter($filters)
+            ->join('roles','roles.id','users.role_id')
+            ->leftJoin('gradings','gradings.id','users.grading_id')
+            ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->whereIn('role_group',$roles)->get();
+
         return $data;
     }
 

@@ -100,7 +100,7 @@
                                 <th> Area </th>
                                 <th> District </th>
                                 <th> Store ID </th>
-                                <th> Store Name 1 </th>
+                                <th> Store Name</th>
                                 <th> Customer Code </th>
                                 <th> Classification </th>
                                 <th> Global Channel </th>
@@ -186,6 +186,10 @@
                 "ajax": {
                     url: url,
                     type: 'POST',
+                    dataSrc: function (res) {
+                        this.data = res.data;
+                        return res.data;
+                    },
                 },
                 "rowId": "id",
                 "columns": tableColumns,
@@ -296,7 +300,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-sellin',
+                    url: 'util/export-konfig-promoter',
                     dataType: 'json',
                     data: {data: data},
                     global: false,
