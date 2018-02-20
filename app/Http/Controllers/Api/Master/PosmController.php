@@ -17,11 +17,13 @@ use App\Traits\StringTrait;
 use App\PosmActivity;
 use File;
 use DB;
+use App\Traits\PromoterTrait;
 
 class PosmController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store2(Request $request){
 

@@ -549,6 +549,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-item {{ Request::is('konfig-store') ? 'active open' : '' }}">
+                        <a href="{{ url('konfig-store') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Konfigurasi Store</span>
+                        </a>
+                    </li>
+
                 @endif
 
             @endif

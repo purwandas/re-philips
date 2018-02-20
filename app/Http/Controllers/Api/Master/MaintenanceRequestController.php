@@ -11,6 +11,7 @@ use Auth;
 use App\MaintenanceRequest;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\PromoterTrait;
 use DB;
 use File;
 
@@ -18,6 +19,7 @@ class MaintenanceRequestController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store(Request $content){
 

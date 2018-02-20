@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\PromoterTrait;
 use App\CompetitorActivity;
 use App\CompetitorActivityDetail;
 use File;
@@ -19,6 +20,7 @@ class CompetitorActivityController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store(Request $request){
 

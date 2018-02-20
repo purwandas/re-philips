@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\PromoterTrait;
 use App\PromoActivity;
 use App\PromoActivityDetail;
 use File;
@@ -20,6 +21,7 @@ class PromoActivityController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store(Request $request){
 

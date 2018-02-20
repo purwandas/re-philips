@@ -21,10 +21,13 @@ use App\DmArea;
 use App\User;
 use App\SpvDemo;
 use App\TrainerArea;
+use App\Traits\PromoterTrait;
 use DB;
 
 class DisplayShareController extends Controller
 {
+    use PromoterTrait;
+
     public function store(Request $request){
 
         $content = json_decode($request->getContent(),true);
