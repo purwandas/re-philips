@@ -25,6 +25,10 @@ class KonfigController extends Controller
 {
     use PromoterTrait;
 
+    public function konfigStoreIndex(){
+        return view('report.konfig-store');
+    }
+
     public function konfigPromoterIndex(){
         return view('report.konfig-promoter');
     }
