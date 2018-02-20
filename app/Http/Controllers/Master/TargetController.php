@@ -33,14 +33,33 @@ class TargetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $data = Target::where('targets.deleted_at', null)
         			->join('users', 'targets.user_id', '=', 'users.id')
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
-                    ->select('targets.*', 'users.name as promoter_name', DB::raw('CONCAT(stores.store_id, " - ", stores.store_name_1, " (", stores.store_name_2, ")") AS store_name'))->get();
+                    ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2');
 
-        return $this->makeTable($data);
+        $filter = $data;
+
+        /* If filter */
+            if($request['byStore']){
+                $filter = $filter->whereHas('store', function($query) use ($request) {
+                    return $query->where('stores.id', $request['byStore']);
+                });
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->whereHas('user', function($query) use ($request) {
+                    return $query->where('users.id', $request['byEmployee']);
+                });
+            }
+
+            if($request['bySellType']){
+                $filter = $filter->where('sell_type', $request['bySellType']);
+            }
+
+        return $this->makeTable($filter->get());
     }
 
     // Data for select2 with Filters
@@ -54,7 +73,14 @@ class TargetController extends Controller
     public function makeTable($data){
 
            return Datatables::of($data)
+                ->addColumn('store_name',function ($item) {
+                    
+                    if($item->store_name_2 != '' || $item->store_name_2 != null){
+                        return $item->store_name_1 . "(" . $item->store_name_2 . ")";
+                    }
 
+                    return $item->store_name_1;
+                })
                 ->editColumn('sell_type',function ($item) {
                     
                     if ($item->sell_type == 'Sell In') {

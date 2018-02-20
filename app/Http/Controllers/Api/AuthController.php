@@ -91,7 +91,7 @@ class AuthController extends Controller
             	$channel = '';
             }
 
-            if($channel == 'TR'){
+            if($channel == 'TR' || $channel == 'Traditional Retail'){
                 $kpi = 'Sell In';
             }else{
                 $kpi = 'Sell Out';
@@ -111,7 +111,7 @@ class AuthController extends Controller
         		$firstStore = Store::where('user_id', $user->id)->first();
         	}
 
-        	if($firstStore->subChannel->channel->globalChannel->name == 'TR'){
+        	if($firstStore->subChannel->channel->globalChannel->name == 'TR' || $firstStore->subChannel->channel->globalChannel->name == 'Traditional Retail'){
                 $kpi = 'Sell In';
             }else{
                 $kpi = 'Sell Out';

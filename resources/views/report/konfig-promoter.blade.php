@@ -69,9 +69,9 @@
 
                 <br><br>
 
-            </div>
+            <!-- </div> -->
 
-                <div class="portlet light bordered" id="dataContent">
+                <!-- <div class="portlet light bordered" id="dataContent"> -->
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
@@ -253,7 +253,10 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
                 }
             }));

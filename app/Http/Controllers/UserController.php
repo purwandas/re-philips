@@ -59,15 +59,15 @@ class UserController extends Controller
 
         /* If filter */
             if($request['byName']){
-                $filter = $data->where('users.id', $request['byName']);
+                $filter = $filter->where('users.id', $request['byName']);
             }
 
             if($request['byNik']){
-                $filter = $data->where('users.id', $request['byNik']);
+                $filter = $filter->where('users.id', $request['byNik']);
             }
 
             if($request['byRole']){
-                $filter = $data->where('role', $request['byRole']);
+                $filter = $filter->where('role', $request['byRole']);
             }
 
     //     return $this->makeTable($filter);
@@ -120,17 +120,80 @@ class UserController extends Controller
                         }
                         
                         $area='';
+                        $count = 0;
                         foreach ($result as $key => $value) {
                             if ($key == 0) {
                                 $area = $value->area_name;
                             }else{
                                 $area .= ", ".$value->area_name;
                             }
+                            $count++;
+                            if($count == 3){
+                                $area.=" ...";
+                                break;
+                            }
                         }
                         return $area;
                     }
 
                     $area = (isset($area->area->name)) ? $area->area->name : '';
+
+                    return $area;
+
+                })
+                ->addColumn('region', function ($item) {
+
+                    if($item->role_group == 'RSM') {
+                        $region = RsmRegion::where('user_id', $item->id)->first(); 
+
+                        $region_name = (isset($region->region->name)) ? $region->region->name : '';
+
+                        return $region_name;
+                    }
+                    
+                    if($item->role_group == 'DM') {
+                        $area = DmArea::where('user_id', $item->id)->first();
+                    }elseif($item->role_group == 'Trainer') {
+                        $area = TrainerArea::where('user_id', $item->id)->first();
+                    }elseif($item->role_group == 'Supervisor' || $item->role_group == 'Supervisor Hybrid') {
+                        $store = Store::where('user_id', $item->id)
+                                ->join('districts','districts.id','stores.district_id')
+                                ->join('areas','areas.id','districts.area_id')
+                                ->join('regions','regions.id','areas.region_id')
+                                ->groupBy('regions.id')
+                                ->select('regions.name as region_name')
+                                ->get();
+                        $result = $store;
+                            $spvDemo = SpvDemo::where('spv_demos.user_id', $item->id)
+                                    ->join('stores','stores.id','spv_demos.store_id')
+                                    ->join('districts','districts.id','stores.district_id')
+                                    ->join('areas','areas.id','districts.area_id')
+                                    ->join('regions','regions.id','areas.region_id')
+                                    ->groupBy('regions.id')
+                                    ->select('regions.name as region_name')
+                                    ->get();
+                        if(count($spvDemo) > 0){
+                            $result = $spvDemo;
+                        }
+                        
+                        $area='';
+                        $count = 0;
+                        foreach ($result as $key => $value) {
+                            if ($key == 0) {
+                                $area = $value->region_name;
+                            }else{
+                                $area .= ", ".$value->region_name;
+                            }
+                            $count++;
+                            if($count == 3){
+                                $area.=" ...";
+                                break;
+                            }
+                        }
+                        return $area;
+                    }
+
+                    $area = (isset($area->area->region->name)) ? $area->area->region->name : '';
 
                     return $area;
 
@@ -209,7 +272,9 @@ class UserController extends Controller
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::filter($filters)
                 ->join('roles','roles.id','users.role_id')
-                ->whereNotIn('roles.role_group',$roles)->get();
+                ->whereNotIn('roles.role_group',$roles)
+                ->select('users.*')
+                ->get();
 
         return $data;
     }

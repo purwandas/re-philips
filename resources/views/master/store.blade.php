@@ -28,6 +28,51 @@
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
         <div class="portlet light bordered">
             <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-map-o font-blue"></i>
+                        <span class="caption-subject font-blue bold uppercase">FILTER STORE</span>
+                    </div>
+                </div>
+
+                <div class="caption padding-caption">
+                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
+                </div>
+
+                <div class="row filter" style="margin-top: 10px;">
+                    <div class="col-md-4">
+                        <select id="filterRegion" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterArea" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterDistrict" class="select2select"></select>
+                    </div>
+                </div>
+
+                <div class="row filter" style="margin-top: 10px;">
+                    <div class="col-md-4">
+                        <select id="filterStore" class="select2select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterGlobalChannel" class="select2select"></select>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="btn-group">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                        <i class="fa fa-refresh"></i> Reset </a>
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                        <i class="fa fa-filter"></i> Filter </a>
+                </div>
+
+                <br><br>
+
+            
+
+            <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-shopping-cart font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">STORE</span>
@@ -42,7 +87,11 @@
                 </div>
                 <div class="actions" style="text-align: left">
                     <a id="export" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
+                    <a id="exportAll" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                 </div>
             </div>
 
@@ -90,10 +139,53 @@
 
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
 <script src="{{ asset('js/handler/relation-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
-    var data = {};
+    var dataAll = {};
+
+    /*
+     *
+     *
+     */
+    var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterGlobalChannel'];
+    var url = 'datatable/store';
+    var order = [ [0, 'desc'] ];
+    var columnDefs = [{"className": "dt-center", "targets": [0]},
+                {"className": "dt-center", "targets": [15]},];
+    var tableColumns = [{data: 'id', name: 'id'},                
+                {data: 'store_id', name: 'store_id'},
+                {data: 'store_name_1', name: 'store_name_1'},
+                {data: 'store_name_2', name: 'store_name_2'},
+                {data: 'region_name', name: 'region_name'},
+                {data: 'area_name', name: 'area_name'},
+                {data: 'district_name', name: 'district_name'},
+                {data: 'globalchannel_name', name: 'globalchannel_name'},
+                {data: 'channel_name', name: 'channel_name'},
+                {data: 'subchannel_name', name: 'subchannel_name'},
+                {data: 'distributor', name: 'distributor'},
+                {data: 'classification_id', name: 'classification_id'},
+                {data: 'longitude', name: 'longitude'},
+                {data: 'latitude', name: 'latitude'},
+                {data: 'address', name: 'address'},
+                {data: 'no_telp_toko', name: 'no_telp_toko'},
+                {data: 'no_telp_pemilik_toko', name: 'no_telp_pemilik_toko'},
+                {data: 'kepemilikan_toko', name: 'kepemilikan_toko'},
+                {data: 'lokasi_toko', name: 'lokasi_toko'},
+                {data: 'tipe_transaksi_2', name: 'tipe_transaksi_2'},
+                {data: 'tipe_transaksi', name: 'tipe_transaksi'},
+                {data: 'kondisi_toko', name: 'kondisi_toko'},
+                {data: 'spv_name', name: 'spv_name'},
+                {data: 'action', name: 'action', searchable: false, sortable: false},
+                        ];
+
+    var exportButton = '#export';
+
+    var paramFilter = ['storeTable', $('#storeTable'), url, tableColumns, columnDefs, order, exportButton];
+
+    var paramReset = [filterId, 'storeTable', $('#storeTable'), url, tableColumns, columnDefs, order, exportButton];
+
     $(document).ready(function () {     
 
         $.ajaxSetup({
@@ -110,7 +202,15 @@
             global: false,
             async: false,
             success: function (results) {
-                data = results;
+                var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
             }
         });
 
@@ -121,6 +221,18 @@
             "ajax": {
                 url: "{{ route('datatable.store') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
             "columns": [
@@ -250,7 +362,136 @@
 
 
         });
+
+        $("#exportAll").click( function(){
+
+            // console.log(dataAll);
+            // console.log(data);
+            // return;
+
+            if ($('#exportAll').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-store-all',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        initSelect2();
+
     });
+
+        function initSelect2(){
+
+            /*
+             * Select 2 init
+             *
+             */
+
+             $('#filterGlobalChannel').select2(setOptions('{{ route("data.globalchannel") }}', 'Global Channel', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterGlobalChannel').on('select2:select', function () {
+                self.selected('byGlobalChannel', $('#filterGlobalChannel').val());
+            });
+
+            $('#filterRegion').select2(setOptions('{{ route("data.region") }}', 'Region', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterRegion').on('select2:select', function () {
+                self.selected('byRegion', $('#filterRegion').val());
+            });
+
+            $('#filterArea').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterArea').on('select2:select', function () {
+                self.selected('byArea', $('#filterArea').val());
+            });
+
+            $('#filterDistrict').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterDistrict').on('select2:select', function () {
+                self.selected('byDistrict', $('#filterDistrict').val());
+            });
+
+            $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
+                return filterData('store', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
+                    })
+                }
+            }));
+            $('#filterStore').on('select2:select', function () {
+                self.selected('byStore', $('#filterStore').val());
+            });
+
+
+
+        }
 
 </script>
 @endsection

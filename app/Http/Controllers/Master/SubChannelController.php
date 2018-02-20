@@ -41,7 +41,9 @@ class SubChannelController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(SubChannelFilters $filters){
-        $data = SubChannel::filter($filters)->get();
+        $data = SubChannel::filter($filters)->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->select('sub_channels.*', 'channels.name as channel_name', 'global_channels.name as globalchannel_name')->get();
 
         return $data;
     }
