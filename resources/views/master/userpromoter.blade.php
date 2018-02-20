@@ -90,11 +90,11 @@
 
                 <br><br>
 
-            </div>
+            <!-- </div> -->
         <!-- END FILTER-->
 
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
-	    <div class="portlet light bordered">
+	    <!-- <div class="portlet light bordered"> -->
 			<div class="portlet-title" >
 				<div class="caption">
 					<i class="fa fa-group font-blue"></i>
@@ -230,6 +230,14 @@
                     url: "{{ route('datatable.userpromoter') }}",
                     type: 'POST',
                     dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
                         this.data = res.data;
                         return res.data;
                     },
@@ -433,7 +441,7 @@
              * Select 2 init
              *
              */
-            $('#filterNik').select2(setOptions('{{ route("data.employee") }}', 'NIK', function (params) {
+            $('#filterNik').select2(setOptions('{{ route("data.groupPromoter") }}', 'NIK', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {
@@ -447,7 +455,7 @@
                 self.selected('byNik', $('#filterNik').val());
             });
 
-            $('#filterName').select2(setOptions('{{ route("data.employee") }}', 'Name', function (params) {
+            $('#filterName').select2(setOptions('{{ route("data.groupPromoter") }}', 'Name', function (params) {
                 return filterData('employee', params.term);
             }, function (data, params) {
                 return {

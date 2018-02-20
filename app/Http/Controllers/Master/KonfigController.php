@@ -163,6 +163,15 @@ class KonfigController extends Controller
                 return "";
             })
             ->addColumn('spv_name', function ($item) {
+                if($item->user->role->role == 'Demonstrator DA'){
+                    $data = SpvDemo::where('store_id', $item->store_id)
+                            ->join('users', 'users.id', 'spv_demos.user_id')
+                            ->select('users.name as spv_name');
+
+                    if($data->count() > 0){
+                        return $data->first()->spv_name;
+                    }
+                }
                 if($item->store->user_id != null){
                     $data = User::where('id', $item->store->user_id)
                                 ->select('users.name as spv_name')->first();

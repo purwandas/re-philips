@@ -361,7 +361,7 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'NAME' => @$item['name'],
-                'REGION ID' => @$item['region_id'],
+                'REGION' => @$item['region_name'],
             ];
         });
     }
@@ -374,7 +374,8 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'NAME' => @$item['name'],
-                'AREA ID' => @$item['area_id'],
+                'AREA' => @$item['area_name'],
+                'REGION' => @$item['region_name'],
             ];
         });
     }
@@ -392,13 +393,49 @@ class ExcelHelper
                 'DEDICATE' => @$item['dedicate'],
                 'LONGITUDE' => @$item['longitude'],
                 'LATITUDE' => @$item['latitude'],
-                // 'CHANNEL' => @$item['channel'],
-                'SUB CHANNEL' => @$item['subchannel_id'],
+                'GLOBAL CHANNEL' => @$item['globalchannel_name'],
+                'CHANNEL' => @$item['channel_name'],
+                'SUB CHANNEL' => @$item['subchannel_name'],
                 'CUSTOMER CODE' => @$item['store_name_2'],
-                'DISTRICT' => @$item['district_id'],
-                'SPV NAME' => @$item['user_id'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
+                'SPV NAME' => @$item['spv_name'],
                 'ADDRESS' => @$item['address'],
-                'CLASSIFICATION' => @$item['classification'],
+                'CLASSIFICATION' => @$item['classification_id'],
+                'NO TELPON TOKO' => @$item['no_telp_toko'],
+                'NO TELPON PEMILIK TOKO' => @$item['no_telp_pemilik_toko'],
+                'KEPEMILIK TOKO' => @$item['kepemilikan_toko'],
+                'KONDISI TOKO' => @$item['kondisi_toko'],
+                'LOKASI TOKO' => @$item['lokasi_toko'],
+                'TIPE TANSAKSI PEMBAYARAN' => @$item['tipe_transaksi'],
+                'TIPE TANSAKSI PEMBELIAN' => @$item['tipe_transaksi_2'],
+            ];
+        });
+    }
+    public function mapForExportStoreAll(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'STORE ID' => @$item['store_id'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'DEDICATE' => @$item['dedicate'],
+                'LONGITUDE' => @$item['longitude'],
+                'LATITUDE' => @$item['latitude'],
+                'GLOBAL CHANNEL' => @$item['globalchannel_name'],
+                'CHANNEL' => @$item['channel_name'],
+                'SUB CHANNEL' => @$item['subchannel_name'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
+                'SPV NAME' => (@$item['spv_name']) ? (@$item['spv_name']) : (@$item['spv_demo']),
+                'ADDRESS' => @$item['address'],
+                'CLASSIFICATION' => @$item['classification_id'],
                 'NO TELPON TOKO' => @$item['no_telp_toko'],
                 'NO TELPON PEMILIK TOKO' => @$item['no_telp_pemilik_toko'],
                 'KEPEMILIK TOKO' => @$item['kepemilikan_toko'],
@@ -417,7 +454,7 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'NAME' => @$item['name'],
-                'GLOBAL CHANNEL ID' => @$item['globalchannel_id'],
+                'GLOBAL CHANNEL' => @$item['globalchannel_name'],
             ];
         });
     }
@@ -429,7 +466,8 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'NAME' => @$item['name'],
-                'CHANNEL ID' => @$item['channel_id'],
+                'CHANNEL' => @$item['channel_name'],
+                'GLOBAL CHANNEL' => @$item['globalchannel_name'],
             ];
         });
     }

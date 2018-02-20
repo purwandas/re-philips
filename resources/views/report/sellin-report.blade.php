@@ -77,7 +77,7 @@
 
             </div>
 
-                <div class="portlet light bordered display-hide" id="dataContent">
+                <div class="portlet light bordered" id="dataContent">
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
@@ -189,7 +189,7 @@
 
         var paramFilter = ['sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton];
 
-        var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton];
 
         $(document).ready(function () {
 
@@ -199,22 +199,38 @@
                 }
             });
 
-            // Set data for Data Table
-            {{--var table = $('#sellInReport').dataTable({--}}
-                {{--"processing": true,--}}
-                {{--"serverSide": true,--}}
-                {{--"ajax": {--}}
-                    {{--url: "{{ route('datatable.sellinreport') }}",--}}
-                    {{--type: 'POST',--}}
-                {{--},--}}
-                {{--"rowId": "id",--}}
-                {{--"columns": tableColumns,--}}
-                {{--"columnDefs": columnDefs,--}}
-                {{--"order": order,--}}
-            {{--});--}}
-
             initSelect2();
             initDateTimePicker();
+
+            // console.log(filters);
+
+            // Set data for Data Table
+            var table = $('#sellInReport').dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "{{ route('datatable.sellinreport') }}",
+                    data: filters,
+                    dataType: 'json',
+                    type: 'POST',
+                    dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
+                },
+                "rowId": "id",
+                "columns": tableColumns,
+                "columnDefs": columnDefs,
+                "order": order,
+            });
 
         });
 
@@ -268,8 +284,11 @@
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
-                    results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                    results: $.map(data, function (obj) {                  
+                        if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
                 }
             }));
@@ -322,7 +341,7 @@
         $("#resetButton").click( function(){
 
             // Hide Table Content
-            $('#dataContent').addClass('display-hide');
+            // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
             $('#filterMonth').val(moment().format('MMMM YYYY'));
@@ -330,12 +349,12 @@
 
         });
 
-        $("#filterButton").click( function(){
+        // $("#filterButton").click( function(){
 
-            // Set Table Content
-            $('#dataContent').removeClass('display-hide');
+        //     // Set Table Content
+        //     $('#dataContent').removeClass('display-hide');
 
-        });
+        // });
 
         $("#export").click( function(){
 
