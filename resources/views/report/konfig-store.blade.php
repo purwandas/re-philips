@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Konfigurasi Promoter Report
-                <small>report konfigurasi promoter</small>
+            <h1>Konfigurasi Store Report
+                <small>report konfigurasi store</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Konfigurasi Promoter Reporting</span>
+            <span class="active">Konfigurasi Store Reporting</span>
         </li>
     </ul>
 @endsection
@@ -76,7 +76,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-map-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Konfigurasi Promoter</span>
+                            <span class="caption-subject font-blue bold uppercase">Konfigurasi Store</span>
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
@@ -186,6 +186,12 @@
                 "ajax": {
                     url: url,
                     type: 'POST',
+                    dataSrc: function (res) {
+                    //     // data = res;
+                    //     // return res.data;
+                        this.data = res.data;
+                        return res.data;
+                    },
                 },
                 "rowId": "id",
                 "columns": tableColumns,

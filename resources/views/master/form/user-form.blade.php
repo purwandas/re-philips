@@ -498,6 +498,7 @@
 
 			$('#dmContent').children('.form-group').removeClass('has-error');
 			$('#rsmContent').children('.form-group').removeClass('has-error');
+			// $('#dedicateContent').children('.form-group').removeClass('has-error');
 
 			$('#dmContent').addClass('display-hide');
 			$('#rsmContent').addClass('display-hide');
@@ -537,7 +538,7 @@
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
 
-				$('#dedicate').attr('required', 'required');
+				// $('#dedicate').attr('required', 'required');
 				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
 				// $('#dedicateContent').removeClass('display-hide');
 			}else{

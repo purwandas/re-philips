@@ -232,6 +232,7 @@ Route::group(['middleware' => ['auth']], function () {
                     // -------- MASTER --------
     Route::post('util/export-area', ['uses'=>'Master\ExportController@exportArea']);
     Route::post('util/export-district', ['uses'=>'Master\ExportController@exportDistrict']);
+    Route::post('util/export-store', ['uses'=>'Master\ExportController@exportStore']);
     Route::post('util/export-channel', ['uses'=>'Master\ExportController@exportChannel']);
     Route::post('util/export-subchannel', ['uses'=>'Master\ExportController@exportSubchannel']);
     Route::post('util/export-distributor', ['uses'=>'Master\ExportController@exportDistributor']);
@@ -249,6 +250,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-posm', ['uses'=>'Master\ExportController@exportPosm']);
     Route::post('util/export-groupcompetitor', ['uses'=>'Master\ExportController@exportGroupCompetitor']);
     Route::post('util/export-messagetoadmin', ['uses'=>'Master\ExportController@exportMessageToAdmin']);
+    Route::post('util/export-konfig-promoter', ['uses'=>'Master\ExportController@exportKonfigPromoter']);
+    Route::post('util/export-konfig-store', ['uses'=>'Master\ExportController@exportKonfigStore']);
 
 
     /**

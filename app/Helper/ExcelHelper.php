@@ -707,4 +707,64 @@ class ExcelHelper
             ];
         });
     }
+    public function mapForExportKonfigPromoter(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NIK' => @$item['nik'],
+                'NAME' => @$item['name'],
+                'GRADING' => @$item['grading'],
+                'ROLE' => @$item['role'],
+                'STATUS' => @$item['status'],
+                'JOIN DATE' => @$item['join_date'],
+                'REGION' => @$item['region'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE ID' => @$item['store_id_gen'],
+                'STORE NAME' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'CLASSIFICATION' => @$item['classification'],
+                'GLOBAL CHANNEL' => @$item['global_channel'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'SUPERVISOR NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+    public function mapForExportKonfigStore(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'STORE ID' => @$item['store_id_gen'],
+                'STORE NAME' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'CLASSIFICATION' => @$item['classification'],
+                'DISTRICT' => @$item['district'],                
+                'AREA' => @$item['area'],
+                'REGION' => @$item['region'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'CHANNEL' => @$item['channel'],
+                'GLOBAL CHANNEL' => @$item['global_channel'],            
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'NIK' => @$item['nik'],
+                'NAME' => @$item['name'],
+                'GRADING' => @$item['grading'],
+                'ROLE' => @$item['role'],
+                'STATUS' => @$item['status'],
+                'JOIN DATE' => @$item['join_date'],
+                'SUPERVISOR NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
 }
