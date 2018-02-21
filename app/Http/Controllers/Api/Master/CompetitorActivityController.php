@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\PromoterTrait;
 use App\CompetitorActivity;
 use App\CompetitorActivityDetail;
 use File;
@@ -19,10 +20,15 @@ class CompetitorActivityController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
 
         if(!isset($request->sku) || $request->sku == null){
             return response()->json(['status' => false, 'message' => 'SKU tidak boleh kosong'], 500);

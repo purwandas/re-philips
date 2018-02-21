@@ -169,7 +169,7 @@
 	        					<p class="help-block"> * Please add "<b> , </b>" to separate certificate &nbsp || &nbsp tolong tambahkan tanda "<b> , </b>" untuk memisahkan certificate </p>
 	                            
 	                          </div>
-	                        </div>   
+	                        </div> 
 
 					        <div class="form-group" style="margin-bottom: 0px;">
 	                            <label class="control-label col-md-2">Status                               
@@ -419,7 +419,14 @@
 			var x = unescape("{{ @$salesmanDedicate->dedicate }}");
 
 			// $( "#statusCheck2" ).prop( "checked", true );
-			$('input:radio[name=status]:nth(0)').attr('checked',true);
+			// var temp = "{{ @$data }}";
+			
+			// if(temp === ""){
+				// console.log('asd');
+				// $('input:radio[name=status]:nth(0)').attr('checked',true);
+				// document.getElementById('statusCheck').checked = true;
+			// }
+			// console.log("{{ @$data }}");
 
 			$.ajaxSetup({
 	        	headers: {
@@ -461,7 +468,10 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
 	            }
 	        }));
@@ -482,7 +492,10 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
 	            }
 	        }));
@@ -647,7 +660,11 @@
 
 
 	                    $.each(data, function() {
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+	                    	if(this.store_name_2 != null){
+                            	setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+                        	}
+
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1);
 						});
 
             	}	

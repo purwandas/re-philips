@@ -18,7 +18,7 @@ class UserFilters extends QueryFilters
     public function employee($value) {
         if(!$this->requestAllData($value)){
         	$this->builder->where(function ($query) use ($value){
-                return $query->where('name', 'like', '%'.$value.'%')->orWhere('nik', 'like', '%'.$value.'%');
+                return $query->where('users.name', 'like', '%'.$value.'%')->orWhere('users.nik', 'like', '%'.$value.'%');
             });
         }
     }
@@ -31,7 +31,7 @@ class UserFilters extends QueryFilters
     /* Ordering data by role group */
     public function roleGroup($value){
         return $this->builder->whereHas('role', function ($query) use ($value) {
-            return $query->where('roles.role_group',$value);
+            return $query->whereIn('roles.role_group',$value);
         });
         // return $this->builder->whereIn('role', $value);
     }

@@ -103,6 +103,12 @@ class AchievementController extends Controller
             }
 
             return Datatables::of($filter)
+                ->editColumn('sell_type',function ($item) {
+                    if ($item->sell_type == 'Sell In') {
+                        $item->sell_type = 'Sell Thru';
+                    }
+                    return $item->sell_type;
+                })
             ->make(true);
 
         }else{ // Fetch data from history
@@ -244,6 +250,12 @@ class AchievementController extends Controller
             }
 
             return Datatables::of($filter->all())
+                ->editColumn('sell_type',function ($item) {
+                    if ($item->sell_type == 'Sell In') {
+                        $item->sell_type = 'Sell Thru';
+                    }
+                    return $item->sell_type;
+                })
             ->make(true);
 
         }

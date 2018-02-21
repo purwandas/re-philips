@@ -40,7 +40,7 @@
                           <div class="col-sm-8">
                             <div class="input-icon right">
                                 <i class="fa"></i>
-                                <input type="text" id="leadtime" name="leadtime" class="form-control" placeholder="Input District Leadtime" />
+                                <input type="text" id="name" name="leadtime" class="form-control" placeholder="Input Leadtime in Days" />
                             </div>
                           </div>
                         </div>

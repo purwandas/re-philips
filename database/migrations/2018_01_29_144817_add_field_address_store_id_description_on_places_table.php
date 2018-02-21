@@ -28,7 +28,9 @@ class AddFieldAddressStoreIdDescriptionOnPlacesTable extends Migration
     public function down()
     {
         Schema::table('places', function (Blueprint $table) {
-            //
+            $table->dropColumn('description');
+            $table->dropColumn('address');
+            $table->dropColumn('store_id');
         });
     }
 }

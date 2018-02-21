@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\ApmTrait;
 use Illuminate\Http\Request;
 use App\User;
 use App\Traits\UploadTrait;
@@ -14,6 +15,7 @@ class ProfileController extends Controller
 {
 	use UploadTrait;
     use StringTrait;
+    use ApmTrait;
     /**
      * Display a listing of the resource.
      *
@@ -93,6 +95,12 @@ class ProfileController extends Controller
             [
                 'url' => url('profile'),
             ]);
+    }
+
+    public function sellin(){
+
+        return $this->getProductTotalCurrent(3388, 1);
+
     }
 
 }

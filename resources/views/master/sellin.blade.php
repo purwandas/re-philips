@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Sell Through
-            <small>manage sell through</small>
+        <h1>Sell Thru
+            <small>manage sell thru</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <span class="active">Sell Through Management</span>
+        <span class="active">Sell Thru Management</span>
     </li>
 </ul>
 @endsection
@@ -82,7 +82,7 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-share-alt font-blue"></i>
-                    <span class="caption-subject font-blue bold uppercase">Sell Through</span>
+                    <span class="caption-subject font-blue bold uppercase">Sell Thru</span>
                 </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
@@ -325,7 +325,10 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
                     })
                 }
             }));

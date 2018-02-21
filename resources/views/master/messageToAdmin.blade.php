@@ -33,38 +33,23 @@
                     <span class="caption-subject font-blue bold uppercase">Message to Admin</span>
                 </div>
             </div>
-            <div class="portlet-body" style="padding: 15px;">
+                <div class="portlet-title">
                 <!-- MAIN CONTENT -->
-
-                <div class="row">
                 @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin')
-                    <!-- <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <a id="add-messageToAdmin" class="btn green" data-toggle="modal" href="#" disabled><i
-                                        class="fa fa-plus"></i> Create Message </a>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
+                    <div class="actions" style="text-align: left">
+                        <a id="export" class="btn green-dark" >
+                            <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                    </div>
                 @else
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <a id="add-messageToAdmin" class="btn green" data-toggle="modal" href="#messageToAdmin" ><i
-                                        class="fa fa-plus"></i> Create Message </a>
+                    <div class="btn-group">
+                        <a id="add-messageToAdmin" class="btn green" data-toggle="modal" href="#messageToAdmin" ><i
+                            class="fa fa-plus"></i> Create Message </a>
 
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 @endif
+                </div>
 
-
-
+                <div class="portlet-body" >
                     <table class="table table-striped table-hover table-bordered" id="messageToAdminTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
@@ -72,7 +57,7 @@
                                 <th> User Mail </th>  
                                 <th> Subject </th>                           
                                 <th> Body </th>
-                                <th> Read </th>
+                                <th> Read By Admin </th>
                                 <!-- <th> Options </th>                         -->
                             </tr>
                         </thead>
@@ -107,6 +92,7 @@
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
+    var data = {};
     /*
      *
      *
@@ -116,6 +102,18 @@
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/messagetoadmin',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                data = results;
             }
         });
 
@@ -228,6 +226,48 @@
         //         });
         // });
 
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-messagetoadmin',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+        });
+
+
     });
 
     // Init add form
@@ -301,6 +341,7 @@
         })
 
         // $('#messageToAdminTable').DataTable().search('').draw();
+        $('#messageToAdminTable').DataTable().ajax.reload();
         $('#messageToAdminTable').DataTable().ajax.reload();
 
         $('#messageToAdminShow').modal('hide');

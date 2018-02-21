@@ -11,6 +11,7 @@ use Auth;
 use App\MaintenanceRequest;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
+use App\Traits\PromoterTrait;
 use DB;
 use File;
 
@@ -18,10 +19,15 @@ class MaintenanceRequestController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store(Request $content){
 
         $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
 
         // Get how many photo
         $photoLength = count($content->photo);

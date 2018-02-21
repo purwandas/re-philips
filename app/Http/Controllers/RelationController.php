@@ -177,7 +177,7 @@ class RelationController extends Controller
 
         if(($request->role != $user->role->role_group) && ($isPromoter == 0)){
 
-            // COUNT IN SELL IN(Sell Through)
+            // COUNT IN SELL IN(Sell Thru)
             $sellInCount = SellIn::where('user_id', $request->employeeId)->count();
             if($sellInCount > 0){
                 $countSales += 1;
@@ -220,7 +220,7 @@ class RelationController extends Controller
 
     public function salesEmployeeRelation($userId){
 
-        // CHECK IN SELL IN(Sell Through)
+        // CHECK IN SELL IN(Sell Thru)
         $sellInCount = SellIn::where('user_id', $userId)->first();
         if($sellInCount){
             return true;
@@ -286,7 +286,7 @@ class RelationController extends Controller
 
     public function salesStoreRelation($storeId){
 
-        // COUNT IN SELL IN(Sell Through)
+        // COUNT IN SELL IN(Sell Thru)
         $sellInCount = SellIn::where('store_id', $storeId)->first();
         if($sellInCount){
             return true;
@@ -535,7 +535,7 @@ class RelationController extends Controller
 
     public function salesProductRelation($productId){
 
-        // COUNT IN SELL IN(Sell Through)
+        // COUNT IN SELL IN(Sell Thru)
         $sellInCount = SellInDetail::where('product_id', $productId)->first();
         if($sellInCount){
             return true;

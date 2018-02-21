@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Distributor;
+use App\SpvDemo;
 use App\StoreDistributor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -37,48 +38,83 @@ class StoreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function masterDataTable(){
+    public function masterDataTable(Request $request){
 
         $data = Store::where('stores.deleted_at', null)
+//                    ->with('storeDistributors.distributor')
         			// ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
            //          ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
            //          ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
+//                    ->join('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
+//                    ->join('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
 //                    ->join('users', 'stores.user_id', '=', 'users.id')
 //                    ->where(function($query) {
 //                        return $query->orWhere('stores.user_id', null);
 //                    })
                     ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
                         // ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name'
-                        )
-                    ->get();
+                        );
+
+
+        $filter = $data;
+
+        /* If filter */
+            if($request['byStore']){
+                $filter = $data->where('id', $request['byStore']);
+            }
+
+            if($request['byRegion']){
+                $filter = $data->whereHas('district.area.region', function($query) use ($request) {
+                    return $query->where('regions.id', $request['byRegion']);
+                });
+            }
+
+            if($request['byArea']){
+                $filter = $data->whereHas('district.area', function($query) use ($request) {
+                    return $query->where('areas.id', $request['byArea']);
+                });
+            }
+
+            if($request['byDistrict']){
+                $filter = $data->whereHas('district', function($query) use ($request) {
+                    return $query->where('districts.id', $request['byDistrict']);
+                });
+            }
+
+            if($request['byGlobalChannel']){
+                $filter = $data->whereHas('subChannel.channel.globalChannel', function($query) use ($request) {
+                    return $query->where('global_channels.id', $request['byGlobalChannel']);
+                });
+            }
+
 
         foreach ($data as $detail){
-            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
-            $dist = Distributor::whereIn('id', $distIds)->get();
-
-            $detail['distributor'] = '';
-            foreach ($dist as $distDetail){
-                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
-
-                if($distDetail->id != $dist->last()->id){
-                    $detail['distributor'] .= ', ';
-                }
-            }
+//            $distIds = StoreDistributor::where('store_id', $detail->id)->pluck('distributor_id');
+//            $dist = Distributor::whereIn('id', $distIds)->get();
+//
+//            $detail['distributor'] = '';
+//            foreach ($dist as $distDetail){
+//                $detail['distributor'] .= '(' . $distDetail->code . ') ' . $distDetail->name;
+//
+//                if($distDetail->id != $dist->last()->id){
+//                    $detail['distributor'] .= ', ';
+//                }
+//            }
         }
 
 //        return response()->json($data);
 
-        return $this->makeTable($data);
+        return $this->makeTable($filter->get());
     }
 
     // Data for select2 with Filters
     public function getDataWithFilters(StoreFilters $filters){
 
         $userRole = Auth::user()->role->role_group;
-        $userId = Auth::user()->id;       
+        $userId = Auth::user()->id;
 
         $data = Store::filter($filters)->groupBy('store_id')->get();
 
@@ -114,7 +150,21 @@ class StoreController extends Controller
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;       
 
-        $data = Store::filter($filters)->get();
+        $data = Store::filter($filters)
+                ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->leftJoin('classifications', 'classifications.id', '=', 'stores.classification_id')
+                    ->leftJoin('users', 'users.id', '=', 'stores.user_id')
+                    ->leftJoin('spv_demos', 'stores.id', '=', 'spv_demos.store_id')
+                    ->leftJoin('users as user2', 'user2.id', '=', 'spv_demos.user_id')
+                    ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
+                        ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'classifications.classification as classification_id', 'users.name as spv_name', 'user2.name as spv_demo'
+                        )
+                ->get();
 
         if ($userRole == 'RSM') {
             $region = RsmRegion::where('rsm_regions.user_id', $userId)
@@ -153,6 +203,15 @@ class StoreController extends Controller
                         $data = User::where('id', $item->user_id)
                                     ->select('users.name as spv_name')->first();
                         return $data->spv_name;
+                    }else{
+                        $data = SpvDemo::where('store_id', $item->id)
+                                ->join('users', 'users.id', 'spv_demos.user_id')
+                                ->select('users.name as spv_name')
+                                ->first();
+
+                        if($data){
+                            return $data->spv_name;
+                        }
                     }
                     return "";
 
@@ -180,6 +239,31 @@ class StoreController extends Controller
                         return $item->classification->classification;
                     }
                     return '';
+                })
+                ->addColumn('distributor', function ($item) {
+//                    return 'ok';
+//                    return $item->storeDistributors()->count();
+//                    if ($item->storeDistributors()->count() > 0) {
+//                        return "(".$item->storeDistributors()->first()->distributor->code.") ".$item->storeDistributors()->first()->distributor->name;
+//                    }
+//                    if($item->storeDistributors){
+//                        if ($item->storeDistributors->count() > 0) {
+//                            return "(".$item->storeDistributors->first->distributor->code.") ".$item->storeDistributors->first->distributor->name;
+//                        }
+//                        return $item->storeDistributors->first()->distributor->name;
+//                    }
+//                    return 'GA ADA';
+
+                    if($item->storeDistributors()->count() > 0){
+                        $data = Distributor::whereHas('storeDistributors', function ($query) use ($item){
+                            return $query->where('store_id', $item->id);
+                        })->first();
+                        if($data){
+                            return "(".$data->code.") ".$data->name;
+                        }
+                        return "";
+                    }
+                    return "";
                 })
                 ->addColumn('action', function ($item) {
 

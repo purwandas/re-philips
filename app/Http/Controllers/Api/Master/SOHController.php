@@ -21,14 +21,21 @@ use App\DmArea;
 use App\User;
 use App\SpvDemo;
 use App\TrainerArea;
+use App\Traits\PromoterTrait;
 use DB;
 
 class SOHController extends Controller
 {
+    use PromoterTrait;
+    
     public function store(Request $request){
 
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
 
         // Check SOH header
         $sohHeader = SOH::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -161,6 +168,7 @@ class SOHController extends Controller
                                     'model' => $product->model . '/' . $product->variants,
                                     'group' => $product->category->group->groupProduct->name,
                                     'category' => $product->category->name,
+                                    'product_id' => $product->id,
                                     'product_name' => $product->name,
                                     'quantity' => $data['quantity'],
                                     'unit_price' => $realPrice,
@@ -301,6 +309,7 @@ class SOHController extends Controller
                                 'model' => $product->model . '/' . $product->variants,
                                 'group' => $product->category->group->groupProduct->name,
                                 'category' => $product->category->name,
+                                'product_id' => $product->id,
                                 'product_name' => $product->name,
                                 'quantity' => $detail->quantity,
                                 'unit_price' => $realPrice,
@@ -321,7 +330,7 @@ class SOHController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $sohHeaderAfter = SOH::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $sohHeaderAfter->id, 'message' => 'Data berhasil di input']);

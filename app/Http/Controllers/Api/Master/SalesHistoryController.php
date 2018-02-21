@@ -54,7 +54,7 @@ class SalesHistoryController extends Controller
             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-        if($param == 1) { /* SELL IN */
+        if($param == 1) { /* SELL IN (SELL THRU) */
 
             $header = SellIn::whereNull('sell_ins.deleted_at')
                     ->where('date','>=',$date1)
@@ -392,9 +392,97 @@ class SalesHistoryController extends Controller
             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-        if($param == 1) { /* SELL IN */
+        if($param == 1) { /* SELL IN (SELL THRU)*/
+
+            $header = SellIn::whereNull('sell_ins.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->whereIn('sell_ins.user_id',$promoter)
+                    ->join('users','users.id','sell_ins.user_id')
+                    ->join('stores','stores.id','sell_ins.store_id')
+                    ->select('sell_ins.id','sell_ins.date as date','stores.store_name_1','stores.store_id')
+                    ->get();
+                foreach ($header as $key => $value) {
+                    $detail = SellInDetail::where('sellin_id', $value->id)
+                    ->join('products','products.id','sell_in_details.product_id')
+                    ->join('categories','categories.id','products.category_id')
+                    ->join('groups','groups.id','categories.group_id')
+                    ->select('sell_in_details.id as detail_id','products.name as product_name','sell_in_details.quantity','products.model','categories.name as category_name','groups.name as group_name','sell_in_details.id as sell_in_detail_id','products.id as product_id', 'sell_in_details.irisan as irisan')
+                    ->get();
+
+                    foreach ($detail as $data){
+                        if($data['irisan'] == 0 || $data['irisan'] == null){
+                            unset($data->irisan);
+                        }else{
+                            $user = User::where('id', $data['irisan'])->first();
+
+                            if($user){
+                                $data['irisan'] = $user;
+                            }else{
+                                $data['irisan'] = 'Promoter not found';
+                            }
+                        }
+                    }
+
+                        $result[$key]['id'] = $value->id;
+                        $result[$key]['date'] = $value->date;
+                        $result[$key]['store_name_1'] = $value->store_name_1;
+                        $result[$key]['store_id'] = $value->store_id;
+                        $result[$key]['detail'] = $detail;
+
+                }
+
+            if (!isset($result)) {
+                return response()->json(['status' => false, 'message' => 'No data found'], 500);
+            }
+
+            return response()->json($result);
 
         } else if($param == 2) { /* SELL OUT */
+
+            $header = SellOut::whereNull('sell_outs.deleted_at')
+                    ->where('date','>=',$date1)
+                    ->where('date','<=',$date2)
+                    ->whereIn('sell_outs.user_id',$promoter)
+                    ->join('users','users.id','sell_outs.user_id')
+                    ->join('stores','stores.id','sell_outs.store_id')
+                    ->select('sell_outs.id','sell_outs.date as date','stores.store_name_1','stores.store_id')
+                    ->get();
+                foreach ($header as $key => $value) {
+                    $detail = SellOutDetail::where('sellout_id', $value->id)
+                    ->join('products','products.id','sell_out_details.product_id')
+                    ->join('categories','categories.id','products.category_id')
+                    ->join('groups','groups.id','categories.group_id')
+                    ->select('sell_out_details.id as detail_id','products.name as product_name','sell_out_details.quantity','products.model','categories.name as category_name','groups.name as group_name','sell_out_details.id as sell_out_details','products.id as product_id', 'sell_out_details.irisan as irisan')
+                    ->get();
+
+                    foreach ($detail as $data){
+                        if($data['irisan'] == 0 || $data['irisan'] == null){
+                            unset($data->irisan);
+                        }else{
+                            $user = User::where('id', $data['irisan'])->first();
+
+                            if($user){
+                                $data['irisan'] = $user;
+                            }else{
+                                $data['irisan'] = 'Promoter not found';
+                            }
+                        }
+                    }
+
+                        $result[$key]['id'] = $value->id;
+                        $result[$key]['date'] = $value->date;
+                        $result[$key]['store_name_1'] = $value->store_name_1;
+                        $result[$key]['store_id'] = $value->store_id;
+                        $result[$key]['detail'] = $detail;
+
+                }
+
+            if (!isset($result)) {
+                return response()->json(['status' => false, 'message' => 'No data found'], 500);
+            }
+
+            return response()->json($result);
 
         } else if($param == 3) { /* RETURN DISTRIBUTOR */
             $header = RetDistributor::whereNull('ret_distributors.deleted_at')

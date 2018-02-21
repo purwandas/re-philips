@@ -21,7 +21,7 @@ class FeedbackCategoryController extends Controller
      */
     public function index()
     {
-        return view('master.feedbackCategory');
+        return view('master.feedbackcategory');
     }
 
     /**
