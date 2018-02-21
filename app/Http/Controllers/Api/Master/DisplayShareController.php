@@ -21,14 +21,21 @@ use App\DmArea;
 use App\User;
 use App\SpvDemo;
 use App\TrainerArea;
+use App\Traits\PromoterTrait;
 use DB;
 
 class DisplayShareController extends Controller
 {
+    use PromoterTrait;
+
     public function store(Request $request){
 
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
 
         // Check Display Share header
         $displayShareHeader = DisplayShare::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -300,7 +307,7 @@ class DisplayShareController extends Controller
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                 }
 
-                // Check sell in(Sell Through) header after insert
+                // Check sell in(Sell Thru) header after insert
                 $displayShareHeaderAfter = DisplayShare::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
 
                 return response()->json(['status' => true, 'id_transaksi' => $displayShareHeaderAfter->id, 'message' => 'Data berhasil di input']);

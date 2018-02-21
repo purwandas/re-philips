@@ -44,8 +44,13 @@ class DeleteSalesController extends Controller
     public function delete(Request $request, $param){
 
         $content = json_decode($request->getContent(), true);
+        $user = JWTAuth::parseToken()->authenticate();
 
-        if($param == 1) { // SELL IN (SELL THROUGH)
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
+        if($param == 1) { // SELL IN (SELL THRU)
 
             $dataHeader = SellIn::where('id', $content['id'])->first();
 

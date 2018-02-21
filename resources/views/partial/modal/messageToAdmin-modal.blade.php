@@ -42,7 +42,7 @@
 
                         <div class="form-group" style="padding-top: 15pt;">
                           <div class="col-sm-8 col-sm-offset-3">
-                            <button type="submit" class="btn btn-primary green">Save</button>
+                            <button type="submit" class="btn btn-primary green">Send</button>
                           </div>
                         </div>
 

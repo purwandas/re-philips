@@ -17,11 +17,13 @@ use App\Traits\StringTrait;
 use App\PosmActivity;
 use File;
 use DB;
+use App\Traits\PromoterTrait;
 
 class PosmController extends Controller
 {
     use UploadTrait;
     use StringTrait;
+    use PromoterTrait;
 
     public function store2(Request $request){
 
@@ -144,6 +146,10 @@ class PosmController extends Controller
 //        return response()->json($request->all());
 
         $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
 
         // if(!isset($request->photo)){
         //     return response()->json(['status' => false, 'message' => 'Photo tidak boleh kosong'], 500);

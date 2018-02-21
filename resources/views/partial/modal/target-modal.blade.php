@@ -74,7 +74,7 @@
                           <div class="input-group" style="width: 100%;">
 
                                 <select class="select2select" name="sell_type" id="sell_type" required>
-                                    <option value="Sell In" {{ (@$data->sell_type == 'Sell In') ? "selected" : "" }}>Sell In</option>
+                                    <option value="Sell In" {{ (@$data->sell_type == 'Sell In') ? "selected" : "" }}>Sell Thru</option>
                                     <option value="Sell Out" {{ (@$data->sell_type == 'Sell Out') ? "selected" : "" }}>Sell Out</option>
                                 </select>
 

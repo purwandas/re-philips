@@ -33,23 +33,24 @@
                     <span class="caption-subject font-blue bold uppercase">DISTRIBUTOR</span>
                 </div>
             </div>
-            <div class="portlet-body" style="padding: 15px;">
-                <!-- MAIN CONTENT -->
+            <div class="portlet-title">
+            <!-- MAIN CONTENT -->
+                <div class="btn-group">
+                    <a id="add-distributor" class="btn green" data-toggle="modal" href="#distributor"><i
+                        class="fa fa-plus"></i> Add Distributor </a>
 
-                <div class="row">
+                </div>
+                <div class="actions" style="text-align: left">
+                    <a id="export" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
+                    <a id="exportAll" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                </div>
+            </div>
 
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <a id="add-distributor" class="btn green" data-toggle="modal" href="#distributor"><i
-                                        class="fa fa-plus"></i> Add Distributor </a>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+            <div class="portlet-body" >
                     <table class="table table-striped table-hover table-bordered" id="distributorTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
@@ -61,12 +62,11 @@
                         </thead>
                     </table>
 
-                </div>
-
-                @include('partial.modal.distributor-modal')
-
-                <!-- END MAIN CONTENT -->
             </div>
+
+            @include('partial.modal.distributor-modal')
+
+            <!-- END MAIN CONTENT -->
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->
     </div>
@@ -86,6 +86,8 @@
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
+
+    var dataAll = {};
     /*
      *
      *
@@ -98,6 +100,26 @@
             }
         });
 
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/distributor',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+               var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
+            }
+        });
+
         // Set data for Data Table
         var table = $('#distributorTable').dataTable({
             "processing": true,
@@ -105,6 +127,18 @@
             "ajax": {
                 url: "{{ route('datatable.distributor') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
             "columns": [
@@ -167,6 +201,92 @@
                         swal("Cancelled", "Data is safe ", "success");
                     }
                 });
+        });
+
+        $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-distributor',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+
+            if ($('#exportAll').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-distributor',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
         });
 
     });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Store;
+use App\SpvDemo;
 use App\TrainerArea;
 use App\User;
 use App\RsmRegion;
@@ -60,19 +61,21 @@ class UserPromoterController extends Controller
 
 //        $data = User::all();
 
+
+
         $filter = $data;
 
         /* If filter */
             if($request['byName']){
-                $filter = $data->where('users.id', $request['byName']);
+                $filter = $filter->where('users.id', $request['byName']);
             }
 
             if($request['byNik']){
-                $filter = $data->where('users.id', $request['byNik']);
+                $filter = $filter->where('users.id', $request['byNik']);
             }
 
             if($request['byRole']){
-                $filter = $data->where('role', $request['byRole']);
+                $filter = $filter->where('role', $request['byRole']);
             }
 
         return Datatables::of($filter->get())
@@ -93,9 +96,16 @@ class UserPromoterController extends Controller
                 })
                 ->addColumn('action', function ($item) {
 
+                    if ( $item->hp_id == null) {
                     return 
-                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>";
-                    // <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>";
+                    } else {
+                    return 
+                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    <button class='btn btn-success btn-sm openAccessButton' data-toggle='confirmation' data-singleton='true' title='Open access new Phone' value='".$item->id." '><i class='fa fa-unlock'></i></button>";
+                    }
+                                        // <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     
                 })
                 ->addColumn('store', function ($item) {
@@ -111,6 +121,34 @@ class UserPromoterController extends Controller
 
                 })
                 ->addColumn('supervisor', function ($item) {
+                    if($item->role == 'Demonstrator DA'){
+                        $storeIds = EmployeeStore::
+                                        with('store.user')
+                                        // ->distinct('store.user.name')
+                                        ->where('user_id', $item->id)
+                                        // ->groupBy('user_id')
+                                        ->pluck('store_id');
+
+                                        // return $storeIds;
+
+                        $spvDemoIds = SpvDemo::whereIn('store_id', $storeIds)->pluck('user_id')->toArray();
+                        $newSpvDemoIds = array_unique($spvDemoIds);
+
+                        $spvDemo = '';
+
+                        if(count($newSpvDemoIds) > 0){
+                            foreach ($newSpvDemoIds as $key => $value){
+                                $user = User::where('id', $value)->first()->name;
+
+                                if ($key > 0) {
+                                    $spvDemo .= ', ';
+                                }
+                                $spvDemo .= $user;
+                            }
+                        }
+
+                        return $spvDemo;
+                    }
                     $storeIds = EmployeeStore::
                                         with('store.user')
                                         // ->distinct('store.user.name')
@@ -195,6 +233,12 @@ class UserPromoterController extends Controller
         $data = User::filter($filters)
                 ->join('roles','roles.id','users.role_id')
                 ->whereIn('roles.role_group',$roles)->get();
+
+        $data = User::filter($filters)
+            ->join('roles','roles.id','users.role_id')
+            ->leftJoin('gradings','gradings.id','users.grading_id')
+            ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->whereIn('role_group',$roles)->get();
 
         return $data;
     }
@@ -594,6 +638,21 @@ class UserPromoterController extends Controller
                 'method' => $request->_method
             ]);
     }
+
+    // update new phone for user
+    public function updatehp($id)
+    {   
+        $user = User::find($id);            
+        $user->update([
+            'status_login' => null,
+            'hp_id' => null,
+            'jenis_hp' => null,
+            ]);
+
+        return response()->json($id);
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *

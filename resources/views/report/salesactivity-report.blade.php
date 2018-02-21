@@ -59,7 +59,7 @@
                     <div class="col-md-4">
                         <select id="filterSellTyppe" class="select2select">
                             <option></option>
-                            <option value="Sell In">Sell In</option>
+                            <option value="Sell In">Sell Thru</option>
                             <option value="Sell Out">Sell Out</option>
                         </select>
                     </div>
@@ -287,7 +287,10 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
                 }
             }));

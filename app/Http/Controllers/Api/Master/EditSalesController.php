@@ -49,9 +49,13 @@ class EditSalesController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
 //        return $content;
 
-        if($param == 1) { // SELL IN(SELL THROUGH)
+        if($param == 1) { // SELL IN(SELL THRU)
 
             $dataHeader = SellIn::where('id', $content['id'])->first();
 

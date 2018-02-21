@@ -190,8 +190,8 @@ var FormValidation = function () {
                                 titleMsg = "Update!";
                                 textMsg = 'Data has been updated!';
                             }else{
-                                titleMsg = "Insert!";
-                                textMsg = 'Data has been created!';
+                                titleMsg = "Send!";
+                                textMsg = 'Message has been send!';
                             }
 
                             swal({

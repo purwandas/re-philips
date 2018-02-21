@@ -66,6 +66,13 @@ class PriceController extends Controller
     public function makeTable($data){
 
            return Datatables::of($data)
+                ->editColumn('sell_type',function ($item) {
+                    
+                    if ($item->sell_type == 'Sell In') {
+                        $item->sell_type = 'Sell Thru';
+                    }
+                    return $item->sell_type;
+                })
            		->addColumn('action', function ($item) {
 
                    return
@@ -73,7 +80,7 @@ class PriceController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['sell_type','action'])
                 ->make(true);
 
     }

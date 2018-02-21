@@ -91,7 +91,7 @@ class LeadtimeController extends Controller
 
         $leadtime = Leadtime::where('area_id', $request['area_id']);
 
-        if($leadtime->count() < 0){
+        if($leadtime->count() == 0){
 
             Leadtime::create($request->all());
 
@@ -147,7 +147,7 @@ class LeadtimeController extends Controller
 
         $leadtime = Leadtime::where('area_id', $request['area_id']);
 
-        if($leadtime->count() < 0){
+        if($leadtime->count() == 0){
 
             Leadtime::find($id)->update($request->all());
 
