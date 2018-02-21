@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Master;
 use App\Apm;
 use App\EmployeeStore;
 use App\Leadtime;
+use App\SpvDemo;
 use App\Product;
 use App\Soh;
 use App\Store;
@@ -145,6 +146,17 @@ class SuggestionOrderController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $empStoreIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
+
+        if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid'){
+
+            $empStoreIds = Store::where('user_id', $user->id)->pluck('id');
+
+            $spvDemo = SpvDemo::where('user_id', $user->id)->first();
+            if($spvDemo){
+                $empStoreIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+            }
+
+        }
 
         $stores = Store::whereIn('id', $empStoreIds)
                     ->select('id', 'store_id', 'store_name_1', 'store_name_2')

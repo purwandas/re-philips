@@ -264,7 +264,7 @@
 
 	                          <div class="input-group" style="width: 100%;">
 	     
-	                                <select class="select2select" name="area" id="area"></select>
+	                                <select class="select2select" name="area[]" id="area" multiple="multiple"></select>
 	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
@@ -291,7 +291,7 @@
 
 	                          <div class="input-group" style="width: 100%;">
 	     
-	                                <select class="select2select" name="region" id="region"></select>
+	                                <select class="select2select" name="region[]" id="region" multiple="multiple"></select>
 	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
@@ -536,8 +536,9 @@
 
 			if(role[1] == 'DM'){
 				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
-				setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
+				updateArea();
+				// setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
 
@@ -550,14 +551,16 @@
 
 			if(role[1] == 'Trainer'){
 				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
+				// setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
+				updateAreaTrainer();
 				document.getElementById('areaTitle').innerHTML = "TRAINER AREA";
 				$('#dmContent').removeClass('display-hide');
 			}
 
 			if(role[1] == 'RSM'){
 				$('#region').attr('required', 'required');
-				setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
+				// setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
+				updateRegion();
 				$('#rsmContent').removeClass('display-hide');
 			}
 
@@ -738,6 +741,51 @@
             );
 
         }
+
+        function updateRegion(){
+			var getDataUrl = "{{ url('util/rsmregion/') }}";
+                    // console.log(status);
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+		                 $.each(data, function() {
+							setSelect2IfPatch($("#region"), this.id, this.name);
+						});
+
+            	}	
+
+        	})
+		}
+
+		function updateArea(){
+			var getDataUrl = "{{ url('util/dmarea/') }}";
+                    // console.log(status);
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+		                 $.each(data, function() {
+							setSelect2IfPatch($("#area"), this.id, this.name);
+						});
+
+            	}	
+
+        	})
+		}
+
+		function updateAreaTrainer(){
+			var getDataUrl = "{{ url('util/trainerarea/') }}";
+                    // console.log(status);
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+		                 $.each(data, function() {
+							setSelect2IfPatch($("#area"), this.id, this.name);
+						});
+
+            	}	
+
+        	})
+		}
 
 		/*
 		 * Select2 change

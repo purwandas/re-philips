@@ -8,6 +8,7 @@ use DB;
 use App\Store;
 use App\TrainerArea;
 use App\User;
+use App\Area;
 use App\SpvDemo;
 use App\RsmRegion;
 use App\DmArea;
@@ -97,9 +98,42 @@ class UserController extends Controller
                 ->addColumn('area', function ($item) {
                     
                     if($item->role_group == 'DM') {
-                        $area = DmArea::where('user_id', $item->id)->first();
+                        $areaIds = DmArea::where('user_id', $item->id)->pluck('area_id');
+                        $areas = Area::whereIn('id', $areaIds)->get();
+                        $area='';
+                        $count = 0;
+                            foreach ($areas as $key => $value) {
+                                if ($key == 0) {
+                                    $area = $value->name;
+                                }else{
+                                    $area .= ", ".$value->name;
+                                }
+                                $count++;
+                                if($count == 3){
+                                    $area.=" ...";
+                                    break;
+                                }
+                            }
+                        return $area;
                     }elseif($item->role_group == 'Trainer') {
-                        $area = TrainerArea::where('user_id', $item->id)->first();
+                        // $area = TrainerArea::where('user_id', $item->id)->first();
+                        $areaIds = TrainerArea::where('user_id', $item->id)->pluck('area_id');
+                        $areas = Area::whereIn('id', $areaIds)->get();
+                        $area='';
+                        $count = 0;
+                            foreach ($areas as $key => $value) {
+                                if ($key == 0) {
+                                    $area = $value->name;
+                                }else{
+                                    $area .= ", ".$value->name;
+                                }
+                                $count++;
+                                if($count == 3){
+                                    $area.=" ...";
+                                    break;
+                                }
+                            }
+                        return $area;
                     }elseif($item->role_group == 'Supervisor' || $item->role_group == 'Supervisor Hybrid') {
                         $store = Store::where('user_id', $item->id)
                                 ->join('districts','districts.id','stores.district_id')
@@ -296,7 +330,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-//        return response()->json($request->all());
+       // return response()->json($request->all());
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
@@ -724,14 +758,25 @@ class UserController extends Controller
         // If DM or Trainer
         if(isset($request->area)){
             if($request['selectedRole'] == 'DM') {
-                $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                // $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
+                for($i=0;$i<=count($request->area);$i++){
+                    $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
+                }
             }elseif($request['selectedRole'] == 'Trainer') {
-                $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                // $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                for($i=0;$i<=count($request->area);$i++){
+                    $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
+                }
             }
         }
         // If RSM
         if(isset($request->region)){
-            $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+            for($i=0;$i<=count($request->region);$i++){
+                $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region[$i]]);
+            }
+            // foreach ($request['region'] as $regionId) {
+                
+            // }
         }
 
         if($request->photo_file != null){
@@ -1315,21 +1360,28 @@ class UserController extends Controller
         if($request->area){
             
             if($request['selectedRole'] == 'DM') {
-                $dmArea = DmArea::where('user_id', $user->id);
-                if($dmArea->count() > 0){
-                    $dmArea->first()->update(['area_id' => $request->area]);
-                    // $dmArea->first()->update(['dedicate' => $request->dedicate]);
-                }else{
-                    DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 
-                        // 'dedicate' => $request->dedicate
-                        ]);
+                for($i=0;$i<=count($request->area);$i++){
+                    $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
                 }
+
+                // $dmArea = DmArea::where('user_id', $user->id);
+                // if($dmArea->count() > 0){
+                //     $dmArea->first()->update(['area_id' => $request->area]);
+                //     // $dmArea->first()->update(['dedicate' => $request->dedicate]);
+                // }else{
+                //     DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 
+                //         // 'dedicate' => $request->dedicate
+                //         ]);
+                // }
             }elseif($request['selectedRole'] == 'Trainer') {
-                $trainerArea = TrainerArea::where('user_id', $user->id);
-                if($trainerArea->count() > 0){
-                    $trainerArea->first()->update(['area_id' => $request->area]);
-                }else{
-                    TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                // $trainerArea = TrainerArea::where('user_id', $user->id);
+                // if($trainerArea->count() > 0){
+                //     $trainerArea->first()->update(['area_id' => $request->area]);
+                // }else{
+                //     TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
+                // }
+                for($i=0;$i<=count($request->area);$i++){
+                    $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
                 }
             }
 
@@ -1337,13 +1389,17 @@ class UserController extends Controller
         }
         // If RSM
         if($request->region){
-            $rsmRegion = RsmRegion::where('user_id', $user->id);
-        
-            if($rsmRegion->count() > 0){
-                $rsmRegion->first()->update(['region_id' => $request->region]);
-            }else{
-                RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+            for($i=0;$i<=count($request->region);$i++){
+                $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region[$i]]);
             }
+
+            // $rsmRegion = RsmRegion::where('user_id', $user->id);
+        
+            // if($rsmRegion->count() > 0){
+            //     $rsmRegion->first()->update(['region_id' => $request->region]);
+            // }else{
+            //     RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region]);
+            // }
         }
 
         if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
