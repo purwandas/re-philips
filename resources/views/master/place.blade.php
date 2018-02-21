@@ -84,7 +84,7 @@
 
 <script>
 
-    var data = {};
+    var dataAll = {};
     /*
      * PLACE
      *

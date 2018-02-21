@@ -207,6 +207,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/attendancedetail/{id}', ['uses'=>'UtilController@getAttendanceDetail']);
     Route::get('util/historyempstore/{id}', ['uses'=>'UtilController@getHistoryStoreForEmployee']);
     Route::get('util/target/{id}', ['uses'=>'UtilController@getTargetQuiz']);
+    Route::get('util/rsmregion/{id}', ['uses'=>'UtilController@getRegionForRSM']);
+    Route::get('util/dmarea/{id}', ['uses'=>'UtilController@getAreaForDM']);
+    Route::get('util/trainerarea/{id}', ['uses'=>'UtilController@getAreaForTrainer']);
 
     /**
      * Export
