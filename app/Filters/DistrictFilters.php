@@ -12,7 +12,7 @@ class DistrictFilters extends QueryFilters
      * Ordering data by name
      */
     public function name($value) {
-        return (!$this->requestAllData($value)) ? $this->builder->where('name', 'like', '%'.$value.'%') : null;
+        return (!$this->requestAllData($value)) ? $this->builder->where('districts.name', 'like', '%'.$value.'%') : null;
     }
 
     // Order by region
