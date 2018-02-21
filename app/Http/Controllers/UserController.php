@@ -759,19 +759,19 @@ class UserController extends Controller
         if(isset($request->area)){
             if($request['selectedRole'] == 'DM') {
                 // $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area, 'dedicate' => $request->dedicate]);
-                for($i=0;$i<=count($request->area);$i++){
+                for($i=0;$i<=(count($request->area)-1);$i++){
                     $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
                 }
             }elseif($request['selectedRole'] == 'Trainer') {
                 // $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
-                for($i=0;$i<=count($request->area);$i++){
+                for($i=0;$i<=(count($request->area)-1);$i++){
                     $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
                 }
             }
         }
         // If RSM
         if(isset($request->region)){
-            for($i=0;$i<=count($request->region);$i++){
+            for($i=0;$i<=(count($request->region)-1);$i++){
                 $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region[$i]]);
             }
             // foreach ($request['region'] as $regionId) {
@@ -858,6 +858,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        // $s = '';
+        // for($i=0;$i<=count($request->area);$i++){
+        //             // $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
+        //     $s .= 'A';
+        //         }
+
+        //         return response()->json($s);
+
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users'. ($id ? ",id,$id" : ''),
@@ -1360,7 +1369,7 @@ class UserController extends Controller
         if($request->area){
             
             if($request['selectedRole'] == 'DM') {
-                for($i=0;$i<=count($request->area);$i++){
+                for($i=0;$i<=(count($request->area)-1);$i++){
                     $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
                 }
 
@@ -1380,7 +1389,7 @@ class UserController extends Controller
                 // }else{
                 //     TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area]);
                 // }
-                for($i=0;$i<=count($request->area);$i++){
+                for($i=0;$i<=(count($request->area)-1);$i++){
                     $trainerArea = TrainerArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
                 }
             }
@@ -1389,7 +1398,7 @@ class UserController extends Controller
         }
         // If RSM
         if($request->region){
-            for($i=0;$i<=count($request->region);$i++){
+            for($i=0;$i<=(count($request->region)-1);$i++){
                 $rsmRegion = RsmRegion::create(['user_id' => $user->id, 'region_id' => $request->region[$i]]);
             }
 
