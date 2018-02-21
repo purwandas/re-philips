@@ -31,7 +31,7 @@ class UserFilters extends QueryFilters
     /* Ordering data by role group */
     public function roleGroup($value){
         return $this->builder->whereHas('role', function ($query) use ($value) {
-            return $query->where('roles.role_group',$value);
+            return $query->whereIn('roles.role_group',$value);
         });
         // return $this->builder->whereIn('role', $value);
     }
