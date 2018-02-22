@@ -111,17 +111,17 @@ trait ApmTrait {
 
         /* Same Dividing = 3 */
 
-        // if($apm){
+        if($apm){
 
-        //     foreach ($apm as $data){
+            foreach ($apm as $data){
 
-        //         $totalValue += ($data->month_minus_3_value + $data->month_minus_2_value + $data->month_minus_1_value) / 3;
+                $totalValue += ($data->month_minus_3_value + $data->month_minus_2_value + $data->month_minus_1_value) / 3;
 
-        //     }
+            }
 
-        // }
+        }
 
-        // return $totalValue;
+        return $totalValue;
 
         /* Different Dividing */
 
@@ -156,13 +156,13 @@ trait ApmTrait {
 
         /* Same Dividing = 3 */
 
-        // if($apm) {
+        if($apm) {
 
-        //     $totalValue = ($apm->month_minus_3_value + $apm->month_minus_2_value + $apm->month_minus_1_value) / 3;
+            $totalValue = ($apm->month_minus_3_value + $apm->month_minus_2_value + $apm->month_minus_1_value) / 3;
 
-        // }
+        }
 
-        // return $totalValue;
+        return $totalValue;
 
         /* Different Dividing */
 
