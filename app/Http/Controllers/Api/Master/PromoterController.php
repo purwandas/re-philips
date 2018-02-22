@@ -32,7 +32,7 @@ class PromoterController extends Controller
 
         if(count($spvDemoIds) > 0){
             $storeIds = $spvDemoIds;
-        }
+        }        
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
