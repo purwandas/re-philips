@@ -63,7 +63,7 @@ class StoreController extends Controller
 
         /* If filter */
             if($request['byStore']){
-                $filter = $data->where('id', $request['byStore']);
+                $filter = $data->where('stores.id', $request['byStore']);
             }
 
             if($request['byRegion']){
