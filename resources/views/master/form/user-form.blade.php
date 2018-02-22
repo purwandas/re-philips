@@ -432,7 +432,7 @@
 	            }
 	        }));
 
-	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
@@ -454,7 +454,8 @@
 		        	if (statusSpv == "Demonstrator") {
 		        		filters['byDedicateSpv'] = "DA";
 		        	}else{
-		        		delete filters['byDedicateSpv'];
+		        		filters['byDedicateSpv'] = $('#dedicate').val();
+		        		console.log("tes: "+$('#dedicate').val());
 		        	}
 		        }
 	            return filterData('store', params.term);
