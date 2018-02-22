@@ -198,7 +198,7 @@ trait ApmTrait {
             }
         }
 
-        $targets = Target::where('store_id', $storeId)->where('sell_type', $sellType)->get();
+        $targets = Target::where('store_id', $storeId)->where('sell_type', $sellType)->where('partner', 0)->get();
 
         foreach ($targets as $target){
 
