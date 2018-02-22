@@ -227,7 +227,7 @@ class UtilController extends Controller
     }
 
     public function getUser($id){
-        $data = User::find($id);
+        $data = User::with('role')->where('id', $id)->first();
         return response()->json($data);
     }
 
