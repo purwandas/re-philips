@@ -193,7 +193,7 @@ trait ApmTrait {
 
         $globalChannel = Store::where('id', $storeId)->first();
         if($globalChannel){
-            if($globalChannel->subChannel()->channel()->globalChannel() == 'MR' || $globalChannel->subChannel()->channel()->globalChannel() == 'Modern Retail'){
+            if($globalChannel->subChannel->channel->globalChannel->name == 'MR' || $globalChannel->subChannel->channel->globalChannel->name == 'Modern Retail'){
                 $sellType = 'Sell Out';                
             }
         }
