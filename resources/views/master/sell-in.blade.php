@@ -64,7 +64,6 @@
                                 <th> Product </th>
                                 <th> Quantity </th>
                                 <th> Input Time </th>
-                                <th> Options </th>                        
                             </tr>
                         </thead>
                     </table>                 
@@ -111,7 +110,12 @@
         });
 
         // Set data for Data Table
+        var draw = function () {
+            console.log( 'Table redrawn '+new Date() );
+        };
+
         var table = $('#sellInTable').dataTable({
+            "drawCallback": draw,
             "processing": true,
             "serverSide": true,           
             "ajax": {
@@ -127,22 +131,11 @@
                 {data: 'product', name: 'product'},
                 {data: 'quantity', name: 'quantity'},
                 {data: 'created_at', name: 'created_at'},
-                {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [3]},
-                {"className": "dt-center", "targets": [7]},
             ],
-            // createdRow: function( row, data, dataIndex ) {
-            //         // Set the data-status attribute, and add a class
-            //         $( row )
-            //             .attr('data-id',data.id)
-            //             .attr('data-toggle','modal')
-            //             .attr('data-target','#area')
-            //             .attr('style','cursor:pointer')
-            //             .addClass('clickable-row');
-            //     },
             "order": [ [0, 'desc'] ],
         });
 
@@ -223,36 +216,6 @@
     });
 
 
-    // For editing data
-    // $(document).on("click", ".edit-area", function () {
-
-    //     resetValidation();       
-        
-    //     var modalTitle = document.getElementById('title');
-    //     modalTitle.innerHTML = "EDIT";
-
-    //     var id = $(this).data('id');
-    //     var getDataUrl = "{{ url('area/edit/') }}";
-    //     var postDataUrl = "{{ url('area') }}"+"/"+id;        
-
-    //     // Set action url form for update        
-    //     $("#form_area").attr("action", postDataUrl);
-
-    //     // Set Patch Method
-    //     if(!$('input[name=_method]').length){
-    //         $("#form_area").append("<input type='hidden' name='_method' value='PATCH'>");
-    //     }
-
-    //     $.get(getDataUrl + '/' + id, function (data) {
-
-    //                 $('#name').val(data.name);
-
-    //                 setSelect2IfPatchModal($("#region"), data.region_id, data.region.name);
-
-    //     })
-
-    // });
-
     function initSelect2SellIn(){
 
         /*
@@ -270,7 +233,7 @@
             }
         }));
 
-        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+        $('#store_id').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
