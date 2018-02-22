@@ -189,7 +189,7 @@
 	                            </div>
 	                        </div>
 
-	                        <div class="form-group">
+	                        <div class="form-group" id="dedicatePromoter">
 	                            <label class="control-label col-md-2">
 	                            Dedicate                     
 	                            </label>
@@ -199,17 +199,13 @@
                                         <select class="select2select" name="dedicate" id="dedicate" required>
                                         	<option></option>
 											<option value="DA" 
-												{{ (@$data->dedicate == 'DA') ? "selected" : "" }}>
-											DA</option>
+												{{ (@$data->dedicate == 'DA') ? "selected" : "" }}>DA</option>
 											<option value="PC" 
-												{{ (@$data->dedicate == 'PC') ? "selected" : "" }}>
-											PC</option>
+												{{ (@$data->dedicate == 'PC') ? "selected" : "" }}>PC</option>
 											<option value="MCC" 
-												{{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>
-											MCC</option>
+												{{ (@$data->dedicate == 'MCC') ? "selected" : "" }}>MCC</option>
 											<option value="HYBRID" 
-												{{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>
-											HYBRID</option>
+												{{ (@$data->dedicate == 'HYBRID') ? "selected" : "" }}>HYBRID</option>
 		                                </select>
                                         <span></span>
 	                                </div>
@@ -461,8 +457,14 @@
 	        	role = role.split('`');
 	            if(role[1] != 'Salesman Explorer')
 	            {
-            		// filters['byDedicate'] = $('#dedicate').val();
-            		filters['byDedicateSpv'] = $('#dedicate').val();
+            		if (role[1] == 'Demonstrator DA') {
+	        			console.log('DA Multi');
+	        			delete filters['byDedicatePromoter'];
+	        			filters['byDedicates'] = ['DA', 'HYBRID'];
+	        		}else{
+	        			delete filters['byDedicates'];
+	        			filters['byDedicatePromoter'] = $('#dedicate').val();
+	        		}
 	        	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
@@ -485,8 +487,15 @@
 		        }
 		        if(role[1] != 'Salesman Explorer')
 		        {
-	        		// filters['byDedicate'] = $('#dedicate').val();
-	        		filters['byDedicateSpv'] = $('#dedicate').val();
+	        		if (role[1] == 'Demonstrator DA') {
+	        			console.log('DA Multi');
+	        			delete filters['byDedicatePromoter'];
+	        			filters['byDedicates'] = ['DA', 'HYBRID'];
+	        		}else{
+	        			delete filters['byDedicates'];
+	        			filters['byDedicatePromoter'] = $('#dedicate').val();
+	        		}
+	        		
 		    	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
@@ -541,7 +550,6 @@
 
 
             setForm($('#selectedRole').val());		  	
-
 		});
 
 		// Reset form
@@ -577,13 +585,11 @@
 			resetForm();
 			resetStore();
 
-
 			role = role.split('`');
 
 			if(!checkPromoter()){
 				$('input[type=radio][name=status]').prop('checked', false);
 			}
-
 			if(checkPromoter()){
 				$('#statusCheck').attr('required', 'required');
 
@@ -592,24 +598,42 @@
 					status = 'mobile';
 				    $('#multipleStoreContent').removeClass('display-hide');
 				    $('#statusContentSalesman').removeClass('display-hide');
-				    $('#storeContent').removeClass('display-hide');				
+				    $('#storeContent').removeClass('display-hide');
 		            $('#stores').attr('required', 'required');
 					$('#dedicate').prop('required',false);
 				}else{
+					if(role[1] != 'Demonstrator DA'){
+						$('#statusContent').removeClass('display-hide');
+						$('#storeContent').removeClass('display-hide');
+						$('#dedicate').prop('required',true);
+						if (status == 'mobile') {
+							$('#multipleStoreContent').removeClass('display-hide');
+						}else{
+							$('#oneStoreContent').removeClass('display-hide');
+						}
+					}
+				}
+
+				//Set Store
+		    	setStore(status);
+		    	if(role[1] == 'Demonstrator DA'){
+		    		if($('input[name=_method]').val() != "PATCH"){
+			    		$('#storeContent').addClass('display-hide');
+			    		// console.log('ADD');
+					}
 					$('#statusContent').removeClass('display-hide');
-					$('#storeContent').removeClass('display-hide');
-					$('#dedicate').prop('required',true);
-					
+					$("#dedicate").removeAttr("required");
+					$('#dedicatePromoter').addClass('display-hide');
+		    		// console.log('Demonstrator DA');
 					if (status == 'mobile') {
 						$('#multipleStoreContent').removeClass('display-hide');
 					}else{
 						$('#oneStoreContent').removeClass('display-hide');
 					}
-					
-				}
-
-				//Set Store
-		    	setStore(status);
+		    	}else{
+		    		$("#dedicate").attr("required");
+		    		$('#dedicatePromoter').removeClass('display-hide');
+		    	}
 			}
 		}
 
@@ -731,8 +755,12 @@
 
 		    // On Change status
 		    $('input[type=radio][name=status]').change(function() {
-		        resetStore();
-		        setStore(this.value);
+		  //   	var role = $("#selectedRole").val();
+		  //   	role = role.split('`');
+				// if(role[1] != 'Demonstrator DA'){
+		    		resetStore();
+			        setStore(this.value);
+		    	// }
 		    });
 
 		    // On Change Role
