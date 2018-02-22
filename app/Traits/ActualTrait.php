@@ -1450,7 +1450,7 @@ trait ActualTrait {
                     $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
 
                     $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
-                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActual : 0;
+                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActualPF : 0;
                     $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
                     $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
 
@@ -1489,7 +1489,7 @@ trait ActualTrait {
                     ]);
                 }else{
                     $sumActualStoreDemo = ($sumActualStoreDemo) ? $sumActualStoreDemo->sum_actual_store_demo - $totalActual : 0;
-                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActual : 0;
+                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActualPF : 0;
 
                     /* Delete Actual Data */
                     $summary_ta->update([
