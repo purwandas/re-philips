@@ -411,7 +411,9 @@
                 var getDataUrl = "{{ url('util/user/') }}";
                 $.get(getDataUrl + '/' + $('#promoter').val(), function (data) {
 
-                    if(data.role == 'Demonstrator DA'){
+                    // console.log(data);
+
+                    if(data.role.role_group == 'Demonstrator DA'){
                         $('#partnerContent').removeClass('display-hide');
                     }else{
                         $('#partnerContent').addClass('display-hide');
