@@ -52,17 +52,19 @@ class SOHController extends Controller
                             if ($sohDetail) { // If data exist -> update
 
                                 $sohDetail->update([
-                                    'quantity' => $sohDetail->quantity + $data['quantity']
+                                    // 'quantity' => $sohDetail->quantity + $data['quantity']
+                                    'quantity' => $data['quantity'],
                                 ]);
 
                                 /** Update Summary **/
 
                                 $summary = SummarySOH::where('soh_detail_id', $sohDetail->id)->first();
 
-                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+                                $value = $data['quantity'] * $summary->unit_price;
 
                                 $summary->update([
-                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    // 'quantity' => $summary->quantity + $data['quantity'],
+                                    'quantity' => $data['quantity'],
                                     'value' => $value,
                                 ]);
 
