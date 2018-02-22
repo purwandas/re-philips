@@ -1733,14 +1733,14 @@ trait ActualTrait {
 
             /* Delete Actual Data */
             $summary_ta->update([
-                'actual_call' => 0,
-                'actual_active_outlet' => 0,
-                'actual_effective_call' => 0,
+                // 'actual_call' => 0,
+                // 'actual_active_outlet' => 0,
+                // 'actual_effective_call' => 0,
                 'actual_sales' => 0,
                 'actual_sales_pf' => 0,
-                'sum_national_actual_call' => $sumNationalActualCall,
-                'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
-                'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
+                // 'sum_national_actual_call' => $sumNationalActualCall,
+                // 'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
+                // 'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
                 'sum_national_actual_sales' => $sumNationalActualSales,
                 'sum_national_actual_sales_pf' => $sumNationalActualSalesPf,
             ]);
@@ -1775,6 +1775,21 @@ trait ActualTrait {
             }
 
             // CALL, EFFECTIVE CALL, ACTIVE OUTLET
+
+            /* Delete Actual Data */
+            $summary_ta->update([
+                'actual_call' => 0,
+                'actual_active_outlet' => 0,
+                'actual_effective_call' => 0,
+                // 'actual_sales' => 0,
+                // 'actual_sales_pf' => 0,
+                'sum_national_actual_call' => $sumNationalActualCall,
+                'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
+                'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
+                // 'sum_national_actual_sales' => $sumNationalActualSales,
+                // 'sum_national_actual_sales_pf' => $sumNationalActualSalesPf,
+            ]);
+
             $storeIds = EmployeeStore::where('user_id', $userId)->pluck('store_id');
             $store = Store::whereIn('id', $storeIds)->get();
 
