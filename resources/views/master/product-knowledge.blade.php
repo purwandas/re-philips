@@ -30,7 +30,7 @@
 			<div class="portlet-title">
 				<div class="caption">
 					<i class="fa fa-edit font-blue"></i>
-					<span class="caption-subject font-blue bold uppercase">GUIDE LINES</span>
+					<span class="caption-subject font-blue bold uppercase">GUIDELINES</span>
 				</div>
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
