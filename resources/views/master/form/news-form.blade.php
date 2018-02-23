@@ -329,7 +329,10 @@
 					var getDataUrl = "{{ url('util/store/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
-					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	if(data.store_name_2 != null){
+					    		setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	}
+					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1);
 					    })
 				    });
 
