@@ -196,6 +196,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('util/spvdemostore/{id}', ['uses'=>'UtilController@getStoreForSpvDemoEmployee']);    
     Route::get('util/storedist/{id}', ['uses'=>'UtilController@getDistributorForStore']);
     Route::get('util/areaapp/{id}', ['uses'=>'UtilController@getAreaApp']);
+    Route::get('util/area/{id}', ['uses'=>'UtilController@getArea']);
     Route::get('util/store/{id}', ['uses'=>'UtilController@getStore']);
     Route::get('util/user/{id}', ['uses'=>'UtilController@getUser']);
     Route::get('util/newsread/{id}', ['uses'=>'UtilController@getNewsRead']);

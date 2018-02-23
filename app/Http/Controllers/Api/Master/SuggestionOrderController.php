@@ -176,15 +176,15 @@ class SuggestionOrderController extends Controller
 
         }
 
-        $store2 = ([
-            'id' => '2000',
-            'store_id' => 'TEST0001',
-            'store_name_1' => 'TOKO TEST',
-            'store_name_2' => 'TOKO TEST',
-            'po_needed' => 0
-        ]);
+        // $store2 = ([
+        //     'id' => '2000',
+        //     'store_id' => 'TEST0001',
+        //     'store_name_1' => 'TOKO TEST',
+        //     'store_name_2' => 'TOKO TEST',
+        //     'po_needed' => 0
+        // ]);
 
-        $stores->push($store2);
+        // $stores->push($store2);
 
         return response()->json($stores);
 

@@ -263,16 +263,16 @@ class ProductKnowledgeController extends Controller
     {
         $data = ProductKnowledge::where('id', $id)->first();
 
-            if ($data->target_type == 'Store') {
-                    $StoreIds = explode(",", $data->target_detail);
+            // if ($data->target_type == 'Store') {
+            //         $StoreIds = explode(",", $data->target_detail);
                 
-                    $data->target_detail = Store::where('stores.deleted_at', null)
-                                ->whereIn('stores.id', $StoreIds)
-                                ->groupBy('store_id')
-                                ->pluck('stores.id')
-                                ->toArray();
-            }
-                $data->target_detail = implode(", ",$data->target_detail);
+            //         $data->target_detail = Store::where('stores.deleted_at', null)
+            //                     ->whereIn('stores.id', $StoreIds)
+            //                     ->groupBy('store_id')
+            //                     ->pluck('stores.id')
+            //                     ->toArray();
+            // }
+            //     $data->target_detail = implode(", ",$data->target_detail);
 
         return view('master.form.product-knowledge-form', compact('data'));
     }
