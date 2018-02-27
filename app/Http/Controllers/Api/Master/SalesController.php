@@ -53,6 +53,10 @@ class SalesController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
         if(!isset($content['irisan'])) { // Set Default Irisan if doesn't exist
             $content['irisan'] = 0;
         }else{
@@ -447,12 +451,12 @@ class SalesController extends Controller
 
                                 $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
-                            $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
-                                if(count($spvDemoName) > 0){
-                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
-                                }
+                            // $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                            //     if(count($spvDemoName) > 0){
+                            //         $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                            //     }
 
-                            $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+                            // $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
 
                             /* Product */
                             $product = Product::with('category.group.groupProduct')

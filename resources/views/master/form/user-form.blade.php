@@ -264,7 +264,7 @@
 
 	                          <div class="input-group" style="width: 100%;">
 	     
-	                                <select class="select2select" name="area" id="area"></select>
+	                                <select class="select2select" name="area[]" id="area" multiple="multiple"></select>
 	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
@@ -291,7 +291,7 @@
 
 	                          <div class="input-group" style="width: 100%;">
 	     
-	                                <select class="select2select" name="region" id="region"></select>
+	                                <select class="select2select" name="region[]" id="region" multiple="multiple"></select>
 	                                
 	                                <span class="input-group-addon display-hide">
 	                                    <i class="fa"></i>
@@ -432,12 +432,15 @@
 	            }
 	        }));
 
-	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
+	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
 	            }
 	        }));
@@ -451,7 +454,8 @@
 		        	if (statusSpv == "Demonstrator") {
 		        		filters['byDedicateSpv'] = "DA";
 		        	}else{
-		        		delete filters['byDedicateSpv'];
+		        		filters['byDedicateSpv'] = $('#dedicate').val();
+		        		console.log("tes: "+$('#dedicate').val());
 		        	}
 		        }
 	            return filterData('store', params.term);
@@ -498,6 +502,7 @@
 
 			$('#dmContent').children('.form-group').removeClass('has-error');
 			$('#rsmContent').children('.form-group').removeClass('has-error');
+			// $('#dedicateContent').children('.form-group').removeClass('has-error');
 
 			$('#dmContent').addClass('display-hide');
 			$('#rsmContent').addClass('display-hide');
@@ -532,12 +537,13 @@
 
 			if(role[1] == 'DM'){
 				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
-				setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
+				updateArea();
+				// setSelect2IfPatch($("#area"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
+				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->dedicate }}", "{{ @$data->dmArea->dedicate }}");
 				document.getElementById('areaTitle').innerHTML = "DM AREA";
 				$('#dmContent').removeClass('display-hide');
 
-				$('#dedicate').attr('required', 'required');
+				// $('#dedicate').attr('required', 'required');
 				// setSelect2IfPatch($("#dedicate"), "{{ @$data->dmArea->area_id }}", "{{ @$data->dmArea->area->name }}");
 				// $('#dedicateContent').removeClass('display-hide');
 			}else{
@@ -546,14 +552,16 @@
 
 			if(role[1] == 'Trainer'){
 				$('#area').attr('required', 'required');
-				setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
+				// setSelect2IfPatch($("#area"), "{{ @$data->trainerArea->area_id }}", "{{ @$data->trainerArea->area->name }}");
+				updateAreaTrainer();
 				document.getElementById('areaTitle').innerHTML = "TRAINER AREA";
 				$('#dmContent').removeClass('display-hide');
 			}
 
 			if(role[1] == 'RSM'){
 				$('#region').attr('required', 'required');
-				setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
+				// setSelect2IfPatch($("#region"), "{{ @$data->rsmRegion->region_id }}", "{{ @$data->rsmRegion->region->name }}");
+				updateRegion();
 				$('#rsmContent').removeClass('display-hide');
 			}
 
@@ -734,6 +742,51 @@
             );
 
         }
+
+        function updateRegion(){
+			var getDataUrl = "{{ url('util/rsmregion/') }}";
+                    // console.log(status);
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+		                 $.each(data, function() {
+							setSelect2IfPatch($("#region"), this.id, this.name);
+						});
+
+            	}	
+
+        	})
+		}
+
+		function updateArea(){
+			var getDataUrl = "{{ url('util/dmarea/') }}";
+                    // console.log(status);
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+		                 $.each(data, function() {
+							setSelect2IfPatch($("#area"), this.id, this.name);
+						});
+
+            	}	
+
+        	})
+		}
+
+		function updateAreaTrainer(){
+			var getDataUrl = "{{ url('util/trainerarea/') }}";
+                    // console.log(status);
+
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if(data){
+		                 $.each(data, function() {
+							setSelect2IfPatch($("#area"), this.id, this.name);
+						});
+
+            	}	
+
+        	})
+		}
 
 		/*
 		 * Select2 change

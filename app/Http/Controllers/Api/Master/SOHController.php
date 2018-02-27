@@ -21,14 +21,21 @@ use App\DmArea;
 use App\User;
 use App\SpvDemo;
 use App\TrainerArea;
+use App\Traits\PromoterTrait;
 use DB;
 
 class SOHController extends Controller
 {
+    use PromoterTrait;
+    
     public function store(Request $request){
 
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
 
         // Check SOH header
         $sohHeader = SOH::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -45,17 +52,19 @@ class SOHController extends Controller
                             if ($sohDetail) { // If data exist -> update
 
                                 $sohDetail->update([
-                                    'quantity' => $sohDetail->quantity + $data['quantity']
+                                    // 'quantity' => $sohDetail->quantity + $data['quantity']
+                                    'quantity' => $data['quantity'],
                                 ]);
 
                                 /** Update Summary **/
 
                                 $summary = SummarySOH::where('soh_detail_id', $sohDetail->id)->first();
 
-                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+                                $value = $data['quantity'] * $summary->unit_price;
 
                                 $summary->update([
-                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    // 'quantity' => $summary->quantity + $data['quantity'],
+                                    'quantity' => $data['quantity'],
                                     'value' => $value,
                                 ]);
 

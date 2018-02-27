@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use App\EmployeeStore;
 use App\Store;
+use App\SpvDemo;
 use Carbon\Carbon;
 use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
@@ -90,7 +91,7 @@ class AuthController extends Controller
             	$channel = '';
             }
 
-            if($channel == 'Traditional Retail'){
+            if($channel == 'TR' || $channel == 'Traditional Retail'){
                 $kpi = 'Sell In';
             }else{
                 $kpi = 'Sell Out';
@@ -99,6 +100,23 @@ class AuthController extends Controller
 
         if($user->role->role_group == 'Salesman Explorer'){
             $kpi = 'Sell In';
+        }
+
+        if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid'){
+        	$spvDemo = SpvDemo::where('user_id', $user->id)->first();
+
+        	if($spvDemo){
+        		$firstStore = Store::where('user_id', $spvDemo->user_id)->first();
+        	}else{
+        		$firstStore = Store::where('user_id', $user->id)->first();
+        	}
+
+        	if($firstStore->subChannel->channel->globalChannel->name == 'TR' || $firstStore->subChannel->channel->globalChannel->name == 'Traditional Retail'){
+                $kpi = 'Sell In';
+            }else{
+                $kpi = 'Sell Out';
+            }
+
         }
 
         if($user->role->role_group == 'Salesman Explorer') $access = "Salesman";

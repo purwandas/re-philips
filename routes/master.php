@@ -301,6 +301,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('salesactivity', 'Master\ReportController@salesActivityIndex');
         Route::get('storelocationactivity', 'Master\ReportController@storeLocationActivityIndex');
         Route::get('konfig-promoter', 'Master\KonfigController@konfigPromoterIndex');
+        Route::get('konfig-store', 'Master\KonfigController@konfigStoreIndex');
 
         /**
          * Salesman Module (Reporting)

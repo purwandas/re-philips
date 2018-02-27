@@ -50,7 +50,10 @@ class AreaController extends Controller
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
-        $data = Area::filter($filters)->get();
+        $data = Area::filter($filters)
+                ->join('regions', 'areas.region_id', '=', 'regions.id')
+                ->select('areas.*', 'regions.name as region_name')
+                ->get();
 
         if ($userRole == 'RSM') {
             $region = RsmRegion::where('user_id', $userId)

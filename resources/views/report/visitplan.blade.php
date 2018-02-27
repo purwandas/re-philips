@@ -174,7 +174,7 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-                        return {id: obj.id, text: obj.nik+' - '+obj.name+' - '+obj.role}
+                        return {id: obj.id, text: obj.nik+' - '+obj.name+' - '+obj.role_group}
                     })
                 }
             }));

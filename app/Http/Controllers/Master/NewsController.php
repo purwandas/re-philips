@@ -145,7 +145,7 @@ class NewsController extends Controller
         $this->validate($request, [
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
-            'filename' => 'required|string|max:255',
+            // 'filename' => 'required|string|max:255',
             ]);  
 
         // Admin
@@ -233,16 +233,20 @@ class NewsController extends Controller
     {
         $data = News::where('id', $id)->first();
 
-            if ($data->target_type == 'Store') {
-                    $StoreIds = explode(",", $data->target_detail);
+        // if ($data->target_type != 'All') {
+
+        //     if ($data->target_type == 'Store') {
+        //             $StoreIds = explode(",", $data->target_detail);
                 
-                    $data->target_detail = Store::where('stores.deleted_at', null)
-                                ->whereIn('stores.id', $StoreIds)
-                                ->groupBy('store_id')
-                                ->pluck('stores.id')
-                                ->toArray();
-            }
-                $data->target_detail = implode(", ",$data->target_detail);
+        //             $data->target_detail = Store::where('stores.deleted_at', null)
+        //                         ->whereIn('stores.id', $StoreIds)
+        //                         ->groupBy('store_id')
+        //                         ->pluck('stores.id')
+        //                         ->toArray();
+        //     }
+        //         $data->target_detail = implode(", ",$data->target_detail);
+
+        // }
 
         return view('master.form.news-form', compact('data'));
     }
@@ -261,7 +265,7 @@ class NewsController extends Controller
         $this->validate($request, [
             'from' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
-            'filename' => 'required|string|max:255',
+            // 'filename' => 'required|string|max:255',
             ]);  
 
         // Admin

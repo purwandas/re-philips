@@ -51,7 +51,9 @@ class DistrictController extends Controller
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
-        $data = District::filter($filters)->get();
+        $data = District::filter($filters)->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->select('districts.*', 'areas.name as area_name', 'regions.name as region_name')->get();
 
         if ($userRole == 'RSM') {
             $region = RsmRegion::where('user_id', $userId)

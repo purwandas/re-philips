@@ -1405,7 +1405,7 @@ trait ActualTrait {
                 $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
 
                 $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
-                $sumActualStorePromoPF = ($sumActualStorePromoPF) ? $sumActualStorePromoPF->sum_pf_actual_store_promo - $totalActual : 0;
+                $sumActualStorePromoPF = ($sumActualStorePromoPF) ? $sumActualStorePromoPF->sum_pf_actual_store_promo - $totalActualPF : 0;
                 $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
                 $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
 
@@ -1450,7 +1450,7 @@ trait ActualTrait {
                     $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
 
                     $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
-                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActual : 0;
+                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActualPF : 0;
                     $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
                     $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
 
@@ -1489,7 +1489,7 @@ trait ActualTrait {
                     ]);
                 }else{
                     $sumActualStoreDemo = ($sumActualStoreDemo) ? $sumActualStoreDemo->sum_actual_store_demo - $totalActual : 0;
-                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActual : 0;
+                    $sumActualStoreDemoPF = ($sumActualStoreDemoPF) ? $sumActualStoreDemoPF->sum_pf_actual_store_demo - $totalActualPF : 0;
 
                     /* Delete Actual Data */
                     $summary_ta->update([
@@ -1733,14 +1733,14 @@ trait ActualTrait {
 
             /* Delete Actual Data */
             $summary_ta->update([
-                'actual_call' => 0,
-                'actual_active_outlet' => 0,
-                'actual_effective_call' => 0,
+                // 'actual_call' => 0,
+                // 'actual_active_outlet' => 0,
+                // 'actual_effective_call' => 0,
                 'actual_sales' => 0,
                 'actual_sales_pf' => 0,
-                'sum_national_actual_call' => $sumNationalActualCall,
-                'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
-                'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
+                // 'sum_national_actual_call' => $sumNationalActualCall,
+                // 'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
+                // 'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
                 'sum_national_actual_sales' => $sumNationalActualSales,
                 'sum_national_actual_sales_pf' => $sumNationalActualSalesPf,
             ]);
@@ -1775,6 +1775,21 @@ trait ActualTrait {
             }
 
             // CALL, EFFECTIVE CALL, ACTIVE OUTLET
+
+            /* Delete Actual Data */
+            $summary_ta->update([
+                'actual_call' => 0,
+                'actual_active_outlet' => 0,
+                'actual_effective_call' => 0,
+                // 'actual_sales' => 0,
+                // 'actual_sales_pf' => 0,
+                'sum_national_actual_call' => $sumNationalActualCall,
+                'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet,
+                'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall,
+                // 'sum_national_actual_sales' => $sumNationalActualSales,
+                // 'sum_national_actual_sales_pf' => $sumNationalActualSalesPf,
+            ]);
+
             $storeIds = EmployeeStore::where('user_id', $userId)->pluck('store_id');
             $store = Store::whereIn('id', $storeIds)->get();
 
@@ -1830,14 +1845,32 @@ trait ActualTrait {
             }
 
             // UPDATE CALL, EC, AO
-            $summary_ta->update([
-                'actual_call' => $summary_ta->actual_call + $call,
-                'actual_active_outlet' => $summary_ta->actual_active_outlet + $activeOutlet,
-                'actual_effective_call' => $summary_ta->effective_call + $effectiveCall,
-                'sum_national_actual_call' => $summary_ta->sum_national_actual_call + $call,
-                'sum_national_actual_active_outlet' => $summary_ta->sum_national_actual_active_outlet + $activeOutlet,
-                'sum_national_actual_effective_call' => $summary_ta->sum_national_actual_effective_call + $effectiveCall,
-            ]);
+            if($summary_ta->target_call > 0){
+                $summary_ta->update([
+                    'actual_call' => $summary_ta->actual_call + $call,    
+                    'sum_national_actual_call' => $summary_ta->sum_national_actual_call + $call,
+                ]);
+            }
+            if($summary_ta->target_active_outlet > 0){
+                $summary_ta->update([
+                    'actual_active_outlet' => $summary_ta->actual_active_outlet + $activeOutlet,
+                    'sum_national_actual_active_outlet' => $summary_ta->sum_national_actual_active_outlet + $activeOutlet,
+                ]);
+            }
+            if($summary_ta->target_effective_call > 0){
+                $summary_ta->update([
+                    'actual_effective_call' => $summary_ta->effective_call + $effectiveCall,
+                    'sum_national_actual_effective_call' => $summary_ta->sum_national_actual_effective_call + $effectiveCall,
+                ]);
+            }
+            // $summary_ta->update([
+            //     'actual_call' => $summary_ta->actual_call + $call,
+            //     'actual_active_outlet' => $summary_ta->actual_active_outlet + $activeOutlet,
+            //     'actual_effective_call' => $summary_ta->effective_call + $effectiveCall,
+            //     'sum_national_actual_call' => $summary_ta->sum_national_actual_call + $call,
+            //     'sum_national_actual_active_outlet' => $summary_ta->sum_national_actual_active_outlet + $activeOutlet,
+            //     'sum_national_actual_effective_call' => $summary_ta->sum_national_actual_effective_call + $effectiveCall,
+            // ]);
 
             // Update Sum Target Store to All Summary
             $targetOther = SalesmanSummaryTargetActual::where('id', '!=', $summary_ta->id);
