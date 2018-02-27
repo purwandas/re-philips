@@ -77,9 +77,9 @@ class FeedbackController extends Controller
            return $query->where('role_group', '<>', 'Salesman Explorer');
         });
 
-        $promoters->get();
+        // $promoters->get();
 
-        return response()->json($promoters);
+        return response()->json($promoters->get());
     }
 
     public function getListStoreNearby(Request $request)

@@ -40,7 +40,7 @@ class ChannelController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(ChannelFilters $filters){
-        $data = Channel::filter($filters)->get();
+        $data = Channel::filter($filters)->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')->select('channels.*', 'global_channels.name as globalchannel_name')->get();
 
         return $data;
     }

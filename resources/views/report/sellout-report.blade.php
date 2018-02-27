@@ -84,6 +84,11 @@
                             <i class="fa fa-map-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Sell Out</span>
                         </div>
+
+                        <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                        </div>
                     </div>
 
                     <div class="portlet-body">
@@ -180,7 +185,7 @@
                             {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['sellOutReport', $('#sellOutReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['sellOutReport', $('#sellOutReport'), url, tableColumns, columnDefs, order, '#export'];
         var paramReset = [filterId, 'sellOutReport', $('#sellOutReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
@@ -261,7 +266,10 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
                 }
             }));
@@ -270,7 +278,7 @@
             });
 
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['roleGroup'] = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+	        	filters['promoterGroup'] = 1;
 	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {

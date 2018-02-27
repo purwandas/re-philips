@@ -181,4 +181,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/get-store-so', 'Api\Master\SuggestionOrderController@getStorePO');
     Route::get('/get-product-so/{param}', 'Api\Master\SuggestionOrderController@checkNeededPO');
 
+    /**
+     * Time Gone Module(s)
+     */
+    Route::get('/get-timegone/{param}', 'Api\Master\TimeGoneController@getTimeGone');
+
 });

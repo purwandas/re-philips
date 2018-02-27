@@ -61,17 +61,17 @@
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetKonfig(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
-                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringKonfig(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
                 </div>
 
                 <br><br>
 
-            </div>
+            <!-- </div> -->
 
-                <div class="portlet light bordered display-hide" id="dataContent">
+                <!-- <div class="portlet light bordered" id="dataContent"> -->
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
@@ -100,7 +100,7 @@
                                 <th> Area </th>
                                 <th> District </th>
                                 <th> Store ID </th>
-                                <th> Store Name 1 </th>
+                                <th> Store Name</th>
                                 <th> Customer Code </th>
                                 <th> Classification </th>
                                 <th> Global Channel </th>
@@ -138,7 +138,7 @@
          *
          */
         var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
-        var url = 'datatable/konfigpromoter';
+        var url = 'data/konfigpromoter';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
@@ -151,7 +151,7 @@
                             {data: 'region', name: 'region'},
                             {data: 'area', name: 'area'},
                             {data: 'district', name: 'district'},
-                            {data: 'store_id', name: 'store_id'},
+                            {data: 'store_id_gen', name: 'store_id_gen'},
                             {data: 'store_name_1', name: 'store_name_1'},
                             {data: 'store_name_2', name: 'store_name_2'},
                             {data: 'classification', name: 'classification'},
@@ -180,18 +180,23 @@
             });
 
             // Set data for Data Table
-            {{--var table = $('#sellInReport').dataTable({--}}
-                {{--"processing": true,--}}
-                {{--"serverSide": true,--}}
-                {{--"ajax": {--}}
-                    {{--url: "{{ route('datatable.sellinreport') }}",--}}
-                    {{--type: 'POST',--}}
-                {{--},--}}
-                {{--"rowId": "id",--}}
-                {{--"columns": tableColumns,--}}
-                {{--"columnDefs": columnDefs,--}}
-                {{--"order": order,--}}
-            {{--});--}}
+            $('#konfigPromoReport').dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: url,
+                    type: 'POST',
+                    dataSrc: function (res) {
+                        this.data = res.data;
+                        return res.data;
+                    },
+                },
+                "rowId": "id",
+                "columns": tableColumns,
+                "columnDefs": columnDefs,
+                "order": order,
+                "searching" : false,
+            });
 
             initSelect2();
 
@@ -248,7 +253,10 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+	                    if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                        }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
                 }
             }));
@@ -275,14 +283,14 @@
         $("#resetButton").click( function(){
 
             // Hide Table Content
-            $('#dataContent').addClass('display-hide');
+//            $('#dataContent').addClass('display-hide');
 
         });
 
         $("#filterButton").click( function(){
 
             // Set Table Content
-            $('#dataContent').removeClass('display-hide');
+//            $('#dataContent').removeClass('display-hide');
 
         });
 
@@ -295,7 +303,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-sellin',
+                    url: 'util/export-konfig-promoter',
                     dataType: 'json',
                     data: {data: data},
                     global: false,

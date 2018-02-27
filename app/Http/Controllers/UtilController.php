@@ -10,6 +10,11 @@ use App\Traits\StoreTrait;
 use Illuminate\Http\Request;
 use App\User;
 use App\Store;
+use App\RsmRegion;
+use App\Region;
+use App\DmArea;
+use App\TrainerArea;
+use App\Area;
 use App\AreaApp;
 use App\SpvDemo;
 use App\EmployeeStore;
@@ -216,13 +221,18 @@ class UtilController extends Controller
         return response()->json($data);
     }
 
+    public function getArea($id){
+        $data = Area::find($id);
+        return response()->json($data);
+    }
+
     public function getStore($id){
         $data = Store::find($id);
         return response()->json($data);
     }
 
     public function getUser($id){
-        $data = User::find($id);
+        $data = User::with('role')->where('id', $id)->first();
         return response()->json($data);
     }
 
@@ -290,5 +300,29 @@ class UtilController extends Controller
     public function getStoreId(){
 
     		return $this->traitGetStoreId();
+    }
+
+    public function getRegionForRSM($userId){        
+        
+        $rsmRegion = RsmRegion::where('user_id', $userId)->pluck('region_id');        
+        $regions = Region::whereIn('id', $rsmRegion)->get();
+
+        return response()->json($regions);
+    }
+
+    public function getAreaForDM($userId){        
+        
+        $dmArea = DmArea::where('user_id', $userId)->pluck('area_id');        
+        $areas = Area::whereIn('id', $dmArea)->get();
+
+        return response()->json($areas);
+    }
+
+    public function getAreaForTrainer($userId){        
+        
+        $trainerArea = TrainerArea::where('user_id', $userId)->pluck('area_id');        
+        $areas = Area::whereIn('id', $trainerArea)->get();
+
+        return response()->json($areas);
     }
 }

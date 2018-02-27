@@ -322,14 +322,18 @@ class AchievementController extends Controller
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group', '<>','Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
 
         if(count($spvDemoIds) > 0){
             $promoterIds = EmployeeStore::whereIn('store_id', $spvDemoIds)
                             ->whereHas('user', function ($query){
-                                return $query->where('role', 'Demonstrator DA');
+                                return $query->whereHas('role', function($query2){
+                                    return $query2->where('role_group', 'Demonstrator DA');
+                                });
                             })
                             ->pluck('user_id');
         }
@@ -355,14 +359,20 @@ class AchievementController extends Controller
 
         $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
                         ->whereHas('user', function ($query){
-                            return $query->where('role', '<>', 'Demonstrator DA');
+                            // return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group', '<>','Demonstrator DA');
+                            });
                         })
                         ->pluck('user_id');
 
         if(count($spvDemoIds) > 0){
             $promoterIds = EmployeeStore::whereIn('store_id', $spvDemoIds)
                             ->whereHas('user', function ($query){
-                                return $query->where('role', 'Demonstrator DA');
+                                // return $query->where('role', 'Demonstrator DA');
+                                return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group','Demonstrator DA');
+                            });
                             })
                             ->pluck('user_id');
         }
@@ -386,7 +396,9 @@ class AchievementController extends Controller
         if($param == 1) { // BY NATIONAL
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
             })->with('stores.district.area.region')->get();
 
             $result = $this->getSupervisorCollection($supervisor);
@@ -453,7 +465,10 @@ class AchievementController extends Controller
             $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                 return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
                         return $query->whereIn('id', $regionIds);
@@ -520,7 +535,10 @@ class AchievementController extends Controller
             // }
 
             $supervisor = User::where(function ($query) {
-                return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
+                 return $query->whereHas('role', function($query2){
+                    return $query2->where('role_group', 'Supervisor')->orWhere('role_group', 'Supervisor Hybrid');
+                });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
                         return $query->whereIn('id', $areaIds);
@@ -1025,7 +1043,9 @@ class AchievementController extends Controller
 
     public function salesmanAchievementList(){
 
-        $user = User::where('role', 'Salesman Explorer')->get();
+        $user = User::whereHas('role', function($query){
+            return $query->where('role_group', 'Salesman Explorer');
+        })->get();
 
         $result = new Collection();
 

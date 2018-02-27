@@ -189,7 +189,16 @@ trait ApmTrait {
 
         $totalTarget = 0;
 
-        $targets = Target::where('store_id', $storeId)->where('sell_type', 'Sell Out')->get();
+        $sellType = 'Sell In';
+
+        $globalChannel = Store::where('id', $storeId)->first();
+        if($globalChannel){
+            if($globalChannel->subChannel->channel->globalChannel->name == 'MR' || $globalChannel->subChannel->channel->globalChannel->name == 'Modern Retail'){
+                $sellType = 'Sell Out';                
+            }
+        }
+
+        $targets = Target::where('store_id', $storeId)->where('sell_type', $sellType)->where('partner', 0)->get();
 
         foreach ($targets as $target){
 

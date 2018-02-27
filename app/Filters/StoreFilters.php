@@ -51,11 +51,19 @@ class StoreFilters extends QueryFilters
         return $this->builder->where('dedicate',$value);//->orwhere('user_id',$value);
     }
 
+    // Ordering by dedicate Array
+    public function byDedicates($value) {
+        return $this->builder->whereIn('dedicate',$value);//->orwhere('user_id',$value);
+    }
+
     // Ordering by dedicate SPV
     public function byDedicateSpv($value) {
         
         if ($value=="HYBRID") {
-            return $this->builder->whereIn('dedicate', ['DA','PC','HYBRID']);
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate', ['DA','PC','HYBRID'])
+                            ->orwhereNull('dedicate');
+            });
         }else if ($value=="DA"){
             return $this->builder->where(function ($query) {
                 return $query->whereIn('dedicate',['DA','HYBRID'])
@@ -70,6 +78,27 @@ class StoreFilters extends QueryFilters
             return $this->builder->where(function ($query) {
                 return $query->where('dedicate',"MCC")
                             ->orwhereNull('dedicate');
+            });
+        }
+        // return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);
+    }
+
+    // Ordering by dedicate Promoter
+    public function byDedicatePromoter($value) {
+        
+        if ($value=="HYBRID") {
+            return $this->builder->whereIn('dedicate', ['DA','PC','HYBRID']);
+        }else if ($value=="DA"){
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate',['DA','HYBRID']);
+            });
+        }else if ($value=="PC"){
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate',['PC','HYBRID']);
+            });
+        }else{
+            return $this->builder->where(function ($query) {
+                return $query->where('dedicate',"MCC");
             });
         }
         // return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);

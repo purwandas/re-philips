@@ -80,8 +80,6 @@ class PlaceController extends Controller
         $this->validate($request, [
             'store_id' => 'required',
             'name' => 'required|string|max:255',
-            'longitude' => 'numeric',
-            'latitude' => 'numeric',
             ]);
 
        	$place = Place::create($request->all());
@@ -125,8 +123,6 @@ class PlaceController extends Controller
         $this->validate($request, [
             'store_id' => 'required',
             'name' => 'required|string|max:255',
-            'longitude' => 'numeric',
-            'latitude' => 'numeric',
             ]);
 
         $place = Place::find($id)->update($request->all());

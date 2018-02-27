@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Master;
 use App\Apm;
 use App\EmployeeStore;
 use App\Leadtime;
+use App\SpvDemo;
 use App\Product;
 use App\Soh;
 use App\Store;
@@ -63,7 +64,7 @@ class SuggestionOrderController extends Controller
 
                     if($this->checkStock($store_id, $value) > 0 || $this->checkSellIn($store_id, $value) > 0) {
 
-                        $apmPerDay = $apm / 26;
+                        $apmPerDay = $apm / 26;                        
                         $percentProduct = (($apm * 100) / $this->sumMonthValue($store_id));
                         $totalTarget = $this->getTotalTarget($store_id);
                         $contribution = ($percentProduct * $totalTarget) / 100;
@@ -82,24 +83,24 @@ class SuggestionOrderController extends Controller
                         }
                         $poNeededQty = floor($poNeededValue / $this->getPriceCurrent($store_id, $value));
 
-//                        $test = ([
-//                            'apm' => $apm,
-//                            'apm per day' => round($apmPerDay,2),
-//                            'percent kontribusi produk' => $percentProduct,
-//                            'total target toko' => $totalTarget,
-//                            '%kontribusi * total target' => $contribution,
-//                            'leadtime value' => $leadtime,
-//                            'stock value' => $stock,
-//                            'sell in value' => $sellIn,
-//                            'sell out value' => $sellOut,
-//                            'total stock' => $totalStock,
-//                            'po needed value' => $poNeededValue,
-//                            'po needed qty' => $poNeededQty,
-//                        ]);
-//
-//                        $products->push($test);
-//
-//                        continue;
+                       // $test = ([
+                       //     'apm' => $apm,
+                       //     'apm per day' => round($apmPerDay,2),
+                       //     'percent kontribusi produk' => $percentProduct,
+                       //     'total target toko' => $totalTarget,
+                       //     '%kontribusi * total target' => $contribution,
+                       //     'leadtime value' => $leadtime,
+                       //     'stock value' => $stock,
+                       //     'sell in value' => $sellIn,
+                       //     'sell out value' => $sellOut,
+                       //     'total stock' => $totalStock,
+                       //     'po needed value' => $poNeededValue,
+                       //     'po needed qty' => $poNeededQty,
+                       // ]);
+
+                       // $products->push($test);
+
+                       // continue;
 
                         if ($poNeededQty > 0) {
 
@@ -146,6 +147,17 @@ class SuggestionOrderController extends Controller
 
         $empStoreIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 
+        if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid'){
+
+            $empStoreIds = Store::where('user_id', $user->id)->pluck('id');
+
+            $spvDemo = SpvDemo::where('user_id', $user->id)->first();
+            if($spvDemo){
+                $empStoreIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+            }
+
+        }
+
         $stores = Store::whereIn('id', $empStoreIds)
                     ->select('id', 'store_id', 'store_name_1', 'store_name_2')
                     ->get();
@@ -164,15 +176,15 @@ class SuggestionOrderController extends Controller
 
         }
 
-        $store2 = ([
-            'id' => '2000',
-            'store_id' => 'TEST0001',
-            'store_name_1' => 'TOKO TEST',
-            'store_name_2' => 'TOKO TEST',
-            'po_needed' => 0
-        ]);
+        // $store2 = ([
+        //     'id' => '2000',
+        //     'store_id' => 'TEST0001',
+        //     'store_name_1' => 'TOKO TEST',
+        //     'store_name_2' => 'TOKO TEST',
+        //     'po_needed' => 0
+        // ]);
 
-        $stores->push($store2);
+        // $stores->push($store2);
 
         return response()->json($stores);
 

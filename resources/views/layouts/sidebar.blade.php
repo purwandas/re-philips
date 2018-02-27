@@ -197,19 +197,15 @@
             </li>
 
             <li class="nav-item 
-                {{ Request::is('target') ? 'active open' : '' }}
-                {{ Request::is('productfocus') ? 'active open' : '' }}
-                {{ Request::is('targetsalesman') ? 'active open' : '' }}
-                {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+                {{ Request::is('sellin') ? 'active open' : '' }}
+                {{ Request::is('selout') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-line-chart"></i>
+                    <i class="fa fa fa-money"></i>
                     <span class="title">Sales</span>
                     <span class="arrow 
                         {{ Request::is('sellin') ? 'active open' : '' }}
                         {{ Request::is('selout') ? 'active open' : '' }}
-                        {{ Request::is('targetsalesman') ? 'active open' : '' }}
-                        {{ Request::is('productfocussalesman') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">
@@ -546,6 +542,13 @@
                         <a href="{{ url('konfig-promoter') }}" class="nav-link nav-toggle">
                             <i class="fa fa-file-text-o"></i>
                             <span class="title">Konfigurasi Promoter</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('konfig-store') ? 'active open' : '' }}">
+                        <a href="{{ url('konfig-store') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Konfigurasi Store</span>
                         </a>
                     </li>
 
