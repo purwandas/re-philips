@@ -46,7 +46,7 @@ class AuthController extends Controller
 		// If user has not login
 		if ( $user->status_login != 'Login') {
 			// if hp login pertama berbeda
-			if ( $user->hp_id != null and $user->hp_id != $request->hp_id ) {
+			if ( $user->hp_id != null and $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
 				return response()->json(['status' => 'false', 'message' => 'cant_login_in_other_HP' ], 200);
 			}
 			// update status, jenis_hp and id hp ketika null
