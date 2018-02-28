@@ -221,13 +221,18 @@ class UtilController extends Controller
         return response()->json($data);
     }
 
+    public function getArea($id){
+        $data = Area::find($id);
+        return response()->json($data);
+    }
+
     public function getStore($id){
         $data = Store::find($id);
         return response()->json($data);
     }
 
     public function getUser($id){
-        $data = User::find($id);
+        $data = User::with('role')->where('id', $id)->first();
         return response()->json($data);
     }
 

@@ -280,7 +280,7 @@
 	            }
 	        }));
 
-	        $('#area').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
+	        $('#area').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
@@ -350,7 +350,7 @@
 				if(value == target_type){
 
 					// Update Area Select2
-					var getDataUrl = "{{ url('util/areaapp/') }}";
+					var getDataUrl = "{{ url('util/area/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
 					    	setSelect2IfPatch($("#area"), data.id, data.name);
@@ -372,7 +372,10 @@
 					var getDataUrl = "{{ url('util/store/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
-					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	if(data.store_name_2 != null){
+					    		setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	}
+					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1);
 					    })
 				    });
 

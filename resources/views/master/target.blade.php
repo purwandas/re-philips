@@ -371,7 +371,12 @@
                     $('#target_pf_mcc').val(data.target_pf_mcc);
                     setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
                     setSelect2IfPatchModal($("#promoter"), data.user_id, data.user.name);
-                    setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")");
+                    if(data.store.store_name_2 != null){
+                        setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1 + " (" + data.store.store_name_2 + ")");
+                    }else{
+                        setSelect2IfPatchModal($("#store"), data.store_id, data.store.store_id+ " - " + data.store.store_name_1);
+                    }
+                    
 
                     // Set filters
                     self.selected('byEmployee', $('#promoter').val());
@@ -411,7 +416,9 @@
                 var getDataUrl = "{{ url('util/user/') }}";
                 $.get(getDataUrl + '/' + $('#promoter').val(), function (data) {
 
-                    if(data.role == 'Demonstrator DA'){
+                    // console.log(data);
+
+                    if(data.role.role_group == 'Demonstrator DA'){
                         $('#partnerContent').removeClass('display-hide');
                     }else{
                         $('#partnerContent').addClass('display-hide');
@@ -427,11 +434,15 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {
-                        if (obj.dedicate != null ){
-                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate }
-                        } else {
-                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" }
+                        // if (obj.dedicate != null ){
+                        // return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" + " - " + obj.dedicate }
+                        // } else {
+                        // return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")" }
+                        // }
+                        if(obj.store_name_2 != null){
+                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
+                        return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 }
 	                })
 	            }
 	        }));
