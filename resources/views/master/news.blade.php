@@ -40,7 +40,7 @@
                     	<div class="col-md-6">
                         	<div class="btn-group">
                              	<a class="btn green" href="{{ url('news/create') }}"><i
-									class="fa fa-plus"></i> Add New </a>
+									class="fa fa-plus"></i> Add News </a>
                                 
                             </div>
                     	</div>

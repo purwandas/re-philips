@@ -441,8 +441,11 @@
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
-                    results: $.map(data, function (obj) {                                
-                        return {id: obj.id, text: obj.store_id + ' - ' + obj.store_name_1 + ' (' + obj.store_name_2 + ')'}
+                    results: $.map(data, function (obj) {   
+                    	if(obj.store_name_2 != null){
+                    		return {id: obj.id, text: obj.store_id + ' - ' + obj.store_name_1 + ' (' + obj.store_name_2 + ')'}	
+                    	}                             
+                        return {id: obj.id, text: obj.store_id + ' - ' + obj.store_name_1}
                     })
                 }
             }));

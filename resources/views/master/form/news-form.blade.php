@@ -50,7 +50,7 @@
 				</div>
 
 				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
-                	<a class="btn btn-md btn-primary" href="{{ url('news') }}">
+                	<a class="btn btn-md green" href="{{ url('news') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
 				</div>
@@ -89,17 +89,6 @@
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
 				            	<input type="text" id="subject" name="subject" class="form-control" value="{{ @$data->subject }}" placeholder="Input Subject" />
-				            </div>
-				          </div>
-				        </div>
-
-						<div class="form-group">
-				          <label class="col-sm-2 control-label">Filename</label>
-				          <div class="col-sm-9">
-				          	<div class="input-icon right">
-				          		<i class="fa"></i>
-				            	<input type="text" id="filename" name="filename" class="form-control" value="{{ @$data->filename }}" placeholder="Input Filename" />
-								<p style="font-size: 10pt;" class="help-block"> (Can just be entered with letters and numbers, and symbol '.' or '-') </p>
 				            </div>
 				          </div>
 				        </div>
@@ -253,7 +242,7 @@
 	            }
 	        })); 
 
-	        $('#area').select2(setOptions('{{ route("data.district") }}', 'District', function (params) {
+	        $('#area').select2(setOptions('{{ route("data.area") }}', 'Area', function (params) {
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
@@ -318,7 +307,7 @@
 				if(value == target_type){
 
 					// Update Area Select2
-					var getDataUrl = "{{ url('util/areaapp/') }}";
+					var getDataUrl = "{{ url('util/area/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
 					    	setSelect2IfPatch($("#area"), data.id, data.name);
@@ -340,7 +329,10 @@
 					var getDataUrl = "{{ url('util/store/') }}";
 					data.forEach(function(id) {
 					    $.get(getDataUrl + '/' + id, function (data) {
-					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	if(data.store_name_2 != null){
+					    		setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1 + " (" + data.store_name_2 + ")");
+					    	}
+					    	setSelect2IfPatch($("#store"), data.id, data.store_id + " - " + data.store_name_1);
 					    })
 				    });
 
