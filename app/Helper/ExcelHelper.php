@@ -587,6 +587,21 @@ class ExcelHelper
             ];
         });
     }
+    public function mapForExportProductTemplate(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],  
+                'NAME' => @$item['name'],              
+                'MODEL' => @$item['product_model'],                
+                'CATEGORY' => @$item['category_name'],
+                'GROUP' => @$item['group_name'],
+                'GROUP PRODUCT' => @$item['groupproduct_name'],
+            ];
+        });
+    }
     public function mapForExportPrice(Array $data)
     {
         $collection = collect($data);
@@ -632,6 +647,7 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'PRODUCT ID' => @$item['product_id'],
+                'PRODUCT NAME' => @$item['product_name'],
                 'TYPE' => @$item['type'],
             ];
         });

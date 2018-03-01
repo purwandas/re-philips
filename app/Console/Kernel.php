@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ImportPrice',
         'App\Console\Commands\ImportLeadtime',
         'App\Console\Commands\ImportTimeGone',
+        'App\Console\Commands\ImportProductFocus',
     ];
 
     /**

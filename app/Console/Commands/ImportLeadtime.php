@@ -40,26 +40,17 @@ class ImportLeadtime extends Command
      */
     public function handle()
     {
+
         $dataFile = Excel::selectSheets('Master Leadtime')->load($this->argument('file'))->get();
 
+        $leadtime = leadtime::where('deleted_at', null)->delete();
+
         foreach ($dataFile as $detail) {
-
-            $leadtime = Leadtime::where('area_id', $detail['area_id'])->first();
-
-            if($leadtime){
-
-                if($leadtime->leadtime != $detail['leadtime']){
-                    $leadtime->update(['leadtime' => $detail['leadtime']]);
-                }
-
-            }else{
-
-                Leadtime::create([
-                    'area_id' => $detail['area_id'],
-                    'leadtime' => $detail['leadtime'],
-                ]);
-
-            }
+            
+            Leadtime::create([
+                'area_id' => $detail['area_id'],
+                'leadtime' => $detail['leadtime'],
+            ]);
 
         }
     }
