@@ -255,6 +255,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-price-template', ['uses'=>'Master\ExportController@exportPriceTemplate']);
     Route::post('util/export-target', ['uses'=>'Master\ExportController@exportTarget']);
     Route::post('util/export-productfocus', ['uses'=>'Master\ExportController@exportProductFocus']);
+    Route::post('util/export-productfocus-template', ['uses'=>'Master\ExportController@exportProductFocusTemplate']);
     Route::post('util/export-salesmantarget', ['uses'=>'Master\ExportController@exportSalesmanTarget']);
     Route::post('util/export-salesmanproductfocus', ['uses'=>'Master\ExportController@exportSalesmanProductFocus']);
     Route::post('util/export-posm', ['uses'=>'Master\ExportController@exportPosm']);

@@ -45,24 +45,14 @@ class ImportTimeGone extends Command
     {
         $dataFile = Excel::selectSheets('Master Timegone')->load($this->argument('file'))->get();
 
+        $timegones = TimeGone::where('deleted_at', null)->delete();
+
         foreach ($dataFile as $detail) {
-
-            $timegone = Timegone::where('day', $detail['day'])->first();
-
-            if($timegone){
-
-                if($timegone->percent != $detail['timegone']){
-                    $timegone->update(['percent' => $detail['timegone']]);
-                }
-
-            }else{
-
-                TimeGone::create([
-                    'day' => $detail['day'],
-                    'percent' => $detail['timegone'],
-                ]);
-
-            }
+            
+            TimeGone::create([
+                'day' => $detail['day'],
+                'percent' => $detail['timegone'],
+            ]);
 
         }
     }

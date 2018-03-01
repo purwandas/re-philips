@@ -100,4 +100,22 @@ class ImportController extends Controller
 
         return response()->json(['url' => url('/timegone')]);
     }
+
+    public function importProductFocus(Request $request){
+        $file = $request->upload_file;
+        $date = Carbon::now()->format('m').Carbon::now()->format('Y');
+
+        $file_origin = $this->getUploadPathNameFileForImport($request->upload_file, 'productfocus', $date);
+
+        $path = explode('/', $file_origin);
+        $count = count($path);
+        $folder = "productfocus/";
+        $file_name = $path[$count - 1];
+
+        $file_uploaded = $this->uploadFileForImport($request->upload_file, $folder, $file_name);
+
+        Artisan::call("import:productfocus", ['file' => $file_uploaded]);
+
+        return response()->json(['url' => url('/productfocus')]);
+    }
 }
