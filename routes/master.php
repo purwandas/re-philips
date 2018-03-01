@@ -294,6 +294,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::patch('leadtime/{id}', 'Master\LeadtimeController@update');
         Route::delete('leadtime/{id}', 'Master\LeadtimeController@destroy');
 
+        /** Timegone **/
+        Route::get('timegone', 'Master\TimeGoneController@index');
+        Route::post('timegone', 'Master\TimeGoneController@store');
+        Route::get('timegone/edit/{id}', 'Master\TimeGoneController@edit');
+        Route::patch('timegone/{id}', 'Master\TimeGoneController@update');
+        Route::delete('timegone/{id}', 'Master\TimeGoneController@destroy');
+
         /**
          * Reporting Module(s) Just For Admin, Master, REM
          */
@@ -307,6 +314,16 @@ Route::group(['middleware' => ['auth']], function () {
          * Salesman Module (Reporting)
          */
         Route::get('salesmanreport', 'Master\ReportController@salesmanIndex');
+
+        /**
+         * Import Module(s)
+         */
+
+        Route::post('import-price', 'Master\ImportController@importPrice');
+        // Route::post('import-price-process', 'Master\ImportController@importPriceProcess');
+        Route::post('import/price', ['as'=> 'import.price','uses'=>'Master\ImportController@importPriceProcess']);
+        Route::post('import-leadtime', 'Master\ImportController@importLeadtime');
+        Route::post('import-timegone', 'Master\ImportController@importTimeGone');
 
 
     });

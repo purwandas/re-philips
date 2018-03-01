@@ -58,11 +58,10 @@
 
                 <br><br>
 
-            </div>
         <!-- END FILTER-->
 
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
-        <div class="portlet light bordered">
+
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-dollar font-blue"></i>
@@ -76,9 +75,18 @@
                         class="fa fa-plus"></i> Add Price </a>
 
                 </div>
-                <div class="actions" style="text-align: left">
+                <div class="btn-group">
+                    <a id="upload" class="btn btn-primary" data-toggle="modal" href="#upload-price"><i
+                        class="fa fa-cloud-upload"></i> Update Price </a>
+
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
                     <a id="export" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
+                    <a id="exportAll" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                 </div>
             </div>
 
@@ -87,6 +95,7 @@
                         <thead>
                             <tr>
                                 <th> No. </th>
+                                <th> Model </th>
                                 <th> Product's </th>
                                 <th> Global Channel </th>
                                 <th> Sell Type</th>
@@ -99,6 +108,7 @@
             </div>
 
             @include('partial.modal.price-modal')
+            @include('partial.modal.upload-price-modal')
 
             <!-- END MAIN CONTENT -->
         </div>
@@ -117,10 +127,11 @@
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
 <script src="{{ asset('js/handler/price-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/upload-modal/upload-price-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
-    var data = {};
+    var dataAll = {};
     /*
      *
      *
@@ -131,11 +142,12 @@
         var order = [ [0, 'desc'] ];
         var columnDefs = [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [4]},
+                {"className": "dt-center", "targets": [5]},
             ];
 
         var tableColumns = [
                 {data: 'id', name: 'id'},
+                {data: 'product_model', name: 'product_model'},
                 {data: 'product_name', name: 'product_name'},
                 {data: 'globalchannel_name', name: 'globalchannel_name'},
                 {data: 'sell_type', name: 'sell_type'},
@@ -161,7 +173,15 @@
             global: false,
             async: false,
             success: function (results) {
-                data = results;
+                var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
             }
         });
 
@@ -173,10 +193,23 @@
             "ajax": {
                 url: "{{ route('datatable.price') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
+                {data: 'product_model', name: 'product_model'},
                 {data: 'product_name', name: 'product_name'},
                 {data: 'globalchannel_name', name: 'globalchannel_name'},
                 {data: 'sell_type', name: 'sell_type'},
@@ -225,6 +258,25 @@
                             url:  'price/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/price',
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -250,6 +302,114 @@
                     url: 'util/export-price',
                     dataType: 'json',
                     data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/price',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-price',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportTemplate").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/price',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-price-template',
+                    dataType: 'json',
+                    data: {data: dataAll},
                     global: false,
                     async: false,
                     success: function (data) {
@@ -338,6 +498,15 @@
                     setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
 
         })
+
+    });
+
+    // Init add form
+    $(document).on("click", "#upload", function () {
+
+        resetUploadValidation();
+
+        $('#upload_file').val('');
 
     });
 

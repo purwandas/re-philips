@@ -42,7 +42,7 @@ class PriceController extends Controller
         $data = Price::where('prices.deleted_at', null)
         			->join('products', 'prices.product_id', '=', 'products.id')
                     ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
-                    ->select('prices.*', 'products.name as product_name', 'global_channels.name as globalchannel_name')->get();
+                    ->select('prices.*', 'products.name as product_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'), 'global_channels.name as globalchannel_name')->get();
 
         
         $filter = $data;
@@ -57,7 +57,9 @@ class PriceController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(PriceFilters $filters){
-        $data = Price::filter($filters)->get();
+        $data = Price::filter($filters)->join('products', 'prices.product_id', '=', 'products.id')
+                    ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
+                    ->select('prices.*', 'products.name as product_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'), 'global_channels.name as globalchannel_name')->get();
 
         return $data;
     }

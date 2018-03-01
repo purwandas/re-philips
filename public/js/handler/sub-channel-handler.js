@@ -201,6 +201,8 @@ var FormValidation = function () {
                                     $('#subChannelTable').DataTable().search('').draw();
                                     $('#subChannelTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+
                                     $('#subchannel').modal('hide');
                                 }
                             )

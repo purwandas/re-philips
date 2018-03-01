@@ -105,4 +105,17 @@ trait UploadTrait {
         return true;
     }
 
+    public function getUploadPathNameFileForImport($file, $fileFolder, $fileName)
+    {
+        $file_new = $fileName.'.'.$file->getClientOriginalExtension();
+
+        // Back result url asset + filename (For insert/update data in model)
+        return asset('imports').'/'.$fileFolder.'/'.$file_new;
+    }
+
+    public function uploadFileForImport($file, $fileFolder, $fileName)
+    {
+        return $file->move(public_path('imports/'.$fileFolder), $fileName);
+    }
+
 }

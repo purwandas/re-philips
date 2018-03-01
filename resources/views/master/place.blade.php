@@ -102,7 +102,7 @@
         });
 
         function test(){
-            alert('sssss');
+            // alert('sssss');
         }
 
         // Get data district to var data

@@ -1055,6 +1055,188 @@ class ExportController extends Controller
 
     }
     //
+    public function exportLeadtime(Request $request){
+
+        $filename = 'Philips Retail Master Data Leadtime ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Leadtime');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Leadtime Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Leadtime', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:D1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportLeadtime($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:D1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:D1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportLeadtimeTemplate(Request $request){
+
+        $filename = 'Philips Retail Master Data Leadtime ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Leadtime');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Leadtime Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Leadtime', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:D1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportLeadtime($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:D1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:D1', 'thin');
+                $sheet->cell('D1', function($cell) {
+                    $cell->setBackground('#f4df24');
+                });
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportTimegone(Request $request){
+
+        $filename = 'Philips Retail Master Data Timegone ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Timegone');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Timegone Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Timegone', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportTimeGone($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportTimegoneTemplate(Request $request){
+
+        $filename = 'Philips Retail Master Data Timegone ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Timegone');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Timegone Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Timegone', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportTimeGone($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+                $sheet->cell('C1', function($cell) {
+                    $cell->setBackground('#f4df24');
+                });
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
     public function exportUserPromoter(Request $request){
 
         $filename = 'Philips Retail Master Data User Promoter ' . Carbon::now()->format('d-m-Y');
@@ -1212,16 +1394,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Category', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:C1');
+                $sheet->setAutoFilter('A1:D1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportCategory($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:C1', function ($cells) {
+                $sheet->cells('A1:D1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:C1', 'thin');
+                $sheet->setBorder('A1:D1', 'thin');
             });
 
 
@@ -1256,16 +1438,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Product', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:E1');
+                $sheet->setAutoFilter('A1:F1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportProduct($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:E1', function ($cells) {
+                $sheet->cells('A1:F1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:E1', 'thin');
+                $sheet->setBorder('A1:F1', 'thin');
             });
 
 
@@ -1300,16 +1482,75 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Price', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:E1');
+                $sheet->setAutoFilter('A1:H1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportPrice($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:E1', function ($cells) {
+                $sheet->cells('A1:H1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:E1', 'thin');
+                $sheet->setBorder('A1:H1', 'thin');
+                // $sheet->cell('B1:C1', function($cell) {
+                //     // manipulate the cell
+                //     $cell->setBackground('#f4df24');
+                // });
+                // $sheet->cell('H1', function($cell) {
+                //     // manipulate the cell
+                //     $cell->setBackground('#75ff56');
+                // });
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportPriceTemplate(Request $request){
+
+        $filename = 'Philips Retail Master Data Price ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Price');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Price Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Price', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:H1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportPrice($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:H1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:H1', 'thin');
+                // $sheet->cell('B1:C1', function($cell) {
+                //     // manipulate the cell
+                //     $cell->setBackground('#f4df24');
+                // });
+                $sheet->cell('H1', function($cell) {
+                    $cell->setBackground('#f4df24');
+                });
             });
 
 
