@@ -312,6 +312,25 @@
 
                                 $("#"+id).remove();
                                 // $('#sportsTable').DataTable().ajax.reload();
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/nonPromoter',
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -420,6 +439,18 @@
         $("#exportAll").click( function(){
 
             if ($('#exportAll').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/nonPromoter',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+
+                        dataAll = results;
+                    }
+                });
 
                 // Export data
                 exportFile = '';

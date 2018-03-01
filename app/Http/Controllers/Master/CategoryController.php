@@ -33,14 +33,17 @@ class CategoryController extends Controller
 
         $data = Category::where('categories.deleted_at', null)
         			->join('groups', 'categories.group_id', '=', 'groups.id')
-                    ->select('categories.*', 'groups.name as group_name')->get();
+                    ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                    ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
     public function getDataWithFilters(CategoryFilters $filters){        
-        $data = Category::filter($filters)->get();
+        $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
+                    ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                    ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
 
         return $data;
     }

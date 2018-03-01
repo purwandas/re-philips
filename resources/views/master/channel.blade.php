@@ -190,6 +190,25 @@
                             url:  'channel/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/channel',
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -249,6 +268,18 @@
         $("#exportAll").click( function(){
 
             if ($('#exportAll').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/channel',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+
+                        dataAll = results;
+                    }
+                });
 
                 // Export data
                 exportFile = '';

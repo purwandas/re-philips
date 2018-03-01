@@ -17,6 +17,10 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\GetInfo',
         'App\Console\Commands\SalesHistory',
         'App\Console\Commands\UpdateApm',
+        'App\Console\Commands\testImport',
+        'App\Console\Commands\ImportPrice',
+        'App\Console\Commands\ImportLeadtime',
+        'App\Console\Commands\ImportTimeGone',
     ];
 
     /**

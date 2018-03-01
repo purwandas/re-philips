@@ -10,6 +10,7 @@ use App\Traits\StringTrait;
 use Auth;
 use File;
 use Illuminate\Support\Collection;
+use Artisan;
 
 class ProfileController extends Controller
 {
@@ -100,6 +101,18 @@ class ProfileController extends Controller
     public function sellin(){
 
         return $this->getProductTotalCurrent(3388, 1);
+
+    }
+
+    public function import(){
+
+        // Artisan::call("test:import");
+
+        $name = 'Dwi Yoga Dirgantara';
+
+        Artisan::call("test:import", ['name' => $name]);
+
+        return 'Processing....';
 
     }
 

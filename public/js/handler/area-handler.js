@@ -201,6 +201,8 @@ var FormValidation = function () {
                                     $('#areaTable').DataTable().search('').draw();
                                     $('#areaTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+
                                     $('#area').modal('hide');                                    
                                 }
                             )
