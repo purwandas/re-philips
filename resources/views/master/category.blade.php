@@ -42,7 +42,11 @@
                 </div>
                 <div class="actions" style="text-align: left">
                     <a id="export" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
+                    <a id="exportAll" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                 </div>
             </div>
 
@@ -53,6 +57,7 @@
                                 <th> No. </th>                            
                                 <th> Category Name </th> 
                                 <th> Group </th>                           
+                                <th> Group Product </th>                           
                                 <th> Options </th>                        
                             </tr>
                         </thead>
@@ -83,7 +88,7 @@
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
-    var data = {};
+    var dataAll = {};
     /*
      *
      *
@@ -104,7 +109,15 @@
             global: false,
             async: false,
             success: function (results) {
-                data = results;
+                var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
             }
         });
 
@@ -115,17 +128,30 @@
             "ajax": {
                 url: "{{ route('datatable.category') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
             "columns": [
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},        
                 {data: 'group_name', name: 'group_name'},                       
+                {data: 'groupproduct_name', name: 'groupproduct_name'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},           
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [3]},
+                {"className": "dt-center", "targets": [4]},
             ],
             "order": [ [0, 'desc'] ],
         });
@@ -168,6 +194,25 @@
                             url:  'category/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/category',
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -194,6 +239,60 @@
                     url: 'util/export-category',
                     dataType: 'json',
                     data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        setTimeout(function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'util/export-delete',
+                                dataType: 'json',
+                                data: {data: data.url},
+                                global: false,
+                                async: false,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+
+            if ($('#exportAll').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/category',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-category',
+                    dataType: 'json',
+                    data: {data: dataAll},
                     global: false,
                     async: false,
                     success: function (data) {

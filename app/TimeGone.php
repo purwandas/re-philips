@@ -20,4 +20,15 @@ class TimeGone extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    /**
+     * Filtering Berdasarakan Request User
+     * @param $query
+     * @param QueryFilters $filters
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter($query, QueryFilters $filters)
+    {
+        return $filters->apply($query);
+    }
 }
