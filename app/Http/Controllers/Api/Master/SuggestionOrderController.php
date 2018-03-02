@@ -17,11 +17,22 @@ use Illuminate\Support\Collection;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
+use Mail;
 use App\Reports\SummarySellOut;
 
 class SuggestionOrderController extends Controller
 {
     use ApmTrait;
+
+    public function testMail(){
+
+        $data['name'] = "Wow";
+        $data['email'] = "teserahaaja@gmail.com";
+        Mail::send('mail.suggestion-order', $data, function($message) use ($data){
+            $message->to($data['email']);
+            $message->subject('Test Mail');
+        });
+    }
 
     public function checkNeededPO($store_id, $param = 1){
 
