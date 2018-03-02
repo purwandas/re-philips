@@ -182,7 +182,7 @@ var FormUploadValidation = function () {
                         success: function (data) {
 
                             var titleMsg = 'UPDATE DATA';
-                            var textMsg = 'Leadtime has been updated!';
+                            var textMsg = 'Timegone has been updated!';
 
                             // if(data.method == "PATCH"){
                             //     titleMsg = "Update!";
