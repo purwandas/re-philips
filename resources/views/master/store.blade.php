@@ -64,7 +64,7 @@
                 <div class="btn-group">
                     <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
-                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReportWithAll(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
                 </div>
 
@@ -265,7 +265,7 @@
                 {"className": "dt-center", "targets": [0]},
                 {"className": "dt-center", "targets": [15]},
             ],
-            "order": [ [0, 'desc'] ],
+            "order": [ [0, 'desc'] ],            
         });
 
 
