@@ -32,4 +32,15 @@ class Leadtime extends Model
     {
         return $this->belongsTo('App\Area', 'area_id');
     }
+
+    /**
+     * Filtering Berdasarakan Request User
+     * @param $query
+     * @param QueryFilters $filters
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter($query, QueryFilters $filters)
+    {
+        return $filters->apply($query);
+    }
 }

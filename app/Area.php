@@ -39,6 +39,16 @@ class Area extends Model
         return $this->hasMany('App\District', 'area_id');
     }
 
+    public function dmAreas()
+    {
+        return $this->hasMany('App\DmArea', 'area_id');
+    }
+
+    public function trainerAreas()
+    {
+        return $this->hasMany('App\TrainerArea', 'area_id');
+    }
+
 	/**
      * Filtering Berdasarakan Request User
      * @param $query

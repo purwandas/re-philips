@@ -211,6 +211,8 @@ var FormValidation = function () {
                                     $('#priceTable').DataTable().search('').draw();
                                     $('#priceTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+
                                     $('#price').modal('hide');
                                 }
                             )
@@ -271,3 +273,4 @@ function resetValidation(){
     $('.alert-danger', $('#form_price')).hide();
     $('.alert-success', $('#form_price')).hide();
 }
+

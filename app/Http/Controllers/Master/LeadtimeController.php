@@ -43,7 +43,8 @@ class LeadtimeController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(LeadtimeFilters $filters){
-        $data = Leadtime::filter($filters)->get();
+        $data = Leadtime::filter($filters)->join('areas', 'areas.id', '=', 'leadtimes.area_id')
+                    ->select('leadtimes.*', 'areas.name as area_name')->get();
 
         return $data;
     }
