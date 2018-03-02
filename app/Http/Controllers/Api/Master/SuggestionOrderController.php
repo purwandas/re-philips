@@ -27,7 +27,7 @@ class SuggestionOrderController extends Controller
     public function testMail(){
 
         $data['name'] = "Wow";
-        $data['email'] = "teserahaaja@gmail.com";
+        $data['email'] = "dirgantaradwiyoga@gmail.com";
         Mail::send('mail.suggestion-order', $data, function($message) use ($data){
             $message->to($data['email']);
             $message->subject('Test Mail');

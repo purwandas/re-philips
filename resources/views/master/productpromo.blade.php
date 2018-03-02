@@ -33,23 +33,31 @@
                     <span class="caption-subject font-blue bold uppercase">PRODUCT PROMO TRACKING</span>
                 </div>
             </div>
+            <div class="portlet-title">
+            <!-- MAIN CONTENT -->
+                <div class="btn-group">
+                    <a id="add-productpromo" class="btn green" data-toggle="modal" href="#productpromo"><i
+                        class="fa fa-plus"></i> Add Product Promo </a>
+
+                </div>
+                <div class="btn-group">
+                    <a id="upload" class="btn btn-primary" data-toggle="modal" href="#upload-product-promo"><i
+                        class="fa fa-cloud-upload"></i> Update Product Promo </a>
+
+                </div>
+                <div class="actions" style="text-align: left">
+                    <a id="export" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
+                    <a id="exportAll" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                </div>
+            </div>
             <div class="portlet-body" style="padding: 15px;">
                 <!-- MAIN CONTENT -->
 
                 <div class="row">
-
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <a id="add-productpromo" class="btn green" data-toggle="modal" href="#productpromo"><i
-                                        class="fa fa-plus"></i> Add Product Promo Tracking </a>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <table class="table table-striped table-hover table-bordered" id="productpromoTable" style="white-space: nowrap;">
                         <thead>
                             <tr>
@@ -63,6 +71,7 @@
                 </div>
 
                 @include('partial.modal.productpromo-modal')
+                @include('partial.modal.upload-product-promo-modal')
 
                 <!-- END MAIN CONTENT -->
             </div>
@@ -82,9 +91,11 @@
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
 <script src="{{ asset('js/handler/productpromo-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/upload-modal/upload-product-promo-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
+    var dataAll = {};
     /*
      *
      *
@@ -97,6 +108,26 @@
             }
         });
 
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/productpromo',
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
+            }
+        });
+
         // Set data for Data Table
         var table = $('#productpromoTable').dataTable({
             "processing": true,
@@ -104,6 +135,18 @@
             "ajax": {
                 url: "{{ route('datatable.productpromo') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
             "columns": [
@@ -154,6 +197,28 @@
                             url:  'productpromo/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
+
+                                // Get data district to var data
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/productpromo',
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                    $('#export').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                    $('#export').removeAttr('disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -219,6 +284,165 @@
                     setSelect2IfPatchModal($("#product"), data.product_id, data.product.name);
 
         })
+
+    });
+
+    $("#export").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-productpromo',
+                    dataType: 'json',
+                    data: {data: data},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+    $("#exportAll").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/productpromo',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-productpromo',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+    $("#exportTemplate").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/productpromo',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-productpromo-template',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+    $(document).on("click", "#upload", function () {
+
+        resetUploadValidation();
+
+        $('#upload_file').val('');
 
     });
 

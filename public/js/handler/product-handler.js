@@ -206,6 +206,7 @@ var FormValidation = function () {
                                     $('#productTable').DataTable().ajax.reload();
 
                                     $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
 
                                     $('#product').modal('hide');                                    
                                 }

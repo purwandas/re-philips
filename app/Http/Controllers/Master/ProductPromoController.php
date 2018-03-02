@@ -9,6 +9,7 @@ use App\Traits\StringTrait;
 use DB;
 use Yajra\Datatables\Facades\Datatables;
 use Carbon\Carbon;
+use App\Filters\ProductPromoFilters;
 
 class ProductPromoController extends Controller
 {
@@ -37,8 +38,9 @@ class ProductPromoController extends Controller
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(ProductFocusFilters $filters){
-        $data = ProductPromos::filter($filters)->get();
+    public function getDataWithFilters(ProductPromoFilters $filters){
+        $data = ProductPromos::filter($filters)->join('products', 'product_promos.product_id', '=', 'products.id')
+                    ->select('product_promos.*', 'products.name as product_name')->get();
 
         return $data;
     }

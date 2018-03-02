@@ -50,6 +50,21 @@ class ImportPrice extends Command
 
         $dataFile = Excel::selectSheets('Master Price')->load($this->argument('file'))->get();
 
+        $prices = Price::where('deleted_at', null)->get();
+
+        foreach ($prices as $detail) {
+
+            /* Summary Delete */
+            $summary['product_id'] = $detail['product_id'];
+            $summary['globalchannel_id'] = $detail['globalchannel_id'];
+            $summary['sell_type'] = $detail['sell_type'];
+            $summary['price'] = $detail['price'];
+            $this->changeSummary($summary, 'delete');
+
+            Price::where('id', $detail->id)->first()->delete();
+
+        }
+
         foreach ($dataFile as $detail) {
             
             $price = Price::where('product_id', $detail['product_id'])->where('globalchannel_id', $detail['global_channel_id'])->where('sell_type', $detail['sell_type'])->first();
