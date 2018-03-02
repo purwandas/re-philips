@@ -8,9 +8,6 @@
         
         <form id="form_quiz_target" class="form-horizontal" action="{{ url('quiz-target') }}" method="POST">                
                     {{ csrf_field() }}
-                    @if (!empty($data))
-                      {{ method_field('PATCH') }}
-                    @endif
                     <div class="form-body">
                         <div class="alert alert-danger display-hide">
                             <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>

@@ -40,7 +40,10 @@ class GroupController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(GroupFilters $filters){        
-        $data = Group::filter($filters)->get();
+        $data = Group::filter($filters)
+                ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('groups.*', 'group_products.name as groupproduct_name')
+                ->get();
 
         return $data;
     }

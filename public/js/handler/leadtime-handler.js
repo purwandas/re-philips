@@ -201,6 +201,8 @@ var FormValidation = function () {
                                     $('#leadtimeTable').DataTable().search('').draw();
                                     $('#leadtimeTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+
                                     $('#leadtime').modal('hide');
                                 }
                             )

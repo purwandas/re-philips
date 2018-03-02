@@ -248,11 +248,6 @@
 	        var postDataUrl = "{{ url('quiz-target') }}";    
 	        $("#form_quiz_target").attr("action", postDataUrl);
 
-	        // Delete Patch Method if Exist
-	        if($('input[name=_method]').length){
-	            $('input[name=_method]').remove();
-	        }
-
 	    });
 
 	</script>

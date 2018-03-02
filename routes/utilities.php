@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/grading', ['as'=> 'datatable.grading','uses'=>'Master\GradingController@masterDataTable']);
     Route::post('datatable/classification', ['as'=> 'datatable.classification','uses'=>'Master\ClassificationController@masterDataTable']);
     Route::post('datatable/leadtime', ['as'=> 'datatable.leadtime','uses'=>'Master\LeadtimeController@masterDataTable']);
+    Route::post('datatable/timegone', ['as'=> 'datatable.timegone','uses'=>'Master\TimeGoneController@masterDataTable']);
 
     /**
      * Edit Sales
@@ -136,6 +137,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('data/quiztarget', ['as'=> 'data.quiztarget','uses'=>'Api\Master\QuizTargetController@getDataWithFilters']);
     Route::post('data/konfigpromoter', ['as'=> 'data.konfigpromoter','uses'=>'Master\KonfigController@promoterData']);
+    Route::post('data/konfigstore', ['as'=> 'data.konfigstore','uses'=>'Master\KonfigController@storeData']);
+    Route::post('data/leadtime', ['as'=> 'data.leadtime','uses'=>'Master\LeadtimeController@getDataWithFilters']);
+    Route::post('data/timegone', ['as'=> 'data.timegone','uses'=>'Master\TimeGoneController@getDataWithFilters']);
 
     /**
      * Relation
@@ -248,8 +252,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-category', ['uses'=>'Master\ExportController@exportCategory']);
     Route::post('util/export-product', ['uses'=>'Master\ExportController@exportProduct']);
     Route::post('util/export-price', ['uses'=>'Master\ExportController@exportPrice']);
+    Route::post('util/export-price-template', ['uses'=>'Master\ExportController@exportPriceTemplate']);
     Route::post('util/export-target', ['uses'=>'Master\ExportController@exportTarget']);
     Route::post('util/export-productfocus', ['uses'=>'Master\ExportController@exportProductFocus']);
+    Route::post('util/export-productfocus-template', ['uses'=>'Master\ExportController@exportProductFocusTemplate']);
     Route::post('util/export-salesmantarget', ['uses'=>'Master\ExportController@exportSalesmanTarget']);
     Route::post('util/export-salesmanproductfocus', ['uses'=>'Master\ExportController@exportSalesmanProductFocus']);
     Route::post('util/export-posm', ['uses'=>'Master\ExportController@exportPosm']);
@@ -257,6 +263,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-messagetoadmin', ['uses'=>'Master\ExportController@exportMessageToAdmin']);
     Route::post('util/export-konfig-promoter', ['uses'=>'Master\ExportController@exportKonfigPromoter']);
     Route::post('util/export-konfig-store', ['uses'=>'Master\ExportController@exportKonfigStore']);
+    Route::post('util/export-leadtime', ['uses'=>'Master\ExportController@exportLeadtime']);
+    Route::post('util/export-leadtime-template', ['uses'=>'Master\ExportController@exportLeadtimeTemplate']);
+    Route::post('util/export-timegone', ['uses'=>'Master\ExportController@exportTimeGone']);
+    Route::post('util/export-timegone-template', ['uses'=>'Master\ExportController@exportTimeGoneTemplate']);
 
 
     /**

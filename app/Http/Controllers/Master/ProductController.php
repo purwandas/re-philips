@@ -33,14 +33,21 @@ class ProductController extends Controller
 
         $data = Product::where('products.deleted_at', null)
         			->join('categories', 'products.category_id', '=', 'categories.id')
-                    ->select('products.*', 'categories.name as category_name')->get();
+                    ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                    ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                    ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get();
 
         return $this->makeTable($data);
     }
 
     // Data for select2 with Filters
     public function getDataWithFilters(ProductFilters $filters){        
-        $data = Product::filter($filters)->get();
+        $data = Product::filter($filters)
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))
+                ->get();
 
         return $data;
     }
