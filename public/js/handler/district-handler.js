@@ -202,6 +202,7 @@ var FormValidation = function () {
                                     $('#districtTable').DataTable().ajax.reload();
 
                                     $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
 
                                     $('#district').modal('hide');
                                 }

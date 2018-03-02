@@ -140,6 +140,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/konfigstore', ['as'=> 'data.konfigstore','uses'=>'Master\KonfigController@storeData']);
     Route::post('data/leadtime', ['as'=> 'data.leadtime','uses'=>'Master\LeadtimeController@getDataWithFilters']);
     Route::post('data/timegone', ['as'=> 'data.timegone','uses'=>'Master\TimeGoneController@getDataWithFilters']);
+    Route::post('data/productpromo', ['as'=> 'data.productpromo','uses'=>'Master\ProductPromoController@getDataWithFilters']);
 
     /**
      * Relation
@@ -258,6 +259,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-productfocus-template', ['uses'=>'Master\ExportController@exportProductFocusTemplate']);
     Route::post('util/export-salesmantarget', ['uses'=>'Master\ExportController@exportSalesmanTarget']);
     Route::post('util/export-salesmanproductfocus', ['uses'=>'Master\ExportController@exportSalesmanProductFocus']);
+    Route::post('util/export-salesmanproductfocus-template', ['uses'=>'Master\ExportController@exportSalesmanProductFocusTemplate']);
     Route::post('util/export-posm', ['uses'=>'Master\ExportController@exportPosm']);
     Route::post('util/export-groupcompetitor', ['uses'=>'Master\ExportController@exportGroupCompetitor']);
     Route::post('util/export-messagetoadmin', ['uses'=>'Master\ExportController@exportMessageToAdmin']);
@@ -267,6 +269,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-leadtime-template', ['uses'=>'Master\ExportController@exportLeadtimeTemplate']);
     Route::post('util/export-timegone', ['uses'=>'Master\ExportController@exportTimeGone']);
     Route::post('util/export-timegone-template', ['uses'=>'Master\ExportController@exportTimeGoneTemplate']);
+    Route::post('util/export-productpromo', ['uses'=>'Master\ExportController@exportProductPromo']);
+    Route::post('util/export-productpromo-template', ['uses'=>'Master\ExportController@exportProductPromoTemplate']);
 
 
     /**

@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 
 Route::get('tes', 'Api\AuthController@tes');
 
+Route::get('test-mail', 'Api\Master\SuggestionOrderController@testMail');
+
 /* JWT Authentication */
 
 Route::post('login', 'Api\AuthController@login');
