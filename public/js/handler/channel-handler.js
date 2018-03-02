@@ -202,6 +202,7 @@ var FormValidation = function () {
                                     $('#channelTable').DataTable().ajax.reload();
 
                                     $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
 
                                     $('#channel').modal('hide');
                                 }

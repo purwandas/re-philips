@@ -182,7 +182,7 @@ var FormUploadValidation = function () {
                         success: function (data) {
 
                             var titleMsg = 'UPDATE DATA';
-                            var textMsg = 'Price has been updated!';
+                            var textMsg = 'Salesman product focus has been updated!';
 
                             // if(data.method == "PATCH"){
                             //     titleMsg = "Update!";
@@ -192,28 +192,12 @@ var FormUploadValidation = function () {
                             //     textMsg = 'Data has been created!';
                             // }
 
-                            // console.log(data);
-
-                            // // Get data district to var data
-                            // $.ajax({
-                            //     type: 'POST',
-                            //     url: 'import/price',
-                            //     dataType: 'json',
-                            //     data: {data: data.file_name},
-                            //     global: false,
-                            //     async: false,
-                            //     success: function (results) {
-                            //         console.log(results);
-                            //     }
-                            // });
-
                             swal({
                                     title: titleMsg,
                                     text: textMsg,
                                     type: 'success'
                                 },
                                 function(){
-                                    // console.log(data);
 
                                     // Reset loading spinner
                                     App.unblockUI("#loading_element");
@@ -221,19 +205,6 @@ var FormUploadValidation = function () {
                                     window.location.href = data.url;
                                     // console.log(data);
 
-                                    // setTimeout(function () {
-                                    //     $.ajax({
-                                    //         type: 'POST',
-                                    //         url: 'import/price',
-                                    //         dataType: 'json',
-                                    //         data: {data: data.file_name},
-                                    //         global: false,
-                                    //         async: false,
-                                    //         success: function (results) {
-                                    //             console.log(results);
-                                    //         }
-                                    //     });
-                                    // }, 1000);
                                 }
                             )
                             // console.log(data.method);

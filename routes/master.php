@@ -325,6 +325,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('import-leadtime', 'Master\ImportController@importLeadtime');
         Route::post('import-timegone', 'Master\ImportController@importTimeGone');
         Route::post('import-product-focus', 'Master\ImportController@importProductFocus');
+        Route::post('import-product-promo', 'Master\ImportController@importProductPromo');
+        Route::post('import-product-focus-salesman', 'Master\ImportController@importProductFocusSalesman');
 
 
     });
