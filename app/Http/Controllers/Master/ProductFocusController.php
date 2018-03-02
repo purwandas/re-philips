@@ -46,7 +46,8 @@ class ProductFocusController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(ProductFocusFilters $filters){
-        $data = ProductFocuses::filter($filters)->get();
+        $data = ProductFocuses::filter($filters)->join('products', 'product_focuses.product_id', '=', 'products.id')
+                    ->select('product_focuses.*', 'products.name as product_name')->get();
 
         return $data;
     }

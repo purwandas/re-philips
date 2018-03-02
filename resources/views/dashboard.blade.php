@@ -30,9 +30,10 @@
 			<div class="portlet-title">
 				<div class="caption">
 					<i class="icon-settings font-blue"></i>
-					<span class="caption-subject font-blue bold uppercase">DASHBOARD</span>
+					<span class="caption-subject font-blue bold uppercase">DASHBOARD</span>					
 				</div>
 	        </div>
+	        <a href="{{ url('/import') }}">IMPORT TEST</a>
 	        <div class="portlet-body">
 
                     <div>

@@ -501,6 +501,33 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportLeadtime(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'AREA ID' => @$item['area_id'],
+                'AREA' => @$item['area_name'],
+                'LEADTIME' => @$item['leadtime'],
+            ];
+        });
+    }
+
+    public function mapForExportTimeGone(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'DAY' => @$item['day'],
+                'TIMEGONE' => @$item['percent'],                
+            ];
+        });
+    }
+
     public function mapForExportUser(Array $data)
     {
         $collection = collect($data);
@@ -528,7 +555,7 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'NAME' => @$item['name'],
-                'GLOBAL CHANNEL ID' => @$item['groupproduct_id'],
+                'GROUP PRODUCT' => @$item['groupproduct_name'],
             ];
         });
     }
@@ -540,7 +567,8 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'NAME' => @$item['name'],
-                'GLOBAL CHANNEL ID' => @$item['group_id'],
+                'GROUP' => @$item['group_name'],
+                'GROUP PRODUCT' => @$item['groupproduct_name'],
             ];
         });
     }
@@ -550,11 +578,27 @@ class ExcelHelper
 
         return $collection->map(function ($item) {
             return [
-                'ID' => @$item['id'],
-                'CATEGORY ID' => @$item['category_id'],
-                'MODEL' => @$item['model'],
+                'ID' => @$item['id'],                
+                'MODEL' => @$item['product_model'],
                 'NAME' => @$item['name'],
-                'VARIANTS' => @$item['variants'],
+                'CATEGORY' => @$item['category_name'],
+                'GROUP' => @$item['group_name'],
+                'GROUP PRODUCT' => @$item['groupproduct_name'],
+            ];
+        });
+    }
+    public function mapForExportProductTemplate(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],  
+                'NAME' => @$item['name'],              
+                'MODEL' => @$item['product_model'],                
+                'CATEGORY' => @$item['category_name'],
+                'GROUP' => @$item['group_name'],
+                'GROUP PRODUCT' => @$item['groupproduct_name'],
             ];
         });
     }
@@ -567,6 +611,9 @@ class ExcelHelper
                 'ID' => @$item['id'],
                 'PRODUCT ID' => @$item['product_id'],
                 'GLOBAL CHANNEL ID' => @$item['globalchannel_id'],
+                'MODEL' => @$item['product_model'],
+                'NAME' => @$item['product_name'],
+                'GLOBAL CHANNEL' => @$item['globalchannel_name'],
                 'SELL TYPE' => @$item['sell_type'],
                 'PRICE' => @$item['price'],
             ];
@@ -600,6 +647,7 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'PRODUCT ID' => @$item['product_id'],
+                'PRODUCT NAME' => @$item['product_name'],
                 'TYPE' => @$item['type'],
             ];
         });

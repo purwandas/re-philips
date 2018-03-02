@@ -15,6 +15,7 @@ Route::get('/', function () {
 });
 
 Route::get('/tes', 'ProfileController@sellin');
+Route::get('/import', 'ProfileController@import');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'DashboardController@index');

@@ -201,6 +201,8 @@ var FormValidation = function () {
                                     $('#groupTable').DataTable().search('').draw();
                                     $('#groupTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+
                                     $('#group').modal('hide');                                    
                                 }
                             )

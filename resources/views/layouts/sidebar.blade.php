@@ -258,6 +258,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('timegone') ? 'active open' : '' }}">
+                <a href="{{ url('timegone') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-cog"></i>
+                    <span class="title">Timegone</span>
+                </a>
+            </li>
+
             @endif
 
             @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid')

@@ -138,7 +138,7 @@
          *
          */
         var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
-        var url = 'data/konfigpromoter';
+        var url = 'data/konfigstore';
         var order = [ [0, 'desc'] ];
         var columnDefs = [{"className": "dt-center", "targets": [0]}];
         var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},                              
