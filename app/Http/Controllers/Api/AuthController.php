@@ -47,7 +47,7 @@ class AuthController extends Controller
 		// If user has not login
 		if ( $user->status_login != 'Login') {
 			// if hp login pertama berbeda
-			if ( $user->hp_id != null and $user->hp_id != $request->hp_id ) {
+			if ( $user->hp_id != null and $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
 				return response()->json(['status' => 'false', 'message' => 'cant_login_in_other_HP' ], 200);
 			}
 			// update status, jenis_hp and id hp ketika null
@@ -290,6 +290,26 @@ class AuthController extends Controller
         ]);
 
 			return response()->json(['status' => true, 'message' => 'logout berhasil'], 200);
+	}
+
+	public function getFcmTokenToDB(){
+        $userData = User::where('id', $id)->first();
+        if (!isset($userData)) {
+			return response()->json(['status' => false, 'message' => 'User not found'], 404);
+        }
+		if ($userData->fcm_token != null){
+			if ($userData->fcm_token != $request->fcm_token){
+		        $userData->update([
+					'fcm_token' => $request->fcm_token,
+				]);
+			return response()->json(['status' => true, 'message' => 'token berhasil diubah'], 200);
+			}
+		}else{
+	        $userData->update([
+				'fcm_token' => $request->fcm_token,
+			]);
+		return response()->json(['status' => true, 'message' => 'token berhasil ditambahkan'], 200);
+		}
 	}
 
 }

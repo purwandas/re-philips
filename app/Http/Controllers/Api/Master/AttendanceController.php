@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Master;
 
 use App\AttendanceDetail;
 use App\Reports\SummaryTargetActual;
+use App\User;
 use App\Store;
 use App\Place;
 use App\Traits\TargetTrait;
@@ -237,8 +238,51 @@ class AttendanceController extends Controller
                         $attendanceHeader->update([
                             'status' => 'Pending Sakit',
                         ]);
-
                     });
+                    $spv_token = User::where('users.id', $user->id)
+                                ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                                ->join('users', 'stores.user_id', '=', 'users.id')
+                                ->select('users.fcm_token');
+                    if($spv_token != null){
+                        $fields = array(
+                            'to' => $spv_token,
+                            'data' => 'Promoter Absensi',
+                        );
+
+                        $url = 'https://fcm.googleapis.com/fcm/send';
+
+                        $headers = array(
+                            'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                            'Content-Type: application/json'
+                        );
+                        // Open connection
+                        $ch = curl_init();
+
+                        // Set the url, number of POST vars, POST data
+                        curl_setopt($ch, CURLOPT_URL, $url);
+
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                        // Disabling SSL Certificate support temporarly
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                        // Execute post
+                        $result = curl_exec($ch);
+                        if ($result === FALSE) {
+                            die('Curl failed: ' . curl_error($ch));
+                        }
+
+                        // Close connection
+                        curl_close($ch);
+
+                        // return $result;
+                    }
+
                 } catch (\Exception $e) {
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
                 }
