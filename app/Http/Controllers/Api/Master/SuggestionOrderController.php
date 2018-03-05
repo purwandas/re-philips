@@ -10,6 +10,7 @@ use App\Product;
 use App\Soh;
 use App\Store;
 use App\Traits\ApmTrait;
+use App\Traits\StringTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -23,15 +24,54 @@ use App\Reports\SummarySellOut;
 class SuggestionOrderController extends Controller
 {
     use ApmTrait;
+    use StringTrait;
 
-    public function testMail(){
+    public function oos(Request $request){
+        $content = json_decode($request->getContent(),true);
+        
+        $store = Store::where('id',$content['id'])->first();
 
-        $data['name'] = "Wow";
-        $data['email'] = "teserahaaja@gmail.com";
+        /* 
+            kiriman
+            1. Store ID -> get data store, spv email, DM email
+            2. store owner email
+            3. sku
+        */
+            $spv = '';
+            if (!empty($store->user->name)) {
+                $spv = $store->user->name;
+            }
+
+            $spvMail = '';
+            if (!empty($store->user->email)) {
+                $spvMail = $store->user->email;
+            }
+
+            $dm = '';
+            if (!empty($store->district->area->dmAreas->first()->user->name)) {
+                $dm = $store->district->area->dmAreas->first()->user->name;
+            }
+            $store_name_2 = '';
+            if (!empty($store->store_name_2)) {
+                $store_name_2 = ' ('.$store->store_name_2.')';
+            }
+
+            $data['note'] = $content['note'];
+            if (empty($data['note'])) {
+                $data['note'] = '-';
+            }
+        $data['store'] = $store->store_name_1.$store_name_2;
+        $data['supervisor'] = '- '.$spv;
+        $data['dm'] = '- '.$dm;
+        $data['data'] = $content['data'];
+        $data['date'] = $this->convertDateTime(Carbon::now());
+        $data['email'] = [$content['owner'],$spvMail];
         Mail::send('mail.suggestion-order', $data, function($message) use ($data){
             $message->to($data['email']);
             $message->subject('Test Mail');
         });
+
+        return response()->json($data, 200);
     }
 
     public function checkNeededPO($store_id, $param = 1){
