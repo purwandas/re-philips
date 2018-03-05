@@ -1,6 +1,9 @@
 /node_modules
 /public/hot
 /public/storage
+/public/exports
+/public/imports
+/public/file
 /public/image
 /public/file
 /storage/*.key

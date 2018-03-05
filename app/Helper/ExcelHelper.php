@@ -652,6 +652,18 @@ class ExcelHelper
             ];
         });
     }
+    public function mapForExportProductPromo(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'ID' => @$item['id'],
+                'PRODUCT ID' => @$item['product_id'],
+                'PRODUCT NAME' => @$item['product_name'],
+            ];
+        });
+    }
     public function mapForExportSalesmanTarget(Array $data)
     {
         $collection = collect($data);
@@ -676,6 +688,7 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'PRODUCT ID' => @$item['product_id'],
+                'PRODUCT NAME' => @$item['product_name'],
             ];
         });
     }

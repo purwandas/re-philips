@@ -201,6 +201,7 @@ var FormValidation = function () {
                                     $('#timegoneTable').DataTable().ajax.reload();
 
                                     $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
 
                                     $('#timegone').modal('hide');
                                 }
