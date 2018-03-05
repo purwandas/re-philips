@@ -144,6 +144,7 @@
                             <th> Area </th>
                             <th> Region </th>
                             <th> Join Date </th>
+                            <th> Device Name </th>
                             <th> Options </th>                             
                         </tr>
                     </thead>
@@ -191,6 +192,7 @@
                 {data: 'area', name: 'area'},
                 {data: 'region', name: 'region'},
                 {data: 'join_date', name: 'join_date'},
+                {data: 'jenis_hp', name: 'jenis_hp'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ];
 

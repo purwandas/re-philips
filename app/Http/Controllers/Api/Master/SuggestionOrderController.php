@@ -71,7 +71,7 @@ class SuggestionOrderController extends Controller
             $message->subject('Test Mail');
         });
 
-        return response()->json($data, 200);
+        return response()->json(['status' => true, 'message' => 'Data berhasil di input'], 200);
     }
 
     public function checkNeededPO($store_id, $param = 1){

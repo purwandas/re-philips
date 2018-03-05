@@ -212,6 +212,7 @@ var FormValidation = function () {
                                     $('#priceTable').DataTable().ajax.reload();
 
                                     $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
 
                                     $('#price').modal('hide');
                                 }

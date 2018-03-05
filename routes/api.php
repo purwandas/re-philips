@@ -27,6 +27,7 @@ Route::post('logout/{id}', 'Api\AuthController@logout');
 Route::group(['middleware' => 'jwt.auth'], function () {
 	  
 	Route::get('/user', 'Api\AuthController@getUser');
+    Route::post('/fcm-token', 'Api\AuthController@getFcmTokenToDB');
 
 	/**
      * Master Module(s)

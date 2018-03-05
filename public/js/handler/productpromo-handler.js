@@ -197,6 +197,9 @@ var FormValidation = function () {
                                     $('#productpromoTable').DataTable().search('').draw();
                                     $('#productpromoTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
+
                                     $('#productpromo').modal('hide');
                                 }
                             )

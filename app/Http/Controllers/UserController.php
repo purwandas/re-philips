@@ -1444,7 +1444,7 @@ class UserController extends Controller
     {   
         $user = User::find($id);            
         $user->update([
-            'status_login' => null,
+            'status_login' => 'Logout',
             'hp_id' => null,
             'jenis_hp' => null,
             ]);

@@ -1530,8 +1530,6 @@ class ExportController extends Controller
 
         $filename = 'Philips Retail Master Data Price ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
-
-
         
         Excel::create($filename, function($excel) use ($data) {
 
@@ -1656,6 +1654,112 @@ class ExportController extends Controller
                     $cells->setFontWeight('bold');
                 });
                 $sheet->setBorder('A1:D1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportProductPromo(Request $request){
+
+        $filename = 'Philips Retail Master Data Product Promo Tracking ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Product Promo Tracking');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Product Promo Tracking Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Product Promo Tracking', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportProductPromo($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportProductPromoTemplate(Request $request){
+
+        $filename = 'Philips Retail Master Data Product Promo Tracking ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        $products = Product::where('products.deleted_at', null)
+                    ->join('categories', 'products.category_id', '=', 'categories.id')
+                    ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                    ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                    ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get()->toArray();
+
+        Excel::create($filename, function($excel) use ($data, $products) {
+
+            // Set the title
+            $excel->setTitle('Master Data Product Promo Tracking');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Product Promo Tracking Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Product', function ($sheet) use ($products) {
+                $sheet->setAutoFilter('A1:F1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportProductTemplate($products), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:F1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:F1', 'thin');
+            });
+
+            $excel->sheet('Master Product Promo Tracking', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportProductPromo($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+                $sheet->cell('B1:C1', function($cell) {
+                    $cell->setBackground('#f4df24');
+                });
             });
 
 
@@ -1802,16 +1906,80 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Salesman Product Focus', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:B1');
+                $sheet->setAutoFilter('A1:C1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportSalesmanProductFocus($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:B1', function ($cells) {
+                $sheet->cells('A1:C1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:B1', 'thin');
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportSalesmanProductFocusTemplate(Request $request){
+
+        $filename = 'Philips Retail Master Data Salesman Product Focus ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        $products = Product::where('products.deleted_at', null)
+                    ->join('categories', 'products.category_id', '=', 'categories.id')
+                    ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                    ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                    ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get()->toArray();
+        
+        Excel::create($filename, function($excel) use ($data, $products) {
+
+            // Set the title
+            $excel->setTitle('Master Data Salesman Product Focus');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Salesman Product Focus Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Product', function ($sheet) use ($products) {
+                $sheet->setAutoFilter('A1:F1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportProductTemplate($products), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:F1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:F1', 'thin');
+            });
+
+            $excel->sheet('Master Salesman Product Focus', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportSalesmanProductFocus($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+                $sheet->cell('B1:C1', function($cell) {
+                    $cell->setBackground('#f4df24');
+                });
             });
 
 
