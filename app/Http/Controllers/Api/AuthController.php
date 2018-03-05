@@ -292,8 +292,9 @@ class AuthController extends Controller
 			return response()->json(['status' => true, 'message' => 'logout berhasil'], 200);
 	}
 
-	public function getFcmTokenToDB(){
-        $userData = User::where('id', $id)->first();
+	public function getFcmTokenToDB(Request $request){
+	    $user = JWTAuth::parseToken()->authenticate();
+        $userData = User::where('id', $user->id)->first();
         if (!isset($userData)) {
 			return response()->json(['status' => false, 'message' => 'User not found'], 404);
         }
