@@ -142,28 +142,53 @@ class PromoterController extends Controller
     public function reject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
-        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token')->first();
+        //get promoter
+        $target_promoter = User::where('users.id', $attendances->user_id);
+        // get spv
+        if ($user->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
+        }else{
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
 
         try{
-
             $attendance->update([
                 'status' => 'Alpha',
                 'reject' => '1'
             ]);
 
+            $createNews = News::create([
+                'user_id' => $spv->name,
+                'from' => 'notification',
+                'subject' => 'Reject Absen',
+                'content' => 'Absen Anda pada hari ini telah di-reject oleh '.$spv->name.', silahkan hubungi supervisor untuk melakukan absensi ',
+                'target_type' => 'Promoter',
+                'target_detail' = $target_promoter->id,
+                'date' => Carbon::now(),
+                'total_read' => 0,
+
+            ]);
+
             // notificaton for reject promotor attendace..            
-            if($spv_token->fcm_token != null){
+            if($target_promoter->fcm_token != null){
 
                 $res = array();
                 $res['data']['title'] = 'notifikasi-Reject Absen';
                 //$res['data']['is_background'] = $this->is_background;
-                $res['data']['message'] = ' Absen Anda telah ditolak oleh Supervisor Anda! ';
+                $res['data']['message'] = ' Absen Anda telah ditolak oleh '.$spv->name.' Anda! ';
                 //$res['data']['image'] = $this->image;
                 //$res['data']['payload'] = $this->data;
                 $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
                 $fields = array(
-                    'to' => $spv_token->fcm_token,
+                    'to' => $target_promoter->fcm_token,
                     'data' => $res,
 
                 );
@@ -213,7 +238,21 @@ class PromoterController extends Controller
     public function undoReject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
-        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token')->first();
+        //get promoter
+        $target_promoter = User::where('users.id', $attendances->user_id);
+        // get spv
+        if ($user->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
+        }else{
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
 
         try{
 
@@ -222,19 +261,31 @@ class PromoterController extends Controller
                 'reject' => '0'
             ]);
 
+            $createNews = News::create([
+                'user_id' => $spv->name,
+                'from' => 'notification',
+                'subject' => 'Cancel Reject Absen',
+                'content' => 'Reject absen Anda pada hari ini telah dibatalkan oleh '.$spv->name.'  ',
+                'target_type' => 'Promoter',
+                'target_detail' = $target_promoter->id,
+                'date' => Carbon::now(),
+                'total_read' => 0,
+
+            ]);
+
             // notificaton for undo reject promotor attendance..
-            if($spv_token->fcm_token != null){
+            if($target_promoter->fcm_token != null){
 
                 $res = array();
                 $res['data']['title'] = 'notifikasi-Reject Dibatalkan';
                 //$res['data']['is_background'] = $this->is_background;
-                $res['data']['message'] = ' Reject Absen Anda telah dibatalkan oleh Supervisor ';
+                $res['data']['message'] = ' Reject Absen Anda telah dibatalkan oleh '.$spv->name.' ';
                 //$res['data']['image'] = $this->image;
                 //$res['data']['payload'] = $this->data;
                 $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
                 $fields = array(
-                    'to' => $spv_token->fcm_token,
+                    'to' => $target_promoter->fcm_token,
                     'data' => $res,
 
                 );
@@ -287,7 +338,20 @@ class PromoterController extends Controller
         if(!$attendances){
             return response()->json(['status' => false, 'message' => 'Data absen tidak ditemukan'], 500);
         }
-        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token')->first();
+        $target_promoter = User::where('users.id', $attendances->user_id);
+
+        if ($user->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
+        }else{
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
                     
         $message = "";
 
@@ -336,19 +400,31 @@ class PromoterController extends Controller
             }
         }
 
+        $createNews = News::create([
+            'user_id' => $spv->name,
+            'from' => 'notification',
+            'subject' => 'Approval Absen',
+            'content' => 'Absen '$message.' Anda pada hari ini telah approv oleh '.$spv->name.'  ',
+            'target_type' => 'Promoter',
+            'target_detail' = $target_promoter->id,
+            'date' => Carbon::now(),
+            'total_read' => 0,
+
+        ]);
+
         // notificaton for undo reject promotor attendance..
-        if($spv_token->fcm_token != null){
-            
+        if($target_promoter->fcm_token != null){
+
             $res = array();
             $res['data']['title'] = 'notifikasi-Absen Approval';
             //$res['data']['is_background'] = $this->is_background;
-            $res['data']['message'] = ' Absen '.$message.'Anda telah disetujui oleh Supervisor ';
+            $res['data']['message'] = ' Absen '.$message.'Anda telah disetujui oleh '.$spv->name.' ';
             //$res['data']['image'] = $this->image;
             //$res['data']['payload'] = $this->data;
             $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
             $fields = array(
-                'to' => $spv_token->fcm_token,
+                'to' => $target_promoter->fcm_token,
                 'data' => $res,
 
             );
