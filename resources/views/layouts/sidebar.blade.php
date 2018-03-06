@@ -153,6 +153,7 @@
             <li class="nav-item 
                 {{ Request::is('target') ? 'active open' : '' }}
                 {{ Request::is('productfocus') ? 'active open' : '' }}
+                {{ Request::is('productpromo') ? 'active open' : '' }}
                 {{ Request::is('targetsalesman') ? 'active open' : '' }}
                 {{ Request::is('productfocussalesman') ? 'active open' : '' }}
             ">
