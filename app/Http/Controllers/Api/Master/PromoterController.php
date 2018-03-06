@@ -145,18 +145,18 @@ class PromoterController extends Controller
         //get promoter
         $target_promoter = User::where('users.id', $attendances->user_id);
         // get spv
-        if ($user->role->role_group == 'Demonstrator DA') {
-            $spv = User::where('users.id', $user->id)
+        if ($target_promoter->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
-                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
-                        ->select('spv_token.name')->first();
+                        ->join('users as spv', 'spv_demos.user_id', '=', 'spv.id')
+                        ->select('spv.name')->first();
         }else{
-            $spv = User::where('users.id', $user->id)
+            $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
-                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
-                        ->select('spv_token.name')->first();
+                        ->join('users as spv', 'stores.user_id', '=', 'spv.id')
+                        ->select('spv.name')->first();
 
         try{
             $attendance->update([
@@ -165,7 +165,7 @@ class PromoterController extends Controller
             ]);
 
             $createNews = News::create([
-                'user_id' => $spv->name,
+                'user_id' => $spv->id,
                 'from' => 'notification',
                 'subject' => 'Reject Absen',
                 'content' => 'Absen Anda pada hari ini telah di-reject oleh '.$spv->name.', silahkan hubungi supervisor untuk melakukan absensi ',
@@ -243,18 +243,18 @@ class PromoterController extends Controller
         //get promoter
         $target_promoter = User::where('users.id', $attendances->user_id);
         // get spv
-        if ($user->role->role_group == 'Demonstrator DA') {
-            $spv = User::where('users.id', $user->id)
+        if ($target_promoter->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
-                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
-                        ->select('spv_token.name')->first();
+                        ->join('users as spv', 'spv_demos.user_id', '=', 'spv.id')
+                        ->select('spv.name')->first();
         }else{
-            $spv = User::where('users.id', $user->id)
+            $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
-                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
-                        ->select('spv_token.name')->first();
+                        ->join('users as spv', 'stores.user_id', '=', 'spv.id')
+                        ->select('spv.name')->first();
 
         try{
 
@@ -264,7 +264,7 @@ class PromoterController extends Controller
             ]);
 
             $createNews = News::create([
-                'user_id' => $spv->name,
+                'user_id' => $spv->id,
                 'from' => 'notification',
                 'subject' => 'Cancel Reject Absen',
                 'content' => 'Reject absen Anda pada hari ini telah dibatalkan oleh '.$spv->name.'  ',
@@ -344,18 +344,18 @@ class PromoterController extends Controller
         }
         $target_promoter = User::where('users.id', $attendances->user_id);
 
-        if ($user->role->role_group == 'Demonstrator DA') {
-            $spv = User::where('users.id', $user->id)
+        if ($target_promoter->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
-                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
-                        ->select('spv_token.name')->first();
+                        ->join('users as spv', 'spv_demos.user_id', '=', 'spv.id')
+                        ->select('spv.name')->first();
         }else{
-            $spv = User::where('users.id', $user->id)
+            $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
-                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
-                        ->select('spv_token.name')->first();
+                        ->join('users as spv', 'stores.user_id', '=', 'spv.id')
+                        ->select('spv.name')->first();
                     
         $message = "";
 
@@ -405,7 +405,7 @@ class PromoterController extends Controller
         }
 
         $createNews = News::create([
-            'user_id' => $spv->name,
+            'user_id' => $spv->id,
             'from' => 'notification',
             'subject' => 'Approval Absen',
             'content' => 'Absen '.$message.' Anda pada hari ini telah approv oleh '.$spv->name.'  ',
