@@ -170,7 +170,7 @@ class PromoterController extends Controller
                 'subject' => 'Reject Absen',
                 'content' => 'Absen Anda pada hari ini telah di-reject oleh '.$spv->name.', silahkan hubungi supervisor untuk melakukan absensi ',
                 'target_type' => 'Promoter',
-                'target_detail' = $target_promoter->id,
+                'target_detail' => $target_promoter->id,
                 'date' => Carbon::now(),
                 'total_read' => 0,
 
@@ -234,6 +234,8 @@ class PromoterController extends Controller
 
         return response()->json(['status' => false, 'message' => 'Berhasil melakukan reject'], 200);
     }
+    
+    }
 
     public function undoReject(Request $request){
 
@@ -267,7 +269,7 @@ class PromoterController extends Controller
                 'subject' => 'Cancel Reject Absen',
                 'content' => 'Reject absen Anda pada hari ini telah dibatalkan oleh '.$spv->name.'  ',
                 'target_type' => 'Promoter',
-                'target_detail' = $target_promoter->id,
+                'target_detail' => $target_promoter->id,
                 'date' => Carbon::now(),
                 'total_read' => 0,
 
@@ -330,6 +332,8 @@ class PromoterController extends Controller
         }
 
         return response()->json(['status' => false, 'message' => 'Berhasil melakukan undo reject'], 200);
+    }
+    
     }
 
     public function approval(Request $request, $param){
@@ -404,9 +408,9 @@ class PromoterController extends Controller
             'user_id' => $spv->name,
             'from' => 'notification',
             'subject' => 'Approval Absen',
-            'content' => 'Absen '$message.' Anda pada hari ini telah approv oleh '.$spv->name.'  ',
+            'content' => 'Absen '.$message.' Anda pada hari ini telah approv oleh '.$spv->name.'  ',
             'target_type' => 'Promoter',
-            'target_detail' = $target_promoter->id,
+            'target_detail' => $target_promoter->id,
             'date' => Carbon::now(),
             'total_read' => 0,
 
@@ -466,6 +470,8 @@ class PromoterController extends Controller
 
         return response()->json(['status' => true, 'id_attendance' => $attendances->id, 'message' => 'Approval '.$message.' berhasil']);
 
+    }
+    
     }
 
     public function checkAttendance(){
