@@ -165,7 +165,7 @@ class PromoterController extends Controller
             ]);
 
             $createNews = News::create([
-                'user_id' => $spv->name,
+                'user_id' => $spv->id,
                 'from' => 'notification',
                 'subject' => 'Reject Absen',
                 'content' => 'Absen Anda pada hari ini telah di-reject oleh '.$spv->name.', silahkan hubungi supervisor untuk melakukan absensi ',
@@ -262,7 +262,7 @@ class PromoterController extends Controller
             ]);
 
             $createNews = News::create([
-                'user_id' => $spv->name,
+                'user_id' => $spv->id,
                 'from' => 'notification',
                 'subject' => 'Cancel Reject Absen',
                 'content' => 'Reject absen Anda pada hari ini telah dibatalkan oleh '.$spv->name.'  ',
@@ -401,7 +401,7 @@ class PromoterController extends Controller
         }
 
         $createNews = News::create([
-            'user_id' => $spv->name,
+            'user_id' => $spv->id,
             'from' => 'notification',
             'subject' => 'Approval Absen',
             'content' => 'Absen '$message.' Anda pada hari ini telah approv oleh '.$spv->name.'  ',
