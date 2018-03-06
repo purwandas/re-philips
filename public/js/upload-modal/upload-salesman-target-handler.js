@@ -3,12 +3,12 @@
  *
  */
 
-var FormValidation = function () {
+var FormUploadValidation = function () {
 
     // Master Validation
-    var targetValidation = function() {
+    var priceUploadValidation = function() {
 
-            var form = $('#form_targetsalesman');
+            var form = $('#form_upload');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
@@ -18,40 +18,13 @@ var FormValidation = function () {
                 focusInvalid: false, // do not focus the last invalid input
                 ignore: "",  // validate all fields including form hidden input
                 rules: {
-                    user_id:{
+                    upload_file: {
                         required: true,
-                    },
-                    target_call: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_active_outlet: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_effective_call: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_sales: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-                    target_sales_pf: {
-                        number: true,
-                        min: 0,
-                        required: true,
-                    },
-
+                        extension: "xlsx|xls|xlsb|csv"
+                    }
                 },
                 messages:{
-                    user_id:{
-                        required: "Please select a Salesman!"
-                    },
+
                 },
 
                 invalidHandler: function (event, validator) { //display error alert on form submit
@@ -61,6 +34,8 @@ var FormValidation = function () {
                 },
 
                 errorPlacement: function (error, element) { // render error placement for each input type
+
+                    // console.log(error.text());
 
                     if (element.parent(".input-icon").size() > 0) {
 
@@ -184,6 +159,13 @@ var FormValidation = function () {
 
                 submitHandler: function (form) {
 
+                    // Loading Spinner
+                    App.blockUI({
+                        target: "#loading_element",
+                        boxed: !0,
+                        message: 'Please wait, until update process finished...'
+                    });
+
                     // form[0].submit(); // submit the form
 
                     // Using FormData to append file type to form input
@@ -199,16 +181,31 @@ var FormValidation = function () {
                         contentType: false,
                         success: function (data) {
 
-                            var titleMsg;
-                            var textMsg;
+                            var titleMsg = 'UPDATE DATA';
+                            var textMsg = 'Price has been updated!';
 
-                            if(data.method == "PATCH"){
-                                titleMsg = "Update!";
-                                textMsg = 'Data has been updated!';
-                            }else{
-                                titleMsg = "Insert!";
-                                textMsg = 'Data has been created!';
-                            }
+                            // if(data.method == "PATCH"){
+                            //     titleMsg = "Update!";
+                            //     textMsg = 'Data has been updated!';
+                            // }else{
+                            //     titleMsg = "Insert!";
+                            //     textMsg = 'Data has been created!';
+                            // }
+
+                            // console.log(data);
+
+                            // // Get data district to var data
+                            // $.ajax({
+                            //     type: 'POST',
+                            //     url: 'import/price',
+                            //     dataType: 'json',
+                            //     data: {data: data.file_name},
+                            //     global: false,
+                            //     async: false,
+                            //     success: function (results) {
+                            //         console.log(results);
+                            //     }
+                            // });
 
                             swal({
                                     title: titleMsg,
@@ -216,16 +213,27 @@ var FormValidation = function () {
                                     type: 'success'
                                 },
                                 function(){
-                                    // window.location.href = data.url;
                                     // console.log(data);
 
-                                    $('#targetsalesmanTable').DataTable().search('').draw();
-                                    $('#targetsalesmanTable').DataTable().ajax.reload();
+                                    // Reset loading spinner
+                                    App.unblockUI("#loading_element");
 
-                                    $('#exportAll').removeAttr('disabled');
-                                    $('#export').removeAttr('disabled');
+                                    window.location.href = data.url;
+                                    // console.log(data);
 
-                                    $('#targetsalesman').modal('hide');
+                                    // setTimeout(function () {
+                                    //     $.ajax({
+                                    //         type: 'POST',
+                                    //         url: 'import/price',
+                                    //         dataType: 'json',
+                                    //         data: {data: data.file_name},
+                                    //         global: false,
+                                    //         async: false,
+                                    //         success: function (results) {
+                                    //             console.log(results);
+                                    //         }
+                                    //     });
+                                    // }, 1000);
                                 }
                             )
                             // console.log(data.method);
@@ -233,6 +241,10 @@ var FormValidation = function () {
                         },
                         error: function(response) {
                             console.log('Error:', response);
+
+                            // Reset loading spinner
+                            App.unblockUI("#loading_element");
+
                             swal("Error!", "Failed to perform the task!", "error");
                         }
                     });
@@ -247,7 +259,7 @@ var FormValidation = function () {
         //main function to initiate the module
         init: function () {
 
-            targetValidation();
+            priceUploadValidation();
 
         }
 
@@ -256,32 +268,109 @@ var FormValidation = function () {
 }();
 
 /*
+ * File upload handler
+ *
+ */
+
+ var FileHandler = function () {
+
+    //File input change (to check upload just image [jpg, jpeg, png, gif, svg] & Max size 2048)
+    $("input:file").change(function (e){                
+        // error.appendTo();
+        // $(this).attr()
+        // alert($(this).parent('.input-group').children('.error_message'));
+        // $(this).parent('.input-group').children('.error_message')[0].innerHTML += "tes";
+        // alert($(this).parent('.input-group').children('.error_message')[0].innerHTML);
+
+        var form = $('#form_upload');
+        var errorAlert = $('.alert-danger', form);
+        var successAlert = $('.alert-success', form);
+        var filename = $(this).val();          
+        var extension = filename.replace(/^.*\./, '');
+        var error_container = $(this).parent('.input-group').children('.file_error_message');
+        var error_message = '';
+
+        if (extension == filename) {
+            extension = '';
+        } else {                 
+            extension = extension.toLowerCase();
+        }
+
+        switch (extension) {
+            case '':
+                $(this).closest('.form-group').removeClass("has-error");
+                $(this).closest('.form-group').removeClass("has-success");
+                break;
+            case 'xls': case 'xlsx': case 'xlsb':
+
+                if(typeof $(this)[0].files[0] !== 'undefined'){
+                    if(($(this)[0].files[0].size/1024) > (2048*1000)){
+                        $(this).closest('.form-group').removeClass("has-success").addClass("has-error");
+                        error_message = "Max file size reached!";
+                        break;
+                    }
+                }
+
+                $(this).closest('.form-group').removeClass("has-error").addClass("has-success");                        
+                break;
+
+            default:
+                $(this).closest('.form-group').removeClass("has-success").addClass("has-error");
+                error_message = "Please select excel file with type file like above!";
+                break;
+        }
+
+        if(error_message != ''){
+            error_container.removeAttr('style');
+            error_container[0].setAttribute("style","color: #e73d4a;");
+            error_container[0].innerHTML = "";
+            error_container[0].innerHTML = error_message;
+        }else{
+            error_container[0].setAttribute("style","display: none;");
+        }
+
+        // Check if all requirement valid and show success text
+        if(errorAlert.is(":visible") || successAlert.is(":visible")){
+            var errors = 0;
+            form.each(function(){
+                if($(this).find('.form-group').hasClass('has-error')){
+                    errors += 1;
+                } 
+            });
+
+            if(errors == 0){ 
+                successAlert.show();
+                errorAlert.hide();
+            }else{
+                successAlert.hide();
+                errorAlert.show();
+            }
+        }
+
+        // $(this).closest('.form-group').addClass("has-success");
+    });
+
+
+ };
+
+/*
  * Set up module
  *
  */
 
 jQuery(document).ready(function() {
-    FormValidation.init();
-});
-
-/*
- * Select2 validation
- *
- */
-
-$(document.body).on("change",".select2select",function(){
-
-    select2Change($(this), $('#form_targetsalesman'));
-
+    FormUploadValidation.init();
+    FileHandler();
 });
 
 // Reset Validation
-function resetValidation(){
-    $('#form_targetsalesman').each(function(){
+function resetUploadValidation(){
+    $('#form_upload').each(function(){
         $(this).find('.form-group').removeClass('has-error').removeClass('has-success');
         $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
     });
 
-    $('.alert-danger', $('#form_targetsalesman')).hide();
-    $('.alert-success', $('#form_targetsalesman')).hide();
+    $('.alert-danger', $('#form_upload')).hide();
+    $('.alert-success', $('#form_upload')).hide();
 }
+

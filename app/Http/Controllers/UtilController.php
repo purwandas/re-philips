@@ -22,6 +22,7 @@ use App\AttendanceDetail;
 use App\TargetQuiz;
 use App\Reports\HistoryEmployeeStore;
 use App\Reports\SalesActivity;
+use App\Reports\SalesmanSalesActivity;
 use DB;
 use Activity;
 use Auth;
@@ -257,10 +258,12 @@ class UtilController extends Controller
     public function getUserOnline(){
 
         $users = Activity::users()->where('user_id', '<>', Auth::user()->id)->orderByUsers('name');
+        $userIds = $users->pluck('user_id');
+        $usersData = User::with('role')->whereIn('id', $userIds)->get();
 
         return response()->json([
             'count' => $users->count(),
-            'users' => $users->get(),
+            'users' => $usersData,
         ]);
     }
 
@@ -268,10 +271,25 @@ class UtilController extends Controller
 
         $activity = SalesActivity::
                     whereNull('sales_activities.status')
-                    ->orwhere('sales_activities.status',0)
+                    ->orWhere('sales_activities.status',0)
                     ->join('users','users.id','sales_activities.user_id')
                     ->join('roles','roles.id','users.role_id')
                     ->select('sales_activities.*','users.name','roles.role');
+
+        return response()->json([
+            'count' => $activity->count(),
+            'activity' => $activity->get(),
+        ]);
+    }
+
+    public function getSalesmanSalesHistory(){
+
+        $activity = SalesmanSalesActivity::
+                    whereNull('salesman_sales_activities.status')
+                    ->orWhere('salesman_sales_activities.status',0)
+                    ->join('users','users.id','salesman_sales_activities.user_id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('salesman_sales_activities.*','users.name','roles.role');
 
         return response()->json([
             'count' => $activity->count(),
@@ -294,6 +312,45 @@ class UtilController extends Controller
         return response()->json([
             'status' => true,
             'activity' => $act,
+        ]);
+    }
+
+    public function readSalesmanSalesHistory(Request $request){
+
+        $activity = SalesmanSalesActivity::
+                    where('id',$request['id'])
+                    ->first();
+        $act = $activity;
+            if ($activity->count() >0) {
+                $activity->update([
+                    'status' => 1
+                ]);
+            }
+
+        return response()->json([
+            'status' => true,
+            'activity' => $act,
+        ]);
+    }
+
+    public function getSalesHistoryCount(){
+
+        $activity = SalesmanSalesActivity::
+                    whereNull('salesman_sales_activities.status')
+                    ->orWhere('salesman_sales_activities.status',0)
+                    ->join('users','users.id','salesman_sales_activities.user_id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('salesman_sales_activities.*','users.name','roles.role');
+
+        $activity2 = SalesActivity::
+                    whereNull('sales_activities.status')
+                    ->orWhere('sales_activities.status',0)
+                    ->join('users','users.id','sales_activities.user_id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('sales_activities.*','users.name','roles.role');
+
+        return response()->json([
+            'count' => $activity->count() + $activity2->count(),
         ]);
     }
 

@@ -43,7 +43,8 @@ class TargetSalesmanController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(TargetSalesmanFilters $filters){
-        $data = SalesmanTarget::filter($filters)->get();
+        $data = SalesmanTarget::filter($filters)->join('users', 'salesman_targets.user_id', '=', 'users.id')
+                    ->select('salesman_targets.*', 'users.name as salesman_name')->get();
 
         return $data;
     }

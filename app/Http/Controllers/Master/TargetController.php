@@ -64,7 +64,9 @@ class TargetController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(TargetFilters $filters){
-        $data = Target::filter($filters)->get();
+        $data = Target::filter($filters)->join('users', 'targets.user_id', '=', 'users.id')
+                    ->join('stores', 'targets.store_id', '=', 'stores.id')
+                    ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2')->get();
 
         return $data;
     }
