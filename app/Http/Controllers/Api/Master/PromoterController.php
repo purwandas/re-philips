@@ -142,54 +142,91 @@ class PromoterController extends Controller
     public function reject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
-        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token');
+        //get promoter
+        $target_promoter = User::where('users.id', $attendances->user_id);
+        // get spv
+        if ($user->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
+        }else{
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
 
         try{
-
             $attendance->update([
                 'status' => 'Alpha',
                 'reject' => '1'
             ]);
 
-        // notificaton for reject promotor attendace..
-        // if($prom_token != null){
-        //     $fields = array(
-        //         'to' => $prom_token,
-        //         'data' => 'Absen telah reject',
-        //     );
+            $createNews = News::create([
+                'user_id' => $spv->name,
+                'from' => 'notification',
+                'subject' => 'Reject Absen',
+                'content' => 'Absen Anda pada hari ini telah di-reject oleh '.$spv->name.', silahkan hubungi supervisor untuk melakukan absensi ',
+                'target_type' => 'Promoter',
+                'target_detail' = $target_promoter->id,
+                'date' => Carbon::now(),
+                'total_read' => 0,
 
-        //     $url = 'https://fcm.googleapis.com/fcm/send';
+            ]);
 
-        //     $headers = array(
-        //         'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
-        //         'Content-Type: application/json'
-        //     );
-        //     // Open connection
-        //     $ch = curl_init();
+            // notificaton for reject promotor attendace..            
+            if($target_promoter->fcm_token != null){
 
-        //     // Set the url, number of POST vars, POST data
-        //     curl_setopt($ch, CURLOPT_URL, $url);
+                $res = array();
+                $res['data']['title'] = 'notifikasi-Reject Absen';
+                //$res['data']['is_background'] = $this->is_background;
+                $res['data']['message'] = ' Absen Anda telah ditolak oleh '.$spv->name.' Anda! ';
+                //$res['data']['image'] = $this->image;
+                //$res['data']['payload'] = $this->data;
+                $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
-        //     curl_setopt($ch, CURLOPT_POST, true);
-        //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $fields = array(
+                    'to' => $target_promoter->fcm_token,
+                    'data' => $res,
 
-        //     // Disabling SSL Certificate support temporarly
-        //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                );
 
-        //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+                $url = 'https://fcm.googleapis.com/fcm/send';
 
-        //     // Execute post
-        //     $result = curl_exec($ch);
-        //     if ($result === FALSE) {
-        //         die('Curl failed: ' . curl_error($ch));
-        //     }
+                $headers = array(
+                    'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                    'Content-Type: application/json'
+                );
+                // Open connection
+                $ch = curl_init();
 
-        //     // Close connection
-        //     curl_close($ch);
+            // return response()->json(['status' => false, 'message' => $fields], 200);
+            
+                // Set the url, number of POST vars, POST data
+                curl_setopt($ch, CURLOPT_URL, $url);
 
-        //     // return $result;
-        // }
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                // Disabling SSL Certificate support temporarly
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                // Execute post
+                $result = curl_exec($ch);
+                if ($result === FALSE) {
+                    die('Curl failed: ' . curl_error($ch));
+                }
+
+                // Close connection
+                curl_close($ch);
+
+                // return $result;
+            }
 
         }catch (\Exception $exception){
             return response()->json(['status' => false, 'message' => 'Gagal melakukan reject'], 500);
@@ -201,7 +238,21 @@ class PromoterController extends Controller
     public function undoReject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
-        // $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token');
+        //get promoter
+        $target_promoter = User::where('users.id', $attendances->user_id);
+        // get spv
+        if ($user->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
+        }else{
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
 
         try{
 
@@ -210,45 +261,69 @@ class PromoterController extends Controller
                 'reject' => '0'
             ]);
 
-        // notificaton for undo reject promotor attendance..
-        // if($prom_token != null){
-        //     $fields = array(
-        //         'to' => $prom_token,
-        //         'data' => 'Reject Absen telah diubah',
-        //     );
+            $createNews = News::create([
+                'user_id' => $spv->name,
+                'from' => 'notification',
+                'subject' => 'Cancel Reject Absen',
+                'content' => 'Reject absen Anda pada hari ini telah dibatalkan oleh '.$spv->name.'  ',
+                'target_type' => 'Promoter',
+                'target_detail' = $target_promoter->id,
+                'date' => Carbon::now(),
+                'total_read' => 0,
 
-        //     $url = 'https://fcm.googleapis.com/fcm/send';
+            ]);
 
-        //     $headers = array(
-        //         'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
-        //         'Content-Type: application/json'
-        //     );
-        //     // Open connection
-        //     $ch = curl_init();
+            // notificaton for undo reject promotor attendance..
+            if($target_promoter->fcm_token != null){
 
-        //     // Set the url, number of POST vars, POST data
-        //     curl_setopt($ch, CURLOPT_URL, $url);
+                $res = array();
+                $res['data']['title'] = 'notifikasi-Reject Dibatalkan';
+                //$res['data']['is_background'] = $this->is_background;
+                $res['data']['message'] = ' Reject Absen Anda telah dibatalkan oleh '.$spv->name.' ';
+                //$res['data']['image'] = $this->image;
+                //$res['data']['payload'] = $this->data;
+                $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
-        //     curl_setopt($ch, CURLOPT_POST, true);
-        //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $fields = array(
+                    'to' => $target_promoter->fcm_token,
+                    'data' => $res,
 
-        //     // Disabling SSL Certificate support temporarly
-        //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                );
 
-        //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+                $url = 'https://fcm.googleapis.com/fcm/send';
 
-        //     // Execute post
-        //     $result = curl_exec($ch);
-        //     if ($result === FALSE) {
-        //         die('Curl failed: ' . curl_error($ch));
-        //     }
+                $headers = array(
+                    'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                    'Content-Type: application/json'
+                );
+                // Open connection
+                $ch = curl_init();
 
-        //     // Close connection
-        //     curl_close($ch);
+            // return response()->json(['status' => false, 'message' => $fields], 200);
+            
+                // Set the url, number of POST vars, POST data
+                curl_setopt($ch, CURLOPT_URL, $url);
 
-        //     // return $result;
-        // }
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                // Disabling SSL Certificate support temporarly
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                // Execute post
+                $result = curl_exec($ch);
+                if ($result === FALSE) {
+                    die('Curl failed: ' . curl_error($ch));
+                }
+
+                // Close connection
+                curl_close($ch);
+
+                // return $result;
+            }
 
         }catch (\Exception $exception){
             return response()->json(['status' => false, 'message' => 'Gagal melakukan undo reject'], 500);
@@ -263,7 +338,20 @@ class PromoterController extends Controller
         if(!$attendances){
             return response()->json(['status' => false, 'message' => 'Data absen tidak ditemukan'], 500);
         }
-        // $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token');
+        $target_promoter = User::where('users.id', $attendances->user_id);
+
+        if ($user->role->role_group == 'Demonstrator DA') {
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                        ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
+        }else{
+            $spv = User::where('users.id', $user->id)
+                        ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                        ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                        ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                        ->select('spv_token.name')->first();
                     
         $message = "";
 
@@ -312,46 +400,69 @@ class PromoterController extends Controller
             }
         }
 
+        $createNews = News::create([
+            'user_id' => $spv->name,
+            'from' => 'notification',
+            'subject' => 'Approval Absen',
+            'content' => 'Absen '$message.' Anda pada hari ini telah approv oleh '.$spv->name.'  ',
+            'target_type' => 'Promoter',
+            'target_detail' = $target_promoter->id,
+            'date' => Carbon::now(),
+            'total_read' => 0,
 
-        // notificaton for approve pending..
-        // if($prom_token != null){
-        //     $fields = array(
-        //         'to' => $prom_token,
-        //         'data' => 'Approval '.$message.' berhasil',
-        //     );
+        ]);
 
-        //     $url = 'https://fcm.googleapis.com/fcm/send';
+        // notificaton for undo reject promotor attendance..
+        if($target_promoter->fcm_token != null){
 
-        //     $headers = array(
-        //         'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
-        //         'Content-Type: application/json'
-        //     );
-        //     // Open connection
-        //     $ch = curl_init();
+            $res = array();
+            $res['data']['title'] = 'notifikasi-Absen Approval';
+            //$res['data']['is_background'] = $this->is_background;
+            $res['data']['message'] = ' Absen '.$message.'Anda telah disetujui oleh '.$spv->name.' ';
+            //$res['data']['image'] = $this->image;
+            //$res['data']['payload'] = $this->data;
+            $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
-        //     // Set the url, number of POST vars, POST data
-        //     curl_setopt($ch, CURLOPT_URL, $url);
+            $fields = array(
+                'to' => $target_promoter->fcm_token,
+                'data' => $res,
 
-        //     curl_setopt($ch, CURLOPT_POST, true);
-        //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            );
 
-        //     // Disabling SSL Certificate support temporarly
-        //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $url = 'https://fcm.googleapis.com/fcm/send';
 
-        //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            $headers = array(
+                'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                'Content-Type: application/json'
+            );
+            // Open connection
+            $ch = curl_init();
 
-        //     // Execute post
-        //     $result = curl_exec($ch);
-        //     if ($result === FALSE) {
-        //         die('Curl failed: ' . curl_error($ch));
-        //     }
+        // return response()->json(['status' => false, 'message' => $fields], 200);
+        
+            // Set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, $url);
 
-        //     // Close connection
-        //     curl_close($ch);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        //     // return $result;
-        // }
+            // Disabling SSL Certificate support temporarly
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+            // Execute post
+            $result = curl_exec($ch);
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($ch));
+            }
+
+            // Close connection
+            curl_close($ch);
+
+            // return $result;
+        }
 
         return response()->json(['status' => true, 'id_attendance' => $attendances->id, 'message' => 'Approval '.$message.' berhasil']);
 

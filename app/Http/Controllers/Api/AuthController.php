@@ -286,7 +286,8 @@ class AuthController extends Controller
         }
 
         $userData->update([
-            'status_login' => 'Logout'
+            'status_login' => 'Logout',
+            'fcm_token' => null,
         ]);
 
 			return response()->json(['status' => true, 'message' => 'logout berhasil'], 200);
