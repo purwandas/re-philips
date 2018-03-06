@@ -56,6 +56,11 @@ class UserController extends Controller
             ->whereNotIn('role_group',$roles);
 //        $data = User::all();
 
+        if(Auth::user()->role->role_group != 'Master'){
+            $adminRoles = ['Admin', 'Master'];
+            $data = $data->whereNotIn('role_group', $adminRoles);
+        }
+
         $filter = $data;
 
         /* If filter */

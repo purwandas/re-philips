@@ -151,12 +151,12 @@ class StoreController extends Controller
         $userId = Auth::user()->id;       
 
         $data = Store::filter($filters)
-                ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
-                    ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
-                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
-                    ->join('districts', 'stores.district_id', '=', 'districts.id')
-                    ->join('areas', 'districts.area_id', '=', 'areas.id')
-                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')
+                    ->leftJoin('areas', 'districts.area_id', '=', 'areas.id')
+                    ->leftJoin('regions', 'areas.region_id', '=', 'regions.id')
                     ->leftJoin('classifications', 'classifications.id', '=', 'stores.classification_id')
                     ->leftJoin('users', 'users.id', '=', 'stores.user_id')
                     ->leftJoin('spv_demos', 'stores.id', '=', 'spv_demos.store_id')

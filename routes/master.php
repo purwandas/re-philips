@@ -327,6 +327,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('import-product-focus', 'Master\ImportController@importProductFocus');
         Route::post('import-product-promo', 'Master\ImportController@importProductPromo');
         Route::post('import-product-focus-salesman', 'Master\ImportController@importProductFocusSalesman');
+        Route::post('import-target', 'Master\ImportController@importTarget');
+        Route::post('import-salesman-target', 'Master\ImportController@importSalesmanTarget');
 
 
     });

@@ -195,6 +195,9 @@ var FormValidation = function () {
                                     $('#groupCompetitorTable').DataTable().search('').draw();
                                     $('#groupCompetitorTable').DataTable().ajax.reload();
 
+                                    $('#exportAll').removeAttr('disabled');
+                                    $('#export').removeAttr('disabled');
+
                                     $('#groupcompetitor').modal('hide');                                    
                                 }
                             )

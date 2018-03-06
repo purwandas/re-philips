@@ -45,11 +45,11 @@
                 </ul>
             </li>
 
-            <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }} {{ Request::is('channel*') ? 'active open' : '' }} {{ Request::is('subchannel*') ? 'active open' : '' }} {{ Request::is('distributor*') ? 'active open' : '' }}">
+            <li class="nav-item {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }} {{ Request::is('channel*') ? 'active open' : '' }} {{ Request::is('subchannel*') ? 'active open' : '' }} {{ Request::is('distributor*') ? 'active open' : '' }} {{ Request::is('classification') ? 'active open' : '' }}">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="title">Store(s)</span>
-                    <span class="arrow {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }} {{ Request::is('channel*') ? 'active open' : '' }} {{ Request::is('subchannel*') ? 'active open' : '' }} {{ Request::is('distributor*') ? 'active open' : '' }}"></span>
+                    <span class="arrow {{ Request::is('store*') ? 'active open' : '' }} {{ Request::is('place*') ? 'active open' : '' }} {{ Request::is('channel*') ? 'active open' : '' }} {{ Request::is('subchannel*') ? 'active open' : '' }} {{ Request::is('distributor*') ? 'active open' : '' }} {{ Request::is('classification') ? 'active open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <li class="nav-item {{ Request::is('channel') ? 'active open' : '' }}">
@@ -77,17 +77,22 @@
                             <span class="title">Other Store</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('classification') ? 'active open' : '' }}">
+                        <a href="{{ url('classification') }}" class="nav-link nav-toggle">
+                            <span class="title">Store Classification</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
             <li class="nav-item 
-            {{ Request::is('user*') ? 'active open' : '' }} 
+            {{ Request::is('user*') ? 'active open' : '' }} {{ Request::is('role') ? 'active open' : '' }} {{ Request::is('grading') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-group"></i>
                     <span class="title">Employee</span>
                     <span class="arrow 
-                    {{ Request::is('user*') ? 'open' : '' }} 
+                    {{ Request::is('user*') ? 'open' : '' }} {{ Request::is('role') ? 'active open' : '' }} {{ Request::is('grading') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">
@@ -101,6 +106,18 @@
                             <span class="title">Non-Promoter</span>
                         </a>
                     </li>
+                    @if(Auth::user()->role->role_group == 'Master')
+                    <li class="nav-item {{ Request::is('role') ? 'active open' : '' }}">
+                        <a href="{{ url('role') }}" class="nav-link nav-toggle">
+                            <span class="title">Employee Role</span>
+                        </a>
+                    </li>
+                    @endif
+                    <li class="nav-item {{ Request::is('grading') ? 'active open' : '' }}">
+                        <a href="{{ url('grading') }}" class="nav-link nav-toggle">                    
+                            <span class="title">Employee Grading</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -110,11 +127,12 @@
             {{ Request::is('category') ? 'active open' : '' }} 
             {{ Request::is('product') ? 'active open' : '' }}
             {{ Request::is('price') ? 'active open' : '' }}
+            {{ Request::is('leadtime') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
-                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }}"></span>
+                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }} {{ Request::is('leadtime') ? 'active open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <!-- <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
@@ -155,6 +173,7 @@
                 {{ Request::is('productfocus') ? 'active open' : '' }}
                 {{ Request::is('targetsalesman') ? 'active open' : '' }}
                 {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+                {{ Request::is('productpromo') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-line-chart"></i>
@@ -164,6 +183,7 @@
                         {{ Request::is('productfocus') ? 'active open' : '' }}
                         {{ Request::is('targetsalesman') ? 'active open' : '' }}
                         {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+                        {{ Request::is('productpromo') ? 'active open' : '' }}
                     "></span>
                 </a>
                 <ul class="sub-menu">
@@ -196,30 +216,11 @@
                 </ul>
             </li>
 
-            <li class="nav-item 
-                {{ Request::is('sellin') ? 'active open' : '' }}
-                {{ Request::is('selout') ? 'active open' : '' }}
-            ">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa fa-money"></i>
-                    <span class="title">Sales</span>
-                    <span class="arrow 
-                        {{ Request::is('sellin') ? 'active open' : '' }}
-                        {{ Request::is('selout') ? 'active open' : '' }}
-                    "></span>
+            <li class="nav-item {{ Request::is('timegone') ? 'active open' : '' }}">
+                <a href="{{ url('timegone') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-hourglass-half"></i>
+                    <span class="title">Timegone</span>
                 </a>
-                <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('sellin') ? 'active open' : '' }}">
-                        <a href="{{ url('sellin') }}" class="nav-link nav-toggle">
-                            <span class="title">Sell in</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('sellout') ? 'active open' : '' }}">
-                        <a href="{{ url('sellout') }}" class="nav-link nav-toggle">
-                            <span class="title">Sell Out</span>
-                        </a>
-                    </li>
-                </ul>
             </li>
             
             
@@ -234,40 +235,28 @@
                     <i class="fa fa-street-view"></i>
                     <span class="title">Group Competitor</span>
                 </a>
-            </li>
-
-
-            <li class="nav-item {{ Request::is('role') ? 'active open' : '' }}">
-                <a href="{{ url('role') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Employee Role</span>
-                </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('grading') ? 'active open' : '' }}">
-                <a href="{{ url('grading') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Employee Grading</span>
-                </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('classification') ? 'active open' : '' }}">
-                <a href="{{ url('classification') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Store Classification</span>
-                </a>
-            </li>
-
-            <li class="nav-item {{ Request::is('timegone') ? 'active open' : '' }}">
-                <a href="{{ url('timegone') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-cog"></i>
-                    <span class="title">Timegone</span>
-                </a>
-            </li>
+            </li>            
 
             @endif
 
             @if(Auth::user()->role->role_group == 'Master' || Auth::user()->role->role_group == 'Admin' || Auth::user()->role->role_group == 'Supervisor' || Auth::user()->role->role_group == 'Supervisor Hybrid')
+
+            <li class="heading">
+                <h3 class="uppercase">INPUT SALES DATA</h3>
+            </li>
+
+            <li class="nav-item {{ Request::is('sellin') ? 'active open' : '' }}">
+                <a href="{{ url('sellin') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-edit"></i>
+                    <span class="title">Sell Thru</span>
+                </a>
+            </li>
+            <li class="nav-item {{ Request::is('sellout') ? 'active open' : '' }}">
+                <a href="{{ url('sellout') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-edit"></i>
+                    <span class="title">Sell Out</span>
+                </a>
+            </li>
 
             <li class="heading">
                 <h3 class="uppercase">EDIT/DELETE SALES DATA</h3>
