@@ -75,9 +75,6 @@
 
                 <br><br>
 
-            </div>
-
-                <div class="portlet light bordered" id="dataContent">
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
@@ -146,6 +143,8 @@
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
+
+        // var dataAll
         /*
          *
          *

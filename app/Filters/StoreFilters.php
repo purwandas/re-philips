@@ -14,7 +14,7 @@ class StoreFilters extends QueryFilters
     public function store($value) {
         if(!$this->requestAllData($value)){
         	$this->builder->where(function ($query) use ($value){
-                return $query->where('store_name_1', 'like', '%'.$value.'%')->orWhere('store_name_2', 'like', '%'.$value.'%')->orWhere('store_id', 'like', '%'.$value.'%');
+                return $query->where('stores.store_name_1', 'like', '%'.$value.'%')->orWhere('stores.store_name_2', 'like', '%'.$value.'%')->orWhere('stores.store_id', 'like', '%'.$value.'%');
             });
         }
 
@@ -43,7 +43,7 @@ class StoreFilters extends QueryFilters
 
     // get all different store ID
     public function bySpvNew() {
-        return $this->builder->groupBy('store_id');
+        return $this->builder->groupBy('stores.store_id');
     }
 
     // Ordering by dedicate

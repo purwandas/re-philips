@@ -30,7 +30,7 @@
             <div class="portlet light bordered">
             <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-blue"></i>
+                        <i class="fa fa-cog font-blue"></i>
                         <span class="caption-subject font-blue bold uppercase">FILTER TARGET</span>
                     </div>
                 </div>
@@ -79,9 +79,18 @@
                         class="fa fa-plus"></i> Add Target </a>
 
                 </div>
-                <div class="actions" style="text-align: left">
+                <div class="btn-group">
+                    <a id="upload" class="btn btn-primary" data-toggle="modal" href="#upload-target"><i
+                        class="fa fa-cloud-upload"></i> Update Target </a>
+
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
                     <a id="export" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                </div>
+                <div class="actions" style="text-align: left; padding-right: 10px;">
+                    <a id="exportAll" class="btn green-dark" >
+                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                 </div>
             </div>
 
@@ -107,6 +116,7 @@
             </div>
 
             @include('partial.modal.target-modal')
+            @include('partial.modal.upload-target-modal')
 
             <!-- END MAIN CONTENT -->
         </div>
@@ -125,10 +135,11 @@
 <!-- END RELATION SCRIPTS -->
 <!-- BEGIN PAGE VALIDATION SCRIPTS -->
 <script src="{{ asset('js/handler/target-handler.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/upload-modal/upload-target-handler.js') }}" type="text/javascript"></script>
 <!-- END PAGE VALIDATION SCRIPTS -->
 
 <script>
-    var data = {};
+    var dataAll = {};
     
     /*
      *
@@ -174,7 +185,15 @@
             global: false,
             async: false,
             success: function (results) {
-                data = results;
+                var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
             }
         });
 
@@ -185,6 +204,18 @@
             "ajax": {
                 url: "{{ route('datatable.target') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
             "columns": [
@@ -243,6 +274,27 @@
                             url:  'target/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/target',
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                    $('#export').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                    $('#export').attr('disabled','disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -276,19 +328,129 @@
 
                         window.location = data.url;
 
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/target',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-target',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportTemplate").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/target',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-target',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
 
 
                     }
@@ -393,6 +555,14 @@
 
     });
 
+    $(document).on("click", "#upload", function () {
+
+        resetUploadValidation();
+
+        $('#upload_file').val('');
+
+    });
+
     function initSelect2(){
 
         /*
@@ -401,7 +571,7 @@
          */
 
         $('#promoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['promoterGroup'] = 1;
+	        	filters['promoterGroupNew'] = 1;
 	            return filterData('employee', params.term);
 	        }, function (data, params) {
 	            return {

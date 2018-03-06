@@ -201,6 +201,9 @@ var FormValidation = function () {
                                 $('#posmTable').DataTable().search('').draw();
                                 $('#posmTable').DataTable().ajax.reload();
 
+                                $('#exportAll').removeAttr('disabled');
+                                $('#export').removeAttr('disabled');
+
                                 $('#posm').modal('hide');
                             }
                         )

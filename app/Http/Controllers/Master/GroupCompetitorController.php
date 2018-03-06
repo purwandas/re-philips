@@ -39,7 +39,7 @@ class GroupCompetitorController extends Controller
         $data = GroupCompetitor::where('group_competitors.deleted_at', null)
                     ->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
                     ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
-                    ->select('group_competitors.*', 'groups.name as group_name')->get();
+                    ->select('group_competitors.*', 'groups.id as group_id','groups.name as group_name')->get();
 //         $data = GroupCompetitor::all();
 
         return $this->makeTable($data);
@@ -47,7 +47,9 @@ class GroupCompetitorController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(GroupCompetitorFilters $filters){        
-        $data = GroupCompetitor::filter($filters)->get();
+        $data = GroupCompetitor::filter($filters)->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
+                    ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
+                    ->select('group_competitors.*', 'groups.id as group_id', 'groups.name as group_name')->get();
 
         return $data;
     }

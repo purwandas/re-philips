@@ -8,7 +8,7 @@ var FormValidation = function () {
     // Master Validation
     var areaValidation = function() {
 
-            var form = $('#form_sell-in');
+            var form = $('#form_sellin');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
@@ -24,13 +24,16 @@ var FormValidation = function () {
                     user_id:{
                         required: true,
                     },
+                    date:{
+                        required: true,
+                    },
                 },
                 messages:{
                     store_id:{
                         required: "Please select a Store!"
                     },
                     user_id:{
-                        required: "Please select User!"
+                        required: "Please select Promoter!"
                     },
                 },
 
@@ -179,16 +182,16 @@ var FormValidation = function () {
                         contentType: false,
                         success: function (data) {                            
                             
-                            var titleMsg;
-                            var textMsg;
+                            var titleMsg = "Insert!";
+                            var textMsg = 'Data has been created!';
 
-                            if(data.method == "PATCH"){
-                                titleMsg = "Update!";
-                                textMsg = 'Data has been updated!';
-                            }else{
-                                titleMsg = "Insert!";
-                                textMsg = 'Data has been created!';
-                            }
+                            // if(data.method == "PATCH"){
+                            //     titleMsg = "Update!";
+                            //     textMsg = 'Data has been updated!';
+                            // }else{
+                            //     titleMsg = "Insert!";
+                            //     textMsg = 'Data has been created!';
+                            // }
 
                             swal({
                                     title: titleMsg,
@@ -197,15 +200,17 @@ var FormValidation = function () {
                                 },
                                 function(){
                                     // window.location.href = data.url;
-                                    // console.log(data);
+                                    console.log(data);
+                                    location.reload();
+                                    location.reload();
 
-                                    $('#sellInTable').DataTable().search('').draw();
-                                    $('#sellInTable').DataTable().ajax.reload();
+                                    // $('#sellInTable').DataTable().search('').draw();
+                                    // $('#sellInTable').DataTable().ajax.reload();
 
-                                    $('#sell-in').modal('hide');                                    
+                                    // $('#sell-in').modal('hide');                                    
                                 }
                             )
-                            // console.log(data.method);
+                            // console.log(data.method);                            
 
                         },
                         error: function(response) {
@@ -248,17 +253,17 @@ jQuery(document).ready(function() {
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($(this), $('#form_sell-in'));
+    select2Change($(this), $('#form_sellin'));
 
 });
 
 // Reset Validation
 function resetValidation(){
-    $('#form_sell-in').each(function(){
+    $('#form_sellin').each(function(){
         $(this).find('.form-group').removeClass('has-error').removeClass('has-success');            
         $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
     });
 
-    $('.alert-danger', $('#form_sell-in'));
-    $('.alert-success', $('#form_sell-in'));
+    $('.alert-danger', $('#form_sellin'));
+    $('.alert-success', $('#form_sellin'));
 }

@@ -29,7 +29,7 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-map-o font-blue"></i>
+                    <i class="fa fa-group font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">Role</span>
                 </div>
             </div>
