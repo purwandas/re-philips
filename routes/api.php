@@ -17,8 +17,6 @@ use Illuminate\Http\Request;
 
 Route::get('tes', 'Api\AuthController@tes');
 
-Route::get('test-mail', 'Api\Master\SuggestionOrderController@testMail');
-
 /* JWT Authentication */
 
 Route::post('login', 'Api\AuthController@login');
@@ -29,6 +27,7 @@ Route::post('logout/{id}', 'Api\AuthController@logout');
 Route::group(['middleware' => 'jwt.auth'], function () {
 	  
 	Route::get('/user', 'Api\AuthController@getUser');
+    Route::post('/fcm-token', 'Api\AuthController@getFcmTokenToDB');
 
 	/**
      * Master Module(s)
@@ -182,6 +181,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
      */
     Route::get('/get-store-so', 'Api\Master\SuggestionOrderController@getStorePO');
     Route::get('/get-product-so/{param}', 'Api\Master\SuggestionOrderController@checkNeededPO');
+    Route::post('/oos-so', 'Api\Master\SuggestionOrderController@oos');
 
     /**
      * Time Gone Module(s)

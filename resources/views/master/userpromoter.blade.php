@@ -134,6 +134,7 @@
                             <th> Area </th>
                             <th> Store </th>
                             <th> History </th>
+                            <th> Device Name </th>
                             <th> Options </th>                             
                         </tr>
                     </thead>
@@ -189,6 +190,7 @@
                 {data: 'area', name: 'area'},
                 {data: 'store', name: 'store'},
                 {data: 'history', name: 'history'},
+                {data: 'jenis_hp', name: 'jenis_hp'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},                
             ];
 
