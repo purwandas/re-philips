@@ -142,7 +142,7 @@ class PromoterController extends Controller
     public function reject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
-        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token');
+        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token')->first();
 
         try{
 
@@ -151,45 +151,57 @@ class PromoterController extends Controller
                 'reject' => '1'
             ]);
 
-        // notificaton for reject promotor attendace..
-        // if($prom_token != null){
-        //     $fields = array(
-        //         'to' => $prom_token,
-        //         'data' => 'Absen telah reject',
-        //     );
+            // notificaton for reject promotor attendace..            
+            if($spv_token->fcm_token != null){
 
-        //     $url = 'https://fcm.googleapis.com/fcm/send';
+                $res = array();
+                $res['data']['title'] = 'notifikasi-Reject Absen';
+                //$res['data']['is_background'] = $this->is_background;
+                $res['data']['message'] = ' Absen Anda telah ditolak oleh Supervisor Anda! ';
+                //$res['data']['image'] = $this->image;
+                //$res['data']['payload'] = $this->data;
+                $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
-        //     $headers = array(
-        //         'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
-        //         'Content-Type: application/json'
-        //     );
-        //     // Open connection
-        //     $ch = curl_init();
+                $fields = array(
+                    'to' => $spv_token->fcm_token,
+                    'data' => $res,
 
-        //     // Set the url, number of POST vars, POST data
-        //     curl_setopt($ch, CURLOPT_URL, $url);
+                );
 
-        //     curl_setopt($ch, CURLOPT_POST, true);
-        //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $url = 'https://fcm.googleapis.com/fcm/send';
 
-        //     // Disabling SSL Certificate support temporarly
-        //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                $headers = array(
+                    'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                    'Content-Type: application/json'
+                );
+                // Open connection
+                $ch = curl_init();
 
-        //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            // return response()->json(['status' => false, 'message' => $fields], 200);
+            
+                // Set the url, number of POST vars, POST data
+                curl_setopt($ch, CURLOPT_URL, $url);
 
-        //     // Execute post
-        //     $result = curl_exec($ch);
-        //     if ($result === FALSE) {
-        //         die('Curl failed: ' . curl_error($ch));
-        //     }
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        //     // Close connection
-        //     curl_close($ch);
+                // Disabling SSL Certificate support temporarly
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        //     // return $result;
-        // }
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                // Execute post
+                $result = curl_exec($ch);
+                if ($result === FALSE) {
+                    die('Curl failed: ' . curl_error($ch));
+                }
+
+                // Close connection
+                curl_close($ch);
+
+                // return $result;
+            }
 
         }catch (\Exception $exception){
             return response()->json(['status' => false, 'message' => 'Gagal melakukan reject'], 500);
@@ -201,7 +213,7 @@ class PromoterController extends Controller
     public function undoReject(Request $request){
 
         $attendance = Attendance::where('id', $request->id);
-        // $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token');
+        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token')->first();
 
         try{
 
@@ -210,45 +222,57 @@ class PromoterController extends Controller
                 'reject' => '0'
             ]);
 
-        // notificaton for undo reject promotor attendance..
-        // if($prom_token != null){
-        //     $fields = array(
-        //         'to' => $prom_token,
-        //         'data' => 'Reject Absen telah diubah',
-        //     );
+            // notificaton for undo reject promotor attendance..
+            if($spv_token->fcm_token != null){
 
-        //     $url = 'https://fcm.googleapis.com/fcm/send';
+                $res = array();
+                $res['data']['title'] = 'notifikasi-Reject Dibatalkan';
+                //$res['data']['is_background'] = $this->is_background;
+                $res['data']['message'] = ' Reject Absen Anda telah dibatalkan oleh Supervisor ';
+                //$res['data']['image'] = $this->image;
+                //$res['data']['payload'] = $this->data;
+                $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
-        //     $headers = array(
-        //         'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
-        //         'Content-Type: application/json'
-        //     );
-        //     // Open connection
-        //     $ch = curl_init();
+                $fields = array(
+                    'to' => $spv_token->fcm_token,
+                    'data' => $res,
 
-        //     // Set the url, number of POST vars, POST data
-        //     curl_setopt($ch, CURLOPT_URL, $url);
+                );
 
-        //     curl_setopt($ch, CURLOPT_POST, true);
-        //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $url = 'https://fcm.googleapis.com/fcm/send';
 
-        //     // Disabling SSL Certificate support temporarly
-        //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                $headers = array(
+                    'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                    'Content-Type: application/json'
+                );
+                // Open connection
+                $ch = curl_init();
 
-        //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            // return response()->json(['status' => false, 'message' => $fields], 200);
+            
+                // Set the url, number of POST vars, POST data
+                curl_setopt($ch, CURLOPT_URL, $url);
 
-        //     // Execute post
-        //     $result = curl_exec($ch);
-        //     if ($result === FALSE) {
-        //         die('Curl failed: ' . curl_error($ch));
-        //     }
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        //     // Close connection
-        //     curl_close($ch);
+                // Disabling SSL Certificate support temporarly
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        //     // return $result;
-        // }
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                // Execute post
+                $result = curl_exec($ch);
+                if ($result === FALSE) {
+                    die('Curl failed: ' . curl_error($ch));
+                }
+
+                // Close connection
+                curl_close($ch);
+
+                // return $result;
+            }
 
         }catch (\Exception $exception){
             return response()->json(['status' => false, 'message' => 'Gagal melakukan undo reject'], 500);
@@ -263,7 +287,7 @@ class PromoterController extends Controller
         if(!$attendances){
             return response()->json(['status' => false, 'message' => 'Data absen tidak ditemukan'], 500);
         }
-        // $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token');
+        $prom_token = User::where('users.id', $attendances->user_id)->select('users.fcm_token')->first();
                     
         $message = "";
 
@@ -312,46 +336,57 @@ class PromoterController extends Controller
             }
         }
 
+        // notificaton for undo reject promotor attendance..
+        if($spv_token->fcm_token != null){
+            
+            $res = array();
+            $res['data']['title'] = 'notifikasi-Absen Approval';
+            //$res['data']['is_background'] = $this->is_background;
+            $res['data']['message'] = ' Absen '.$message.'Anda telah disetujui oleh Supervisor ';
+            //$res['data']['image'] = $this->image;
+            //$res['data']['payload'] = $this->data;
+            $res['data']['timestamp'] = date('Y-m-d G:i:s');
 
-        // notificaton for approve pending..
-        // if($prom_token != null){
-        //     $fields = array(
-        //         'to' => $prom_token,
-        //         'data' => 'Approval '.$message.' berhasil',
-        //     );
+            $fields = array(
+                'to' => $spv_token->fcm_token,
+                'data' => $res,
 
-        //     $url = 'https://fcm.googleapis.com/fcm/send';
+            );
 
-        //     $headers = array(
-        //         'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
-        //         'Content-Type: application/json'
-        //     );
-        //     // Open connection
-        //     $ch = curl_init();
+            $url = 'https://fcm.googleapis.com/fcm/send';
 
-        //     // Set the url, number of POST vars, POST data
-        //     curl_setopt($ch, CURLOPT_URL, $url);
+            $headers = array(
+                'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                'Content-Type: application/json'
+            );
+            // Open connection
+            $ch = curl_init();
 
-        //     curl_setopt($ch, CURLOPT_POST, true);
-        //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // return response()->json(['status' => false, 'message' => $fields], 200);
+        
+            // Set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, $url);
 
-        //     // Disabling SSL Certificate support temporarly
-        //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            // Disabling SSL Certificate support temporarly
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        //     // Execute post
-        //     $result = curl_exec($ch);
-        //     if ($result === FALSE) {
-        //         die('Curl failed: ' . curl_error($ch));
-        //     }
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 
-        //     // Close connection
-        //     curl_close($ch);
+            // Execute post
+            $result = curl_exec($ch);
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($ch));
+            }
 
-        //     // return $result;
-        // }
+            // Close connection
+            curl_close($ch);
+
+            // return $result;
+        }
 
         return response()->json(['status' => true, 'id_attendance' => $attendances->id, 'message' => 'Approval '.$message.' berhasil']);
 

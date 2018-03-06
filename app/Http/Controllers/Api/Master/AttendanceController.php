@@ -231,6 +231,7 @@ class AttendanceController extends Controller
             // Update if no data in attendance detail
             if($attendanceDetailsCount == 0) {
                 // Update attendance header
+                                
                 try {
                     DB::transaction(function () use ($content, $attendanceHeader) {
 
@@ -239,15 +240,34 @@ class AttendanceController extends Controller
                             'status' => 'Pending Sakit',
                         ]);
                     });
-                    $spv_token = User::where('users.id', $user->id)
-                                ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
-                                ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
-                                ->join('users', 'stores.user_id', '=', 'users.id')
-                                ->select('users.fcm_token');
-                    if($spv_token != null){
+                    if ($user->role->role_group == 'Demonstrator DA') {
+                        $spv_token = User::where('users.id', $user->id)
+                                    ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                    ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                                    ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                                    ->select('spv_token.fcm_token')->first();
+                    }else{
+                        $spv_token = User::where('users.id', $user->id)
+                                    ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                    ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                                    ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                                    ->select('spv_token.fcm_token')->first();
+                    }
+
+                    if($spv_token->fcm_token != null){
+
+                        $res = array();
+                        $res['data']['title'] = 'absensi-Approval Sakit';
+                        //$res['data']['is_background'] = $this->is_background;
+                        $res['data']['message'] = $user->name .' absen sakit, butuh approval Anda! ';
+                        //$res['data']['image'] = $this->image;
+                        //$res['data']['payload'] = $this->data;
+                        $res['data']['timestamp'] = date('Y-m-d G:i:s');
+
                         $fields = array(
-                            'to' => $spv_token,
-                            'data' => 'Promoter Absensi',
+                            'to' => $spv_token->fcm_token,
+                            'data' => $res,
+
                         );
 
                         $url = 'https://fcm.googleapis.com/fcm/send';
@@ -259,6 +279,8 @@ class AttendanceController extends Controller
                         // Open connection
                         $ch = curl_init();
 
+                    // return response()->json(['status' => false, 'message' => $fields], 200);
+                    
                         // Set the url, number of POST vars, POST data
                         curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -286,7 +308,6 @@ class AttendanceController extends Controller
                 } catch (\Exception $e) {
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
                 }
-
                 return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Sakit : masih dalam tahap verifikasi)']);
             }
 
@@ -326,6 +347,72 @@ class AttendanceController extends Controller
                         ]);
 
                     });
+
+                    if ($user->role->role_group == 'Demonstrator DA') {
+                        $spv_token = User::where('users.id', $user->id)
+                                    ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                    ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                                    ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                                    ->select('spv_token.fcm_token')->first();
+                    }else{
+                        $spv_token = User::where('users.id', $user->id)
+                                    ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                    ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                                    ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                                    ->select('spv_token.fcm_token')->first();
+                    }
+
+                    if($spv_token->fcm_token != null){
+
+                        $res = array();
+                        $res['data']['title'] = 'absensi-Approval Izin';
+                        //$res['data']['is_background'] = $this->is_background;
+                        $res['data']['message'] = $user->name .' absen Izin, butuh approval Anda! ';
+                        //$res['data']['image'] = $this->image;
+                        //$res['data']['payload'] = $this->data;
+                        $res['data']['timestamp'] = date('Y-m-d G:i:s');
+
+                        $fields = array(
+                            'to' => $spv_token->fcm_token,
+                            'data' => $res,
+
+                        );
+
+                        $url = 'https://fcm.googleapis.com/fcm/send';
+
+                        $headers = array(
+                            'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                            'Content-Type: application/json'
+                        );
+                        // Open connection
+                        $ch = curl_init();
+
+                    // return response()->json(['status' => false, 'message' => $fields], 200);
+                    
+                        // Set the url, number of POST vars, POST data
+                        curl_setopt($ch, CURLOPT_URL, $url);
+
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                        // Disabling SSL Certificate support temporarly
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                        // Execute post
+                        $result = curl_exec($ch);
+                        if ($result === FALSE) {
+                            die('Curl failed: ' . curl_error($ch));
+                        }
+
+                        // Close connection
+                        curl_close($ch);
+
+                        // return $result;
+                    }
+
                 } catch (\Exception $e) {
                     return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
                 }
@@ -347,18 +434,84 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Maaf, anda tidak bisa mengganti status menjadi off(libur)'], 200);
             }
 
-            try {
-                DB::transaction(function () use ($content, $attendanceHeader) {
+                try {
+                    DB::transaction(function () use ($content, $attendanceHeader) {
 
-                    // Attendance Header Update
-                    $attendanceHeader->update([
-                        'status' => 'Pending Off'
-                    ]);
+                        // Attendance Header Update
+                        $attendanceHeader->update([
+                            'status' => 'Pending Off'
+                        ]);
 
-                });
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
-            }
+                    });
+
+                    if ($user->role->role_group == 'Demonstrator DA') {
+                        $spv_token = User::where('users.id', $user->id)
+                                    ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                    ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
+                                    ->join('users as spv_token', 'spv_demos.user_id', '=', 'spv_token.id')
+                                    ->select('spv_token.fcm_token')->first();
+                    }else{
+                        $spv_token = User::where('users.id', $user->id)
+                                    ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
+                                    ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+                                    ->join('users as spv_token', 'stores.user_id', '=', 'spv_token.id')
+                                    ->select('spv_token.fcm_token')->first();
+                    }
+
+                    if($spv_token->fcm_token != null){
+                        
+                        $res = array();
+                        $res['data']['title'] = 'absensi-Approval Off';
+                        //$res['data']['is_background'] = $this->is_background;
+                        $res['data']['message'] = $user->name .' absen Off, butuh approval Anda! ';
+                        //$res['data']['image'] = $this->image;
+                        //$res['data']['payload'] = $this->data;
+                        $res['data']['timestamp'] = date('Y-m-d G:i:s');
+
+                        $fields = array(
+                            'to' => $spv_token->fcm_token,
+                            'data' => $res,
+
+                        );
+
+                        $url = 'https://fcm.googleapis.com/fcm/send';
+
+                        $headers = array(
+                            'Authorization: key=AAAAiy1AKL8:APA91bFexlzMrKvm_8GAuf5fo3sZBAx5HxP__GSAeg3UPrrrHuZiN6ghxuzRBNwZT4zoBv7btauByfnwRYAQKdAQ5sKWcACCOd51yzi_eDBujz_1wSItMPDSDFY2uIwND5IawvYqAoBa',
+                            'Content-Type: application/json'
+                        );
+                        // Open connection
+                        $ch = curl_init();
+
+                    // return response()->json(['status' => false, 'message' => $fields], 200);
+                    
+                        // Set the url, number of POST vars, POST data
+                        curl_setopt($ch, CURLOPT_URL, $url);
+
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                        // Disabling SSL Certificate support temporarly
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+                        // Execute post
+                        $result = curl_exec($ch);
+                        if ($result === FALSE) {
+                            die('Curl failed: ' . curl_error($ch));
+                        }
+
+                        // Close connection
+                        curl_close($ch);
+
+                        // return $result;
+                    }
+
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                }
 
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off : masih dalam tahap verifikasi)']);
         }
