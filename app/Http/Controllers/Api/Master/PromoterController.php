@@ -141,23 +141,23 @@ class PromoterController extends Controller
 
     public function reject(Request $request){
 
-        $attendance = Attendance::where('id', $request->id);
+        $attendance = Attendance::where('id', $request->id)->first();
         //get promoter
-        $target_promoter = User::where('users.id', $attendances->user_id);
+        $target_promoter = User::where('users.id', $attendance->user_id)->first();
         // get spv
         if ($target_promoter->role->role_group == 'Demonstrator DA') {
             $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
                         ->join('users as spv', 'spv_demos.user_id', '=', 'spv.id')
-                        ->select('spv.name')->first();
+                        ->select('spv.id', 'spv.name')->first();
         }else{
             $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
                         ->join('users as spv', 'stores.user_id', '=', 'spv.id')
-                        ->select('spv.name')->first();
-
+                        ->select('spv.id', 'spv.name')->first();
+        }
         try{
             $attendance->update([
                 'status' => 'Alpha',
@@ -233,29 +233,31 @@ class PromoterController extends Controller
         }
 
         return response()->json(['status' => false, 'message' => 'Berhasil melakukan reject'], 200);
-    }
+    
     
     }
 
     public function undoReject(Request $request){
 
-        $attendance = Attendance::where('id', $request->id);
+        $attendance = Attendance::where('id', $request->id)->first();
         //get promoter
-        $target_promoter = User::where('users.id', $attendances->user_id);
+        $target_promoter = User::where('users.id', $attendance->user_id)->first();
         // get spv
         if ($target_promoter->role->role_group == 'Demonstrator DA') {
             $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
                         ->join('users as spv', 'spv_demos.user_id', '=', 'spv.id')
-                        ->select('spv.name')->first();
+                        ->select('spv.id', 'spv.name')->first();
         }else{
             $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
                         ->join('users as spv', 'stores.user_id', '=', 'spv.id')
-                        ->select('spv.name')->first();
-
+                        ->select('spv.id', 'spv.name')->first();
+        
+        }
+        
         try{
 
             $attendance->update([
@@ -332,7 +334,7 @@ class PromoterController extends Controller
         }
 
         return response()->json(['status' => false, 'message' => 'Berhasil melakukan undo reject'], 200);
-    }
+    
     
     }
 
@@ -342,21 +344,21 @@ class PromoterController extends Controller
         if(!$attendances){
             return response()->json(['status' => false, 'message' => 'Data absen tidak ditemukan'], 500);
         }
-        $target_promoter = User::where('users.id', $attendances->user_id);
+        $target_promoter = User::where('users.id', $attendances->user_id)->first();
 
         if ($target_promoter->role->role_group == 'Demonstrator DA') {
             $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('spv_demos', 'employee_stores.store_id', '=', 'spv_demos.store_id')
                         ->join('users as spv', 'spv_demos.user_id', '=', 'spv.id')
-                        ->select('spv.name')->first();
+                        ->select('spv.id', 'spv.name')->first();
         }else{
             $spv = User::where('users.id', $target_promoter->id)
                         ->join('employee_stores', 'users.id', '=', 'employee_stores.user_id')
                         ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
                         ->join('users as spv', 'stores.user_id', '=', 'spv.id')
-                        ->select('spv.name')->first();
-                    
+                        ->select('spv.id', 'spv.name')->first();
+        }         
         $message = "";
 
         if($param == 1){
@@ -470,7 +472,7 @@ class PromoterController extends Controller
 
         return response()->json(['status' => true, 'id_attendance' => $attendances->id, 'message' => 'Approval '.$message.' berhasil']);
 
-    }
+    
     
     }
 
