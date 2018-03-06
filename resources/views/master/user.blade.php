@@ -37,7 +37,7 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-blue"></i>
+                        <i class="fa fa-cog font-blue"></i>
                         <span class="caption-subject font-blue bold uppercase">FILTER Employee</span>
                     </div>
                 </div>
@@ -175,6 +175,7 @@
 <!-- END TEXT MODAL SCRIPTS -->
 
 <script>
+    // var user = "{{ Auth::user()->role->role_group }}";
     var dataAll = {};
         var filterId = ['#filterNik', '#filterName', '#filterRole'];
         var url = 'datatable/user';
@@ -199,7 +200,15 @@
         var paramFilter = ['userTable', $('#userTable'), url, tableColumns, columnDefs, order, '#export'];
         var paramReset = [filterId, 'userTable', $('#userTable'), url, tableColumns, columnDefs, order, '#export'];
 
-	$(document).ready(function () {    	
+	$(document).ready(function () {  
+
+        var user_role = '{{ Auth::user()->role->role_group }}'; 	
+
+        if(user_role == 'Admin'){
+            filters['noAdmin'] = ['Master', 'Admin'];
+        }
+
+        // console.log(filters);
 
 		$.ajaxSetup({
         	headers: {

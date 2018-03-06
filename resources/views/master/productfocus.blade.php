@@ -212,7 +212,7 @@
                                                     $('#export').removeAttr('disabled');
                                                 }else{
                                                     $('#exportAll').attr('disabled','disabled');
-                                                    $('#export').removeAttr('disabled');
+                                                    $('#export').attr('disabled','disabled');
                                                 }
 
                                         dataAll = results;

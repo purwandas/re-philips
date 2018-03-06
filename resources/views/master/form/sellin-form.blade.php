@@ -4,8 +4,8 @@
 <div class="page-head">
     <!-- BEGIN PAGE TITLE -->
     <div class="page-title">
-        <h1>Sell In
-            <small>manage sell in</small>
+        <h1>Sell Thru
+            <small>manage sell thru</small>
         </h1>
     </div>
     <!-- END PAGE TITLE -->
@@ -16,15 +16,15 @@
         <i class="fa fa-circle"></i>
     </li>
     <li>
-        <a href="{{ url('sellin') }}">Sell In Management</a>
+        <a href="{{ url('sellin') }}">Sell Thru Management</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>
 		<span>
 			@if (empty($data))
-				Add More Sell In
+				Add More Sell Thru
 			@else
-				Update Sell In
+				Update Sell Thru
 			@endif
 		</span>
 	</li>
@@ -39,21 +39,21 @@
 	    <div class="portlet light bordered">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-newspaper-o font-blue"></i>
+					<i class="fa fa-edit font-blue"></i>
 					<span class="caption-subject font-blue bold uppercase">
 						@if (empty($data))
-							ADD MORE Sell In
+							ADD MORE Sell Thru
 						@else
-							UPDATE Sell In
+							UPDATE Sell Thru
 						@endif
 					</span>
 				</div>
 
-				<div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
+				<!-- <div class="btn-group" style="float: right; padding-top: 2px; padding-right: 10px;">
                 	<a class="btn btn-md green" href="{{ url('sellin') }}">
                 		<i class="fa fa-chevron-left"></i> Back
                 	</a>
-				</div>
+				</div> -->
 	        </div>
 	        <div class="portlet-body" style="padding: 15px;">
 	        	<!-- MAIN CONTENT -->
@@ -75,9 +75,9 @@
 
 				      	<!-- <div class="form-group note note-info"> -->
                           
-                        <div class="note note-info">
+                        <div class="note note-info">                    
 	                      <div class="form-group">
-	                          <label class="col-sm-3 control-label">User</label>
+	                          <label class="col-sm-3 control-label">Promoter</label>
 	                          <div class="col-sm-8">
 	                            <div class="input-group" style="width: 100%;">
 	     
@@ -103,7 +103,7 @@
 	                            </div>
 	                          </div>
                           </div>
-                          <div class="form-group irisan display-hide">
+                          <!-- <div class="form-group irisan display-hide">
                             <label class="col-sm-3 control-label">Irisan</label>
                             <div class="col-sm-8">
                               <div class="input-icon right">
@@ -113,6 +113,32 @@
                               </div>
                             </div>
                           </div>
+                         -->
+                        <div class="form-group irisan display-hide">
+                            <label class="col-sm-3 control-label">Irisan</label>
+                            <div class="col-sm-8">
+                              <div class="input-icon right">
+                                  <select class="select2select" name="irisan" id="irisan" required></select>
+	                                <span class="input-group-addon display-hide">
+	                                    <i class="fa"></i>
+	                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        
+
+                        <div class="form-group">
+				          <label class="col-sm-3 control-label">Date</label>
+				          <div class="col-sm-8">
+				          	<div class="input-icon right">
+				          		<i class="fa"></i>
+				            	<input type="text" id="date" name="date" class="form-control" placeholder="Date" />
+				            </div>
+				          </div>
+				        </div>
+
+				        </div>
+
                         </div>
 
                         <div id="itemList" style="margin:0;padding:0;">
@@ -426,16 +452,20 @@
 	            }
 	        });   
 
-            $('#user_id').select2(setOptions('{{ route("data.employee") }}', 'User', function (params) {
+            $('#user_id').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
             	filters['promoterGroup'] = '1';
 	            return filterData('name', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id + '`' + obj.role_group, text: obj.name}
+	                    return {id: obj.id + '`' + obj.role_group, text: obj.nik + ' - ' + obj.name}
 	                })
 	            }
 	        }));
+	        $('#user_id').on('select2:select', function () {
+                self.selected('byEmployee', $('#user_id').val());
+                self.selected('notInId', $('#user_id').val());
+            });
 
             $('#store_id').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
                 return filterData('store', params.term);
@@ -449,6 +479,20 @@
                     })
                 }
             }));
+            $('#store_id').on('select2:select', function () {
+                self.selected('byStore', $('#store_id').val());
+            });
+
+            $('#irisan').select2(setOptions('{{ route("data.employee") }}', 'User', function (params) {
+            	filters['noDemo'] = '1';
+	            return filterData('name', params.term);
+	        }, function (data, params) {
+	            return {
+	                results: $.map(data, function (obj) {                                
+	                    return {id: obj.id, text: obj.name}
+	                })
+	            }
+	        }));
 
 	        initSelect2Product();
 
@@ -483,6 +527,14 @@
             		$(".irisan").addClass("display-hide");
             		$("#irisan").removeAttr('required');
             	}
+            });
+
+            // Filter Month
+            $('#date').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
             });
 
 		});

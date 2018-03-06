@@ -29,7 +29,7 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-map-o font-blue"></i>
+                    <i class="fa fa-line-chart font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">LEADTIME</span>
                 </div>
             </div>
@@ -211,7 +211,7 @@
                                                     $('#export').removeAttr('disabled');
                                                 }else{
                                                     $('#exportAll').attr('disabled','disabled');
-                                                    $('#export').removeAttr('disabled');
+                                                    $('#export').attr('disabled','disabled');
                                                 }
 
                                         dataAll = results;

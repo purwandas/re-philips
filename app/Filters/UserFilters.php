@@ -23,6 +23,10 @@ class UserFilters extends QueryFilters
         }
     }
 
+    public function notInId($value){
+        return $this->builder->where('users.id', '<>', $value);
+    }
+
     /* Ordering data by role */
     public function role($value){
     	return $this->builder->where('role', $value);
@@ -38,6 +42,20 @@ class UserFilters extends QueryFilters
 
     public function promoterGroup($value) {
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        return $this->builder->whereHas('role', function ($query) use ($roles) {
+            return $query->whereIn('roles.role_group',$roles);
+        });
+    }
+
+    public function promoterGroupNew($value) {
+        $roles = ['Promoter','Promoter Additional','Promoter Event','ACT','PPE','BDT','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        return $this->builder->whereHas('role', function ($query) use ($roles) {
+            return $query->whereIn('roles.role_group',$roles);
+        });
+    }
+
+    public function noDemo($value) {
+        $roles = ['Promoter','Promoter Additional','Promoter Event','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         return $this->builder->whereHas('role', function ($query) use ($roles) {
             return $query->whereIn('roles.role_group',$roles);
         });
@@ -75,6 +93,12 @@ class UserFilters extends QueryFilters
     public function byRegion($value) {
         return $this->builder->whereHas('employeeStores.store.district.area.region', function ($query) use ($value) {
             return $query->where('regions.id',$value);
+        });
+    }
+
+    public function noAdmin($value){
+        return $this->builder->whereHas('role', function ($query) use ($value) {
+            return $query->whereNotIn('roles.role_group',$value);
         });
     }
 

@@ -1600,16 +1600,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Target', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:K1');
+                $sheet->setAutoFilter('A1:M1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportTarget($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:K1', function ($cells) {
+                $sheet->cells('A1:M1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:K1', 'thin');
+                $sheet->setBorder('A1:M1', 'thin');
             });
 
 
@@ -1862,16 +1862,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Salesman Target', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:G1');
+                $sheet->setAutoFilter('A1:H1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportSalesmanTarget($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:G1', function ($cells) {
+                $sheet->cells('A1:H1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:G1', 'thin');
+                $sheet->setBorder('A1:H1', 'thin');
             });
 
 
@@ -2014,16 +2014,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master POSM', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:C1');
+                $sheet->setAutoFilter('A1:D1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportPosm($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:C1', function ($cells) {
+                $sheet->cells('A1:D1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:C1', 'thin');
+                $sheet->setBorder('A1:D1', 'thin');
             });
 
 
@@ -2058,16 +2058,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('Master Group Competitor', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:B1');
+                $sheet->setAutoFilter('A1:D1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportGroupCompetitor($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:B1', function ($cells) {
+                $sheet->cells('A1:D1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:B1', 'thin');
+                $sheet->setBorder('A1:D1', 'thin');
             });
 
 

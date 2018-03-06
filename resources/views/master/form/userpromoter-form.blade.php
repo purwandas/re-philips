@@ -496,6 +496,9 @@
 	        			filters['byDedicatePromoter'] = $('#dedicate').val();
 	        		}
 	        		
+		    	}else{
+		    		delete filters['byDedicatePromoter'];
+		    		delete filters['byDedicates'];
 		    	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {

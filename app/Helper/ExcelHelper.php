@@ -627,7 +627,9 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'USER ID' => @$item['user_id'],
+                'PROMOTER' => @$item['promoter_name'],
                 'STORE ID' => @$item['store_id'],
+                'STORE NAME' => @$item['store_name_1'],
                 'SELL TYPE' => @$item['sell_type'],
                 'PARTNER' => @$item['partner'],
                 'TARGET DA'=> @$item['target_da'],
@@ -672,7 +674,8 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'USER ID' => @$item['user_id'],
-                'TARGER CELL' => @$item['target_call'],
+                'SALESMAN' => @$item['salesman_name'],
+                'TARGET CALL' => @$item['target_call'],
                 'TARGET ACTIVE OUTLET'=> @$item['target_active_outlet'],
                 'TARGET EFFECTIVE CALL'=> @$item['target_effective_call'],
                 'TARGET SALES'=> @$item['target_sales'],
@@ -700,7 +703,8 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'GROUP ID' => @$item['group_id'],
-                'NAME' => @$item['name'],
+                'GROUP NAME' => @$item['group_name'],
+                'POSM' => @$item['name'],
             ];
         });
     }
@@ -711,7 +715,9 @@ class ExcelHelper
         return $collection->map(function ($item) {
             return [
                 'ID' => @$item['id'],
-                'NAME' => @$item['name'],
+                'GROUP ID' => @$item['group_id'],
+                'GROUP NAME' => @$item['group_name'],
+                'GROUP COMPETITOR' => @$item['name'],
             ];
         });
     }

@@ -154,4 +154,40 @@ class ImportController extends Controller
 
         return response()->json(['url' => url('/productfocussalesman')]);
     }
+
+    public function importTarget(Request $request){
+        $file = $request->upload_file;
+        $date = Carbon::now()->format('m').Carbon::now()->format('Y');
+
+        $file_origin = $this->getUploadPathNameFileForImport($request->upload_file, 'target', $date);
+
+        $path = explode('/', $file_origin);
+        $count = count($path);
+        $folder = "target/";
+        $file_name = $path[$count - 1];
+
+        $file_uploaded = $this->uploadFileForImport($request->upload_file, $folder, $file_name);
+
+        Artisan::call("import:target", ['file' => $file_uploaded]);
+
+        return response()->json(['url' => url('/target')]);
+    }
+
+    public function importSalesmanTarget(Request $request){
+        $file = $request->upload_file;
+        $date = Carbon::now()->format('m').Carbon::now()->format('Y');
+
+        $file_origin = $this->getUploadPathNameFileForImport($request->upload_file, 'targetsalesman', $date);
+
+        $path = explode('/', $file_origin);
+        $count = count($path);
+        $folder = "targetsalesman/";
+        $file_name = $path[$count - 1];
+
+        $file_uploaded = $this->uploadFileForImport($request->upload_file, $folder, $file_name);
+
+        Artisan::call("import:targetsalesman", ['file' => $file_uploaded]);
+
+        return response()->json(['url' => url('/targetsalesman')]);
+    }
 }
