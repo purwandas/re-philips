@@ -282,17 +282,24 @@
                     var missing_image = "{{ asset('image/missing.png') }}";
 
                     $.each(data.users, function (index, item) {
-//                        console.log(item);
+                       // console.log(item);
 
-                        var li = $(`<li><a><img width='30px' height='30px' src='${item.user.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.user.role.role}) &nbsp;${item.user.name}</a></li>`);
+                        var li = $(`<li><a><img width='30px' height='30px' src='${item.photo}' onError='this.onerror=null;this.src="${missing_image}";'> &nbsp;&nbsp; (${item.role.role}) &nbsp;${item.name}</a></li>`);
                         $('#datanotif').append(li);
                     });
                 });
 
-            var url = "{{url('util/sales-history')}}";
-                $.get(url, function (data) {
+            var urlCount = "{{url('util/sales-history-count')}}";
+                $.get(urlCount, function (data) {
                    // console.log(data);
                     $('.bedgecount2').text(data.count);
+
+                });
+
+            var urlPromo = "{{url('util/sales-history')}}";
+                $.get(urlPromo, function (data) {
+                   // console.log(data);
+                    // $('.bedgecount2').text(data.count);
 
                     $.each(data.activity, function (index, item) {
                        // console.log(item);
@@ -303,6 +310,7 @@
                           data-target='#sales-history-modal' 
                           data-toggle='modal' 
                           data-title='Sales Activity Details' 
+                          data-history='promoter'
                           data-id='${item.id}'
                           data-user='${item.name}'
                           data-role='${item.role}'
@@ -359,6 +367,76 @@
                        });
                     });
                 });
+
+            var urlSee = "{{url('util/salesman-sales-history')}}";
+                $.get(urlSee, function (data) {
+                   // console.log(data);
+                    // $('.bedgecount2').text(data.count);
+
+                    $.each(data.activity, function (index, item) {
+                       // console.log(item);
+                       var obj = jQuery.parseJSON(item.details);
+                       $.each(obj, function(index2, item2){
+                         // console.log(item2);
+                         var li = $(`<li class='open-sales-history-modal activity-${item.id}'
+                          data-target='#sales-history-modal' 
+                          data-toggle='modal' 
+                          data-title='Sales Activity Details'
+                          data-history='see' 
+                          data-id='${item.id}'
+                          data-user='${item.name}'
+                          data-role='${item.role}'
+                          data-date='${item.date}'
+                          data-count='${data.count}'
+
+                          data-activity='${item2.activity}'
+                          data-type='${item2.type}'
+                          data-action_from='${item2.action_from}'
+                          data-detail_id='${item2.detail_id}'
+                          data-week='${item2.week}'
+                          data-distributor_code='${item2.distributor_code}'
+                          data-distributor_name='${item2.distributor_name}'
+                          data-region='${item2.region}'
+                          data-region_id='${item2.region_id}'
+                          data-channel='${item2.channel}'
+                          data-sub_channel='${item2.sub_channel}'
+                          data-area='${item2.area}'
+                          data-area_id='${item2.area_id}'
+                          data-district='${item2.district}'
+                          data-district_id='${item2.district_id}'
+                          data-store_name_1='${item2.store_name_1}'
+                          data-store_name_2='${item2.store_name_2}'
+                          data-store_id='${item2.store_id}'
+                          data-storeId='${item2.storeId}'
+                          data-dedicate='${item2.dedicate}'
+                          data-nik='${item2.nik}'
+                          data-promoter_name='${item2.promoter_name}'
+                          data-user_id='${item2.user_id}'
+                          // data-date='${item2.date}'
+                          // data-role='${item2.role}'
+                          data-spv_name='${item2.spv_name}'
+                          data-dm_name='${item2.dm_name}'
+                          data-trainer_name='${item2.trainer_name}'
+                          data-model='${item2.model}'
+                          data-group='${item2.group}'
+                          data-category='${item2.category}'
+                          data-product_name='${item2.product_name}'
+                          data-unit_price='${item2.unit_price}'
+                          data-quantity='${item2.quantity}'
+                          data-value='${item2.value}'
+                          data-value_pf='${item2.value_pf}'
+                          data-new_quantity='${item2.new_quantity}'
+                          data-new_value='${item2.new_value}'
+                          data-new_value_pf='${item2.new_value_pf}'
+                          >
+                          <a> ${item.name} (${item.role}) - ${item2.activity} &nbsp;${item2.type}</a>
+                          </li>`);
+                            $('#dataSalesNotif').append(li);
+                       });
+                    });
+                });
+
+            
         </script>
 
     @yield('additional-scripts')

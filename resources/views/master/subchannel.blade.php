@@ -207,7 +207,7 @@
                                                     $('#export').removeAttr('disabled');
                                                 }else{
                                                     $('#exportAll').attr('disabled','disabled');
-                                                    $('#export').removeAttr('disabled');
+                                                    $('#export').attr('disabled','disabled');
                                                 }
 
                                         dataAll = results;
@@ -394,7 +394,7 @@
         }, function (data, params) {
             return {
                 results: $.map(data, function (obj) {
-                    return {id: obj.id, text: obj.name}
+                    return {id: obj.id, text: obj.name + ' - ' + obj.globalchannel_name}
                 })
             }
         }));

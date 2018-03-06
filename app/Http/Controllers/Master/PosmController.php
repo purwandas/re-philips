@@ -41,7 +41,8 @@ class PosmController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(PosmFilters $filters){
-        $data = Posm::filter($filters)->get();
+        $data = Posm::filter($filters)->join('groups', 'posms.group_id', '=', 'groups.id')
+            ->select('posms.*', 'groups.name as group_name')->get();
 
         return $data;
     }

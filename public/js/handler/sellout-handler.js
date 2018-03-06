@@ -8,7 +8,7 @@ var FormValidation = function () {
     // Master Validation
     var areaValidation = function() {
 
-            var form = $('#form_sell-out');
+            var form = $('#form_sellout');
             var errorAlert = $('.alert-danger', form);
             var successAlert = $('.alert-success', form);
 
@@ -21,11 +21,19 @@ var FormValidation = function () {
                     store_id:{
                         required: true,
                     },
-
+                    user_id:{
+                        required: true,
+                    },
+                    date:{
+                        required: true,
+                    },
                 },
                 messages:{
                     store_id:{
                         required: "Please select a Store!"
+                    },
+                    user_id:{
+                        required: "Please select Promoter!"
                     },
                 },
 
@@ -174,16 +182,16 @@ var FormValidation = function () {
                         contentType: false,
                         success: function (data) {                            
                             
-                            var titleMsg;
-                            var textMsg;
+                            var titleMsg = "Insert!";
+                            var textMsg = 'Data has been created!';
 
-                            if(data.method == "PATCH"){
-                                titleMsg = "Update!";
-                                textMsg = 'Data has been updated!';
-                            }else{
-                                titleMsg = "Insert!";
-                                textMsg = 'Data has been created!';
-                            }
+                            // if(data.method == "PATCH"){
+                            //     titleMsg = "Update!";
+                            //     textMsg = 'Data has been updated!';
+                            // }else{
+                            //     titleMsg = "Insert!";
+                            //     textMsg = 'Data has been created!';
+                            // }
 
                             swal({
                                     title: titleMsg,
@@ -192,15 +200,17 @@ var FormValidation = function () {
                                 },
                                 function(){
                                     // window.location.href = data.url;
-                                    // console.log(data);
+                                    console.log(data);
+                                    location.reload();
+                                    location.reload();
 
-                                    $('#sellOutTable').DataTable().search('').draw();
-                                    $('#sellOutTable').DataTable().ajax.reload();
+                                    // $('#sellOutTable').DataTable().search('').draw();
+                                    // $('#sellOutTable').DataTable().ajax.reload();
 
                                     // $('#sell-out').modal('hide');                                    
                                 }
                             )
-                            // console.log(data.method);
+                            // console.log(data.method);                            
 
                         },
                         error: function(response) {
@@ -243,18 +253,19 @@ jQuery(document).ready(function() {
 
 $(document.body).on("change",".select2select",function(){
 
-    select2Change($('#store'), $('#form_sell-out'));
-    select2Change($('#product'), $('#form_sell-out'));
+    // select2Change($('#store'), $('#form_sellout'));
+    // select2Change($('#product'), $('#form_sellout'));
+    select2Change($(this), $('#form_sellout'));
 
 });
 
 // Reset Validation
 function resetValidation(){
-    $('#form_sell-out').each(function(){
+    $('#form_sellout').each(function(){
         $(this).find('.form-group').removeClass('has-error').removeClass('has-success');            
         $(this).find('.fa').removeClass('fa-check').removeClass('fa-warning');
     });
 
-    $('.alert-danger', $('#form_sell-out'));
-    $('.alert-success', $('#form_sell-out'));
+    $('.alert-danger', $('#form_sellout'));
+    $('.alert-success', $('#form_sellout'));
 }

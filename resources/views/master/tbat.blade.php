@@ -29,7 +29,7 @@
         <div class="portlet light bordered">
              <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-map-o font-blue"></i>
+                    <i class="fa fa-cog font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">FILTER REPORT</span>
                 </div>
             </div>
@@ -76,9 +76,7 @@
 
             <br><br>
 
-        </div>
-
-        <div class="portlet light bordered display-hide" id="dataContent">
+        
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-share-alt font-blue"></i>
@@ -144,7 +142,7 @@
     var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
     var url = 'datatable/edittbat';
     var order = [ [0, 'desc'] ];
-    var columnDefs = [{"className": "dt-center", "targets": [0]}];
+    var columnDefs = [{"className": "dt-center", "targets": [0]},{"className": "dt-center", "targets": [12]}];
     var tableColumns = [
                         {data: 'id', name: 'id'},
                         {data: 'date', name: 'date'},
@@ -176,34 +174,35 @@
         });
 
         // Set data for Data Table
-        // var table = $('#tbatTable').dataTable({
-        //     "processing": true,
-        //     "serverSide": true,
-        //     "ajax": {
-        //         url: "{{ route('datatable.edittbat') }}",
-        //         type: 'POST',
-        //     },
-        //     "rowId": "id",
-        //     "columns": [
-        //         {data: 'id', name: 'id'},
-        //         {data: 'user_name', name: 'user_name'},
-        //         {data: 'user_nik', name: 'user_nik'},
-        //         {data: 'store_name_1', name: 'store_name_1'},
-        //         {data: 'store_name_2', name: 'store_name_2'},
-        //         {data: 'store_id', name: 'store_id'},
-        //         {data: 'storeD_name_1', name: 'storeD_name_1'},
-        //         {data: 'storeD_name_2', name: 'storeD_name_2'},
-        //         {data: 'storeD_id', name: 'storeD_id'},
-        //         {data: 'product', name: 'product'},
-        //         {data: 'quantity', name: 'quantity'},
-        //         {data: 'action', name: 'action', searchable: false, sortable: false},
-        //     ],
-        //     "columnDefs": [
-        //         {"className": "dt-center", "targets": [0]},
-        //         {"className": "dt-center", "targets": [3]},
-        //     ],
-        //     "order": [ [0, 'desc'] ],
-        // });
+        var table = $('#tbatTable').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "{{ route('datatable.edittbat') }}",
+                type: 'POST',
+            },
+            "rowId": "id",
+            "columns": [
+                {data: 'id', name: 'id'},
+                        {data: 'date', name: 'date'},
+                        {data: 'user_name', name: 'user_name'},
+                        {data: 'user_nik', name: 'user_nik'},
+                        {data: 'store_name_1', name: 'store_name_1'},
+                        {data: 'store_name_2', name: 'store_name_2'},
+                        {data: 'store_id', name: 'store_id'},
+                        {data: 'storeD_name_1', name: 'storeD_name_1'},
+                        {data: 'storeD_name_2', name: 'storeD_name_2'},
+                        {data: 'storeD_id', name: 'storeD_id'},
+                        {data: 'product', name: 'product'},
+                        {data: 'quantity', name: 'quantity'},
+                        {data: 'action', name: 'action', searchable: false, sortable: false},
+            ],
+            "columnDefs": [
+                {"className": "dt-center", "targets": [0]},
+                {"className": "dt-center", "targets": [12]},
+            ],
+            "order": [ [0, 'desc'] ],
+        });
 
 
         // Delete data with sweet alert
@@ -389,7 +388,7 @@
     $("#resetButton").click( function(){
 
         // Hide Table Content
-        $('#dataContent').addClass('display-hide');
+        // $('#dataContent').addClass('display-hide');
 
         // Set to Month now
         $('#filterMonth').val(moment().format('MMMM YYYY'));
@@ -400,7 +399,7 @@
     $("#filterButton").click( function(){
 
         // Set Table Content
-        $('#dataContent').removeClass('display-hide');
+        // $('#dataContent').removeClass('display-hide');
 
     });
 
