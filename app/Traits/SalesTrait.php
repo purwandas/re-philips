@@ -14,6 +14,8 @@ use App\Reports\SummaryTbat;
 use App\Reports\SummarySoh;
 use App\Reports\SummaryDisplayShare;
 use App\Reports\SalesActivity;
+use App\Reports\SalesmanSalesActivity;
+use App\Reports\SalesmanSummarySales;
 use App\User;
 use App\SellIn;
 use App\SellInDetail;
@@ -57,7 +59,7 @@ trait SalesTrait {
             $dataSummary = ([
                 'activity' => 'Delete',
                 'type' => 'Sell In',
-                'action_from' => 'Mobile',
+                'action_from' => 'Web',
                 'detail_id'=> $summarySellInDetail->sellin_detail_id,
                 'week' => $summarySellInDetail->week,
                 'distributor_code' => $summarySellInDetail->distributor_code,
@@ -119,6 +121,7 @@ trait SalesTrait {
         $summary_ta['value'] = $summarySellInDetail->value;
         $summary_ta['group'] = $summarySellInDetail->group;
         $summary_ta['sell_type'] = 'Sell In';
+        $summary_ta['irisan'] = $summarySellInDetail->irisan;
 
         $this->changeActual($summary_ta, 'delete');
 
@@ -144,114 +147,207 @@ trait SalesTrait {
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
-        $sellInDetail = SellInDetail::where('id',$id)->update(['quantity'=> $qty]);
+        $sellInDetail = SellInDetail::where('id',$id);
 
-        $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$id)
-            ->first();
+        $roleGroup = SellIn::where('id', $sellInDetail->first()->sellin_id)->first()->user->role->role_group;
 
-            $value_old = $summarySellInDetail->value;
+        $sellInDetail->update(['quantity'=> $qty]);
 
-            $value = $summarySellInDetail->unit_price * $qty;
-            
-            $pf_mr = 0;
-            $pf_tr = 0;
-            $pf_ppe = 0;
-            if ($summarySellInDetail->value_pf_mr > 0) {
-                $pf_mr = $value;
-            }
-            if ($summarySellInDetail->value_pf_tr > 0) {
-                $pf_tr = $value;
-            }
-            if ($summarySellInDetail->value_pf_ppe > 0) {
-                $pf_ppe = $value;
-            }
+        if($roleGroup != 'Salesman Explorer'){ // Promoter
 
-                /* begin insert sales activity */
-                $data = new Collection();
+            $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$id)
+                ->first();
 
-                /* Header Details */
-                $dataSummary = ([
-                    'activity' => 'Update',
-                    'type' => 'Sell In',
-                    'action_from' => 'Mobile',
-                    'detail_id'=> $summarySellInDetail->sellin_detail_id,
-                    'week' => $summarySellInDetail->week,
-                    'distributor_code' => $summarySellInDetail->distributor_code,
-                    'distributor_name' => $summarySellInDetail->distributor_name,
-                    'region' => $summarySellInDetail->region,
-                    'region_id' => $summarySellInDetail->region_id,
-                    'channel' => $summarySellInDetail->channel,
-                    'sub_channel' => $summarySellInDetail->sub_channel,
-                    'area' => $summarySellInDetail->area,
-                    'area_id' => $summarySellInDetail->area_id,
-                    'district' => $summarySellInDetail->district,
-                    'district_id' => $summarySellInDetail->district_id,
-                    'store_name_1' => $summarySellInDetail->store_name_1,
-                    'store_name_2' => $summarySellInDetail->store_name_2,
-                    'store_id' => $summarySellInDetail->store_id,
-                    'storeId' => $summarySellInDetail->storeId,
-                    'dedicate' => $summarySellInDetail->dedicate,
-                    'nik' => $summarySellInDetail->nik,
-                    'promoter_name' => $summarySellInDetail->promoter_name,
-                    'user_id' => $summarySellInDetail->user_id,
-                    'date' => $summarySellInDetail->date,
-                    'role' => $summarySellInDetail->role,
-                    'spv_name' => $summarySellInDetail->spv_name,
-                    'dm_name' => $summarySellInDetail->dm_name,
-                    'trainer_name' => $summarySellInDetail->trainer_name,
-                    'model' => $summarySellInDetail->model,
-                    'group' => $summarySellInDetail->group,
-                    'category' => $summarySellInDetail->category,
-                    'product_name' => $summarySellInDetail->product_name,
-                    'unit_price' => $summarySellInDetail->unit_price,
-                    'quantity' => $summarySellInDetail->quantity,
-                    'value' => $summarySellInDetail->value,
-                    'value_pf_mr' => $summarySellInDetail->value_pf_mr,
-                    'value_pf_tr' => $summarySellInDetail->value_pf_tr,
-                    'value_pf_ppe' => $summarySellInDetail->value_pf_ppe,
-                    'new_quantity' => $qty,
-                    'new_value' => $value,
-                    'new_value_pf_mr' => $pf_mr,
-                    'new_value_pf_tr' => $pf_tr,
-                    'new_value_pf_ppe' => $pf_ppe,
-                ]);
+                $value_old = $summarySellInDetail->value;
 
-                $data->push($dataSummary);
+                $value = $summarySellInDetail->unit_price * $qty;
+                
+                $pf_mr = 0;
+                $pf_tr = 0;
+                $pf_ppe = 0;
+                if ($summarySellInDetail->value_pf_mr > 0) {
+                    $pf_mr = $value;
+                }
+                if ($summarySellInDetail->value_pf_tr > 0) {
+                    $pf_tr = $value;
+                }
+                if ($summarySellInDetail->value_pf_ppe > 0) {
+                    $pf_ppe = $value;
+                }
 
-                $dt = Carbon::now();
-                $date = $dt->toDateString();
-                SalesActivity::create([
-                    'user_id' => $userId,
-                    'date' => $date,
-                    'details' => $data,
-                ]);
-                /* end insert sales activity */
+                    /* begin insert sales activity */
+                    $data = new Collection();
 
-            $summarySellInDetail->update([
-                        'quantity'=> $qty,
-                        'value'=> $value,
-                        'value_pf_mr' => $pf_mr,
-                        'value_pf_te' => $pf_tr,
-                        'value_pf_ppe' => $pf_ppe,
+                    /* Header Details */
+                    $dataSummary = ([
+                        'activity' => 'Update',
+                        'type' => 'Sell In',
+                        'action_from' => 'Web',
+                        'detail_id'=> $summarySellInDetail->sellin_detail_id,
+                        'week' => $summarySellInDetail->week,
+                        'distributor_code' => $summarySellInDetail->distributor_code,
+                        'distributor_name' => $summarySellInDetail->distributor_name,
+                        'region' => $summarySellInDetail->region,
+                        'region_id' => $summarySellInDetail->region_id,
+                        'channel' => $summarySellInDetail->channel,
+                        'sub_channel' => $summarySellInDetail->sub_channel,
+                        'area' => $summarySellInDetail->area,
+                        'area_id' => $summarySellInDetail->area_id,
+                        'district' => $summarySellInDetail->district,
+                        'district_id' => $summarySellInDetail->district_id,
+                        'store_name_1' => $summarySellInDetail->store_name_1,
+                        'store_name_2' => $summarySellInDetail->store_name_2,
+                        'store_id' => $summarySellInDetail->store_id,
+                        'storeId' => $summarySellInDetail->storeId,
+                        'dedicate' => $summarySellInDetail->dedicate,
+                        'nik' => $summarySellInDetail->nik,
+                        'promoter_name' => $summarySellInDetail->promoter_name,
+                        'user_id' => $summarySellInDetail->user_id,
+                        'date' => $summarySellInDetail->date,
+                        'role' => $summarySellInDetail->role,
+                        'spv_name' => $summarySellInDetail->spv_name,
+                        'dm_name' => $summarySellInDetail->dm_name,
+                        'trainer_name' => $summarySellInDetail->trainer_name,
+                        'model' => $summarySellInDetail->model,
+                        'group' => $summarySellInDetail->group,
+                        'category' => $summarySellInDetail->category,
+                        'product_name' => $summarySellInDetail->product_name,
+                        'unit_price' => $summarySellInDetail->unit_price,
+                        'quantity' => $summarySellInDetail->quantity,
+                        'value' => $summarySellInDetail->value,
+                        'value_pf_mr' => $summarySellInDetail->value_pf_mr,
+                        'value_pf_tr' => $summarySellInDetail->value_pf_tr,
+                        'value_pf_ppe' => $summarySellInDetail->value_pf_ppe,
+                        'new_quantity' => $qty,
+                        'new_value' => $value,
+                        'new_value_pf_mr' => $pf_mr,
+                        'new_value_pf_tr' => $pf_tr,
+                        'new_value_pf_ppe' => $pf_ppe,
                     ]);
 
-            // Actual Summary
-            $summary_ta['user_id'] = $summarySellInDetail->user_id;
-            $summary_ta['store_id'] = $summarySellInDetail->storeId;
-            $summary_ta['week'] = $summarySellInDetail->week;
-            $summary_ta['pf'] = $summarySellInDetail->value_pf_mr + $summarySellInDetail->value_pf_tr + $summarySellInDetail->value_pf_ppe;
-            $summary_ta['value_old'] = $value_old;
-            $summary_ta['value'] = $summarySellInDetail->value;
-            $summary_ta['group'] = $summarySellInDetail->group;
-            $summary_ta['sell_type'] = 'Sell In';
+                    $data->push($dataSummary);
 
-            $this->changeActual($summary_ta, 'change');
+                    $dt = Carbon::now();
+                    $date = $dt->toDateString();
+                    SalesActivity::create([
+                        'user_id' => $userId,
+                        'date' => $date,
+                        'details' => $data,
+                    ]);
+                    /* end insert sales activity */
+
+                $summarySellInDetail->update([
+                            'quantity'=> $qty,
+                            'value'=> $value,
+                            'value_pf_mr' => $pf_mr,
+                            'value_pf_te' => $pf_tr,
+                            'value_pf_ppe' => $pf_ppe,
+                        ]);
+
+                // Actual Summary
+                $summary_ta['user_id'] = $summarySellInDetail->user_id;
+                $summary_ta['store_id'] = $summarySellInDetail->storeId;
+                $summary_ta['week'] = $summarySellInDetail->week;
+                $summary_ta['pf'] = $summarySellInDetail->value_pf_mr + $summarySellInDetail->value_pf_tr + $summarySellInDetail->value_pf_ppe;
+                $summary_ta['value_old'] = $value_old;
+                $summary_ta['value'] = $summarySellInDetail->value;
+                $summary_ta['group'] = $summarySellInDetail->group;
+                $summary_ta['sell_type'] = 'Sell In';
+                $summary_ta['irisan'] = $summarySellInDetail->irisan;
+
+                $this->changeActual($summary_ta, 'change');
+
+        }else{ // SEE
+
+            $summary = SalesmanSummarySales::where('sellin_detail_id', $id)->first();
+
+                $value_old = $summary->value; // Buat reset actual salesman
+
+                $value = $qty * $summary->unit_price;
+
+                ($summary->value_pf > 0) ? $value_pf = $value : $value_pf = 0;
+
+                /* begin insert sales activity */
+                    $data = new Collection();
+
+                    /* Header Details */
+                    $dataSummary = ([
+                        'activity' => 'Update',
+                        'type' => 'Sell In',
+                        'action_from' => 'Web',
+                        'detail_id'=> $summary->sellin_detail_id,
+                        'week' => $summary->week,
+                        'distributor_code' => $summary->distributor_code,
+                        'distributor_name' => $summary->distributor_name,
+                        'region' => $summary->region,
+                        'region_id' => $summary->region_id,
+                        'channel' => $summary->channel,
+                        'sub_channel' => $summary->sub_channel,
+                        'area' => $summary->area,
+                        'area_id' => $summary->area_id,
+                        'district' => $summary->district,
+                        'district_id' => $summary->district_id,
+                        'store_name_1' => $summary->store_name_1,
+                        'store_name_2' => $summary->store_name_2,
+                        'store_id' => $summary->store_id,
+                        'storeId' => $summary->storeId,
+                        // 'dedicate' => $summary->dedicate,
+                        'nik' => $summary->nik,
+                        'promoter_name' => $summary->promoter_name,
+                        'user_id' => $summary->user_id,
+                        'date' => $summary->date,
+                        'role' => $summary->role,
+                        // 'spv_name' => $summarySellInDetail->spv_name,
+                        // 'dm_name' => $summarySellInDetail->dm_name,
+                        // 'trainer_name' => $summarySellInDetail->trainer_name,
+                        'model' => $summary->model,
+                        'group' => $summary->group,
+                        'category' => $summary->category,
+                        'product_name' => $summary->product_name,
+                        'unit_price' => $summary->unit_price,
+                        'quantity' => $summary->quantity,
+                        'value' => $summary->value,
+                        'value_pf' => $summary->value_pf,
+                        'new_quantity' => $qty,
+                        'new_value' => $value,
+                        'new_value_pf' => $value_pf,
+                        // 'new_value_pf_tr' => $pf_tr,
+                        // 'new_value_pf_ppe' => $pf_ppe,
+                    ]);
+
+                    $data->push($dataSummary);
+
+                    $dt = Carbon::now();
+                    $date = $dt->toDateString();
+                    SalesmanSalesActivity::create([
+                        'user_id' => $userId,
+                        'date' => $date,
+                        'details' => $data,
+                    ]);
+                    /* end insert sales activity */ 
+
+                $summary->update([
+                    'quantity' => $qty,
+                    'value' => $value,
+                    'value_pf' => $value_pf
+                ]);
+
+                // Actual Summary
+                $summary_ta['user_id'] = $summary->user_id;
+                $summary_ta['store_id'] = $summary->store_id;
+                $summary_ta['pf'] = $summary->value_pf;
+                $summary_ta['value_old'] = $value_old;
+                $summary_ta['value'] = $summary->value;
+
+                $this->changeActualSalesman($summary_ta, 'change');
+
+        }
 
         if ($sellInDetail) {
-            return true;
-        }else{
-            return false;
-        }
+                return true;
+            }else{
+                return false;
+            }
     }
 
     public function deleteSellOut($detailId){
@@ -273,7 +369,7 @@ trait SalesTrait {
             $dataSummary = ([
                 'activity' => 'Delete',
                 'type' => 'Sell Out',
-                'action_from' => 'Mobile',
+                'action_from' => 'Web',
                 'detail_id'=> $summarySellOutDetail->sellout_detail_id,
                 'week' => $summarySellOutDetail->week,
                 'distributor_code' => $summarySellOutDetail->distributor_code,
@@ -334,6 +430,7 @@ trait SalesTrait {
         $summary_ta['value'] = $summarySellOutDetail->value;
         $summary_ta['group'] = $summarySellOutDetail->group;
         $summary_ta['sell_type'] = 'Sell Out';
+        $summary_ta['irisan'] = $summarySellOutDetail->irisan;
 
         $this->changeActual($summary_ta, 'delete');
 
@@ -386,9 +483,9 @@ trait SalesTrait {
 
                 /* Header Details */
                 $dataSummary = ([
-                    'activity' => 'Delete',
+                    'activity' => 'Update',
                     'type' => 'Sell Out',
-                    'action_from' => 'Mobile',
+                    'action_from' => 'Web',
                     'detail_id'=> $summarySellOutDetail->sellout_detail_id,
                     'week' => $summarySellOutDetail->week,
                     'distributor_code' => $summarySellOutDetail->distributor_code,
@@ -420,6 +517,7 @@ trait SalesTrait {
                     'product_name' => $summarySellOutDetail->product_name,
                     'unit_price' => $summarySellOutDetail->unit_price,
                     'quantity' => $summarySellOutDetail->quantity,
+                    'irisan' => $summarySellOutDetail->irisan,
                     'value' => $summarySellOutDetail->value,
                     'value_pf_mr' => $summarySellOutDetail->value_pf_mr,
                     'value_pf_tr' => $summarySellOutDetail->value_pf_tr,
@@ -459,6 +557,7 @@ trait SalesTrait {
             $summary_ta['value'] = $summarySellOutDetail->value;
             $summary_ta['group'] = $summarySellOutDetail->group;
             $summary_ta['sell_type'] = 'Sell Out';
+            $summary_ta['irisan'] = $summarySellOutDetail->irisan;
 
             $this->changeActual($summary_ta, 'change');
 

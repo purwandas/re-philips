@@ -43,7 +43,7 @@ class SellInController extends Controller
      */
     public function index()
     {
-        return view('master.sell-in');
+        return view('master.form.sellin-form');
     }
 
     /**
@@ -89,6 +89,9 @@ class SellInController extends Controller
      */
     public function store(Request $request)
     {
+        $date = Carbon::parse($request->date);
+        // return response()->json($date->format('Y-m-d'));
+        // return redirect(route('sellin'))->with('status', 'Data berhasil di input');
     	// return $request->all();
 
         // $content = $request;//json_decode($request->getContent(), true);
@@ -112,13 +115,15 @@ class SellInController extends Controller
             }
         }
 
+        $content['date'] = $date;
+
         // return $content->all();
        // return response()->json($user);
 
         // if($param == 1) { /* SELL IN(SELL THROUGH) */
 
             // Check sell in(Sell Through) header
-            $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+            $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $content['date']->format('Y-m-d'))->first();
 
             if ($sellInHeader) { // If header exist (update and/or create detail)
 
@@ -454,12 +459,12 @@ class SellInController extends Controller
 
                        });
                 } catch (\Exception $e) {
-                    // return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                    return redirect(route('sellin'))->with('status', 'Gagal melakukan transaksi');
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                    // return redirect(route('sellin'))->with('status', 'Gagal melakukan transaksi');
                 }
 
-                // return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
-                return redirect(route('sellin'))->with('status', 'Data berhasil di input');
+                return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
+                // return redirect(route('sellin'))->with('status', 'Data berhasil di input');
 
             } else { // If header didn't exist (create header & detail)
 
@@ -470,8 +475,8 @@ class SellInController extends Controller
                         $transaction = SellIn::create([
                                             'user_id' => $user->id,
                                             'store_id' => $content['id'],
-                                            'week' => Carbon::now()->weekOfMonth,
-                                            'date' => Carbon::now()
+                                            'week' => $content['date']->weekOfMonth,
+                                            'date' => $content['date']->format('Y-m-d')
                                         ]);
 
                         foreach ($content['data'] as $data) {
@@ -735,21 +740,21 @@ class SellInController extends Controller
 
                     });
                 } catch (\Exception $e) {
-                    // return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                    return redirect(route('sellin'))->with('status', 'Gagal melakukan transaksi');
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                    // return redirect(route('sellin'))->with('status', 'Gagal melakukan transaksi');
                 }
 
                 // Check sell in(Sell Through) header after insert
-                $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+                $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $content['date']->format('Y-m-d'))->first();
 
-                // return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
-                return redirect(route('sellin'))->with('status', 'Data berhasil di input');
+                return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
+                // return redirect(route('sellin'))->with('status', 'Data berhasil di input');
 
             }
 
         // }
-        // return response()->json(['url' => url('/sellin')]);
-            return redirect(route('sellin'))->with('status', 'Something went wrong.');
+        return response()->json(['url' => url('/sellin')]);
+            // return redirect(route('sellin'))->with('status', 'Something went wrong.');
     }
 
 }

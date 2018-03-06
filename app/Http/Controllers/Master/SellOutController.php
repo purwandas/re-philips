@@ -43,7 +43,7 @@ class SellOutController extends Controller
      */
     public function index()
     {
-        return view('master.sell-out');
+        return view('master.form.sellout-form');
     }
 
     /**
@@ -89,6 +89,7 @@ class SellOutController extends Controller
      */
     public function store(Request $request)
     {
+        $date = Carbon::parse($request->date);
     	// return $request->all();
 
         // $content = $request;//json_decode($request->getContent(), true);
@@ -112,12 +113,14 @@ class SellOutController extends Controller
             }
         }
 
+        $content['date'] = $date;
+
         // if($param == 2) { /* SELL OUT */
 
             // return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell out header
-            $sellOutHeader = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+            $sellOutHeader = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $content['date']->format('Y-m-d'))->first();
 
             if ($sellOutHeader) { // If header exist (update and/or create detail)
 
@@ -337,12 +340,12 @@ class SellOutController extends Controller
 
                    });
                } catch (\Exception $e) {
-                   // return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
-                   return redirect(route('sellout'))->with('status', 'Gagal melakukan transaksi');
+                   return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                   // return redirect(route('sellout'))->with('status', 'Gagal melakukan transaksi');
                }
 
-                // return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
-                return redirect(route('sellout'))->with('status', 'Data berhasil di input');
+                return response()->json(['status' => true, 'id_transaksi' => $sellOutHeader->id, 'message' => 'Data berhasil di input']);
+                // return redirect(route('sellout'))->with('status', 'Data berhasil di input');
 
             } else { // If header didn't exist (create header & detail)
 
@@ -353,8 +356,8 @@ class SellOutController extends Controller
                         $transaction = SellOut::create([
                                             'user_id' => $user->id,
                                             'store_id' => $content['id'],
-                                            'week' => Carbon::now()->weekOfMonth,
-                                            'date' => Carbon::now()
+                                            'week' => $content['date']->weekOfMonth,
+                                            'date' => $content['date']->format('Y-m-d')
                                         ]);
 
                         foreach ($content['data'] as $data) {
@@ -527,17 +530,17 @@ class SellOutController extends Controller
                }
 
                 // Check sell in(Sell Through) header after insert
-                $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+                $sellOutHeaderAfter = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $content['date']->format('Y-m-d'))->first();
 
-                // return response()->json(['status' => true, 'id_transaksi' => $sellOutHeaderAfter->id, 'message' => 'Data berhasil di input']);
-                return redirect(route('sellout'))->with('status', 'Data berhasil di input');
+                return response()->json(['status' => true, 'id_transaksi' => $sellOutHeaderAfter->id, 'message' => 'Data berhasil di input']);
+                // return redirect(route('sellout'))->with('status', 'Data berhasil di input');
 
             }
 
         // }
 
-        // return response()->json(['url' => url('/sellout')]);
-            return redirect(route('sellout'))->with('status', 'Something went wrong.');
+        return response()->json(['url' => url('/sellout')]);
+            // return redirect(route('sellout'))->with('status', 'Something went wrong.');
     }
 
 }

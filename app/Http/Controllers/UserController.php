@@ -56,6 +56,11 @@ class UserController extends Controller
             ->whereNotIn('role_group',$roles);
 //        $data = User::all();
 
+        if(Auth::user()->role->role_group != 'Master'){
+            $adminRoles = ['Admin', 'Master'];
+            $data = $data->whereNotIn('role_group', $adminRoles);
+        }
+
         $filter = $data;
 
         /* If filter */
@@ -234,15 +239,15 @@ class UserController extends Controller
                 })
                 ->addColumn('action', function ($item) {
 
-                    if ( $item->hp_id == null) {
+                    if ($item->status_login == 'Login' or $item->hp_id != null or $item->jenis_hp != null) {
                     return 
                     "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
-                    <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>
+                    <button class='btn btn-success btn-sm openAccessButton' data-toggle='confirmation' data-singleton='true' title='Open access new Phone' value='".$item->id." '><i class='fa fa-unlock'></i></button>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     } else {
                     return 
                     "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
-                    <button class='btn btn-success btn-sm openAccessButton' data-toggle='confirmation' data-singleton='true' title='Open access new Phone' value='".$item->id." '><i class='fa fa-unlock'></i></button>
+                    <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
                     }
                     
@@ -1447,6 +1452,7 @@ class UserController extends Controller
             'status_login' => 'Logout',
             'hp_id' => null,
             'jenis_hp' => null,
+            'fcm_token' => null,
             ]);
 
         return response()->json($id);

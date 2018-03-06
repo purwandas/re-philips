@@ -106,16 +106,20 @@ class AuthController extends Controller
         	$spvDemo = SpvDemo::where('user_id', $user->id)->first();
 
         	if($spvDemo){
-        		$firstStore = Store::where('user_id', $spvDemo->user_id)->first();
+        		$firstStore = Store::where('id', $spvDemo->store_id)->first();
         	}else{
         		$firstStore = Store::where('user_id', $user->id)->first();
         	}
 
-        	if($firstStore->subChannel->channel->globalChannel->name == 'TR' || $firstStore->subChannel->channel->globalChannel->name == 'Traditional Retail'){
-                $kpi = 'Sell In';
-            }else{
-                $kpi = 'Sell Out';
-            }
+        	if($firstStore){
+
+	        	if($firstStore->subChannel->channel->globalChannel->name == 'TR' || $firstStore->subChannel->channel->globalChannel->name == 'Traditional Retail'){
+	                $kpi = 'Sell In';
+	            }else{
+	                $kpi = 'Sell Out';
+	            }
+
+        	}
 
         }
 
@@ -286,7 +290,8 @@ class AuthController extends Controller
         }
 
         $userData->update([
-            'status_login' => 'Logout'
+            'status_login' => 'Logout',
+            'fcm_token' => null,
         ]);
 
 			return response()->json(['status' => true, 'message' => 'logout berhasil'], 200);

@@ -137,13 +137,16 @@ class KonfigController extends Controller
                 return $item->store->classification->classification;
             })
             ->addColumn('global_channel', function ($item) {
-                return $item->store->subChannel->channel->globalChannel->name;
+                if($item->store->subchannel_id != null) return $item->store->subChannel->channel->globalChannel->name;
+                return '-';
             })
             ->addColumn('channel', function ($item) {
-                return $item->store->subChannel->channel->name;
+                if($item->store->subchannel_id != null) return $item->store->subChannel->channel->name;
+                return '-';
             })
             ->addColumn('sub_channel', function ($item) {
-                return $item->store->subChannel->name;
+                if($item->store->subchannel_id != null) return $item->store->subChannel->name;
+                return '-';
             })
             ->addColumn('distributor_code', function ($item) {
                 if($item->store->storeDistributors->first()){
@@ -385,15 +388,18 @@ class KonfigController extends Controller
             })
             ->addColumn('global_channel', function ($item) {
                 // return '-';
-                return $item->subChannel->channel->globalChannel->name;
+                if($item->subchannel_id != null) return $item->subChannel->channel->globalChannel->name;
+                return '-';
             })
             ->addColumn('channel', function ($item) {
                 // return '-';
-                return $item->subChannel->channel->name;
+                if($item->subchannel_id != null) return $item->subChannel->channel->name;
+                return '-';
             })
             ->addColumn('sub_channel', function ($item) {
                 // return '-';
-                return $item->subChannel->name;
+                if($item->subchannel_id != null) return $item->subChannel->name;
+                return '-';
             })
             ->addColumn('distributor_code', function ($item) {
                 if($item->storeDistributors->first()){

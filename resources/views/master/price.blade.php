@@ -30,7 +30,7 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-blue"></i>
+                        <i class="fa fa-cog font-blue"></i>
                         <span class="caption-subject font-blue bold uppercase">FILTER PRICE</span>
                     </div>
                 </div>
@@ -154,8 +154,8 @@
                 {data: 'price', name: 'price'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},            
             ];
-        var paramFilter = ['priceTable', $('#priceTable'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'priceTable', $('#priceTable'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['priceTable', $('#priceTable'), url, tableColumns, columnDefs, order, '#export'];
+        var paramReset = [filterId, 'priceTable', $('#priceTable'), url, tableColumns, columnDefs, order, '#export'];
 
     $(document).ready(function () {
 
@@ -273,7 +273,7 @@
                                                     $('#export').removeAttr('disabled');
                                                 }else{
                                                     $('#exportAll').attr('disabled','disabled');
-                                                    $('#export').removeAttr('disabled');
+                                                    $('#export').attr('disabled','disabled');
                                                 }
 
                                         dataAll = results;
