@@ -12,7 +12,7 @@ class Attendance extends Model
 
     //
     protected $fillable = [
-        'name', 'user_id', 'date', 'status'
+        'name', 'user_id', 'date', 'status', 'reject'
     ];
 
     /**

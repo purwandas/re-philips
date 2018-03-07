@@ -52,7 +52,8 @@ class NewsController extends Controller
             /* MERGER Data All dan Data Area */
             $dataAreaSelect = News::whereIn('id', $areaArray)
                                 ->select('news.id', 'news.date', 'news.from', 'news.subject', 'news.content')
-                ->get();
+                                ->orderBy('id', 'desc')
+                                ->get();
 
             $data = $data->merge($dataAreaSelect);
 
@@ -71,7 +72,8 @@ class NewsController extends Controller
             /* MERGER Data All dan Data Store */
             $dataStoreSelect = News::whereIn('id', $storeArray)
                                 ->select('news.id', 'news.date', 'news.from', 'news.subject', 'news.content')
-                ->get();
+                                ->orderBy('id', 'desc')
+                                ->get();
 
             $data = $data->merge($dataStoreSelect);
 
@@ -88,7 +90,8 @@ class NewsController extends Controller
             /* MERGER Data All dan Data Promoter */
             $dataPromoterSelect = News::whereIn('id', $promoterArray)
                                 ->select('news.id', 'news.date', 'news.from', 'news.subject', 'news.content')
-                ->get();
+                                ->orderBy('id', 'desc')
+                                ->get();
 
             $data = $data->merge($dataPromoterSelect);
 
