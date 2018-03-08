@@ -52,7 +52,7 @@ class EditSellOutController extends Controller
 
                     ->join('users', 'sell_outs.user_id', '=', 'users.id')
                     ->join('products', 'sell_out_details.product_id', '=', 'products.id')
-                    ->select('sell_outs.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_out_details.id as id', 'sell_out_details.quantity as quantity', 'products.name as product',
+                    ->select('sell_outs.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_out_details.id as id', 'sell_out_details.quantity as quantity', 'products.name as product', 'sell_out_details.irisan as irisan',
                          'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
                     ->get();
 
@@ -119,6 +119,15 @@ class EditSellOutController extends Controller
     public function makeTable($data){
 
            return Datatables::of($data)
+                ->editColumn('irisan', function ($item) {
+
+                   if($item->irisan == 0){
+                    return '-';
+                   }else{
+                    return 'Irisan';
+                   }
+
+                })
            		->addColumn('action', function ($item) {
 
                    return

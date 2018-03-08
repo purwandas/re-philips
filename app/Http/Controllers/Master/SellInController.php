@@ -92,7 +92,7 @@ class SellInController extends Controller
         $date = Carbon::parse($request->date);
         // return response()->json($date->format('Y-m-d'));
         // return redirect(route('sellin'))->with('status', 'Data berhasil di input');
-    	// return $request->all();
+        // return $request->all();
 
         // $content = $request;//json_decode($request->getContent(), true);
         $user_id = explode('`', $request['user_id']);
@@ -143,7 +143,7 @@ class SellInController extends Controller
                                     'quantity' => $sellInDetail->quantity + $data['quantity']
                                 ]);
 
-                                /** Update Summary **/
+                                /* Update Summary */
 
                                 if($user->role->role_group != 'Salesman Explorer') {
 
@@ -214,7 +214,7 @@ class SellInController extends Controller
                                     'irisan' => $content['irisan']
                                 ]);
 
-                                /** Insert Summary **/
+                                /* Insert Summary */
 
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
@@ -357,6 +357,7 @@ class SellInController extends Controller
                                         'model' => $product->model . '/' . $product->variants,
                                         'group' => $product->category->group->groupProduct->name,
                                         'category' => $product->category->name,
+                                        'product_id' => $product->id,
                                         'product_name' => $product->name,
                                         'quantity' => $data['quantity'],
                                         'irisan' => $content['irisan'],
@@ -443,7 +444,7 @@ class SellInController extends Controller
                                         'role_group' => $user->role->role_group,
                                     ]);
 
-                                    // Actual Summary
+                                     // Actual Summary
                                     $summary_ta['user_id'] = $sellInHeader->user_id;
                                     $summary_ta['store_id'] = $sellInHeader->store_id;
                                     $summary_ta['pf'] = $summary->value_pf;
@@ -459,11 +460,13 @@ class SellInController extends Controller
 
                        });
                 } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                    return response()->json(['url' => url('/sellin'),'status' => false, 'message' => 'Gagal melakukan transaksi']);
+                    // return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                     // return redirect(route('sellin'))->with('status', 'Gagal melakukan transaksi');
                 }
 
-                return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
+                return response()->json(['url' => url('/sellin')]);
+                // return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
                 // return redirect(route('sellin'))->with('status', 'Data berhasil di input');
 
             } else { // If header didn't exist (create header & detail)
@@ -489,7 +492,7 @@ class SellInController extends Controller
                                     'irisan' => $content['irisan']
                                 ]);
 
-                            /** Insert Summary **/
+                            /* Insert Summary */
 
                             /* Store */
                             $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
@@ -639,6 +642,7 @@ class SellInController extends Controller
                                     'model' => $product->model . '/' . $product->variants,
                                     'group' => $product->category->group->groupProduct->name,
                                     'category' => $product->category->name,
+                                    'product_id' => $product->id,
                                     'product_name' => $product->name,
                                     'quantity' => $detail->quantity,
                                     'irisan' => $content['irisan'],
@@ -740,14 +744,16 @@ class SellInController extends Controller
 
                     });
                 } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+                    return response()->json(['url' => url('/sellin'),'status' => false, 'message' => 'Gagal melakukan transaksi']);
+                    // return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
                     // return redirect(route('sellin'))->with('status', 'Gagal melakukan transaksi');
                 }
 
                 // Check sell in(Sell Through) header after insert
                 $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $content['date']->format('Y-m-d'))->first();
 
-                return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
+                return response()->json(['url' => url('/sellin')]);
+                // return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
                 // return redirect(route('sellin'))->with('status', 'Data berhasil di input');
 
             }

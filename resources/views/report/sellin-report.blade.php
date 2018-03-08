@@ -28,7 +28,7 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-blue"></i>
+                        <i class="fa fa-cog font-blue"></i>
                         <span class="caption-subject font-blue bold uppercase">FILTER REPORT</span>
                     </div>
                 </div>
@@ -78,12 +78,16 @@
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-map-o font-blue"></i>
+                            <i class="fa fa-file-text-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Sell Thru</span>
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL </a>
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                        </div>
+                        <div class="actions" style="text-align: left; padding-right: 10px;">
+                            <a id="exportAll" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                         </div>
                     </div>
 
@@ -117,6 +121,7 @@
                                 <th> Value PF MR </th>
                                 <th> Value PF TR </th>
                                 <th> Value PF PPE </th>
+                                <th> Irisan </th>
                                 <th> Role </th>
                                 <th> SPV/ARO Name </th>
                                 <th> DM Name </th>
@@ -144,7 +149,7 @@
 
     <script>
 
-        // var dataAll
+        var dataAll = {};
         /*
          *
          *
@@ -178,6 +183,7 @@
                             {data: 'value_pf_mr', name: 'value_pf_mr'},
                             {data: 'value_pf_tr', name: 'value_pf_tr'},
                             {data: 'value_pf_ppe', name: 'value_pf_ppe'},
+                            {data: 'irisan', name: 'irisan'},
                             {data: 'role', name: 'role'},
                             {data: 'spv_name', name: 'spv_name'},
                             {data: 'dm_name', name: 'dm_name'},
@@ -195,6 +201,26 @@
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Get data district to var data
+            $.ajax({
+                type: 'POST',
+                url: 'data/sellinreport',
+                dataType: 'json',
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
                 }
             });
 
@@ -375,19 +401,73 @@
 
                         window.location = data.url;
 
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/sellinreport',
+                    dataType: 'json',
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-sellin-all',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
 
 
                     }
