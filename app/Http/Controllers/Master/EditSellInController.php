@@ -53,7 +53,7 @@ class EditSellInController extends Controller
                     ->join('users', 'sell_ins.user_id', '=', 'users.id')
                     ->join('products', 'sell_in_details.product_id', '=', 'products.id')
 
-                    ->select('sell_ins.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.id as storeId', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product',
+                    ->select('sell_ins.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.id as storeId', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_in_details.id as id', 'sell_in_details.quantity as quantity', 'products.name as product', 'sell_in_details.irisan as irisan',
                      'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
                     ->get();
 
@@ -121,6 +121,15 @@ class EditSellInController extends Controller
             
 
            return Datatables::of($data->all())
+                ->editColumn('irisan', function ($item) {
+
+                   if($item->irisan == 0){
+                    return '-';
+                   }else{
+                    return 'Irisan';
+                   }
+
+                })
            		->addColumn('action', function ($item) {
 
                    return

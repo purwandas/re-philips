@@ -172,6 +172,7 @@ class TargetController extends Controller
             $targetOldMcc = $target->first()->target_mcc;
             $targetOldPfMcc = $target->first()->target_pf_mcc;
 
+            $target->update(['partner'=>$partner]);
             $target->update(['target_da'=>$request->target_da]);
             $target->update(['target_pf_da'=>$request->target_pf_da]);
             $target->update(['target_pc'=>$request->target_pc]);

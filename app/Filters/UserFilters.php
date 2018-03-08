@@ -48,7 +48,7 @@ class UserFilters extends QueryFilters
     }
 
     public function promoterGroupNew($value) {
-        $roles = ['Promoter','Promoter Additional','Promoter Event','ACT','PPE','BDT','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        $roles = ['Promoter','Promoter Additional','Promoter Event', 'Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         return $this->builder->whereHas('role', function ($query) use ($roles) {
             return $query->whereIn('roles.role_group',$roles);
         });

@@ -274,6 +274,17 @@
         <!-- END PAGE LEVEL SCRIPTS -->
 
         <script>
+
+            $(document).ready(function () {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            
+            });
+
             var url = "{{url('util/user-online')}}";
                 $.get(url, function (data) {
 //                    console.log(data);
