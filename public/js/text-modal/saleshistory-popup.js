@@ -11,7 +11,7 @@ $(document).on("click", ".open-sales-history-modal", function () {
     // $('.bedgecount2').text('');
     // $('.bedgecount2').text(1);
     
-    var x = parseInt($('.bedgecount2').text().substr(0, $('.bedgecount2').text().length-1))-1;
+    var x = parseInt($('.bedgecount2').text().substr(0, $('.bedgecount2').text().length-($('.bedgecount2').text().length/2)))-1;
     // console.log(x);
     $('.bedgecount2').text(x);
     // $(".open-sales-history-modal").removeAttr("data-count");

@@ -78,7 +78,7 @@
 
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-share-alt font-blue"></i>
+                    <i class="fa fa-edit font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">Sell Out</span>
                 </div>
             </div>
@@ -99,6 +99,7 @@
                                 <th> Store ID </th>
                                 <th> Product </th>
                                 <th> Quantity </th>
+                                <th> Irisan </th>
                                 <th> Action </th>
                             </tr>
                         </thead>
@@ -140,7 +141,7 @@
     var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee'];
     var url = 'datatable/editsellout';
     var order = [ [0, 'desc'] ];
-    var columnDefs = [{"className": "dt-center", "targets": [0]}, {"className": "dt-center", "targets": [8]}];
+    var columnDefs = [{"className": "dt-center", "targets": [0]}, {"className": "dt-center", "targets": [9]}];
     var tableColumns = [
                         {data: 'id', name: 'id'},
                         {data: 'date', name: 'date'},
@@ -151,6 +152,7 @@
                         {data: 'store_id', name: 'store_id'},
                         {data: 'product', name: 'product'},
                         {data: 'quantity', name: 'quantity'},
+                        {data: 'irisan', name: 'irisan'},
                         {data: 'action', name: 'action', searchable: false, sortable: false},
                         ];
 
@@ -187,11 +189,12 @@
                         {data: 'store_id', name: 'store_id'},
                         {data: 'product', name: 'product'},
                         {data: 'quantity', name: 'quantity'},
+                        {data: 'irisan', name: 'irisan'},
                         {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [8]},
+                {"className": "dt-center", "targets": [9]},
             ],
             "order": [ [0, 'desc'] ],
         });

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Apm;
+use App\ApmMonth;
 use App\Leadtime;
 use App\Price;
 use App\Reports\SummarySellIn;
@@ -31,7 +32,7 @@ trait ApmTrait {
 
     public function getStockValueCurrent($storeId, $productId){
 
-        $stock = SummarySoh::where('storeId', $storeId)->where('product_id', $productId)->orderBy('updated_at', 'DESC')->first();
+        $stock = SummarySoh::where('storeId', $storeId)->where('product_id', $productId)->orderBy('created_at', 'DESC')->first();
 
         if($stock){
 
@@ -46,7 +47,7 @@ trait ApmTrait {
         $sellInValue = 0;
 
         $sellIn = SummarySellIn::where('storeId', $storeId)->where('product_id', $productId)
-                    ->where('updated_at', '>', $this->getLastStock($storeId, $productId))->get();
+                    ->where('created_at', '>', $this->getLastStock($storeId, $productId))->get();
 
         if($sellIn){
 
@@ -65,7 +66,7 @@ trait ApmTrait {
         $sellOutValue = 0;
 
         $sellOut = SummarySellOut::where('storeId', $storeId)->where('product_id', $productId)
-                    ->where('updated_at', '>', $this->getLastStock($storeId, $productId))->get();
+                    ->where('created_at', '>', $this->getLastStock($storeId, $productId))->get();
 
         if($sellOut){
 
@@ -107,6 +108,8 @@ trait ApmTrait {
 
         $apm = Apm::where('store_id', $storeId)->get();
 
+        $apmMonth = ApmMonth::all();
+
         $totalValue = 0;
 
         /* Same Dividing = 3 */
@@ -115,7 +118,16 @@ trait ApmTrait {
 
             foreach ($apm as $data){
 
-                $totalValue += ($data->month_minus_3_value + $data->month_minus_2_value + $data->month_minus_1_value) / 3;
+                $valueSelected = 0;
+
+                if($apmMonth->first()->selected == 1) $valueSelected += $data->month_minus_1_value;
+                if($apmMonth->get(1)->selected == 1) $valueSelected += $data->month_minus_2_value;
+                if($apmMonth->get(2)->selected == 1) $valueSelected += $data->month_minus_3_value;
+                if($apmMonth->get(3)->selected == 1) $valueSelected += $data->month_minus_4_value;
+                if($apmMonth->get(4)->selected == 1) $valueSelected += $data->month_minus_5_value;
+                if($apmMonth->get(5)->selected == 1) $valueSelected += $data->month_minus_6_value;
+                
+                $totalValue += $valueSelected / 3;
 
             }
 
@@ -152,13 +164,26 @@ trait ApmTrait {
 
         $apm = Apm::where('store_id', $storeId)->where('product_id', $productId)->first();
 
+        $apmMonth = ApmMonth::all();
+
         $totalValue = 0;
 
         /* Same Dividing = 3 */
 
         if($apm) {
 
-            $totalValue = ($apm->month_minus_3_value + $apm->month_minus_2_value + $apm->month_minus_1_value) / 3;
+            // $totalValue = ($apm->month_minus_3_value + $apm->month_minus_2_value + $apm->month_minus_1_value) / 3;
+
+            $valueSelected = 0;
+
+            if($apmMonth->first()->selected == 1) $valueSelected += $apm->month_minus_1_value;
+            if($apmMonth->get(1)->selected == 1) $valueSelected += $apm->month_minus_2_value;
+            if($apmMonth->get(2)->selected == 1) $valueSelected += $apm->month_minus_3_value;
+            if($apmMonth->get(3)->selected == 1) $valueSelected += $apm->month_minus_4_value;
+            if($apmMonth->get(4)->selected == 1) $valueSelected += $apm->month_minus_5_value;
+            if($apmMonth->get(5)->selected == 1) $valueSelected += $apm->month_minus_6_value;
+            
+            $totalValue += $valueSelected / 3;
 
         }
 
@@ -212,7 +237,7 @@ trait ApmTrait {
 
     public function getLastStock($storeId, $productId){
 
-        $lastStock = SummarySoh::where('storeId', $storeId)->where('product_id', $productId)->orderBy('updated_at', 'DESC')->first();
+        $lastStock = SummarySoh::where('storeId', $storeId)->where('product_id', $productId)->orderBy('created_at', 'DESC')->first();
 
         if($lastStock){
 
