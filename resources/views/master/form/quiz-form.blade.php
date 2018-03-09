@@ -169,8 +169,9 @@
 	            }
 	        }));
 
-	        $('#role').select2(setOptions('{{ route("data.role") }}', 'Role', function (params) {            
-	            return filterData('name', params.term);
+	        $('#role').select2(setOptions('{{ route("data.role") }}', 'Role', function (params) {
+	        	filters['promoterGroup'] = '1';
+	            return filterData('role', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                

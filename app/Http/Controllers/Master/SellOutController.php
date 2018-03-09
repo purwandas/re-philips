@@ -90,7 +90,7 @@ class SellOutController extends Controller
     public function store(Request $request)
     {
         $date = Carbon::parse($request->date);
-    	// return $request->all();
+        // return $request->all();
 
         // $content = $request;//json_decode($request->getContent(), true);
         $user_id = explode('`', $request['user_id']);
