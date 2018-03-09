@@ -89,7 +89,7 @@ class SuggestionOrderController extends Controller
         $result = array_merge($apmProduct, $summary);
         $result = array_unique($result);
 
-//        return response()->json($result);
+       // return response()->json($result);
 
         if(count($result) > 0) {
 
@@ -105,10 +105,11 @@ class SuggestionOrderController extends Controller
 //                    'product_id' => $value,
 //                    'apm' => $apm,
 //                    'sell in' => $this->checkSellIn($store_id, $value),
+//                    'soh' => $this->checkStock($store_id, $value),
 //                ]);
-//
+
 //                $products->push($test);
-//
+// //
 //                continue;
 
                 if($apm > 0){

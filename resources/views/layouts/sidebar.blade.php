@@ -224,6 +224,12 @@
                 </a>
             </li>
             
+            <li class="nav-item {{ Request::is('apm') ? 'active open' : '' }}">
+                <a href="{{ url('apm') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-hourglass-half"></i>
+                    <span class="title">APM</span>
+                </a>
+            </li>
             
             <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
                 <a href="{{ url('posm') }}" class="nav-link nav-toggle">

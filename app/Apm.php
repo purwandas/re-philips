@@ -28,4 +28,25 @@ class Apm extends Model
      * Relation Method(s).
      *
      */
+
+    public function product()
+    {
+        return $this->belongsTo('App\Product', 'product_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Store', 'store_id');
+    }
+
+    /**
+     * Filtering Berdasarakan Request User
+     * @param $query
+     * @param QueryFilters $filters
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter($query, QueryFilters $filters)
+    {
+        return $filters->apply($query);
+    }
 }
