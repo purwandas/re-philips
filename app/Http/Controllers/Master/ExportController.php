@@ -214,16 +214,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('RET. CONSUMENT', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:Y1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExport($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:Y1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:Y1', 'thin');
             });
 
 
@@ -256,16 +256,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('RET. CONSUMENT', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:Y1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportAll($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:Y1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:Y1', 'thin');
             });
 
 
@@ -298,16 +298,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('RET. DISTRIBUTOR', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:Y1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExport($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:Y1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:Y1', 'thin');
             });
 
 
@@ -340,16 +340,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('RET. DISTRIBUTOR', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:Y1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportAll($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:Y1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:Y1', 'thin');
             });
 
 
@@ -550,16 +550,58 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('SOH', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:Y1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExport($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:Y1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:Y1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportSohAll(Request $request){
+
+        $filename = 'Philips Retail Report SOH ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report SOH');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('SOH Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('SOH', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:Y1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportAll($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:Y1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:Y1', 'thin');
             });
 
 
@@ -634,16 +676,58 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('DISPLAY SHARE', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:V1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportDisplayShare($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:V1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:V1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportDisplayShareAll(Request $request){
+
+        $filename = 'Philips Retail Report Display Share ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Display Share');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Display Share Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('DISPLAY SHARE', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:V1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportDisplayShare($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:V1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:V1', 'thin');
             });
 
 
@@ -676,16 +760,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('MAINTENANCE REQUEST', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:M1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportReportMaintenance($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:M1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:M1', 'thin');
             });
 
 
@@ -718,16 +802,58 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('COMPETITOR ACTIVITY', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:P1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportReportCompetitor($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:P1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:P1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportCompetitorActivityAll(Request $request){
+
+        $filename = 'Philips Retail Report Competitor Activity ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Competitor Activity');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Competitor Activity Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('COMPETITOR ACTIVITY', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:P1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportReportCompetitor($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:P1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:P1', 'thin');
             });
 
 
@@ -760,16 +886,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('PROMO ACTIVITY', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:AB1');
+                $sheet->setAutoFilter('A1:Q1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportReportPromo($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:AB1', function ($cells) {
+                $sheet->cells('A1:Q1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:AB1', 'thin');
+                $sheet->setBorder('A1:Q1', 'thin');
             });
 
 
@@ -778,6 +904,133 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportPromoActivityAll(Request $request){
+
+        $filename = 'Philips Retail Report Promo Activity ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Promo Activity');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Promo Activity Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('PROMO ACTIVITY', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:Q1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportReportPromo($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:Q1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:Q1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportPosmActivity(Request $request){
+
+        $filename = 'Philips Retail Report POSM Activity ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report POSM Activity');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('POSM Activity Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('POSM ACTIVITY', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:M1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportReportPosm($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:M1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:M1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportPosmActivityAll(Request $request){
+
+        $filename = 'Philips Retail Report POSM Activity ' . Carbon::now()->format('d-m-Y');
+        $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report POSM Activity');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('POSM Activity Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('POSM ACTIVITY', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:M1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportReportPosm($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:M1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:M1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
     public function exportAttendanceReport(Request $request){
 
         $filename = 'Philips Retail Report Attendance Report ' . Carbon::now()->format('d-m-Y');

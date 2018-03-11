@@ -294,11 +294,11 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummarySellIn::where('sellin_detail_id', $sellInDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
                     /* Get Data again*/
-                    SellInDetail::where('sellin_id', $sellIn->first()->id)->delete();
-                    SellIn::where('id', $detail->id)->delete();
+                    SellInDetail::where('sellin_id', $sellIn->first()->id)->forceDelete();
+                    SellIn::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -464,8 +464,9 @@ class SalesHistory extends Command
                             'category' => $product->category->name,
                             'product_id' => $product->id,
                             'model' => $product->model . '/' . $product->variants,
-                            'product_name' => $product->name,
+                            'product_name' => $product->name,                            
                             'quantity' => $transactionDetail->quantity,
+                            'irisan' => $transactionDetail->irisan,
                             'unit_price' => $realPrice,
                             'value' => $realPrice*$transactionDetail->quantity,
                             'value_pf_mr' => $value_pf_mr,
@@ -514,10 +515,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummarySellOut::where('sellout_detail_id', $sellOutDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    SellOutDetail::where('sellout_id', $sellOut->first()->id)->delete();
-                    SellOut::where('id', $detail->id)->delete();
+                    SellOutDetail::where('sellout_id', $sellOut->first()->id)->forceDelete();
+                    SellOut::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -733,10 +734,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummarySellOut::where('sellout_detail_id', $sellOutDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    SellOutDetail::where('sellout_id', $sellOut->first()->id)->delete();
-                    SellOut::where('id', $detail->id)->delete();
+                    SellOutDetail::where('sellout_id', $sellOut->first()->id)->forceDelete();
+                    SellOut::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -950,10 +951,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummaryRetConsument::where('retconsument_detail_id', $retConsumentDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    RetConsumentDetail::where('retconsument_id', $retConsument->first()->id)->delete();-
-                    RetConsument::where('id', $detail->id)->delete();
+                    RetConsumentDetail::where('retconsument_id', $retConsument->first()->id)->forceDelete();-
+                    RetConsument::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -1166,10 +1167,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummaryRetDistributor::where('retdistributor_detail_id', $retDistributorDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    RetDistributorDetail::where('retdistributor_id', $retDistributor->first()->id)->delete();
-                    RetDistributor::where('id', $detail->id)->delete();
+                    RetDistributorDetail::where('retdistributor_id', $retDistributor->first()->id)->forceDelete();
+                    RetDistributor::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -1383,10 +1384,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummaryFreeProduct::where('freeproduct_detail_id', $freeProductDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    FreeProductDetail::where('freeproduct_id', $freeProduct->first()->id)->delete();
-                    FreeProduct::where('id', $detail->id)->delete();
+                    FreeProductDetail::where('freeproduct_id', $freeProduct->first()->id)->forceDelete();
+                    FreeProduct::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -1608,10 +1609,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummaryTbat::where('tbat_detail_id', $tbatDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    TbatDetail::where('tbat_id', $tbat->first()->id);
-                    Tbat::where('id', $detail->id)->delete();
+                    TbatDetail::where('tbat_id', $tbat->first()->id)->forceDelete();
+                    Tbat::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -1795,10 +1796,10 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummaryDisplayShare::where('displayshare_detail_id', $displayShareDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
-                    DisplayShareDetail::where('display_share_id', $displayShare->first()->id)->delete();
-                    DisplayShare::where('id', $detail->id)->delete();
+                    DisplayShareDetail::where('display_share_id', $displayShare->first()->id)->forceDelete();
+                    DisplayShare::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -2014,11 +2015,11 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SummarySoh::where('soh_detail_id', $sohDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
                     /* Gett data again */
-                    SohDetail::where('soh_id', $soh->first()->id)->delete();
-                    Soh::where('id', $detail->id)->delete();
+                    SohDetail::where('soh_id', $soh->first()->id)->forceDelete();
+                    Soh::where('id', $detail->id)->forceDelete();
 
                 }
 
@@ -2188,7 +2189,7 @@ class SalesHistory extends Command
                         $target = Target::where('user_id', $detail->user_id)->where('store_id', $detail->storeId);
                         $target->forceDelete();
 
-                        $summary->delete();
+                        $summary->forceDelete();
                     }else{
 
                         /* Reset Actual */
@@ -2515,11 +2516,11 @@ class SalesHistory extends Command
 
                     /* Delete summary table */
                     $summary = SalesmanSummarySales::where('sellin_detail_id', $sellInDetails->first()->id);
-                    $summary->delete();
+                    $summary->forceDelete();
 
                     /* Get Data again*/
-                    SellInDetail::where('sellin_id', $sellIn->first()->id)->delete();
-                    SellIn::where('id', $detail->id)->delete();
+                    SellInDetail::where('sellin_id', $sellIn->first()->id)->forceDelete();
+                    SellIn::where('id', $detail->id)->forceDelete();
 
                 }
 

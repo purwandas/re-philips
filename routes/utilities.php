@@ -149,6 +149,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/freeproductreport', ['as'=> 'data.freeproductreport','uses'=>'Master\ReportController@freeproductDataAll']);
     Route::post('data/tbatreport', ['as'=> 'data.tbatreport','uses'=>'Master\ReportController@tbatDataAll']);
     Route::post('data/apm', ['as'=> 'data.apm','uses'=>'Master\ApmController@getDataWithFilters']);
+    Route::post('data/sohreport', ['as'=> 'data.sohreport','uses'=>'Master\ReportController@sohDataAll']);
+    Route::post('data/competitoractivityreport', ['as'=> 'data.competitoractivityreport','uses'=>'Master\ReportController@competitorActivityDataAll']);
+    Route::post('data/promoactivityreport', ['as'=> 'data.promoactivityreport','uses'=>'Master\ReportController@promoActivityDataAll']);
+    Route::post('data/displaysharereport', ['as'=> 'data.displaysharereport','uses'=>'Master\ReportController@displayShareDataAll']);
+    Route::post('data/posmactivityreport', ['as'=> 'data.posmactivityreport','uses'=>'Master\ReportController@posmActivityDataAll']);
+    Route::post('data/maintenancerequestreport', ['as'=> 'data.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestDataAll']);
 
 
     /**
@@ -236,6 +242,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-sellin', ['uses'=>'Master\ExportController@exportSellIn']);
     Route::post('util/export-sellin-all', ['uses'=>'Master\ExportController@exportSellInAll']);
     Route::post('util/export-sellout', ['uses'=>'Master\ExportController@exportSellOut']);
+    Route::post('util/export-sellout-all', ['uses'=>'Master\ExportController@exportSellOutAll']);
     Route::post('util/export-retconsument', ['uses'=>'Master\ExportController@exportRetConsument']);
     Route::post('util/export-retconsument-all', ['uses'=>'Master\ExportController@exportRetConsumentAll']);
     Route::post('util/export-retdistributor', ['uses'=>'Master\ExportController@exportRetDistributor']);
@@ -250,6 +257,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-maintenancerequest', ['uses'=>'Master\ExportController@exportMaintenanceRequest']);
     Route::post('util/export-competitoractivity', ['uses'=>'Master\ExportController@exportCompetitorActivity']);
     Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
+    Route::post('util/export-posmactivity', ['uses'=>'Master\ExportController@exportPosmActivity']);
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
@@ -290,6 +298,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-productpromo-template', ['uses'=>'Master\ExportController@exportProductPromoTemplate']);
     Route::post('util/export-apm', ['uses'=>'Master\ExportController@exportApm']);
     Route::post('util/export-apm-all', ['uses'=>'Master\ExportController@exportApmAll']);
+    Route::post('util/export-soh-all', ['uses'=>'Master\ExportController@exportSohAll']);
+    Route::post('util/export-competitoractivity-all', ['uses'=>'Master\ExportController@exportCompetitorActivityAll']);
+    Route::post('util/export-promoactivity-all', ['uses'=>'Master\ExportController@exportPromoActivityAll']);
+    Route::post('util/export-displayshare-all', ['uses'=>'Master\ExportController@exportDisplayShareAll']);
+    Route::post('util/export-posm-all', ['uses'=>'Master\ExportController@exportPosmAll']);
+    Route::post('util/export-posmactivity-all', ['uses'=>'Master\ExportController@exportPosmActivityAll']);
 
 
     /**

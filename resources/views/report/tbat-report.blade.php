@@ -70,7 +70,7 @@
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetReport(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
                     <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
@@ -195,8 +195,8 @@
                             {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order, '#export'];
+        var paramReset = [filterId, 'tbatReport', $('#tbatReport'), url, tableColumns, columnDefs, order, '#export', '#filterMonth'];
 
         $(document).ready(function () {
 
@@ -211,6 +211,7 @@
                 type: 'POST',
                 url: 'data/tbatreport',
                 dataType: 'json',
+                data: filters,
                 global: false,
                 async: false,
                 success: function (results) {
@@ -226,6 +227,9 @@
                 }
             });
 
+            initSelect2();
+            initDateTimePicker();
+
             // Set data for Data Table
             var table = $('#tbatReport').dataTable({
                 "processing": true,
@@ -233,6 +237,8 @@
                 "ajax": {
                     url: "{{ route('datatable.tbatreport') }}",
                     type: 'POST',
+                    data: filters,
+                    dataType: 'json',
                     dataSrc: function (res) {
                         var count = res.data.length;
 
@@ -252,8 +258,7 @@
                 "order": order,
             });
 
-            initSelect2();
-            initDateTimePicker();
+            
 
         });
 
@@ -380,8 +385,8 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
 
         });
 
@@ -389,6 +394,26 @@
 
             // Set Table Content
             // $('#dataContent').removeClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/tbatreport',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
+                }
+            });
 
         });
 
@@ -412,19 +437,19 @@
 
                         window.location = data.url;
 
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
 
 
                     }
@@ -443,6 +468,7 @@
                     type: 'POST',
                     url: 'data/tbatreport',
                     dataType: 'json',
+                    data: filters,
                     global: false,
                     async: false,
                     success: function (results) {
@@ -466,19 +492,19 @@
 
                         window.location = data.url;
 
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
 
 
                     }
