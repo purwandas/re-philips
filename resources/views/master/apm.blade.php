@@ -71,7 +71,7 @@
 
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-line-chart font-blue"></i>
+                            <i class="fa fa-area-chart font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">APM</span>
                         </div>
                     </div>

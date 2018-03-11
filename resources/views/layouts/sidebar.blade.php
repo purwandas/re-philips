@@ -128,11 +128,14 @@
             {{ Request::is('product') ? 'active open' : '' }}
             {{ Request::is('price') ? 'active open' : '' }}
             {{ Request::is('leadtime') ? 'active open' : '' }}
+            {{ Request::is('productfocus') ? 'active open' : '' }}
+            {{ Request::is('productfocussalesman') ? 'active open' : '' }}
+            {{ Request::is('productpromo') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-cubes"></i>
                     <span class="title">Product</span>
-                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }} {{ Request::is('leadtime') ? 'active open' : '' }}"></span>
+                    <span class="arrow {{ Request::is('group') ? 'open' : '' }} {{ Request::is('category') ? 'open' : '' }} {{ Request::is('product') ? 'open' : '' }} {{ Request::is('price') ? 'open' : '' }} {{ Request::is('leadtime') ? 'open' : '' }} {{ Request::is('leadtime') ? 'active open' : '' }} {{ Request::is('productfocus') ? 'active open' : '' }} {{ Request::is('productfocussalesman') ? 'active open' : '' }} {{ Request::is('productpromo') ? 'active open' : '' }}"></span>
                 </a>
                 <ul class="sub-menu">
                     <!-- <li class="nav-item {{ Request::is('groupproduct') ? 'active open' : '' }}">
@@ -160,51 +163,9 @@
                             <span class="title">Price</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ Request::is('leadtime') ? 'active open' : '' }}">
-                        <a href="{{ url('leadtime') }}" class="nav-link nav-toggle">
-                            <span class="title">Leadtime</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item 
-                {{ Request::is('target') ? 'active open' : '' }}
-                {{ Request::is('productfocus') ? 'active open' : '' }}
-                {{ Request::is('targetsalesman') ? 'active open' : '' }}
-                {{ Request::is('productfocussalesman') ? 'active open' : '' }}
-                {{ Request::is('productpromo') ? 'active open' : '' }}
-            ">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-line-chart"></i>
-                    <span class="title">Target</span>
-                    <span class="arrow 
-                        {{ Request::is('target') ? 'active open' : '' }}
-                        {{ Request::is('productfocus') ? 'active open' : '' }}
-                        {{ Request::is('targetsalesman') ? 'active open' : '' }}
-                        {{ Request::is('productfocussalesman') ? 'active open' : '' }}
-                        {{ Request::is('productpromo') ? 'active open' : '' }}
-                    "></span>
-                </a>
-                <ul class="sub-menu">
-                    <li class="nav-item {{ Request::is('target') ? 'active open' : '' }}">
-                        <a href="{{ url('target') }}" class="nav-link nav-toggle">
-                            <span class="title">Promoter Target</span>
-                        </a>
-                    </li>
                     <li class="nav-item {{ Request::is('productfocus') ? 'active open' : '' }}">
                         <a href="{{ url('productfocus') }}" class="nav-link nav-toggle">
                             <span class="title">Product Focus</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('productpromo') ? 'active open' : '' }}">
-                        <a href="{{ url('productpromo') }}" class="nav-link nav-toggle">
-                            <span class="title">Product Promo Tracking</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
-                        <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
-                            <span class="title">Salesman Target</span>
                         </a>
                     </li>
                     <li class="nav-item {{ Request::is('productfocussalesman') ? 'active open' : '' }}">
@@ -212,24 +173,48 @@
                             <span class="title">Salesman Product Focus</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Request::is('productpromo') ? 'active open' : '' }}">
+                        <a href="{{ url('productpromo') }}" class="nav-link nav-toggle">
+                            <span class="title">Product Promo Tracking</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('leadtime') ? 'active open' : '' }}">
+                        <a href="{{ url('leadtime') }}" class="nav-link nav-toggle">
+                            <span class="title">Leadtime</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </li>
+
+            <li class="nav-item 
+                {{ Request::is('target') ? 'active open' : '' }}            
+                {{ Request::is('targetsalesman') ? 'active open' : '' }}                
+            ">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="fa fa-line-chart"></i>
+                    <span class="title">Target</span>
+                    <span class="arrow 
+                        {{ Request::is('target') ? 'active open' : '' }}                        
+                        {{ Request::is('targetsalesman') ? 'active open' : '' }}                        
+                    "></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{ Request::is('target') ? 'active open' : '' }}">
+                        <a href="{{ url('target') }}" class="nav-link nav-toggle">
+                            <span class="title">Promoter Target</span>
+                        </a>
+                    </li>                                
+                    <li class="nav-item {{ Request::is('targetsalesman') ? 'active open' : '' }}">
+                        <a href="{{ url('targetsalesman') }}" class="nav-link nav-toggle">
+                            <span class="title">Salesman Target</span>
+                        </a>
+                    </li>
+                    
 
                 </ul>
             </li>
 
-            <li class="nav-item {{ Request::is('timegone') ? 'active open' : '' }}">
-                <a href="{{ url('timegone') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-hourglass-half"></i>
-                    <span class="title">Timegone</span>
-                </a>
-            </li>
-            
-            <li class="nav-item {{ Request::is('apm') ? 'active open' : '' }}">
-                <a href="{{ url('apm') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-hourglass-half"></i>
-                    <span class="title">APM</span>
-                </a>
-            </li>
-            
             <li class="nav-item {{ Request::is('posm') ? 'active open' : '' }}">
                 <a href="{{ url('posm') }}" class="nav-link nav-toggle">
                     <i class="fa fa-tasks"></i>
@@ -241,7 +226,23 @@
                     <i class="fa fa-street-view"></i>
                     <span class="title">Group Competitor</span>
                 </a>
-            </li>            
+            </li> 
+
+            <li class="nav-item {{ Request::is('timegone') ? 'active open' : '' }}">
+                <a href="{{ url('timegone') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-hourglass-half"></i>
+                    <span class="title">Timegone</span>
+                </a>
+            </li>
+            
+            <li class="nav-item {{ Request::is('apm') ? 'active open' : '' }}">
+                <a href="{{ url('apm') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-area-chart"></i>
+                    <span class="title">APM</span>
+                </a>
+            </li>
+            
+                       
 
             @endif
 
@@ -461,7 +462,7 @@
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-file-text-o"></i>
-                    <span class="title">ISE </span>   
+                    <span class="title">ISE Reporting</span>   
                     <span class="arrow 
                     {{ Request::is('displaysharereport') ? 'active open' : '' }}
                     {{ Request::is('posmactivityreport') ? 'active open' : '' }}
