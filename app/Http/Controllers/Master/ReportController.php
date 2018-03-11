@@ -4051,7 +4051,7 @@ class ReportController extends Controller
                 $minDate = "$year-$month-01";
                 $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
                 $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
-                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Sakit(P)','Izin(P)', 'Off'];
                     $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
                     $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
@@ -4114,7 +4114,12 @@ class ReportController extends Controller
                         $dateI = explode('-', $dateI);
 
 
-                        if ($dateI[2] > $dateNow[2]) {
+                        // if ($dateI[2] > $dateNow[2]) {
+                        $indexz = $i;
+                            if (isset($joinDate)) {
+                                $indexz = $i + $joinDate - 1;
+                            }
+                        if ($indexz > $dateNow[2]) {
                             $bgColor = $tomorrowColor; 
                             $textColor = 'black';
                         }
@@ -4131,22 +4136,22 @@ class ReportController extends Controller
                             }
                             $report .= "<td 
                             class='text-center open-attendance-detail-modal cursor-pointer' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
-                            style='background-color: $bgColor;color:$textColor;width:200px;'
+                            style='background-color: $bgColor;color:$textColor;'
                             >";
                         }else{
                             if (isset($joinDate) && $execOnce==false) {
                                 for ($jd=1; $jd < $joinDate; $jd++) { 
                                     $report .= "<td 
                                         class='text-center'
-                                        style='background-color: $tomorrowColor;color:black;width:200px;'
+                                        style='background-color: $tomorrowColor;color:black;'
                                         >";
-                                    $report .= "<b>$jd</b><br>-<td>";
+                                    $report .= "<div style='width:60px'><b>$jd</b><br>-</div><td>";
                                 }
                                 $execOnce = true;
                             }
                             $report .= "<td 
                             class='text-center'
-                            style='background-color: $bgColor;color:$textColor;width:200px;'
+                            style='background-color: $bgColor;color:$textColor;'
                             >";
                         }
                         if (isset($joinDate)) {
@@ -4154,7 +4159,7 @@ class ReportController extends Controller
                         }else{
                             $displayDate = $i;
                         }
-                        $report .= "<b>$displayDate</b><br>".$status[$index]."<td>";
+                        $report .= "<div style='width:60px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
                     }
 
                     $report .= '</tr></table>';
