@@ -268,6 +268,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-district', ['uses'=>'Master\ExportController@exportDistrict']);
     Route::post('util/export-store', ['uses'=>'Master\ExportController@exportStore']);
     Route::post('util/export-store-all', ['uses'=>'Master\ExportController@exportStoreAll']);
+    Route::post('util/export-store-all-alt', ['uses'=>'Master\ExportController@exportStoreAllAlt']);
     Route::post('util/export-channel', ['uses'=>'Master\ExportController@exportChannel']);
     Route::post('util/export-subchannel', ['uses'=>'Master\ExportController@exportSubchannel']);
     Route::post('util/export-distributor', ['uses'=>'Master\ExportController@exportDistributor']);

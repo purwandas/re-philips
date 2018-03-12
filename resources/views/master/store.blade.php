@@ -439,7 +439,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-store-all',
+                    url: 'util/export-store-all-alt',
                     global: false,
                     async: false,
                     success: function (data) {
