@@ -67,7 +67,7 @@
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetReport(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
                     <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
@@ -188,8 +188,8 @@
                             {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['freeProductReport', $('#freeProductReport'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'freeProductReport', $('#freeProductReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['freeProductReport', $('#freeProductReport'), url, tableColumns, columnDefs, order, '#export'];
+        var paramReset = [filterId, 'freeProductReport', $('#freeProductReport'), url, tableColumns, columnDefs, order, '#export', '#filterMonth'];
 
         $(document).ready(function () {
 
@@ -204,6 +204,7 @@
                 type: 'POST',
                 url: 'data/freeproductreport',
                 dataType: 'json',
+                data: filters,
                 global: false,
                 async: false,
                 success: function (results) {
@@ -219,6 +220,9 @@
                 }
             });
 
+            initSelect2();
+            initDateTimePicker();
+
             // Set data for Data Table
             var table = $('#freeProductReport').dataTable({
                 "processing": true,
@@ -226,6 +230,8 @@
                 "ajax": {
                     url: "{{ route('datatable.freeproductreport') }}",
                     type: 'POST',
+                    data: filters,
+                    dataType: 'json',
                     dataSrc: function (res) {
                         var count = res.data.length;
 
@@ -244,10 +250,6 @@
                 "columnDefs": columnDefs,
                 "order": order,
             });
-
-            initSelect2();
-            initDateTimePicker();
-
         });
 
         function initSelect2(){
@@ -360,8 +362,8 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
 
         });
 
@@ -369,6 +371,26 @@
 
             // Set Table Content
             // $('#dataContent').removeClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/freeproductreport',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
+                }
+            });
 
         });
 
@@ -426,6 +448,7 @@
                     type: 'POST',
                     url: 'util/export-freeproduct-all',
                     dataType: 'json',
+                    data: filters,
                     data: {data: dataAll},
                     global: false,
                     async: false,

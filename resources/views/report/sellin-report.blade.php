@@ -67,7 +67,7 @@
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetReport(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
                     <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
@@ -194,7 +194,7 @@
 
         var paramFilter = ['sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton];
 
-        var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton];
+        var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton, '#filterMonth'];
 
         $(document).ready(function () {
 
@@ -208,6 +208,7 @@
             $.ajax({
                 type: 'POST',
                 url: 'data/sellinreport',
+                data: filters,
                 dataType: 'json',
                 global: false,
                 async: false,
@@ -369,17 +370,37 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
 
         });
 
-        // $("#filterButton").click( function(){
+        $("#filterButton").click( function(){
 
-        //     // Set Table Content
-        //     $('#dataContent').removeClass('display-hide');
+            // Set Table Content
+            // $('#dataContent').removeClass('display-hide');
 
-        // });
+            $.ajax({
+                type: 'POST',
+                url: 'data/sellinreport',
+                data: filters,
+                dataType: 'json',
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
+                }
+            });
+
+        });
 
         $("#export").click( function(){
 
@@ -432,6 +453,7 @@
                     type: 'POST',
                     url: 'data/sellinreport',
                     dataType: 'json',
+                    data: filters,
                     global: false,
                     async: false,
                     success: function (results) {

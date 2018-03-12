@@ -47,9 +47,9 @@ class ExcelHelper
                 'QUANTITY' => @$item['quantity'],
                 'UNIT PRICE' => number_format(@$item['unit_price']),
                 'VALUE' => number_format(@$item['value']),
-                'VALUE PF MR' => number_format(@$item['value_pf_mr']),
-                'VALUE PF TR' => number_format(@$item['value_pf_tr']),
-                'VALUE PF PPE' => number_format(@$item['value_pf_ppe']),
+                // 'VALUE PF MR' => number_format(@$item['value_pf_mr']),
+                // 'VALUE PF TR' => number_format(@$item['value_pf_tr']),
+                // 'VALUE PF PPE' => number_format(@$item['value_pf_ppe']),
                 'ROLE' => @$item['role'],
                 'SPV NAME' => @$item['spv_name'],
                 'DM NAME' => @$item['dm_name'],
@@ -85,9 +85,9 @@ class ExcelHelper
                 'QUANTITY' => @$item['quantity'],
                 'UNIT PRICE' => @$item['unit_price'],
                 'VALUE' => @$item['value'],
-                'VALUE PF MR' => @$item['value_pf_mr'],
-                'VALUE PF TR' => @$item['value_pf_tr'],
-                'VALUE PF PPE' => @$item['value_pf_ppe'],
+                // 'VALUE PF MR' => @$item['value_pf_mr'],
+                // 'VALUE PF TR' => @$item['value_pf_tr'],
+                // 'VALUE PF PPE' => @$item['value_pf_ppe'],
                 'ROLE' => @$item['role'],
                 'SPV NAME' => @$item['spv_name'],
                 'DM NAME' => @$item['dm_name'],
@@ -435,6 +435,29 @@ class ExcelHelper
                 'PRODUCT MODEL' => @$item['product_model'],
                 'PRODUCT VARIANTS' => @$item['product_variants'],
                 'PHOTO' => @$item['photo2'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
+
+    public function mapForExportReportPosm(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'USER' => @$item['user_name'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeid'],
+                'WEEK' => @$item['week'],
+                'POSM NAME' => @$item['posm_name'],
+                'GROUP' => @$item['group_product'],
+                'QUANTITY' => @$item['quantity'],
+                'PHOTO' => @$item['photo'],
                 'DATE' => @$item['date'],
             ];
         });
