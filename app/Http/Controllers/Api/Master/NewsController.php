@@ -77,7 +77,9 @@ class NewsController extends Controller
 
             $data = $data->merge($dataStoreSelect);
 
-            /* INIT Data Store to be filtered */
+        }
+
+            /* INIT Data Promoter to be filtered */
             $dataPromoter = News::where('target_type', 'Promoter')->get();
             $promoterArray = [];
             foreach ($dataPromoter as $promoter) {
@@ -94,8 +96,6 @@ class NewsController extends Controller
                                 ->get();
 
             $data = $data->merge($dataPromoterSelect);
-
-        }
 
         // Set has read
         $data->map(function ($detail) use ($user) {

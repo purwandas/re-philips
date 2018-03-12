@@ -8,6 +8,8 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Traits\StringTrait;
 use App\Quiz;
 use App\TargetQuiz;
+use App\QuizTarget;
+use App\News;
 use App\Filters\QuizFilters;
 use Auth;
 use DB;
@@ -121,6 +123,55 @@ class QuizController extends Controller
             'link' => $request['link'],
             'date' => Carbon::now(),
         ]);
+
+//--------------------Input to News----------------------------
+
+        // Admin
+        $requestNews['user_id'] = Auth::user()->id;
+
+        // Date
+        $requestNews['from'] = 'admin';
+
+        // Subject
+        $requestNews['subject'] = $request['title'];
+
+        // Date
+        $requestNews['date'] = Carbon::now();
+
+        // Content to inout to News
+        $requestNews['content'] = 'New Quiz, '.$request['description'].' . Silahkan periksa pada menu Quiz';
+
+        // Date
+        $requestNews['target_type'] = 'Promoter';
+
+        // Target
+
+        $target = null;
+        $result = null;
+        $x = 0;
+        $data = $request['target'];
+        foreach ($data as $employee) {
+            $employees = QuizTarget::where('quiz_targets.id', $employee)
+                            ->join('users as userRole', 'quiz_targets.role_id', '=', 'userRole.role_id')
+                            ->join('users as userGrading', 'quiz_targets.grading_id', '=', 'userGrading.grading_id')        
+                            ->get();
+                foreach ($employees as $key => $value) {
+                    $result[$x] = $value->id;
+                    $x ++;
+                }
+        }
+            $target .= implode(", ",$result);
+
+        $requestNews['target_detail'] =  $target;
+
+        // Total Read
+        $requestNews['total_read'] = 0;
+
+
+        $news = News::create($requestNews);
+
+//===================================================================
+
 
         foreach ($request['target'] as $key => $value) {
             TargetQuiz::create([
