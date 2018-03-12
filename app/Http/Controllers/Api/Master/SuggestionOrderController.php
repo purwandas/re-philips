@@ -89,7 +89,7 @@ class SuggestionOrderController extends Controller
         $result = array_merge($apmProduct, $summary);
         $result = array_unique($result);
 
-//        return response()->json($result);
+       // return response()->json($result);
 
         if(count($result) > 0) {
 
@@ -105,17 +105,18 @@ class SuggestionOrderController extends Controller
 //                    'product_id' => $value,
 //                    'apm' => $apm,
 //                    'sell in' => $this->checkSellIn($store_id, $value),
+//                    'soh' => $this->checkStock($store_id, $value),
 //                ]);
-//
+
 //                $products->push($test);
-//
+// //
 //                continue;
 
                 if($apm > 0){
 
                     if($this->checkStock($store_id, $value) > 0 || $this->checkSellIn($store_id, $value) > 0) {
 
-                        $apmPerDay = $apm / 26;                        
+                        $apmPerDay = $apm / date('t');                        
                         $percentProduct = (($apm * 100) / $this->sumMonthValue($store_id));
                         $totalTarget = $this->getTotalTarget($store_id);
                         $contribution = ($percentProduct * $totalTarget) / 100;
@@ -134,24 +135,24 @@ class SuggestionOrderController extends Controller
                         }
                         $poNeededQty = floor($poNeededValue / $this->getPriceCurrent($store_id, $value));
 
-                       // $test = ([
-                       //     'apm' => $apm,
-                       //     'apm per day' => round($apmPerDay,2),
-                       //     'percent kontribusi produk' => $percentProduct,
-                       //     'total target toko' => $totalTarget,
-                       //     '%kontribusi * total target' => $contribution,
-                       //     'leadtime value' => $leadtime,
-                       //     'stock value' => $stock,
-                       //     'sell in value' => $sellIn,
-                       //     'sell out value' => $sellOut,
-                       //     'total stock' => $totalStock,
-                       //     'po needed value' => $poNeededValue,
-                       //     'po needed qty' => $poNeededQty,
-                       // ]);
+                       $test = ([
+                           'apm' => $apm,
+                           'apm per day' => round($apmPerDay,2),
+                           'percent kontribusi produk' => $percentProduct,
+                           'total target toko' => $totalTarget,
+                           '%kontribusi * total target' => $contribution,
+                           'leadtime value' => $leadtime,
+                           'stock value' => $stock,
+                           'sell in value' => $sellIn,
+                           'sell out value' => $sellOut,
+                           'total stock' => $totalStock,
+                           'po needed value' => $poNeededValue,
+                           'po needed qty' => $poNeededQty,
+                       ]);
 
-                       // $products->push($test);
+                       $products->push($test);
 
-                       // continue;
+                       continue;
 
                         if ($poNeededQty > 0) {
 

@@ -65,7 +65,7 @@
                 <!-- BEGIN LOGO -->
                 <div class="page-logo">
                     <a href="{{ url('/') }}">
-                        <img src="{{ asset('assets/layouts/layout2/img/logo-default.png') }}" alt="logo" class="logo-default" /> </a>
+                        <img src="{{ asset('assets/layouts/layout2/img/logo-default-new.png') }}" alt="logo" class="logo-default" /> </a>
                     <div class="menu-toggler sidebar-toggler">
                         <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
                     </div>
@@ -274,6 +274,17 @@
         <!-- END PAGE LEVEL SCRIPTS -->
 
         <script>
+
+            $(document).ready(function () {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            
+            });
+
             var url = "{{url('util/user-online')}}";
                 $.get(url, function (data) {
 //                    console.log(data);

@@ -140,6 +140,7 @@
                     		<th> No. </th>
                             <th> NIK </th>
                             <th> Name </th>
+                            <th> Email </th>
                         	<th> Role </th>
                             <th> Area </th>
                             <th> Region </th>
@@ -189,6 +190,7 @@
                 {data: 'id', name: 'id'}, 
                 {data: 'nik', name: 'nik'},               
                 {data: 'name', name: 'name'},
+                {data: 'email', name: 'email'},
                 {data: 'roles', name: 'roles'},
                 {data: 'area', name: 'area'},
                 {data: 'region', name: 'region'},
