@@ -28,7 +28,7 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-blue"></i>
+                        <i class="fa fa-cog font-blue"></i>
                         <span class="caption-subject font-blue bold uppercase">FILTER REPORT</span>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetReport(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
                     <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
@@ -75,14 +75,20 @@
 
                 <br><br>
 
-                </div>
-
-                <div class="portlet light display-hide bordered" id="dataContent">
+            
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-map-o font-blue"></i>
+                            <i class="fa fa-file-text-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Return Consument</span>
+                        </div>
+                        <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                        </div>
+                        <div class="actions" style="text-align: left; padding-right: 10px;">
+                            <a id="exportAll" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                         </div>
                     </div>
 
@@ -141,6 +147,7 @@
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
+    var dataAll = {};
         /*
          *
          *
@@ -180,8 +187,8 @@
                             {data: 'trainer_name', name: 'trainer_name'},
                             ];
 
-        var paramFilter = ['retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order, '#export'];
+        var paramReset = [filterId, 'retConsumentReport', $('#retConsumentReport'), url, tableColumns, columnDefs, order, '#export', '#filterMonth'];
 
         $(document).ready(function () {
 
@@ -191,6 +198,30 @@
                 }
             });
 
+            // Get data district to var data
+            $.ajax({
+                type: 'POST',
+                url: 'data/retconsumentreport',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
+                }
+            });
+
+            initSelect2();
+            initDateTimePicker();
+
             // Set data for Data Table
             var table = $('#retConsumentReport').dataTable({
                 "processing": true,
@@ -198,15 +229,26 @@
                 "ajax": {
                     url: "{{ route('datatable.retconsumentreport') }}",
                     type: 'POST',
+                    data: filters,
+                    dataType: 'json',
+                    dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
                 },
                 "rowId": "id",
                 "columns": tableColumns,
                 "columnDefs": columnDefs,
                 "order": order,
             });
-
-            initSelect2();
-            initDateTimePicker();
 
         });
 
@@ -317,18 +359,38 @@
         $("#resetButton").click( function(){
 
             // Hide Table Content
-            $('#dataContent').addClass('display-hide');
+            // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
 
         });
 
         $("#filterButton").click( function(){
 
             // Set Table Content
-            $('#dataContent').removeClass('display-hide');
+            // $('#dataContent').removeClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/retconsumentreport',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
+                }
+            });
 
         });
 
@@ -352,19 +414,74 @@
 
                         window.location = data.url;
 
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'data/retconsumentreport',
+                    dataType: 'json',
+                    data: filters,
+                    global: false,
+                    async: false,
+                    success: function (results) {
+                        dataAll = results;
+                    }
+                });
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-retconsument-all',
+                    dataType: 'json',
+                    data: {data: dataAll},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
 
 
                     }

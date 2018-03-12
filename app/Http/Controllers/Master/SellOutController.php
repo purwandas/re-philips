@@ -90,7 +90,7 @@ class SellOutController extends Controller
     public function store(Request $request)
     {
         $date = Carbon::parse($request->date);
-    	// return $request->all();
+        // return $request->all();
 
         // $content = $request;//json_decode($request->getContent(), true);
         $user_id = explode('`', $request['user_id']);
@@ -306,6 +306,7 @@ class SellOutController extends Controller
                                     'model' => $product->model . '/' . $product->variants,
                                     'group' => $product->category->group->groupProduct->name,
                                     'category' => $product->category->name,
+                                    'product_id' => $product->id,
                                     'product_name' => $product->name,
                                     'quantity' => $data['quantity'],
                                     'irisan' => $content['irisan'],
@@ -494,6 +495,7 @@ class SellOutController extends Controller
                                 'model' => $product->model . '/' . $product->variants,
                                 'group' => $product->category->group->groupProduct->name,
                                 'category' => $product->category->name,
+                                'product_id' => $product->id,
                                 'product_name' => $product->name,
                                 'quantity' => $detail->quantity,
                                 'irisan' => $content['irisan'],

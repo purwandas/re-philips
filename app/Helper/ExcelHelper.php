@@ -20,7 +20,83 @@ class ExcelHelper
      * Merubah format data ajax menjadi hasil yang di download di excel
      *
      */
+    public function mapForExportAll(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'WEEK' => @$item['week'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'REGION' => @$item['region'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['store_id'],
+                'NIK' => @$item['nik'],
+                'PROMOTER NAME' => @$item['promoter_name'],
+                'DATE' => @$item['date'],
+                'MODEL' => @$item['model'],
+                'GROUP' => @$item['group'],
+                'CATEGORY' => @$item['category'],
+                'PRODUCT NAME' => @$item['product_name'],
+                'QUANTITY' => @$item['quantity'],
+                'UNIT PRICE' => number_format(@$item['unit_price']),
+                'VALUE' => number_format(@$item['value']),
+                // 'VALUE PF MR' => number_format(@$item['value_pf_mr']),
+                // 'VALUE PF TR' => number_format(@$item['value_pf_tr']),
+                // 'VALUE PF PPE' => number_format(@$item['value_pf_ppe']),
+                'ROLE' => @$item['role'],
+                'SPV NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+
     public function mapForExport(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'WEEK' => @$item['week'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'REGION' => @$item['region'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['store_id'],
+                'NIK' => @$item['nik'],
+                'PROMOTER NAME' => @$item['promoter_name'],
+                'DATE' => @$item['date'],
+                'MODEL' => @$item['model'],
+                'GROUP' => @$item['group'],
+                'CATEGORY' => @$item['category'],
+                'PRODUCT NAME' => @$item['product_name'],
+                'QUANTITY' => @$item['quantity'],
+                'UNIT PRICE' => @$item['unit_price'],
+                'VALUE' => @$item['value'],
+                // 'VALUE PF MR' => @$item['value_pf_mr'],
+                // 'VALUE PF TR' => @$item['value_pf_tr'],
+                // 'VALUE PF PPE' => @$item['value_pf_ppe'],
+                'ROLE' => @$item['role'],
+                'SPV NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+
+    public function mapForExportSales(Array $data)
     {
         $collection = collect($data);
 
@@ -50,6 +126,190 @@ class ExcelHelper
                 'VALUE PF MR' => @$item['value_pf_mr'],
                 'VALUE PF TR' => @$item['value_pf_tr'],
                 'VALUE PF PPE' => @$item['value_pf_ppe'],
+                'IRISAN' => (@$item['irisan'] == 0) ? '-' : (@$item['irisan'] == null) ? '-' : 'Irisan',
+                'ROLE' => @$item['role'],
+                'SPV NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+
+    public function mapForExportSalesAll(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'WEEK' => @$item['week'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'REGION' => @$item['region'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['store_id'],
+                'NIK' => @$item['nik'],
+                'PROMOTER NAME' => @$item['promoter_name'],
+                'DATE' => @$item['date'],
+                'MODEL' => @$item['model'],
+                'GROUP' => @$item['group'],
+                'CATEGORY' => @$item['category'],
+                'PRODUCT NAME' => @$item['product_name'],
+                'QUANTITY' => @$item['quantity'],
+                'UNIT PRICE' => number_format(@$item['unit_price']),
+                'VALUE' => number_format(@$item['value']),
+                'VALUE PF MR' => number_format(@$item['value_pf_mr']),
+                'VALUE PF TR' => number_format(@$item['value_pf_tr']),
+                'VALUE PF PPE' => number_format(@$item['value_pf_ppe']),
+                'IRISAN' => (@$item['irisan'] == 0) ? '-' : (@$item['irisan'] == null) ? '-' : 'Irisan',
+                'ROLE' => @$item['role'],
+                'SPV NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+
+    public function mapForExportApm(Array $data)
+    {
+        $collection = collect($data);
+
+        $arMonth = [
+                    Carbon::now()->subMonths(1)->format('F Y'),
+                    Carbon::now()->subMonths(2)->format('F Y'),
+                    Carbon::now()->subMonths(3)->format('F Y'),
+                    Carbon::now()->subMonths(4)->format('F Y'),
+                    Carbon::now()->subMonths(5)->format('F Y'),
+                    Carbon::now()->subMonths(6)->format('F Y'),
+                   ];
+
+        return $collection->map(function ($item) use ($arMonth) {
+            return [
+                'NO.' => @$item['id'],
+                'REGION' => @$item['region'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE' => @$item['store_name'],
+                'PRODUCT' => @$item['product_name'],
+                'SO VALUE '.$arMonth[0] => @$item['month_minus_1_value'],
+                'SO VALUE '.$arMonth[1] => @$item['month_minus_2_value'],
+                'SO VALUE '.$arMonth[2] => @$item['month_minus_3_value'],
+                'SO VALUE '.$arMonth[3] => @$item['month_minus_4_value'],
+                'SO VALUE '.$arMonth[4] => @$item['month_minus_5_value'],
+                'SO VALUE '.$arMonth[5] => @$item['month_minus_6_value'],
+            ];
+        });
+    }
+
+    public function mapForExportApmAll(Array $data)
+    {
+        $collection = collect($data);
+
+        $arMonth = [
+                    Carbon::now()->subMonths(1)->format('F Y'),
+                    Carbon::now()->subMonths(2)->format('F Y'),
+                    Carbon::now()->subMonths(3)->format('F Y'),
+                    Carbon::now()->subMonths(4)->format('F Y'),
+                    Carbon::now()->subMonths(5)->format('F Y'),
+                    Carbon::now()->subMonths(6)->format('F Y'),
+                   ];
+
+        return $collection->map(function ($item) use ($arMonth) {
+            return [
+                'NO.' => @$item['id'],
+                'REGION' => @$item['region'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE' => @$item['store_name'],
+                'PRODUCT' => @$item['product_name'],
+                'SO VALUE '.$arMonth[0] => number_format(@$item['month_minus_1_value']),
+                'SO VALUE '.$arMonth[1] => number_format(@$item['month_minus_2_value']),
+                'SO VALUE '.$arMonth[2] => number_format(@$item['month_minus_3_value']),
+                'SO VALUE '.$arMonth[3] => number_format(@$item['month_minus_4_value']),
+                'SO VALUE '.$arMonth[4] => number_format(@$item['month_minus_5_value']),
+                'SO VALUE '.$arMonth[5] => number_format(@$item['month_minus_6_value']),
+            ];
+        });
+    }
+
+    public function mapForExportTbat(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'WEEK' => @$item['week'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'REGION' => @$item['region'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['store_id'],
+                'STORE NAME 1 DESTINATION' => @$item['store_destination_name_1'],
+                'CUSTOMER CODE DESTINATION' => @$item['store_destination_name_2'],
+                'STORE ID DESTINATION' => @$item['store_destination_id'],
+                'NIK' => @$item['nik'],
+                'PROMOTER NAME' => @$item['promoter_name'],
+                'DATE' => @$item['date'],
+                'MODEL' => @$item['model'],
+                'GROUP' => @$item['group'],
+                'CATEGORY' => @$item['category'],
+                'PRODUCT NAME' => @$item['product_name'],
+                'QUANTITY' => @$item['quantity'],
+                'UNIT PRICE' => @$item['unit_price'],
+                'VALUE' => @$item['value'],
+                'VALUE PF MR' => @$item['value_pf_mr'],
+                'VALUE PF TR' => @$item['value_pf_tr'],
+                'VALUE PF PPE' => @$item['value_pf_ppe'],
+                'ROLE' => @$item['role'],
+                'SPV NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+
+    public function mapForExportTbatAll(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'WEEK' => @$item['week'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'REGION' => @$item['region'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['store_id'],
+                'STORE NAME 1 DESTINATION' => @$item['store_destination_name_1'],
+                'CUSTOMER CODE DESTINATION' => @$item['store_destination_name_2'],
+                'STORE ID DESTINATION' => @$item['store_destination_id'],
+                'NIK' => @$item['nik'],
+                'PROMOTER NAME' => @$item['promoter_name'],
+                'DATE' => @$item['date'],
+                'MODEL' => @$item['model'],
+                'GROUP' => @$item['group'],
+                'CATEGORY' => @$item['category'],
+                'PRODUCT NAME' => @$item['product_name'],
+                'QUANTITY' => @$item['quantity'],
+                'UNIT PRICE' => number_format(@$item['unit_price']),
+                'VALUE' => number_format(@$item['value']),
+                'VALUE PF MR' => number_format(@$item['value_pf_mr']),
+                'VALUE PF TR' => number_format(@$item['value_pf_tr']),
+                'VALUE PF PPE' => number_format(@$item['value_pf_ppe']),            
                 'ROLE' => @$item['role'],
                 'SPV NAME' => @$item['spv_name'],
                 'DM NAME' => @$item['dm_name'],
@@ -175,6 +435,29 @@ class ExcelHelper
                 'PRODUCT MODEL' => @$item['product_model'],
                 'PRODUCT VARIANTS' => @$item['product_variants'],
                 'PHOTO' => @$item['photo2'],
+                'DATE' => @$item['date'],
+            ];
+        });
+    }
+
+    public function mapForExportReportPosm(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'USER' => @$item['user_name'],
+                'REGION' => @$item['region_name'],
+                'AREA' => @$item['area_name'],
+                'DISTRICT' => @$item['district_name'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeid'],
+                'WEEK' => @$item['week'],
+                'POSM NAME' => @$item['posm_name'],
+                'GROUP' => @$item['group_product'],
+                'QUANTITY' => @$item['quantity'],
+                'PHOTO' => @$item['photo'],
                 'DATE' => @$item['date'],
             ];
         });

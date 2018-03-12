@@ -64,7 +64,7 @@
                 <div class="btn-group">
                     <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
-                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReportWithAll(paramFilter)">
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
                 </div>
 
@@ -401,39 +401,57 @@
             // console.log(data);
             // return;
 
+            // console.log(filters);
+            // return;
+
             if ($('#exportAll').attr('disabled') != 'disabled') {
 
                 // Export data
                 exportFile = '';
 
+                // $.ajax({
+                //     type: 'POST',
+                //     url: 'util/export-store-all',
+                //     dataType: 'json',
+                //     data: {data: dataAll},
+                //     global: false,
+                //     async: false,
+                //     success: function (data) {
+
+                //         console.log(data);
+
+                //         window.location = data.url;
+
+                //         // setTimeout(function () {
+                //         //     $.ajax({
+                //         //         type: 'POST',
+                //         //         url: 'util/export-delete',
+                //         //         dataType: 'json',
+                //         //         data: {data: data.url},
+                //         //         global: false,
+                //         //         async: false,
+                //         //         success: function (data) {
+                //         //             console.log(data);
+                //         //         }
+                //         //     });
+                //         // }, 1000);
+
+
+                //     }
+                // });
+
+                // console.log(newParams);
+                // return;
+
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-store-all',
+                    url: 'util/export-store-all-alt',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
                     success: function (data) {
-
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
-
                     }
                 });
 

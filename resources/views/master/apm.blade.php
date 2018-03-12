@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Promo Activity Report
-                <small>promo activity report</small>
+            <h1>APM Report & Management
+                <small>report & management apm</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Promo Activity Reporting</span>
+            <span class="active">APM Report & Management</span>
         </li>
     </ul>
 @endsection
@@ -29,14 +29,14 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-cog font-blue"></i>
-                        <span class="caption-subject font-blue bold uppercase">FILTER REPORT</span>
+                        <span class="caption-subject font-blue bold uppercase">FILTER DATA</span>
                     </div>
                 </div>
 
                 <div class="caption padding-caption">
-                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> BY DETAILS</span>
+                    <span class="caption-subject font-dark bold uppercase" style="font-size: 12px;"><i class="fa fa-cog"></i> FILTERS BY</span>
                 </div>
-                
+
                 <div class="row filter" style="margin-top: 10px;">
                     <div class="col-md-4">
                         <select id="filterRegion" class="select2select"></select>
@@ -54,23 +54,14 @@
                         <select id="filterStore" class="select2select"></select>
                     </div>
                     <div class="col-md-4">
-                        <select id="filterEmployee" class="select2select"></select>
-                    </div>
-                    <div class="col-md-4">
                         <select id="filterProduct" class="select2select"></select>
-                    </div>
-                </div>
-
-                <div class="row filter" id="monthContent" style="margin-top: 10px;">
-                    <div class="col-md-4">
-                        <input type="text" id="filterMonth" class="form-control" placeholder="Month">
                     </div>
                 </div>
 
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetReport(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
                     <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
@@ -78,14 +69,20 @@
 
                 <br><br>
 
-                    <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-file-text-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Promo Activity</span>
+                            <i class="fa fa-area-chart font-blue"></i>
+                            <span class="caption-subject font-blue bold uppercase">APM</span>
                         </div>
-                        
-                        <div class="actions" style="text-align: left">
+                    </div>
+                    <!-- MAIN CONTENT -->
+                    <div class="portlet-title">
+                        <div class="btn-group">
+                            <a id="set-apmmonth" class="btn green" data-toggle="modal" href="#apmmonth"><i
+                                class="fa fa-cog"></i> Set APM Month </a>
+
+                        </div>
+                        <div class="actions" style="text-align: left; padding-right: 10px;">
                             <a id="export" class="btn green-dark" >
                                 <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                         </div>
@@ -97,28 +94,63 @@
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="competitorActivity" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="apmTable" style="white-space: nowrap;">
                             <thead>
                             <tr>
-                                <th></th>
-                                <th> User </th>
+                                <th> No. </th>
                                 <th> Region </th>
                                 <th> Area </th>
                                 <th> District </th>
-                                <th> Store Name 1 </th>
-                                <th> Customer Code </th>
-                                <th> Store ID </th>
-                                <th> Week </th>
-                                <th> Promo Type </th>
-                                <th> Information </th>
-                                <th> Start Period </th>
-                                <th> End Period </th>
-                                <th> Photo </th>
-                                <th> Product Name </th>
-                                <th> Product Model </th>
-                                <th> Product Variants </th>
-                                <th> Date </th>
-                                <th> Status </th>
+                                <th> Store Name </th>
+                                <th> Product </th>
+                                <th> 
+                                    @if($apmMonth->first()->selected == 1)
+                                    <span class="badge badge-success">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    @endif
+                                    SO Value {{ $arMonth[0] }}
+                                </th>
+                                <th>
+                                    @if($apmMonth->get(1)->selected == 1)
+                                    <span class="badge badge-success">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    @endif
+                                    SO Value {{ $arMonth[1] }}
+                                </th>
+                                <th>
+                                    @if($apmMonth->get(2)->selected == 1)
+                                    <span class="badge badge-success">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    @endif
+                                    SO Value {{ $arMonth[2] }}
+                                </th>
+                                <th>
+                                    @if($apmMonth->get(3)->selected == 1)
+                                    <span class="badge badge-success">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    @endif
+                                    SO Value {{ $arMonth[3] }}
+                                </th>
+                                <th> 
+                                    @if($apmMonth->get(4)->selected == 1)
+                                    <span class="badge badge-success">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    @endif
+                                    SO Value {{ $arMonth[4] }}
+                                </th>
+                                <th>
+                                    @if($apmMonth->get(5)->selected == 1)
+                                    <span class="badge badge-success">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                                    @endif
+                                    SO Value {{ $arMonth[5] }}
+                                </th>
                             </tr>
                             </thead>
                         </table>
@@ -129,6 +161,8 @@
 
             </div>
             <!-- END EXAMPLE TABLE PORTLET-->
+
+            @include('partial.modal.apm-modal')
         </div>
     </div>
 @endsection
@@ -137,42 +171,50 @@
 
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
+    <!-- BEGIN PAGE VALIDATION SCRIPTS -->
+    <script src="{{ asset('js/handler/apm-handler.js') }}" type="text/javascript"></script>
+    <!-- END PAGE VALIDATION SCRIPTS -->
 
     <script>
+
         var dataAll = {};
         /*
          *
          *
          */
-        var filterId = ['#filterProduct', '#filterStore', '#filterEmployee', '#filterRegion', '#filterArea', '#filterDistrict' ];
-        var url = 'datatable/promoactivityreport';
+        var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterProduct'];
+        var url = 'datatable/apm';
         var order = [ [0, 'desc'] ];
-        var columnDefs = [{"className": "dt-center", "targets": [0]}];
-
-        var tableColumns = [{data: 'id', name: 'id', visible: false, orderable: false},
-                            {data: 'user_name', name: 'user_name'},
-                            {data: 'region_name', name: 'region_name'},
-                            {data: 'area_name', name: 'area_name'},
-                            {data: 'district_name', name: 'district_name'},
-                            {data: 'store_name_1', name: 'store_name_1'},
-                            {data: 'store_name_2', name: 'store_name_2'},
-                            {data: 'storeid', name: 'storeid'},
-                            {data: 'week', name: 'week'},
-                            {data: 'promo_type', name: 'promo_type'},
-                            {data: 'information', name: 'information'},
-                            {data: 'start_period', name: 'start_period'},
-                            {data: 'end_period', name: 'end_period'},
-                            {data: 'photo', name: 'photo'},
+        var columnDefs = [
+                            {"className": "dt-center", "targets": [0]},
+                            {"className": "dt-center", "targets": [6]},
+                            {"className": "dt-center", "targets": [7]},
+                            {"className": "dt-center", "targets": [8]},
+                            {"className": "dt-center", "targets": [9]},
+                            {"className": "dt-center", "targets": [10]},
+                            {"className": "dt-center", "targets": [11]},
+                         ];
+        var tableColumns = [{data: 'id', name: 'id', orderable: false},
+                            {data: 'region', name: 'region'},
+                            {data: 'area', name: 'area'},
+                            {data: 'district', name: 'district'},
+                            {data: 'store_name', name: 'store_name'},
                             {data: 'product_name', name: 'product_name'},
-                            {data: 'product_model', name: 'product_model'},
-                            {data: 'product_variants', name: 'product_variants'},
-                            {data: 'date', name: 'date'},
-                            {data: 'promo', name: 'promo'},
+                            {data: 'month_minus_1_value', name: 'month_minus_1_value'},
+                            {data: 'month_minus_2_value', name: 'month_minus_2_value'},
+                            {data: 'month_minus_3_value', name: 'month_minus_3_value'},
+                            {data: 'month_minus_4_value', name: 'month_minus_4_value'},
+                            {data: 'month_minus_5_value', name: 'month_minus_5_value'},
+                            {data: 'month_minus_6_value', name: 'month_minus_6_value'},
                             ];
 
-        var paramFilter = ['competitorActivity', $('#competitorActivity'), url, tableColumns, columnDefs, order, '#export'];
-        var paramReset = [filterId, 'competitorActivity', $('#competitorActivity'), url, tableColumns, columnDefs, order, '#export', '#filterMonth'];
+        var exportButton = '#export';
+
+        var paramFilter = ['apmTable', $('#apmTable'), url, tableColumns, columnDefs, order, exportButton];
+
+        var paramReset = [filterId, 'apmTable', $('#apmTable'), url, tableColumns, columnDefs, order, exportButton];
 
         $(document).ready(function () {
 
@@ -185,9 +227,8 @@
             // Get data district to var data
             $.ajax({
                 type: 'POST',
-                url: 'data/promoactivityreport',
+                url: 'data/apm',
                 dataType: 'json',
-                data: filters,
                 global: false,
                 async: false,
                 success: function (results) {
@@ -204,17 +245,18 @@
             });
 
             initSelect2();
-            initDateTimePicker();
+
+            // console.log(filters);
 
             // Set data for Data Table
-            var table = $('#competitorActivity').dataTable({
+            var table = $('#apmTable').dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.promoactivityreport') }}",
-                    type: 'POST',
+                    url: "{{ route('datatable.apm') }}",
                     data: filters,
                     dataType: 'json',
+                    type: 'POST',
                     dataSrc: function (res) {
                         var count = res.data.length;
 
@@ -233,8 +275,6 @@
                 "columnDefs": columnDefs,
                 "order": order,
             });
-
-            
 
         });
 
@@ -283,25 +323,12 @@
             $('#filterDistrict').on('select2:select', function () {
                 self.selected('byDistrict', $('#filterDistrict').val());
             });
-            
-            $('#filterProduct').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {
-                return filterData('product', params.term);
-            }, function (data, params) {
-                return {
-                    results: $.map(data, function (obj) {
-                        return {id: obj.id, text: obj.name}
-                    })
-                }
-            }));
-            $('#filterProduct').on('select2:select', function () {
-                self.selected('byProduct', $('#filterProduct').val());
-            });
 
             $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
                 return filterData('store', params.term);
             }, function (data, params) {
                 return {
-                    results: $.map(data, function (obj) {
+                    results: $.map(data, function (obj) {                  
                         if(obj.store_name_2 != null){
                             return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
@@ -313,85 +340,28 @@
                 self.selected('byStore', $('#filterStore').val());
             });
 
-            $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['promoterGroup'] = 1;
-	            return filterData('employee', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.nik + " - " + obj.name}
-	                })
-	            }
-	        }));
-            $('#filterEmployee').on('select2:select', function () {
-                self.selected('byEmployee', $('#filterEmployee').val());
+            $('#filterProduct').select2(setOptions('{{ route("data.product") }}', 'Product', function (params) {
+                return filterData('name', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.name}
+                    })
+                }
+            }));
+            $('#filterProduct').on('select2:select', function () {
+                self.selected('byProduct', $('#filterProduct').val());
             });
 
         }
 
-        function initDateTimePicker (){
-
-            // Filter Month
-            $('#filterMonth').datetimepicker({
-                format: "MM yyyy",
-                startView: "3",
-                minView: "3",
-                autoclose: true,
-            });
-
-            // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
-
-        }
 
         // On Change Search Date
         $(document).ready(function() {
 
-            $('#filterMonth').change(function(){
-                filters['searchMonth'] = this.value;
-                console.log(filters);
-            });
 
         });
 
-        $("#resetButton").click( function(){
-
-            // Hide Table Content
-            // $('#dataContent').addClass('display-hide');
-
-            // Set to Month now
-            // $('#filterMonth').val(moment().format('MMMM YYYY'));
-            // filters['searchMonth'] = $('#filterMonth').val();
-
-        });
-
-        $("#filterButton").click( function(){
-
-            // Set Table Content
-            // $('#dataContent').removeClass('display-hide');
-
-            $.ajax({
-                type: 'POST',
-                url: 'data/promoactivityreport',
-                dataType: 'json',
-                data: filters,
-                global: false,
-                async: false,
-                success: function (results) {
-                    var count = results.length;
-
-                            if(count > 0){
-                                $('#exportAll').removeAttr('disabled');
-                            }else{
-                                $('#exportAll').attr('disabled','disabled');
-                            }
-
-                    dataAll = results;
-                }
-            });
-
-        });
 
         $("#export").click( function(){
 
@@ -402,7 +372,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-promoactivity',
+                    url: 'util/export-apm',
                     dataType: 'json',
                     data: {data: data},
                     global: false,
@@ -412,21 +382,6 @@
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });
@@ -442,9 +397,8 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'data/promoactivityreport',
+                    url: 'data/apm',
                     dataType: 'json',
-                    data: filters,
                     global: false,
                     async: false,
                     success: function (results) {
@@ -457,7 +411,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-promoactivity-all',
+                    url: 'util/export-apm-all',
                     dataType: 'json',
                     data: {data: dataAll},
                     global: false,
@@ -468,21 +422,6 @@
 
                         window.location = data.url;
 
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
-
                     }
                 });
 
@@ -491,12 +430,35 @@
 
         });
 
+        // Init add form
+        $(document).on("click", "#set-apmmonth", function () { 
+
+            // $('#month1').attr('checked', 'checked'); 
+            // $('#month1').removeAttr('checked'); 
+            // document.getElementById("month1").checked = false;
+
+            // $('#month1').prop("checked", true);
+
+            return;
+
+            var m1 = "{{ $apmMonth->first()->selected }}";
+            var m2 = "{{ $apmMonth->get(1)->selected }}";
+            var m3 = "{{ $apmMonth->get(2)->selected }}";
+            var m4 = "{{ $apmMonth->get(3)->selected }}";
+            var m5 = "{{ $apmMonth->get(4)->selected }}";
+            var m6 = "{{ $apmMonth->get(5)->selected }}";   
+
+            alert(document.getElementById("month1").innerHTML);  
+        
+            if(m1 == 1) document.getElementById("month1").checked = true;
+            if(m2 == 1) document.getElementById("month2").checked = true;
+            if(m3 == 1) document.getElementById("month3").checked = true;
+            if(m4 == 1) document.getElementById("month4").checked = true;
+            if(m5 == 1) document.getElementById("month5").checked = true;
+            if(m6 == 1) document.getElementById("month6").checked = true;
+
+        });
+
 
     </script>
-
-    <style type="text/css">
-        table.dataTable tbody td {
-          vertical-align: middle;
-        }
-    </style>
 @endsection

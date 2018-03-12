@@ -52,7 +52,71 @@ function triggerReset (arrayOfData) {
                         }
                     }
 
-                    data = result.data;
+                    this.data = result.data;
+                    return result.data;
+                }
+        },
+        "rowId": "id",
+        "columns": tableColumns,
+        "columnDefs": columnDefs,
+        "order": order,
+    })
+}
+
+// Reset all filter for search
+function triggerResetReport (arrayOfData) {
+
+    var data = arrayOfData[0];
+    var table = arrayOfData[1];
+    var element = arrayOfData[2];
+    var url = arrayOfData[3];
+    var tableColumns = arrayOfData[4];
+    var columnDefs = arrayOfData[5];
+    var order = arrayOfData[6];
+
+    data.map((id) => {
+        $(id).val('').trigger('change');
+    });
+
+    this.filters = {};
+    if(typeof arrayOfData[8] !== 'undefined') {
+        this.filters['searchMonth'] = $(arrayOfData[8]).val();
+    }
+
+    console.log(this.filters);
+
+     // Datatable setup
+
+    if($.fn.dataTable.isDataTable('#'+table)){
+        element.DataTable().clear();
+        element.DataTable().destroy();
+    }
+    element.dataTable({
+        "fnCreatedRow": function (nRow, data) {
+            $(nRow).attr('class', data.id);
+        },
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: url,
+            type: 'POST',
+            data: this.filters,
+            dataType: 'json',
+            dataSrc: function(result){
+
+                    if(typeof arrayOfData[7] !== 'undefined') {
+                        // export option exist
+
+                        var count = result.data.length;
+
+                        if(count > 0){
+                            $(arrayOfData[7]).removeAttr('disabled');
+                        }else{
+                            $(arrayOfData[7]).attr('disabled','disabled');
+                        }
+                    }
+
+                    this.data = result.data;
                     return result.data;
                 }
         },
