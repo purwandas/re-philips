@@ -23,8 +23,10 @@
     <body class=" login">
         <!-- BEGIN LOGO -->
         <div class="logo">
-            <a href="{{ url('/') }}">
-                <img src="{{ asset('assets/pages/img/logo-big.png') }}" alt="" /> </a>
+            <a href="{{ url('/') }}" style="text-decoration: none;color: white;font-size: 18px;">
+                <!-- <img src="{{ asset('assets/pages/img/logo-big.png') }}" alt="" /> </a> -->
+                RETAIL EXCELLENCE
+            </a>
         </div>
         <!-- END LOGO -->
         <!-- BEGIN LOGIN -->

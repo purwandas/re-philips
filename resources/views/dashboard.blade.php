@@ -33,7 +33,7 @@
 					<span class="caption-subject font-blue bold uppercase">DASHBOARD</span>					
 				</div>
 	        </div>
-	        <a href="{{ url('/import') }}">IMPORT TEST</a>
+
 	        <div class="portlet-body">
 
                     <div>
