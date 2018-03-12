@@ -232,7 +232,7 @@ class PromoterController extends Controller
             return response()->json(['status' => false, 'message' => 'Gagal melakukan reject'], 500);
         }
 
-        return response()->json(['status' => false, 'message' => 'Berhasil melakukan reject'], 200);
+        return response()->json(['status' => true, 'message' => 'Berhasil melakukan reject'], 200);
     
     
     }
@@ -333,7 +333,7 @@ class PromoterController extends Controller
             return response()->json(['status' => false, 'message' => 'Gagal melakukan undo reject'], 500);
         }
 
-        return response()->json(['status' => false, 'message' => 'Berhasil melakukan undo reject'], 200);
+        return response()->json(['status' => true, 'message' => 'Berhasil melakukan undo reject'], 200);
     
     
     }

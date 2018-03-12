@@ -15,6 +15,7 @@ use App\District;
 use App\Store;
 use App\User;
 use App\ProductKnowledgeRead;
+use App\News;
 use File;
 
 class ProductKnowledgeController extends Controller
@@ -175,6 +176,9 @@ class ProductKnowledgeController extends Controller
         // Total Read
         $request['total_read'] = 0;
 
+        // COntent to inout to News
+        $request['content'] = 'New Guidelines'.$request['type'].'';
+
          /* Area Targets */
         if($request['target_type'] == 'Area'){
             $target = null;
@@ -226,6 +230,41 @@ class ProductKnowledgeController extends Controller
 
         // dd($request->all());
         $productKnowledge = ProductKnowledge::create($request->all());
+
+//--------------------Input to News----------------------------
+
+        // Admin
+        $requestNews['user_id'] = Auth::user()->id;
+
+        // Date
+        $requestNews['from'] = $request['from'];
+
+        // Subject
+        $requestNews['subject'] = $request['subject'];
+
+        // Date
+        $requestNews['date'] = Carbon::now();
+
+        // Content to inout to News
+        $requestNews['content'] = 'New Guidelines, berisi file dengan type '.$request['type'].', dan bernama '.$request['filename'].' silahkan periksa pada menu Guidelines';
+
+        // Date
+        $requestNews['target_type'] = $request['target_type'];
+
+        // Target
+        if($request['target_type'] != 'All'){
+            $requestNews['target_detail'] = $target;
+        }else{
+            $requestNews['target_detail'] = null;
+        }
+
+        // Total Read
+        $requestNews['total_read'] = 0;
+
+
+        $news = News::create($requestNews);
+
+//===================================================================
 
         if($request->upload_file != null){
 

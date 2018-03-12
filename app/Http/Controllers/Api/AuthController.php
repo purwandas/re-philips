@@ -303,19 +303,22 @@ class AuthController extends Controller
         if (!isset($userData)) {
 			return response()->json(['status' => false, 'message' => 'User not found'], 404);
         }
-		if ($userData->fcm_token != null){
-			if ($userData->fcm_token != $request->fcm_token){
+		if($request->fcm_token != null){
+			if ($userData->fcm_token != null){
+				if ($userData->fcm_token != $request->fcm_token){
+			        $userData->update([
+						'fcm_token' => $request->fcm_token,
+					]);
+					return response()->json(['status' => true, 'message' => 'token berhasil diubah'], 200);
+				}
+			}else{
 		        $userData->update([
 					'fcm_token' => $request->fcm_token,
 				]);
-			return response()->json(['status' => true, 'message' => 'token berhasil diubah'], 200);
+				return response()->json(['status' => true, 'message' => 'token berhasil ditambahkan'], 200);
 			}
-		}else{
-	        $userData->update([
-				'fcm_token' => $request->fcm_token,
-			]);
-		return response()->json(['status' => true, 'message' => 'token berhasil ditambahkan'], 200);
 		}
+		return response()->json(['status' => false, 'message' => 'token kosong'], 200);
 	}
 
 }
