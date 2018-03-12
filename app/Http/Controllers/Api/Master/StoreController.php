@@ -330,7 +330,13 @@ class StoreController extends Controller
     }
 
     public function getDistrict(){
-        $district = District::select('districts.id', 'districts.area_id','districts.name')->get();
+        $district = District::where( function($query) {
+                        return $query->where('name', 'NOT LIKE', '%2')
+                                     ->where('name', 'NOT LIKE', '%3')
+                                     ->where('name', 'NOT LIKE', '%4')
+                                     ->where('name', 'NOT LIKE', '%MCC');
+                    })
+                    ->select('districts.id', 'districts.area_id','districts.name')->get();
 
         return $district;
     }

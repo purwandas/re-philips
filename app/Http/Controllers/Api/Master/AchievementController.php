@@ -20,6 +20,7 @@ use App\User;
 use App\DmArea;
 use App\RsmRegion;
 use App\Attendance;
+use DB;
 
 class AchievementController extends Controller
 {
@@ -51,6 +52,8 @@ class AchievementController extends Controller
         $totalActualW4 = 0;
         $totalTargetW5 = 0;
         $totalActualW5 = 0;
+        $totalTargetPF = 0;
+        $totalActualPF = 0;
 
         $data = SummaryTargetActual::where('user_id', $id)->where('sell_type', 'Sell In')->get();
 
@@ -117,13 +120,21 @@ class AchievementController extends Controller
             $totalActualW5 += $detail['actual_da_w5'];
             $totalActualW5 += $detail['actual_pc_w5'];
             $totalActualW5 += $detail['actual_mcc_w5'];
+
+            $totalTargetPF += $detail['target_pf_da'];
+            $totalTargetPF += $detail['target_pf_pc'];
+            $totalTargetPF += $detail['target_pf_mcc'];
+
+            $totalActualPF += $detail['actual_pf_da'];
+            $totalActualPF += $detail['actual_pf_pc'];
+            $totalActualPF += $detail['actual_pf_mcc'];
         }
 
         return array($totalTarget, $totalActual,
             $totalTargetDA, $totalActualDA, $totalTargetPC, $totalActualPC, $totalTargetMCC, $totalActualMCC,
             $totalTargetPFDA, $totalActualPFDA, $totalTargetPFPC, $totalActualPFPC, $totalTargetPFMCC, $totalActualPFMCC,
             $totalTargetW1, $totalActualW1, $totalTargetW2, $totalActualW2, $totalTargetW3, $totalActualW3,
-            $totalTargetW4, $totalActualW4, $totalTargetW5, $totalActualW5);
+            $totalTargetW4, $totalActualW4, $totalTargetW5, $totalActualW5, $totalTargetPF, $totalActualPF);
 
     }
 
@@ -153,6 +164,8 @@ class AchievementController extends Controller
         $totalActualW4 = 0;
         $totalTargetW5 = 0;
         $totalActualW5 = 0;
+        $totalTargetPF = 0;
+        $totalActualPF = 0;
 
         $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeId)->where('sell_type', 'Sell In')->get();
 
@@ -219,13 +232,21 @@ class AchievementController extends Controller
             $totalActualW5 += $detail['actual_da_w5'];
             $totalActualW5 += $detail['actual_pc_w5'];
             $totalActualW5 += $detail['actual_mcc_w5'];
+
+            $totalTargetPF += $detail['target_pf_da'];
+            $totalTargetPF += $detail['target_pf_pc'];
+            $totalTargetPF += $detail['target_pf_mcc'];
+
+            $totalActualPF += $detail['actual_pf_da'];
+            $totalActualPF += $detail['actual_pf_pc'];
+            $totalActualPF += $detail['actual_pf_mcc'];
         }
 
         return array($totalTarget, $totalActual,
             $totalTargetDA, $totalActualDA, $totalTargetPC, $totalActualPC, $totalTargetMCC, $totalActualMCC,
             $totalTargetPFDA, $totalActualPFDA, $totalTargetPFPC, $totalActualPFPC, $totalTargetPFMCC, $totalActualPFMCC,
             $totalTargetW1, $totalActualW1, $totalTargetW2, $totalActualW2, $totalTargetW3, $totalActualW3,
-            $totalTargetW4, $totalActualW4, $totalTargetW5, $totalActualW5);
+            $totalTargetW4, $totalActualW4, $totalTargetW5, $totalActualW5, $totalTargetPF, $totalActualPF);
 
     }
 
@@ -396,39 +417,118 @@ class AchievementController extends Controller
         $storeIds = Store::where('user_id', $user->id)->pluck('id');
         $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
 
-        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
-                        ->whereHas('user', function ($query){
-                            // return $query->where('role', '<>', 'Demonstrator DA');
-                            return $query->whereHas('role', function($query2){
-                                return $query2->where('role_group', '<>','Demonstrator DA');
-                            });
-                        })
-                        ->pluck('user_id');
+        $promoDemo = "Promoter";
 
         if(count($spvDemoIds) > 0){
-            $promoterIds = EmployeeStore::whereIn('store_id', $spvDemoIds)
-                            ->whereHas('user', function ($query){
-                                // return $query->where('role', 'Demonstrator DA');
-                                return $query->whereHas('role', function($query2){
-                                return $query2->where('role_group','Demonstrator DA');
-                            });
-                            })
-                            ->pluck('user_id');
+            $promoDemo = "Demonstrator";
+            $storeIds = $spvDemoIds;
         }
 
-        $promoters = User::whereIn('id', $promoterIds)->get();
+        $store = Store::whereIn('id', $storeIds)->get();
 
-        $target = 0;
-        $actual = 0;
+        $totalTarget = 0;
+        $totalActual = 0;
+        $totalTargetPF = 0;
+        $totalActualPF = 0;
 
-        foreach($promoters as $promoter){
+        // foreach ($store as $data) {
 
-            $target +=  $this->achievement($promoter['id'], $param)[0];
-            $actual +=  $this->achievement($promoter['id'], $param)[1];
+            $summary = SummaryTargetActual::whereIn('storeId', $storeIds)
+                        ->where('user_role', $promoDemo)
+                        ->where('partner', 0)
+                        ->where('sell_type', 'Sell In')
+                        ->get(
+                            array(
+                                DB::raw('SUM(target_da) AS total_target')
+                                )
+                            );
 
-        }
+            if($param == 2){
+                $summary = SummaryTargetActual::whereIn('storeId', $storeIds)
+                            ->where('user_role', $promoDemo)
+                            ->where('partner', 0)
+                            ->where('sell_type', 'Sell Out')
+                            ->get(
+                                array(
+                                    DB::raw('SUM(target_da) + SUM(target_pc) + SUM(target_mcc) AS total_target'),
+                                    DB::raw('SUM(actual_da) + SUM(actual_pc) + SUM(actual_mcc) AS total_actual'),
+                                    DB::raw('SUM(target_pf_da) + SUM(target_pf_pc) + SUM(target_pf_mcc) AS total_target_pf'),
+                                    DB::raw('SUM(actual_pf_da) + SUM(actual_pf_pc) + SUM(actual_pf_mcc) AS total_actual_pf'),
+                                    )
+                                );
+            }
 
-        return response()->json(['target' => $target, 'actual' => $actual]);
+            // if($summary){
+                
+            //     foreach ($summary as $detail) {
+                    
+            //         $totalTarget += $detail->target_da;
+            //         $totalTarget += $detail->target_pc;
+            //         $totalTarget += $detail->target_mcc;
+
+            //         $totalActual += $detail->actual_da;
+            //         $totalActual += $detail->actual_pc;
+            //         $totalActual += $detail->actual_mcc;
+
+            //         $totalTargetPF += $detail->target_pf_da;
+            //         $totalTargetPF += $detail->target_pf_pc;
+            //         $totalTargetPF += $detail->target_pf_mcc;
+
+            //         $totalActualPF += $detail->actual_pf_da;
+            //         $totalActualPF += $detail->actual_pf_pc;
+            //         $totalActualPF += $detail->actual_pf_mcc;
+
+            //     }
+
+            // }
+
+        // }
+
+        // return $summary[0]->total_target;
+
+        return array($summary[0]->total_target, $summary[0]->total_actual, $summary[0]->total_target_pf, $summary[0]->total_actual_pf);
+
+        // PER PROMOTER
+
+        // $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
+        //                 ->whereHas('user', function ($query){
+        //                     // return $query->where('role', '<>', 'Demonstrator DA');
+        //                     return $query->whereHas('role', function($query2){
+        //                         return $query2->where('role_group', '<>','Demonstrator DA');
+        //                     });
+        //                 })
+        //                 ->pluck('user_id');
+
+        // if(count($spvDemoIds) > 0){
+        //     $promoterIds = EmployeeStore::whereIn('store_id', $spvDemoIds)
+        //                     ->whereHas('user', function ($query){
+        //                         // return $query->where('role', 'Demonstrator DA');
+        //                         return $query->whereHas('role', function($query2){
+        //                         return $query2->where('role_group','Demonstrator DA');
+        //                     });
+        //                     })
+        //                     ->pluck('user_id');
+        // }
+
+        // $promoters = User::whereIn('id', $promoterIds)->get();
+
+        // $target = 0;
+        // $target_pf = 0;
+        // $actual = 0;
+        // $actual_pf = 0;
+
+        // foreach($promoters as $promoter){
+
+        //     $target +=  $this->achievement($promoter['id'], $param)[0];
+        //     $actual +=  $this->achievement($promoter['id'], $param)[1];
+
+        //     $target_pf +=  $this->achievement($promoter['id'], $param)[24];
+        //     $actual_pf +=  $this->achievement($promoter['id'], $param)[25];
+        // }
+
+        // return response()->json(['target' => $target, 'actual' => $actual, 'target_pf' => $target_pf, 'actual_pf' => $actual_pf]);
+
+        // return array($target, $actual, $target_pf, $actual_pf);
     }
 
     public function getSupervisorAchievement($param, $sell_param){
@@ -447,56 +547,63 @@ class AchievementController extends Controller
 
             foreach ($result as $item) {
 
-                $target = 0;
-                $actual = 0;
-                $promoDemo = "Promoter";
+                // WITH SUM T/A
 
-                $stores = Store::where('user_id', $item['id'])->get();
-                $spvDemoIds = SpvDemo::where('user_id', $item['id'])->pluck('store_id');
+//                 $target = 0;
+//                 $actual = 0;
+//                 $promoDemo = "Promoter";
 
-                if(count($spvDemoIds) > 0){
-                    $promoDemo = "Demonstrator";
-                    $stores = Store::whereIn('id', $spvDemoIds)->get();
-                }
+//                 $stores = Store::where('user_id', $item['id'])->get();
+//                 $spvDemoIds = SpvDemo::where('user_id', $item['id'])->pluck('store_id');
 
-                foreach ($stores as $data) {
+//                 if(count($spvDemoIds) > 0){
+//                     $promoDemo = "Demonstrator";
+//                     $stores = Store::whereIn('id', $spvDemoIds)->get();
+//                 }                
 
-                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                ->where('user_role', $promoDemo)
-                                ->where('sell_type', 'Sell In')->first();
+//                 foreach ($stores as $data) {
 
-                    if($sell_param == 2){
-                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                    ->where('user_role', $promoDemo)
-                                    ->where('sell_type', 'Sell Out')->first();
-                    }
+//                     $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+//                                 ->where('user_role', $promoDemo)
+//                                 ->where('sell_type', 'Sell In')->first();
 
-                    if($summary){
-//                        if(count($spvDemoIds) > 0){
-//                            $target += $summary->sum_target_store_demo;
-//                            $actual += $summary->sum_actual_store_demo;
-//                        }else{
-//                            if($summary->user_role == 'Promoter'){
-//                                $target += $summary->sum_target_store_promo;
-//                                $actual += $summary->sum_actual_store_promo;
-//                            }else{
-//                                $target += $summary->sum_target_store_demo;
-//                                $actual += $summary->sum_actual_store_demo;
-//                            }
-//                        }
-                        if($promoDemo == 'Promoter'){
-                            $target += $summary->sum_target_store_promo;
-                            $actual += $summary->sum_actual_store_promo;
-                        }else{
-                            $target += $summary->sum_target_store_demo;
-                            $actual += $summary->sum_actual_store_demo;
-                        }
-                    }
+//                     if($sell_param == 2){
+//                         $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+//                                     ->where('user_role', $promoDemo)
+//                                     ->where('sell_type', 'Sell Out')->first();
+//                     }
 
-                }
+//                     if($summary){
+// //                        if(count($spvDemoIds) > 0){
+// //                            $target += $summary->sum_target_store_demo;
+// //                            $actual += $summary->sum_actual_store_demo;
+// //                        }else{
+// //                            if($summary->user_role == 'Promoter'){
+// //                                $target += $summary->sum_target_store_promo;
+// //                                $actual += $summary->sum_actual_store_promo;
+// //                            }else{
+// //                                $target += $summary->sum_target_store_demo;
+// //                                $actual += $summary->sum_actual_store_demo;
+// //                            }
+// //                        }
+//                         if($promoDemo == 'Promoter'){
+//                             $target += $summary->sum_target_store_promo;
+//                             $actual += $summary->sum_actual_store_promo;
+//                         }else{
+//                             $target += $summary->sum_target_store_demo;
+//                             $actual += $summary->sum_actual_store_demo;
+//                         }
+//                     }
 
-                $item['target'] = $target;
-                $item['actual'] = $actual;
+//                 }
+
+//                 $item['target'] = $target;
+//                 $item['actual'] = $actual;
+
+                // WITHOUT SUM T/A                
+
+                $item['target'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[0];
+                $item['actual'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[1];
 
             }
 
@@ -506,6 +613,8 @@ class AchievementController extends Controller
 
             $regionIds = RsmRegion::where('user_id', $user->id)->pluck('region_id');
 
+
+
             $supervisor = User::where(function ($query) {
                 // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
                  return $query->whereHas('role', function($query2){
@@ -513,56 +622,61 @@ class AchievementController extends Controller
                 });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area.region', function ($query) use ($regionIds){
-                        return $query->whereIn('id', $regionIds);
+                        return $query->whereIn('regions.id', $regionIds);
                     })->get();
 
             $demoStoreIds = SpvDemo::whereHas('store.district.area.region', function ($query) use ($regionIds){
-                                return $query->whereIn('id', $regionIds);
+                                return $query->whereIn('regions.id', $regionIds);
                            })->pluck('user_id');
             $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
 
             $result = $this->getSupervisorCollection($supervisor, $spvdemo);
 
+            return response()->json($result);
+
             foreach ($result as $item) {
 
-                $target = 0;
-                $actual = 0;
-                $promoDemo = "Promoter";
+                // $target = 0;
+                // $actual = 0;
+                // $promoDemo = "Promoter";
 
-                $stores = Store::where('user_id', $item['id'])->get();
-                $spvDemoIds = SpvDemo::where('user_id', $item['id'])->pluck('store_id');
+                // $stores = Store::where('user_id', $item['id'])->get();
+                // $spvDemoIds = SpvDemo::where('user_id', $item['id'])->pluck('store_id');
 
-                if(count($spvDemoIds) > 0){
-                    $promoDemo = "Demonstrator";
-                    $stores = Store::whereIn('id', $spvDemoIds)->get();
-                }
+                // if(count($spvDemoIds) > 0){
+                //     $promoDemo = "Demonstrator";
+                //     $stores = Store::whereIn('id', $spvDemoIds)->get();
+                // }
 
-                foreach ($stores as $data) {
+                // foreach ($stores as $data) {
 
-                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                ->where('user_role', $promoDemo)
-                                ->where('sell_type', 'Sell In')->first();
+                //     $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+                //                 ->where('user_role', $promoDemo)
+                //                 ->where('sell_type', 'Sell In')->first();
 
-                    if($sell_param == 2){
-                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                    ->where('user_role', $promoDemo)
-                                    ->where('sell_type', 'Sell Out')->first();
-                    }
+                //     if($sell_param == 2){
+                //         $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+                //                     ->where('user_role', $promoDemo)
+                //                     ->where('sell_type', 'Sell Out')->first();
+                //     }
 
-                    if($summary){
-                        if($promoDemo == 'Promoter'){
-                            $target += $summary->sum_target_store_promo;
-                            $actual += $summary->sum_actual_store_promo;
-                        }else{
-                            $target += $summary->sum_target_store_demo;
-                            $actual += $summary->sum_actual_store_demo;
-                        }
-                    }
+                //     if($summary){
+                //         if($promoDemo == 'Promoter'){
+                //             $target += $summary->sum_target_store_promo;
+                //             $actual += $summary->sum_actual_store_promo;
+                //         }else{
+                //             $target += $summary->sum_target_store_demo;
+                //             $actual += $summary->sum_actual_store_demo;
+                //         }
+                //     }
 
-                }
+                // }
 
-                $item['target'] = $target;
-                $item['actual'] = $actual;
+                // $item['target'] = $target;
+                // $item['actual'] = $actual;
+
+                // $item['target'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[0];
+                // $item['actual'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[1];
 
             }
 
@@ -583,7 +697,7 @@ class AchievementController extends Controller
                 });
                 })->with('stores.district.area.region')
                     ->whereHas('stores.district.area', function ($query) use ($areaIds){
-                        return $query->whereIn('id', $areaIds);
+                        return $query->whereIn('areas.id', $areaIds);
                     })
                     // ->whereHas('stores', function ($query) use ($dedicates){
                     //     return $query->whereIn('dedicate', $dedicates);
@@ -591,7 +705,7 @@ class AchievementController extends Controller
                     ->get();
 
             $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
-                                return $query->whereIn('id', $areaIds);
+                                return $query->whereIn('areas.id', $areaIds);
                            })->pluck('user_id');
             $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
 
@@ -599,44 +713,51 @@ class AchievementController extends Controller
 
             foreach ($result as $item) {
 
-                $target = 0;
-                $actual = 0;
-                $promoDemo = "Promoter";
+                // $target = 0;
+                // $actual = 0;
+                // $promoDemo = "Promoter";
 
-                $stores = Store::where('user_id', $item['id'])->get();
-                $spvDemoIds = SpvDemo::where('user_id', $item['id'])->pluck('store_id');
+                // $stores = Store::where('user_id', $item['id'])->get();
+                // $spvDemoIds = SpvDemo::where('user_id', $item['id'])->pluck('store_id');
 
-                if(count($spvDemoIds) > 0){
-                    $promoDemo = "Demonstrator";
-                    $stores = Store::whereIn('id', $spvDemoIds)->get();
-                }
+                // if(count($spvDemoIds) > 0){
+                //     $promoDemo = "Demonstrator";
+                //     $stores = Store::whereIn('id', $spvDemoIds)->get();
+                // }
 
-                foreach ($stores as $data) {
+                // foreach ($stores as $data) {
 
-                    $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                ->where('user_role', $promoDemo)
-                                ->where('sell_type', 'Sell In')->first();
+                //     $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+                //                 ->where('user_role', $promoDemo)
+                //                 ->where('sell_type', 'Sell In')->first();
 
-                    if($sell_param == 2){
-                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                    ->where('user_role', $promoDemo)
-                                    ->where('sell_type', 'Sell Out')->first();
-                    }
+                //     if($sell_param == 2){
+                //         $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+                //                     ->where('user_role', $promoDemo)
+                //                     ->where('sell_type', 'Sell Out')->first();
+                //     }
 
-                    if($summary){
-                        if($promoDemo == 'Promoter'){
-                            $target += $summary->sum_target_store_promo;
-                            $actual += $summary->sum_actual_store_promo;
-                        }else{
-                            $target += $summary->sum_target_store_demo;
-                            $actual += $summary->sum_actual_store_demo;
-                        }
-                    }
+                //     if($summary){
+                //         if($promoDemo == 'Promoter'){
+                //             $target += $summary->sum_target_store_promo;
+                //             $actual += $summary->sum_actual_store_promo;
+                //         }else{
+                //             $target += $summary->sum_target_store_demo;
+                //             $actual += $summary->sum_actual_store_demo;
+                //         }
+                //     }
 
-                }
+                // }
 
-                $item['target'] = $target;
-                $item['actual'] = $actual;
+                // $item['target'] = $target;
+                // $item['actual'] = $actual;
+
+                $item['target'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[0];
+                $item['actual'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[1];
+
+                // $item['tes'] =  $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id']);
+                // $item['actual'] = 'ddd';
+
 
             }
 
@@ -766,56 +887,68 @@ class AchievementController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $storeIds = Store::where('user_id', $user->id)->pluck('id');
-        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
-        $promoDemo = "Promoter";
-
-        if(count($spvDemoIds) > 0){
-            $promoDemo = "Demonstrator";
-            $storeIds = Store::whereIn('id', $spvDemoIds)->pluck('id');
-        }
-
-        $store = Store::whereIn('id', $storeIds)->get();
-
-        $totalTarget = 0;
-        $totalActual = 0;
-        $totalTargetPF = 0;
-        $totalActualPF = 0;
-
-        foreach ($store as $data) {
-
-            $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                ->where('user_role', $promoDemo)
-                                ->where('sell_type', 'Sell In')->first();
-
-                    if($param == 2){
-                        $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
-                                    ->where('user_role', $promoDemo)
-                                    ->where('sell_type', 'Sell Out')->first();
-                    }
-
-                    if($summary){
-                        if($promoDemo == 'Promoter'){
-                            $totalTarget += $summary->sum_target_store_promo;
-                            $totalActual += $summary->sum_actual_store_promo;
-                            $totalTargetPF += $summary->sum_pf_target_store_promo;
-                            $totalActualPF += $summary->sum_pf_actual_store_promo;
-                        }else{
-                            $totalTarget += $summary->sum_target_store_demo;
-                            $totalActual += $summary->sum_actual_store_demo;
-                            $totalTargetPF += $summary->sum_pf_target_store_demo;
-                            $totalActualPF += $summary->sum_pf_actual_store_demo;
-                        }
-                    }
-        }
+        // WITHOUT SUM T/A
 
         return response()->json([
-            'total_target' => $totalTarget,
-            'total_actual' => $totalActual,
-            'total_pf_target' => $totalTargetPF,
-            'total_pf_actual' => $totalActualPF,
+            'total_target' => $this->getAchievementForSupervisorWithParamAlt($param, $user->id)[0],
+            'total_actual' => $this->getAchievementForSupervisorWithParamAlt($param, $user->id)[1],
+            'total_pf_target' => $this->getAchievementForSupervisorWithParamAlt($param, $user->id)[2],
+            'total_pf_actual' => $this->getAchievementForSupervisorWithParamAlt($param, $user->id)[3],
             'working_days' => $this->getTotalHK($user->id)
         ]);
+
+        // WITH SUM T/A
+
+        // $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        // $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+        // $promoDemo = "Promoter";
+
+        // if(count($spvDemoIds) > 0){
+        //     $promoDemo = "Demonstrator";
+        //     $storeIds = Store::whereIn('id', $spvDemoIds)->pluck('id');
+        // }
+
+        // $store = Store::whereIn('id', $storeIds)->get();
+
+        // $totalTarget = 0;
+        // $totalActual = 0;
+        // $totalTargetPF = 0;
+        // $totalActualPF = 0;
+
+        // foreach ($store as $data) {
+
+        //     $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+        //                         ->where('user_role', $promoDemo)
+        //                         ->where('sell_type', 'Sell In')->first();
+
+        //             if($param == 2){
+        //                 $summary = SummaryTargetActual::whereIn('storeId', [$data['id']])
+        //                             ->where('user_role', $promoDemo)
+        //                             ->where('sell_type', 'Sell Out')->first();
+        //             }
+
+        //             if($summary){
+        //                 if($promoDemo == 'Promoter'){
+        //                     $totalTarget += $summary->sum_target_store_promo;
+        //                     $totalActual += $summary->sum_actual_store_promo;
+        //                     $totalTargetPF += $summary->sum_pf_target_store_promo;
+        //                     $totalActualPF += $summary->sum_pf_actual_store_promo;
+        //                 }else{
+        //                     $totalTarget += $summary->sum_target_store_demo;
+        //                     $totalActual += $summary->sum_actual_store_demo;
+        //                     $totalTargetPF += $summary->sum_pf_target_store_demo;
+        //                     $totalActualPF += $summary->sum_pf_actual_store_demo;
+        //                 }
+        //             }
+        // }
+
+        // return response()->json([
+        //     'total_target' => $totalTarget,
+        //     'total_actual' => $totalActual,
+        //     'total_pf_target' => $totalTargetPF,
+        //     'total_pf_actual' => $totalActualPF,
+        //     'working_days' => $this->getTotalHK($user->id)
+        // ]);
     }
 
     public function getTotalAchievementArea($param)
@@ -845,19 +978,35 @@ class AchievementController extends Controller
 
             $summary = SummaryTargetActual::where('area_id', $data['id'])
                         ->where('partner', 0)
-                        ->where('sell_type', 'Sell In')->first();
+                        ->where('sell_type', 'Sell In')->get();
 
             if($param == 2){
                 $summary = SummaryTargetActual::where('area_id', $data['id'])
                             ->where('partner', 0)
-                            ->where('sell_type', 'Sell Out')->first();
+                            ->where('sell_type', 'Sell Out')->get();
             }
 
             if($summary) {
-                $totalTarget += $summary->sum_target_area;
-                $totalActual += $summary->sum_actual_area;
-                $totalTargetPF += $summary->sum_pf_target_area;
-                $totalActualPF += $summary->sum_pf_actual_area;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTarget += $detail->target_da;
+                    $totalTarget += $detail->target_pc;
+                    $totalTarget += $detail->target_mcc;
+
+                    $totalActual += $detail->actual_da;
+                    $totalActual += $detail->actual_pc;
+                    $totalActual += $detail->actual_mcc;
+
+                    $totalTargetPF += $detail->target_pf_da;
+                    $totalTargetPF += $detail->target_pf_pc;
+                    $totalTargetPF += $detail->target_pf_mcc;
+
+                    $totalActualPF += $detail->actual_pf_da;
+                    $totalActualPF += $detail->actual_pf_pc;
+                    $totalActualPF += $detail->actual_pf_mcc;
+
+                }                
             }
         }
 
@@ -885,19 +1034,35 @@ class AchievementController extends Controller
 
             $summary = SummaryTargetActual::where('region_id', $data['id'])
                         ->where('partner', 0)
-                        ->where('sell_type', 'Sell In')->first();
+                        ->where('sell_type', 'Sell In')->get();
 
             if($param == 2){
                 $summary = SummaryTargetActual::where('region_id', $data['id'])
                             ->where('partner', 0)
-                            ->where('sell_type', 'Sell Out')->first();
+                            ->where('sell_type', 'Sell Out')->get();
             }
 
             if($summary) {
-                $totalTarget += $summary->sum_target_region;
-                $totalActual += $summary->sum_actual_region;
-                $totalTargetPF += $summary->sum_pf_target_region;
-                $totalActualPF += $summary->sum_pf_actual_region;
+
+                foreach ($summary as $detail){
+
+                    $totalTarget += $detail->target_da;
+                    $totalTarget += $detail->target_pc;
+                    $totalTarget += $detail->target_mcc;
+
+                    $totalActual += $detail->actual_da;
+                    $totalActual += $detail->actual_pc;
+                    $totalActual += $detail->actual_mcc;
+
+                    $totalTargetPF += $detail->target_pf_da;
+                    $totalTargetPF += $detail->target_pf_pc;
+                    $totalTargetPF += $detail->target_pf_mcc;
+
+                    $totalActualPF += $detail->actual_pf_da;
+                    $totalActualPF += $detail->actual_pf_pc;
+                    $totalActualPF += $detail->actual_pf_mcc;
+
+                }                
             }
         }
 
@@ -911,7 +1076,9 @@ class AchievementController extends Controller
 
     public function getTotalAchievementNational($param)
     {
-        $region = Region::whereIn('id', [1, 2, 3, 4])->get();
+        // $region = Region::whereIn('id', [1, 2, 3, 4])->get();
+
+        $region = Region::all();
 
         $totalTarget = 0;
         $totalActual = 0;
@@ -922,19 +1089,40 @@ class AchievementController extends Controller
 
             $summary = SummaryTargetActual::where('region_id', $data['id'])
                         ->where('partner', 0)
-                        ->where('sell_type', 'Sell In')->first();
+                        ->where('sell_type', 'Sell In')->get();
 
             if($param == 2){
                 $summary = SummaryTargetActual::where('region_id', $data['id'])
                             ->where('partner', 0)
-                            ->where('sell_type', 'Sell Out')->first();
+                            ->where('sell_type', 'Sell Out')->get();
             }
 
             if($summary) {
-                $totalTarget += $summary->sum_target_region;
-                $totalActual += $summary->sum_actual_region;
-                $totalTargetPF += $summary->sum_pf_target_region;
-                $totalActualPF += $summary->sum_pf_actual_region;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTarget += $detail->target_da;
+                    $totalTarget += $detail->target_pc;
+                    $totalTarget += $detail->target_mcc;
+
+                    $totalActual += $detail->actual_da;
+                    $totalActual += $detail->actual_pc;
+                    $totalActual += $detail->actual_mcc;
+
+                    $totalTargetPF += $detail->target_pf_da;
+                    $totalTargetPF += $detail->target_pf_pc;
+                    $totalTargetPF += $detail->target_pf_mcc;
+
+                    $totalActualPF += $detail->actual_pf_da;
+                    $totalActualPF += $detail->actual_pf_pc;
+                    $totalActualPF += $detail->actual_pf_mcc;
+
+                }
+
+                // $totalTarget += $summary->sum_target_region;
+                // $totalActual += $summary->sum_actual_region;
+                // $totalTargetPF += $summary->sum_pf_target_region;
+                // $totalActualPF += $summary->sum_pf_actual_region;
             }
         }
 
