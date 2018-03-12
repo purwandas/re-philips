@@ -34,7 +34,7 @@ use App\FreeProductDetail;
 use App\Reports\SummaryFreeProduct;
 use App\SOH;
 use App\SOHDetail;
-use App\Reports\SummarySOH;
+use App\Reports\SummarySoh;
 use App\SOS;
 use App\SOSDetail;
 use App\Reports\SummarySOS;
