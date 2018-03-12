@@ -11,7 +11,9 @@ use Carbon\Carbon;
 use App\Helper\ExcelHelper as ExcelHelper;
 use App\Product;
 use App\Area;
+use App\Store;
 use DB;
+use Auth;
 
 class ExportController extends Controller
 {
@@ -1349,6 +1351,96 @@ class ExportController extends Controller
         $data = $request->data;
 
 
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Store');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Store Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Store', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:W1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportStoreAll($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:W1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:W1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+    //
+    public function exportStoreAllAlt(Request $request){
+
+        $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
+
+        // GET DATA
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;  
+        
+        $data = Store::leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')
+                    ->leftJoin('areas', 'districts.area_id', '=', 'areas.id')
+                    ->leftJoin('regions', 'areas.region_id', '=', 'regions.id')
+                    ->leftJoin('classifications', 'classifications.id', '=', 'stores.classification_id')
+                    ->leftJoin('users', 'users.id', '=', 'stores.user_id')
+                    ->leftJoin('spv_demos', 'stores.id', '=', 'spv_demos.store_id')
+                    ->leftJoin('users as user2', 'user2.id', '=', 'spv_demos.user_id')
+                    ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
+                        ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'classifications.classification as classification_id', 'users.name as spv_name', 'user2.name as spv_demo'
+                        )
+                ->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('rsm_regions.user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->pluck('stores.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('dm_areas.user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->pluck('stores.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->pluck('stores.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        // return response()->json($data);
+
+        $data = $data->toArray();
         
         Excel::create($filename, function($excel) use ($data) {
 
