@@ -64,7 +64,7 @@
                 <div class="btn-group">
                     <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
-                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReportWithAll(paramFilter)">
+                    <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
                 </div>
 
@@ -401,6 +401,9 @@
             // console.log(data);
             // return;
 
+            // console.log(filters);
+            // return;
+
             if ($('#exportAll').attr('disabled') != 'disabled') {
 
                 // Export data
@@ -437,11 +440,14 @@
                 //     }
                 // });
 
+                // console.log(newParams);
+                // return;
+
                 $.ajax({
                     type: 'POST',
                     url: 'util/export-store-all-alt',
-                    global: false,
-                    async: false,
+                    dataType: 'json',
+                    data: filters,
                     success: function (data) {
                         console.log(data);
 

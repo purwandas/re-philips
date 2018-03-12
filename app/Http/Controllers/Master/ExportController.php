@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Filters\SellinFilters;
+use App\Filters\StoreFilters;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
@@ -1389,16 +1390,17 @@ class ExportController extends Controller
 
     }
     //
-    public function exportStoreAllAlt(Request $request){
+    public function exportStoreAllAlt(StoreFilters $filters){
 
         $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
 
         // GET DATA
 
         $userRole = Auth::user()->role;
-        $userId = Auth::user()->id;  
+        $userId = Auth::user()->id;
         
-        $data = Store::leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+        $data = Store::filter($filters)
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
                     ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
                     ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                     ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')

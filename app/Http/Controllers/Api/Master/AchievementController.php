@@ -389,6 +389,48 @@ class AchievementController extends Controller
         return response()->json($promoters);
     }
 
+    public function getAchievementForSupervisorWithParamAlt($param, $id){
+
+        $user = User::where('id', $id)->first();
+
+        $storeIds = Store::where('user_id', $user->id)->pluck('id');
+        $spvDemoIds = SpvDemo::where('user_id', $user->id)->pluck('store_id');
+
+        $promoterIds = EmployeeStore::whereIn('store_id', $storeIds)
+                        ->whereHas('user', function ($query){
+                            // return $query->where('role', '<>', 'Demonstrator DA');
+                            return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group', '<>','Demonstrator DA');
+                            });
+                        })
+                        ->pluck('user_id');
+
+        if(count($spvDemoIds) > 0){
+            $promoterIds = EmployeeStore::whereIn('store_id', $spvDemoIds)
+                            ->whereHas('user', function ($query){
+                                // return $query->where('role', 'Demonstrator DA');
+                                return $query->whereHas('role', function($query2){
+                                return $query2->where('role_group','Demonstrator DA');
+                            });
+                            })
+                            ->pluck('user_id');
+        }
+
+        $promoters = User::whereIn('id', $promoterIds)->get();
+
+        $target = 0;
+        $actual = 0;
+
+        foreach($promoters as $promoter){
+
+            $target +=  $this->achievement($promoter['id'], $param)[0];
+            $actual +=  $this->achievement($promoter['id'], $param)[1];
+
+        }
+
+        return response()->json(['target' => $target, 'actual' => $actual]);
+    }
+
     public function getSupervisorAchievement($param, $sell_param){
 
         $user = JWTAuth::parseToken()->authenticate();
