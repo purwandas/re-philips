@@ -167,10 +167,10 @@ class AchievementController extends Controller
         $totalTargetPF = 0;
         $totalActualPF = 0;
 
-        $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeId)->where('sell_type', 'Sell In')->get();
+        $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeId)->where('sell_type', 'Sell In')->where('partner', 0)->get();
 
         if($param == 2){
-            $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeId)->where('sell_type', 'Sell Out')->get();
+            $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeId)->where('sell_type', 'Sell Out')->where('partner', 0)->get();
         }
 
         foreach ($data as $detail){
@@ -435,18 +435,21 @@ class AchievementController extends Controller
 
             $summary = SummaryTargetActual::whereIn('storeId', $storeIds)
                         ->where('user_role', $promoDemo)
-                        ->where('partner', 0)
+                        // ->where('partner', 0)
                         ->where('sell_type', 'Sell In')
                         ->get(
                             array(
-                                DB::raw('SUM(target_da) AS total_target')
+                                DB::raw('SUM(target_da) + SUM(target_pc) + SUM(target_mcc) AS total_target'),
+                                DB::raw('SUM(actual_da) + SUM(actual_pc) + SUM(actual_mcc) AS total_actual'),
+                                DB::raw('SUM(target_pf_da) + SUM(target_pf_pc) + SUM(target_pf_mcc) AS total_target_pf'),
+                                DB::raw('SUM(actual_pf_da) + SUM(actual_pf_pc) + SUM(actual_pf_mcc) AS total_actual_pf'),
                                 )
                             );
 
             if($param == 2){
                 $summary = SummaryTargetActual::whereIn('storeId', $storeIds)
                             ->where('user_role', $promoDemo)
-                            ->where('partner', 0)
+                            // ->where('partner', 0)
                             ->where('sell_type', 'Sell Out')
                             ->get(
                                 array(
