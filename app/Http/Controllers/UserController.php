@@ -183,11 +183,29 @@ class UserController extends Controller
                 ->addColumn('region', function ($item) {
 
                     if($item->role_group == 'RSM') {
-                        $region = RsmRegion::where('user_id', $item->id)->first(); 
+                        // $region = RsmRegion::where('user_id', $item->id)->first(); 
 
-                        $region_name = (isset($region->region->name)) ? $region->region->name : '';
+                        // $region_name = (isset($region->region->name)) ? $region->region->name : '';
 
-                        return $region_name;
+                        // return $region_name;
+
+                        $regions = RsmRegion::where('user_id', $item->id)->get();
+                        $region='';
+                        $count = 0;
+                            foreach ($regions as $key => $value) {
+                                $region_name = (isset($value->region->name)) ? $value->region->name : '';
+                                if ($key == 0) {
+                                    $region = $region_name;
+                                }else{
+                                    $region .= ", ".$region_name;
+                                }
+                                $count++;
+                                if($count == 3){
+                                    $region.=" ...";
+                                    break;
+                                }
+                            }
+                        return $region;
                     }
                     
                     if($item->role_group == 'DM') {
@@ -299,10 +317,20 @@ class UserController extends Controller
 
         return $data->get();
     }
+    
     public function getDataPromoterWithFilters(UserFilters $filters){ 
         // $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         $data = User::filter($filters)
                 ->join('roles','roles.id','users.role_id')
+                ->where('roles.role_group','=','Promoter')->get();
+
+        return $data;
+    }
+    public function getDataPromoterWithFiltersCheck(UserFilters $filters){ 
+        // $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->limit(1)
                 ->where('roles.role_group','=','Promoter')->get();
 
         return $data;
@@ -313,6 +341,18 @@ class UserController extends Controller
                 ->join('roles','roles.id','users.role_id')
                 ->whereNotIn('roles.role_group',$roles)
                 ->select('users.*')
+                ->get();
+
+        return $data;
+    }
+
+    public function getDataNonPromoterWithFiltersCheck(UserFilters $filters){ 
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->whereNotIn('roles.role_group',$roles)
+                ->select('users.*')
+                ->limit(1)
                 ->get();
 
         return $data;

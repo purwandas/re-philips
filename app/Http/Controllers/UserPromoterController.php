@@ -230,14 +230,24 @@ class UserPromoterController extends Controller
     }
     public function getDataGroupPromoterWithFilters(UserFilters $filters){ 
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
-        $data = User::filter($filters)
-                ->join('roles','roles.id','users.role_id')
-                ->whereIn('roles.role_group',$roles)->get();
 
         $data = User::filter($filters)
             ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
             ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->whereIn('role_group',$roles)->get();
+
+        return $data;
+    }
+
+    public function getDataGroupPromoterWithFiltersCheck(UserFilters $filters){ 
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+
+        $data = User::filter($filters)
+            ->join('roles','roles.id','users.role_id')
+            ->leftJoin('gradings','gradings.id','users.grading_id')
+            ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->limit(1)
             ->whereIn('role_group',$roles)->get();
 
         return $data;

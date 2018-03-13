@@ -103,7 +103,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/distributor',
+            url: 'data/distributorC',
             dataType: 'json',
             global: false,
             async: false,
@@ -193,7 +193,7 @@
 
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/distributor',
+                                    url: 'data/distributorC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,
@@ -276,31 +276,13 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-distributor',
+                    url: 'util/export-distributor-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });

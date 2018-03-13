@@ -197,7 +197,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/stores',
+            url: 'data/storesC',
             dataType: 'json',
             global: false,
             async: false,
@@ -310,7 +310,7 @@
 
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/stores',
+                                    url: 'data/storesC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,

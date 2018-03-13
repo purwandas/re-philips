@@ -27,6 +27,8 @@ class SuggestionOrderController extends Controller
     use StringTrait;
 
     public function oos(Request $request){
+        $user = JWTAuth::parseToken()->authenticate();
+
         $content = json_decode($request->getContent(),true);
         
         $store = Store::where('id',$content['id'])->first();
@@ -60,6 +62,7 @@ class SuggestionOrderController extends Controller
             if (empty($data['note'])) {
                 $data['note'] = '-';
             }
+        $data['user'] = $user->name;
         $data['store'] = $store->store_name_1.$store_name_2;
         $data['supervisor'] = '- '.$spv;
         $data['dm'] = '- '.$dm;
@@ -68,7 +71,7 @@ class SuggestionOrderController extends Controller
         $data['email'] = [$content['owner'],$spvMail];
         Mail::send('mail.suggestion-order', $data, function($message) use ($data){
             $message->to($data['email']);
-            $message->subject('Test Mail');
+            $message->subject('Suggestion Order (SO) Toko '.$data['store']);
         });
 
         return response()->json(['status' => true, 'message' => 'Data berhasil di input'], 200);
