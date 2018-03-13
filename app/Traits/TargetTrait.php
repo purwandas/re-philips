@@ -271,22 +271,22 @@ trait TargetTrait {
 
         /* Target Add and/or Sum */
         $targetAfter = SummaryTargetActual::where('id', $target->id)->first();
-        $sumStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type']);
-        $sumStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-        $sumStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
-        $sumArea = SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type']);
-        $sumRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type']);
-        $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
-        $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
-        $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
-        $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-        $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
-        // PF
-        $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
-        $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
-        $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
-        $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-        $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+        // $sumStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type']);
+        // $sumStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+        // $sumStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+        // $sumArea = SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type']);
+        // $sumRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type']);
+        // $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
+        // $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
+        // $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
+        // $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+        // $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+        // // PF
+        // $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
+        // $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
+        // $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
+        // $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+        // $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
         // Check if promoter or demonstrator group
         $role = User::where('id', $target->user_id)->first()->role->role_group;
@@ -304,17 +304,17 @@ trait TargetTrait {
 //            $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store_promo;
 //        }
 
-        if(!$sumTargetStore) $sumTargetStore = 0;
-        if(!$sumTargetArea) $sumTargetArea = 0;
-        if(!$sumTargetRegion) $sumTargetRegion = 0;
-        if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
-        if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
+        // if(!$sumTargetStore) $sumTargetStore = 0;
+        // if(!$sumTargetArea) $sumTargetArea = 0;
+        // if(!$sumTargetRegion) $sumTargetRegion = 0;
+        // if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
+        // if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
 
-        if(!$sumTargetStorePF) $sumTargetStorePF = 0;
-        if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
-        if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
-        if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
-        if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
+        // if(!$sumTargetStorePF) $sumTargetStorePF = 0;
+        // if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
+        // if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
+        // if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
+        // if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
 
         /* Add / Sum All Target */
         if($change == 'change'){ // INSERT / UPDATE
@@ -327,74 +327,74 @@ trait TargetTrait {
                         if($demoPartnerOld == 0){ // If Old Data was Stand Alone
                             $targetAfter->update([
                                 'target_da' => $targetAfter->target_da - $data['targetOldDa'],
-                                'sum_target_store' => $sumTargetStore - $data['targetOldDa'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
-                                'sum_target_area' => $sumTargetArea - $data['targetOldDa'],
-                                'sum_target_region' => $sumTargetRegion - $data['targetOldDa'],
+                                // 'sum_target_store' => $sumTargetStore - $data['targetOldDa'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
+                                // 'sum_target_area' => $sumTargetArea - $data['targetOldDa'],
+                                // 'sum_target_region' => $sumTargetRegion - $data['targetOldDa'],
                             ]);
                         }else{ // If Old Data was Demo Partner
                             $targetAfter->update([
                                 'target_da' => $targetAfter->target_da - $data['targetOldDa'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
                             ]);
                         }
 
                         // Sum Target
                         $targetAfter->update([
                             'target_da' => $targetAfter->target_da + $data['target_da'],
-                            'sum_target_store' => $targetAfter->sum_target_store + $data['target_da'],
-                            'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_da'],
-                            'sum_target_area' => $targetAfter->sum_target_area + $data['target_da'],
-                            'sum_target_region' => $targetAfter->sum_target_region + $data['target_da'],
+                            // 'sum_target_store' => $targetAfter->sum_target_store + $data['target_da'],
+                            // 'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_da'],
+                            // 'sum_target_area' => $targetAfter->sum_target_area + $data['target_da'],
+                            // 'sum_target_region' => $targetAfter->sum_target_region + $data['target_da'],
                         ]);
                     }else{ // Partner Demo
                         if($demoPartnerOld == 0){ // If Old Data was Stand Alone
                             $targetAfter->update([
                                 'target_da' => $targetAfter->target_da - $data['targetOldDa'],
-                                'sum_target_store' => $sumTargetStore - $data['targetOldDa'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
-                                'sum_target_area' => $sumTargetArea - $data['targetOldDa'],
-                                'sum_target_region' => $sumTargetRegion - $data['targetOldDa'],
+                                // 'sum_target_store' => $sumTargetStore - $data['targetOldDa'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
+                                // 'sum_target_area' => $sumTargetArea - $data['targetOldDa'],
+                                // 'sum_target_region' => $sumTargetRegion - $data['targetOldDa'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_da' => $targetAfter->target_da - $data['targetOldDa'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldDa'],
                             ]);
                         }
 
                         // Sum Target
                         $targetAfter->update([
                             'target_da' => $targetAfter->target_da + $data['target_da'],
-                            'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_da'],
+                            // 'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_da'],
                         ]);
 
                         // Add Promoter Target
-                        $targetAfter->update([
-//                            'sum_target_store' => $sumTargetStore,
-//                            'sum_target_area' => $sumTargetArea,
-//                            'sum_target_region' => $sumTargetRegion,
-                            'sum_target_store' => $targetAfter->sum_target_store,
-                            'sum_target_area' => $targetAfter->sum_target_area,
-                            'sum_target_region' => $targetAfter->sum_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_target_store' => $sumTargetStore,
+                        //     'sum_target_area' => $sumTargetArea,
+                        //     'sum_target_region' => $sumTargetRegion,
+                        //     'sum_target_store' => $targetAfter->sum_target_store,
+                        //     'sum_target_area' => $targetAfter->sum_target_area,
+                        //     'sum_target_region' => $targetAfter->sum_target_region,
+                        // ]);
                     }
                 }else{ // Promoter
                     $targetAfter->update([
                         'target_da' => $targetAfter->target_da - $data['targetOldDa'],
-                        'sum_target_store' => $sumTargetStore - $data['targetOldDa'],
-                        'sum_target_store_promo' => $sumTargetStorePromo - $data['targetOldDa'],
-                        'sum_target_area' => $sumTargetArea - $data['targetOldDa'],
-                        'sum_target_region' => $sumTargetRegion - $data['targetOldDa'],
+                        // 'sum_target_store' => $sumTargetStore - $data['targetOldDa'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo - $data['targetOldDa'],
+                        // 'sum_target_area' => $sumTargetArea - $data['targetOldDa'],
+                        // 'sum_target_region' => $sumTargetRegion - $data['targetOldDa'],
                     ]);
 
                     // Sum Target
                     $targetAfter->update([
                         'target_da' => $targetAfter->target_da + $data['target_da'],
-                        'sum_target_store' => $targetAfter->sum_target_store + $data['target_da'],
-                        'sum_target_store_promo' => $targetAfter->sum_target_store_promo + $data['target_da'],
-                        'sum_target_area' => $targetAfter->sum_target_area + $data['target_da'],
-                        'sum_target_region' => $targetAfter->sum_target_region + $data['target_da'],
+                        // 'sum_target_store' => $targetAfter->sum_target_store + $data['target_da'],
+                        // 'sum_target_store_promo' => $targetAfter->sum_target_store_promo + $data['target_da'],
+                        // 'sum_target_area' => $targetAfter->sum_target_area + $data['target_da'],
+                        // 'sum_target_region' => $targetAfter->sum_target_region + $data['target_da'],
                     ]);
                 }
 
@@ -405,36 +405,36 @@ trait TargetTrait {
                         // Sum Target
                         $targetAfter->update([
                             'target_da' => $targetAfter->target_da + $data['target_da'],
-                            'sum_target_store' => $sumTargetStore + $data['target_da'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_da'],
-                            'sum_target_area' => $sumTargetArea + $data['target_da'],
-                            'sum_target_region' => $sumTargetRegion + $data['target_da'],
+                            // 'sum_target_store' => $sumTargetStore + $data['target_da'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_da'],
+                            // 'sum_target_area' => $sumTargetArea + $data['target_da'],
+                            // 'sum_target_region' => $sumTargetRegion + $data['target_da'],
                         ]);
                     }else{ // Partner Demo
                         // Sum Target
                         $targetAfter->update([
                             'target_da' => $targetAfter->target_da + $data['target_da'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_da'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_da'],
                         ]);
 
                         // Add Promoter Target
-                        $targetAfter->update([
-//                            'sum_target_store' => $sumTargetStore,
-//                            'sum_target_area' => $sumTargetArea,
-//                            'sum_target_region' => $sumTargetRegion,
-                            'sum_target_store' => $targetAfter->sum_target_store,
-                            'sum_target_area' => $targetAfter->sum_target_area,
-                            'sum_target_region' => $targetAfter->sum_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_target_store' => $sumTargetStore,
+                        //     'sum_target_area' => $sumTargetArea,
+                        //     'sum_target_region' => $sumTargetRegion,
+                        //     'sum_target_store' => $targetAfter->sum_target_store,
+                        //     'sum_target_area' => $targetAfter->sum_target_area,
+                        //     'sum_target_region' => $targetAfter->sum_target_region,
+                        // ]);
                     }
                 }else{ // Promoter
                     // Sum Target
                     $targetAfter->update([
                         'target_da' => $targetAfter->target_da + $data['target_da'],
-                        'sum_target_store' => $sumTargetStore + $data['target_da'],
-                        'sum_target_store_promo' => $sumTargetStorePromo + $data['target_da'],
-                        'sum_target_area' => $sumTargetArea + $data['target_da'],
-                        'sum_target_region' => $sumTargetRegion + $data['target_da'],
+                        // 'sum_target_store' => $sumTargetStore + $data['target_da'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo + $data['target_da'],
+                        // 'sum_target_area' => $sumTargetArea + $data['target_da'],
+                        // 'sum_target_region' => $sumTargetRegion + $data['target_da'],
                     ]);
                 }
 
@@ -447,44 +447,44 @@ trait TargetTrait {
                         if($demoPartnerOld == 0) { // If Old Data was Stand Alone
                             $targetAfter->update([
                                 'target_pf_da' => $targetAfter->target_pf_da - $data['targetOldPfDa'],
-                                'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfDa'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
-                                'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfDa'],
-                                'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfDa'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pf_da' => $targetAfter->target_pf_da - $data['targetOldPfDa'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
                             ]);
                         }
 
                         $targetAfter->update([
                             'target_pf_da' => $targetAfter->target_pf_da + $data['target_pf_da'],
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_da'],
-                            'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_da'],
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_da'],
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_da'],
+                            // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_da'],
+                            // 'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_da'],
+                            // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_da'],
+                            // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_da'],
                         ]);
                     }else{ // Partner Demo
                         if($demoPartnerOld == 0) { // If Old Data was Stand Alone
                             $targetAfter->update([
                                 'target_pf_da' => $targetAfter->target_pf_da - $data['targetOldPfDa'],
-                                'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfDa'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
-                                'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfDa'],
-                                'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfDa'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pf_da' => $targetAfter->target_pf_da - $data['targetOldPfDa'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfDa'],
                             ]);
                         }
 
                         $targetAfter->update([
                             'target_pf_da' => $targetAfter->target_pf_da + $data['target_pf_da'],
-                            'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_da'],
+                            // 'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_da'],
                         ]);
 
                         // Add Promoter Target PF
@@ -492,26 +492,26 @@ trait TargetTrait {
 //                            'sum_pf_target_store' => $sumTargetStorePF,
 //                            'sum_pf_target_area' => $sumTargetAreaPF,
 //                            'sum_pf_target_region' => $sumTargetRegionPF,
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+                            // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+                            // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+                            // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_da' => $targetAfter->target_pf_da - $data['targetOldPfDa'],
-                        'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfDa'],
-                        'sum_pf_target_store_promo' => $sumTargetStorePromoPF - $data['targetOldPfDa'],
-                        'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfDa'],
-                        'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfDa'],
+                        // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfDa'],
+                        // 'sum_pf_target_store_promo' => $sumTargetStorePromoPF - $data['targetOldPfDa'],
+                        // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfDa'],
+                        // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfDa'],
                     ]);
 
                     $targetAfter->update([
                         'target_pf_da' => $targetAfter->target_pf_da + $data['target_pf_da'],
-                        'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_da'],
-                        'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo + $data['target_pf_da'],
-                        'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_da'],
-                        'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_da'],
+                        // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_da'],
+                        // 'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo + $data['target_pf_da'],
+                        // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_da'],
+                        // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_da'],
                     ]);
                 }
 
@@ -520,15 +520,15 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pf_da' => $targetAfter->target_pf_da + $data['target_pf_da'],
-                            'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_da'],
-                            'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_da'],
-                            'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_da'],
-                            'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_da'],
+                            // 'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_da'],
+                            // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_da'],
+                            // 'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_da'],
+                            // 'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_da'],
                         ]);
                     }else{ // Partner Demo
                         $targetAfter->update([
                             'target_pf_da' => $targetAfter->target_pf_da + $data['target_pf_da'],
-                            'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_da'],
+                            // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_da'],
                         ]);
 
                         // Add Promoter Target PF
@@ -536,81 +536,81 @@ trait TargetTrait {
 //                            'sum_pf_target_store' => $sumTargetStorePF,
 //                            'sum_pf_target_area' => $sumTargetAreaPF,
 //                            'sum_pf_target_region' => $sumTargetRegionPF,
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+                            // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+                            // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+                            // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
                         ]);
                     }
 
                 }else{
                     $targetAfter->update([
                         'target_pf_da' => $targetAfter->target_pf_da + $data['target_pf_da'],
-                        'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_da'],
-                        'sum_pf_target_store_promo' => $sumTargetStorePromoPF + $data['target_pf_da'],
-                        'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_da'],
-                        'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_da'],
+                        // 'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_da'],
+                        // 'sum_pf_target_store_promo' => $sumTargetStorePromoPF + $data['target_pf_da'],
+                        // 'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_da'],
+                        // 'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_da'],
                     ]);
                 }
 
             }
 
             // Update Sum Target Store to All Summary
-            if($role == 'Demonstrator DA'){
-                $sumStoreDemo->update([
-                    'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
-                    'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
-                ]);
-            }else{
-                $sumStorePromo->update([
-                    'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
-                    'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
-                ]);
-            }
+            // if($role == 'Demonstrator DA'){
+            //     $sumStoreDemo->update([
+            //         'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
+            //         'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
+            //     ]);
+            // }else{
+            //     $sumStorePromo->update([
+            //         'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
+            //         'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
+            //     ]);
+            // }
 
-            $sumStore->update([
-                'sum_target_store' => $targetAfter->sum_target_store,
-                'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-            ]);
+            // $sumStore->update([
+            //     'sum_target_store' => $targetAfter->sum_target_store,
+            //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+            // ]);
 
-            $sumArea->update([
-                'sum_target_area' => $targetAfter->sum_target_area,
-                'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-            ]);
+            // $sumArea->update([
+            //     'sum_target_area' => $targetAfter->sum_target_area,
+            //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+            // ]);
 
-            $sumRegion->update([
-                'sum_target_region' => $targetAfter->sum_target_region,
-                'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-            ]);
+            // $sumRegion->update([
+            //     'sum_target_region' => $targetAfter->sum_target_region,
+            //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+            // ]);
 
-            $sumStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type']);
-            $sumStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
-            $sumArea = SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type']);
-            $sumRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type']);
-            $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
-            $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
-            $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
-            $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
-            // PF
-            $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
-            $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
-            $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
-            $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type']);
+            // $sumStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumArea = SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type']);
+            // $sumRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type']);
+            // $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
+            // $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
+            // $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
+            // $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // // PF
+            // $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
+            // $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
+            // $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
+            // $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
             // Error Handler
-            if(!$sumTargetStore) $sumTargetStore = 0;
-            if(!$sumTargetArea) $sumTargetArea = 0;
-            if(!$sumTargetRegion) $sumTargetRegion = 0;
-            if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
-            if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
+            // if(!$sumTargetStore) $sumTargetStore = 0;
+            // if(!$sumTargetArea) $sumTargetArea = 0;
+            // if(!$sumTargetRegion) $sumTargetRegion = 0;
+            // if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
+            // if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
 
-            if(!$sumTargetStorePF) $sumTargetStorePF = 0;
-            if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
-            if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
-            if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
-            if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
+            // if(!$sumTargetStorePF) $sumTargetStorePF = 0;
+            // if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
+            // if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
+            // if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
+            // if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
 
             // PC
             if (isset($data['targetOldPc']) && $data['targetOldPc'] > 0) {
@@ -619,74 +619,74 @@ trait TargetTrait {
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_pc' => $targetAfter->target_pc - $data['targetOldPc'],
-                                'sum_target_store' => $sumTargetStore - $data['targetOldPc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
-                                'sum_target_area' => $sumTargetArea - $data['targetOldPc'],
-                                'sum_target_region' => $sumTargetRegion - $data['targetOldPc'],
+                                // 'sum_target_store' => $sumTargetStore - $data['targetOldPc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
+                                // 'sum_target_area' => $sumTargetArea - $data['targetOldPc'],
+                                // 'sum_target_region' => $sumTargetRegion - $data['targetOldPc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pc' => $targetAfter->target_pc - $data['targetOldPc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
                             ]);
                         }
 
                         // Sum Target
                         $targetAfter->update([
                             'target_pc' => $targetAfter->target_pc + $data['target_pc'],
-                            'sum_target_store' => $targetAfter->sum_target_store + $data['target_pc'],
-                            'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_pc'],
-                            'sum_target_area' => $targetAfter->sum_target_area + $data['target_pc'],
-                            'sum_target_region' => $targetAfter->sum_target_region + $data['target_pc'],
+                            // 'sum_target_store' => $targetAfter->sum_target_store + $data['target_pc'],
+                            // 'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_pc'],
+                            // 'sum_target_area' => $targetAfter->sum_target_area + $data['target_pc'],
+                            // 'sum_target_region' => $targetAfter->sum_target_region + $data['target_pc'],
                         ]);
                     }else{ // Partner Demo
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_pc' => $targetAfter->target_pc - $data['targetOldPc'],
-                                'sum_target_store' => $sumTargetStore - $data['targetOldPc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
-                                'sum_target_area' => $sumTargetArea - $data['targetOldPc'],
-                                'sum_target_region' => $sumTargetRegion - $data['targetOldPc'],
+                                // 'sum_target_store' => $sumTargetStore - $data['targetOldPc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
+                                // 'sum_target_area' => $sumTargetArea - $data['targetOldPc'],
+                                // 'sum_target_region' => $sumTargetRegion - $data['targetOldPc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pc' => $targetAfter->target_pc - $data['targetOldPc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldPc'],
                             ]);
                         }
 
                         // Sum Target
                         $targetAfter->update([
                             'target_pc' => $targetAfter->target_pc + $data['target_pc'],
-                            'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_pc'],
+                            // 'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_pc'],
                         ]);
 
                         // Add Promoter Target
-                        $targetAfter->update([
-//                            'sum_target_store' => $sumTargetStore,
-//                            'sum_target_area' => $sumTargetArea,
-//                            'sum_target_region' => $sumTargetRegion,
-                            'sum_target_store' => $targetAfter->sum_target_store,
-                            'sum_target_area' => $targetAfter->sum_target_area,
-                            'sum_target_region' => $targetAfter->sum_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_target_store' => $sumTargetStore,
+                        //     'sum_target_area' => $sumTargetArea,
+                        //     'sum_target_region' => $sumTargetRegion,
+                        //     'sum_target_store' => $targetAfter->sum_target_store,
+                        //     'sum_target_area' => $targetAfter->sum_target_area,
+                        //     'sum_target_region' => $targetAfter->sum_target_region,
+                        // ]);
                     }
                 }else{ // Promoter
                     $targetAfter->update([
                         'target_pc' => $targetAfter->target_pc - $data['targetOldPc'],
-                        'sum_target_store' => $sumTargetStore - $data['targetOldPc'],
-                        'sum_target_store_promo' => $sumTargetStorePromo - $data['targetOldPc'],
-                        'sum_target_area' => $sumTargetArea - $data['targetOldPc'],
-                        'sum_target_region' => $sumTargetRegion - $data['targetOldPc'],
+                        // 'sum_target_store' => $sumTargetStore - $data['targetOldPc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo - $data['targetOldPc'],
+                        // 'sum_target_area' => $sumTargetArea - $data['targetOldPc'],
+                        // 'sum_target_region' => $sumTargetRegion - $data['targetOldPc'],
                     ]);
 
                     // Sum Target
                     $targetAfter->update([
                         'target_pc' => $targetAfter->target_pc + $data['target_pc'],
-                        'sum_target_store' => $targetAfter->sum_target_store + $data['target_pc'],
-                        'sum_target_store_promo' => $targetAfter->sum_target_store_promo + $data['target_pc'],
-                        'sum_target_area' => $targetAfter->sum_target_area + $data['target_pc'],
-                        'sum_target_region' => $targetAfter->sum_target_region + $data['target_pc'],
+                        // 'sum_target_store' => $targetAfter->sum_target_store + $data['target_pc'],
+                        // 'sum_target_store_promo' => $targetAfter->sum_target_store_promo + $data['target_pc'],
+                        // 'sum_target_area' => $targetAfter->sum_target_area + $data['target_pc'],
+                        // 'sum_target_region' => $targetAfter->sum_target_region + $data['target_pc'],
                     ]);
                 }
             }else{
@@ -695,36 +695,36 @@ trait TargetTrait {
                         // Sum Target
                         $targetAfter->update([
                             'target_pc' => $targetAfter->target_pc + $data['target_pc'],
-                            'sum_target_store' => $sumTargetStore + $data['target_pc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_pc'],
-                            'sum_target_area' => $sumTargetArea + $data['target_pc'],
-                            'sum_target_region' => $sumTargetRegion + $data['target_pc'],
+                            // 'sum_target_store' => $sumTargetStore + $data['target_pc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_pc'],
+                            // 'sum_target_area' => $sumTargetArea + $data['target_pc'],
+                            // 'sum_target_region' => $sumTargetRegion + $data['target_pc'],
                         ]);
                     }else{ // Partner Demo
                         // Sum Target
                         $targetAfter->update([
                             'target_pc' => $targetAfter->target_pc + $data['target_pc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_pc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_pc'],
                         ]);
 
                         // Add Promoter Target
-                        $targetAfter->update([
-//                            'sum_target_store' => $sumTargetStore,
-//                            'sum_target_area' => $sumTargetArea,
-//                            'sum_target_region' => $sumTargetRegion,
-                            'sum_target_store' => $targetAfter->sum_target_store,
-                            'sum_target_area' => $targetAfter->sum_target_area,
-                            'sum_target_region' => $targetAfter->sum_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_target_store' => $sumTargetStore,
+                        //     'sum_target_area' => $sumTargetArea,
+                        //     'sum_target_region' => $sumTargetRegion,
+                        //     'sum_target_store' => $targetAfter->sum_target_store,
+                        //     'sum_target_area' => $targetAfter->sum_target_area,
+                        //     'sum_target_region' => $targetAfter->sum_target_region,
+                        // ]);
                     }
                 }else{ // Promoter
                     // Sum Target
                     $targetAfter->update([
                         'target_pc' => $targetAfter->target_pc + $data['target_pc'],
-                        'sum_target_store' => $sumTargetStore + $data['target_pc'],
-                        'sum_target_store_promo' => $sumTargetStorePromo + $data['target_pc'],
-                        'sum_target_area' => $sumTargetArea + $data['target_pc'],
-                        'sum_target_region' => $sumTargetRegion + $data['target_pc'],
+                        // 'sum_target_store' => $sumTargetStore + $data['target_pc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo + $data['target_pc'],
+                        // 'sum_target_area' => $sumTargetArea + $data['target_pc'],
+                        // 'sum_target_region' => $sumTargetRegion + $data['target_pc'],
                     ]);
                 }
             }
@@ -736,71 +736,71 @@ trait TargetTrait {
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_pf_pc' => $targetAfter->target_pf_pc - $data['targetOldPfPc'],
-                                'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfPc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
-                                'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfPc'],
-                                'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfPc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pf_pc' => $targetAfter->target_pf_pc - $data['targetOldPfPc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
                             ]);
                         }
 
                         $targetAfter->update([
                             'target_pf_pc' => $targetAfter->target_pf_pc + $data['target_pf_pc'],
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_pc'],
-                            'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_pc'],
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_pc'],
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_pc'],
+                            // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_pc'],
+                            // 'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_pc'],
+                            // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_pc'],
+                            // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_pc'],
                         ]);
                     }else{ // Partner Demo
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_pf_pc' => $targetAfter->target_pf_pc - $data['targetOldPfPc'],
-                                'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfPc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
-                                'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfPc'],
-                                'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfPc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pf_pc' => $targetAfter->target_pf_pc - $data['targetOldPfPc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfPc'],
                             ]);
                         }
 
                         $targetAfter->update([
                             'target_pf_pc' => $targetAfter->target_pf_pc + $data['target_pf_pc'],
-                            'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_pc'],
+                            // 'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_pc'],
                         ]);
 
                         // Add Promoter Target PF
-                        $targetAfter->update([
-//                            'sum_pf_target_store' => $sumTargetStorePF,
-//                            'sum_pf_target_area' => $sumTargetAreaPF,
-//                            'sum_pf_target_region' => $sumTargetRegionPF,
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_pf_target_store' => $sumTargetStorePF,
+                        //     'sum_pf_target_area' => $sumTargetAreaPF,
+                        //     'sum_pf_target_region' => $sumTargetRegionPF,
+                        //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+                        //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+                        //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+                        // ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_pc' => $targetAfter->target_pf_pc - $data['targetOldPfPc'],
-                        'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfPc'],
-                        'sum_pf_target_store_promo' => $sumTargetStorePromoPF - $data['targetOldPfPc'],
-                        'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfPc'],
-                        'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfPc'],
+                        // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfPc'],
+                        // 'sum_pf_target_store_promo' => $sumTargetStorePromoPF - $data['targetOldPfPc'],
+                        // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfPc'],
+                        // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfPc'],
                     ]);
 
                     $targetAfter->update([
                         'target_pf_pc' => $targetAfter->target_pf_pc + $data['target_pf_pc'],
-                        'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_pc'],
-                        'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo + $data['target_pf_pc'],
-                        'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_pc'],
-                        'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_pc'],
+                        // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_pc'],
+                        // 'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo + $data['target_pf_pc'],
+                        // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_pc'],
+                        // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_pc'],
                     ]);
                 }
             }else{
@@ -808,96 +808,96 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pf_pc' => $targetAfter->target_pf_pc + $data['target_pf_pc'],
-                            'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_pc'],
-                            'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_pc'],
-                            'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_pc'],
-                            'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_pc'],
+                            // 'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_pc'],
+                            // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_pc'],
+                            // 'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_pc'],
+                            // 'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_pc'],
                         ]);
                     }else{ // Partner Demo
                         $targetAfter->update([
                             'target_pf_pc' => $targetAfter->target_pf_pc + $data['target_pf_pc'],
-                            'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_pc'],
+                            // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_pc'],
                         ]);
 
                         // Add Promoter Target PF
-                        $targetAfter->update([
-//                            'sum_pf_target_store' => $sumTargetStorePF,
-//                            'sum_pf_target_area' => $sumTargetAreaPF,
-//                            'sum_pf_target_region' => $sumTargetRegionPF,
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_pf_target_store' => $sumTargetStorePF,
+                        //     'sum_pf_target_area' => $sumTargetAreaPF,
+                        //     'sum_pf_target_region' => $sumTargetRegionPF,
+                        //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+                        //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+                        //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+                        // ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_pc' => $targetAfter->target_pf_pc + $data['target_pf_pc'],
-                        'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_pc'],
-                        'sum_pf_target_store_promo' => $sumTargetStorePromoPF + $data['target_pf_pc'],
-                        'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_pc'],
-                        'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_pc'],
+                        // 'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_pc'],
+                        // 'sum_pf_target_store_promo' => $sumTargetStorePromoPF + $data['target_pf_pc'],
+                        // 'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_pc'],
+                        // 'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_pc'],
                     ]);
                 }
             }
 
             // Update Sum Target Store to All Summary
-            if($role == 'Demonstrator DA'){
-                $sumStoreDemo->update([
-                    'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
-                    'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
-                ]);
-            }else{
-                $sumStorePromo->update([
-                    'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
-                    'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
-                ]);
-            }
+            // if($role == 'Demonstrator DA'){
+            //     $sumStoreDemo->update([
+            //         'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
+            //         'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
+            //     ]);
+            // }else{
+            //     $sumStorePromo->update([
+            //         'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
+            //         'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
+            //     ]);
+            // }
 
-            $sumStore->update([
-                'sum_target_store' => $targetAfter->sum_target_store,
-                'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-            ]);
+            // $sumStore->update([
+            //     'sum_target_store' => $targetAfter->sum_target_store,
+            //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+            // ]);
 
-            $sumArea->update([
-                'sum_target_area' => $targetAfter->sum_target_area,
-                'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-            ]);
+            // $sumArea->update([
+            //     'sum_target_area' => $targetAfter->sum_target_area,
+            //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+            // ]);
 
-            $sumRegion->update([
-                'sum_target_region' => $targetAfter->sum_target_region,
-                'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-            ]);
+            // $sumRegion->update([
+            //     'sum_target_region' => $targetAfter->sum_target_region,
+            //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+            // ]);
 
 
-            $sumStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type']);
-            $sumStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
-            $sumArea = SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type']);
-            $sumRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type']);
-            $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
-            $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
-            $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
-            $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
-            // PF
-            $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
-            $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
-            $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
-            $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type']);
+            // $sumStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumArea = SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type']);
+            // $sumRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type']);
+            // $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
+            // $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
+            // $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
+            // $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // // PF
+            // $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
+            // $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
+            // $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
+            // $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
             // Error Handler
-            if(!$sumTargetStore) $sumTargetStore = 0;
-            if(!$sumTargetArea) $sumTargetArea = 0;
-            if(!$sumTargetRegion) $sumTargetRegion = 0;
-            if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
-            if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
+            // if(!$sumTargetStore) $sumTargetStore = 0;
+            // if(!$sumTargetArea) $sumTargetArea = 0;
+            // if(!$sumTargetRegion) $sumTargetRegion = 0;
+            // if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
+            // if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
 
-            if(!$sumTargetStorePF) $sumTargetStorePF = 0;
-            if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
-            if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
-            if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
-            if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
+            // if(!$sumTargetStorePF) $sumTargetStorePF = 0;
+            // if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
+            // if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
+            // if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
+            // if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
 
             // MCC
             if (isset($data['targetOldMcc']) && $data['targetOldMcc'] > 0) {
@@ -906,74 +906,74 @@ trait TargetTrait {
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_mcc' => $targetAfter->target_mcc - $data['targetOldMcc'],
-                                'sum_target_store' => $sumTargetStore - $data['targetOldMcc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
-                                'sum_target_area' => $sumTargetArea - $data['targetOldMcc'],
-                                'sum_target_region' => $sumTargetRegion - $data['targetOldMcc'],
+                                // 'sum_target_store' => $sumTargetStore - $data['targetOldMcc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
+                                // 'sum_target_area' => $sumTargetArea - $data['targetOldMcc'],
+                                // 'sum_target_region' => $sumTargetRegion - $data['targetOldMcc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_mcc' => $targetAfter->target_mcc - $data['targetOldMcc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
                             ]);
                         }
 
                         // Sum Target
                         $targetAfter->update([
                             'target_mcc' => $targetAfter->target_mcc + $data['target_mcc'],
-                            'sum_target_store' => $targetAfter->sum_target_store + $data['target_mcc'],
-                            'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_mcc'],
-                            'sum_target_area' => $targetAfter->sum_target_area + $data['target_mcc'],
-                            'sum_target_region' => $targetAfter->sum_target_region + $data['target_mcc'],
+                            // 'sum_target_store' => $targetAfter->sum_target_store + $data['target_mcc'],
+                            // 'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_mcc'],
+                            // 'sum_target_area' => $targetAfter->sum_target_area + $data['target_mcc'],
+                            // 'sum_target_region' => $targetAfter->sum_target_region + $data['target_mcc'],
                         ]);
                     }else{ // Partner Demo
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_mcc' => $targetAfter->target_mcc - $data['targetOldMcc'],
-                                'sum_target_store' => $sumTargetStore - $data['targetOldMcc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
-                                'sum_target_area' => $sumTargetArea - $data['targetOldMcc'],
-                                'sum_target_region' => $sumTargetRegion - $data['targetOldMcc'],
+                                // 'sum_target_store' => $sumTargetStore - $data['targetOldMcc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
+                                // 'sum_target_area' => $sumTargetArea - $data['targetOldMcc'],
+                                // 'sum_target_region' => $sumTargetRegion - $data['targetOldMcc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_mcc' => $targetAfter->target_mcc - $data['targetOldMcc'],
-                                'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
+                                // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['targetOldMcc'],
                             ]);
                         }
 
                         // Sum Target
                         $targetAfter->update([
                             'target_mcc' => $targetAfter->target_mcc + $data['target_mcc'],
-                            'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_mcc'],
+                            // 'sum_target_store_demo' => $targetAfter->sum_target_store_demo + $data['target_mcc'],
                         ]);
 
                         // Add Promoter Target
-                        $targetAfter->update([
-//                            'sum_target_store' => $sumTargetStore,
-//                            'sum_target_area' => $sumTargetArea,
-//                            'sum_target_region' => $sumTargetRegion,
-                            'sum_target_store' => $targetAfter->sum_target_store,
-                            'sum_target_area' => $targetAfter->sum_target_area,
-                            'sum_target_region' => $targetAfter->sum_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_target_store' => $sumTargetStore,
+                        //     'sum_target_area' => $sumTargetArea,
+                        //     'sum_target_region' => $sumTargetRegion,
+                        //     'sum_target_store' => $targetAfter->sum_target_store,
+                        //     'sum_target_area' => $targetAfter->sum_target_area,
+                        //     'sum_target_region' => $targetAfter->sum_target_region,
+                        // ]);
                     }
                 }else{ // Promoter
                     $targetAfter->update([
                         'target_mcc' => $targetAfter->target_mcc - $data['targetOldMcc'],
-                        'sum_target_store' => $sumTargetStore - $data['targetOldMcc'],
-                        'sum_target_store_promo' => $sumTargetStorePromo - $data['targetOldMcc'],
-                        'sum_target_area' => $sumTargetArea - $data['targetOldMcc'],
-                        'sum_target_region' => $sumTargetRegion - $data['targetOldMcc'],
+                        // 'sum_target_store' => $sumTargetStore - $data['targetOldMcc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo - $data['targetOldMcc'],
+                        // 'sum_target_area' => $sumTargetArea - $data['targetOldMcc'],
+                        // 'sum_target_region' => $sumTargetRegion - $data['targetOldMcc'],
                     ]);
 
                     // Sum Target
                     $targetAfter->update([
                         'target_mcc' => $targetAfter->target_mcc + $data['target_mcc'],
-                        'sum_target_store' => $targetAfter->sum_target_store + $data['target_mcc'],
-                        'sum_target_store_promo' => $targetAfter->sum_target_store_promo + $data['target_mcc'],
-                        'sum_target_area' => $targetAfter->sum_target_area + $data['target_mcc'],
-                        'sum_target_region' => $targetAfter->sum_target_region + $data['target_mcc'],
+                        // 'sum_target_store' => $targetAfter->sum_target_store + $data['target_mcc'],
+                        // 'sum_target_store_promo' => $targetAfter->sum_target_store_promo + $data['target_mcc'],
+                        // 'sum_target_area' => $targetAfter->sum_target_area + $data['target_mcc'],
+                        // 'sum_target_region' => $targetAfter->sum_target_region + $data['target_mcc'],
                     ]);
                 }
             }else{
@@ -982,36 +982,36 @@ trait TargetTrait {
                         // Sum Target
                         $targetAfter->update([
                             'target_mcc' => $targetAfter->target_mcc + $data['target_mcc'],
-                            'sum_target_store' => $sumTargetStore + $data['target_mcc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_mcc'],
-                            'sum_target_area' => $sumTargetArea + $data['target_mcc'],
-                            'sum_target_region' => $sumTargetRegion + $data['target_mcc'],
+                            // 'sum_target_store' => $sumTargetStore + $data['target_mcc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_mcc'],
+                            // 'sum_target_area' => $sumTargetArea + $data['target_mcc'],
+                            // 'sum_target_region' => $sumTargetRegion + $data['target_mcc'],
                         ]);
                     }else{ // Partner Demo
                         // Sum Target
                         $targetAfter->update([
                             'target_mcc' => $targetAfter->target_mcc + $data['target_mcc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_mcc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo + $data['target_mcc'],
                         ]);
 
                         // Add Promoter Target
-                        $targetAfter->update([
-//                            'sum_target_store' => $sumTargetStore,
-//                            'sum_target_area' => $sumTargetArea,
-//                            'sum_target_region' => $sumTargetRegion,
-                            'sum_target_store' => $targetAfter->sum_target_store,
-                            'sum_target_area' => $targetAfter->sum_target_area,
-                            'sum_target_region' => $targetAfter->sum_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_target_store' => $sumTargetStore,
+                        //     'sum_target_area' => $sumTargetArea,
+                        //     'sum_target_region' => $sumTargetRegion,
+                        //     'sum_target_store' => $targetAfter->sum_target_store,
+                        //     'sum_target_area' => $targetAfter->sum_target_area,
+                        //     'sum_target_region' => $targetAfter->sum_target_region,
+                        // ]);
                     }
                 }else{ // Promoter
                     // Sum Target
                     $targetAfter->update([
                         'target_mcc' => $targetAfter->target_mcc + $data['target_mcc'],
-                        'sum_target_store' => $sumTargetStore + $data['target_mcc'],
-                        'sum_target_store_promo' => $sumTargetStorePromo + $data['target_mcc'],
-                        'sum_target_area' => $sumTargetArea + $data['target_mcc'],
-                        'sum_target_region' => $sumTargetRegion + $data['target_mcc'],
+                        // 'sum_target_store' => $sumTargetStore + $data['target_mcc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo + $data['target_mcc'],
+                        // 'sum_target_area' => $sumTargetArea + $data['target_mcc'],
+                        // 'sum_target_region' => $sumTargetRegion + $data['target_mcc'],
                     ]);
                 }
             }
@@ -1023,71 +1023,71 @@ trait TargetTrait {
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['targetOldPfMcc'],
-                                'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfMcc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
-                                'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfMcc'],
-                                'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfMcc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['targetOldPfMcc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
                             ]);
                         }
 
                         $targetAfter->update([
                             'target_pf_mcc' => $targetAfter->target_pf_mcc + $data['target_pf_mcc'],
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_mcc'],
-                            'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_mcc'],
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_mcc'],
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_mcc'],
+                            // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_mcc'],
+                            // 'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_mcc'],
+                            // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_mcc'],
+                            // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_mcc'],
                         ]);
                     }else{ // Partner Demo
                         if($demoPartnerOld == 0){
                             $targetAfter->update([
                                 'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['targetOldPfMcc'],
-                                'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfMcc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
-                                'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfMcc'],
-                                'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfMcc'],
                             ]);
                         }else{
                             $targetAfter->update([
                                 'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['targetOldPfMcc'],
-                                'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
+                                // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF - $data['targetOldPfMcc'],
                             ]);
                         }
 
                         $targetAfter->update([
                             'target_pf_mcc' => $targetAfter->target_pf_mcc + $data['target_pf_mcc'],
-                            'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_mcc'],
+                            // 'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo + $data['target_pf_mcc'],
                         ]);
 
                         // Add Promoter Target PF
-                        $targetAfter->update([
-//                            'sum_pf_target_store' => $sumTargetStorePF,
-//                            'sum_pf_target_area' => $sumTargetAreaPF,
-//                            'sum_pf_target_region' => $sumTargetRegionPF,
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_pf_target_store' => $sumTargetStorePF,
+                        //     'sum_pf_target_area' => $sumTargetAreaPF,
+                        //     'sum_pf_target_region' => $sumTargetRegionPF,
+                        //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+                        //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+                        //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+                        // ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['targetOldPfMcc'],
-                        'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfMcc'],
-                        'sum_pf_target_store_promo' => $sumTargetStorePromoPF - $data['targetOldPfMcc'],
-                        'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfMcc'],
-                        'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfMcc'],
+                        // 'sum_pf_target_store' => $sumTargetStorePF - $data['targetOldPfMcc'],
+                        // 'sum_pf_target_store_promo' => $sumTargetStorePromoPF - $data['targetOldPfMcc'],
+                        // 'sum_pf_target_area' => $sumTargetAreaPF - $data['targetOldPfMcc'],
+                        // 'sum_pf_target_region' => $sumTargetRegionPF - $data['targetOldPfMcc'],
                     ]);
 
                     $targetAfter->update([
                         'target_pf_mcc' => $targetAfter->target_pf_mcc + $data['target_pf_mcc'],
-                        'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_mcc'],
-                        'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo + $data['target_pf_mcc'],
-                        'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_mcc'],
-                        'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_mcc'],
+                        // 'sum_pf_target_store' => $targetAfter->sum_pf_target_store + $data['target_pf_mcc'],
+                        // 'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo + $data['target_pf_mcc'],
+                        // 'sum_pf_target_area' => $targetAfter->sum_pf_target_area + $data['target_pf_mcc'],
+                        // 'sum_pf_target_region' => $targetAfter->sum_pf_target_region + $data['target_pf_mcc'],
                     ]);
                 }
             }else{
@@ -1095,65 +1095,65 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pf_mcc' => $targetAfter->target_pf_mcc + $data['target_pf_mcc'],
-                            'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_mcc'],
-                            'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_mcc'],
-                            'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_mcc'],
-                            'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_mcc'],
+                            // 'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_mcc'],
+                            // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_mcc'],
+                            // 'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_mcc'],
+                            // 'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_mcc'],
                         ]);
                     }else{ // Partner Demo
                         $targetAfter->update([
                             'target_pf_mcc' => $targetAfter->target_pf_mcc + $data['target_pf_mcc'],
-                            'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_mcc'],
+                            // 'sum_pf_target_store_demo' => $sumTargetStoreDemoPF + $data['target_pf_mcc'],
                         ]);
 
                         // Add Promoter Target PF
-                        $targetAfter->update([
-//                            'sum_pf_target_store' => $sumTargetStorePF,
-//                            'sum_pf_target_area' => $sumTargetAreaPF,
-//                            'sum_pf_target_region' => $sumTargetRegionPF,
-                            'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-                            'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-                            'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-                        ]);
+                        // $targetAfter->update([
+                        //     'sum_pf_target_store' => $sumTargetStorePF,
+                        //     'sum_pf_target_area' => $sumTargetAreaPF,
+                        //     'sum_pf_target_region' => $sumTargetRegionPF,
+                        //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+                        //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+                        //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+                        // ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_mcc' => $targetAfter->target_pf_mcc + $data['target_pf_mcc'],
-                        'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_mcc'],
-                        'sum_pf_target_store_promo' => $sumTargetStorePromoPF + $data['target_pf_mcc'],
-                        'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_mcc'],
-                        'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_mcc'],
+                        // 'sum_pf_target_store' => $sumTargetStorePF + $data['target_pf_mcc'],
+                        // 'sum_pf_target_store_promo' => $sumTargetStorePromoPF + $data['target_pf_mcc'],
+                        // 'sum_pf_target_area' => $sumTargetAreaPF + $data['target_pf_mcc'],
+                        // 'sum_pf_target_region' => $sumTargetRegionPF + $data['target_pf_mcc'],
                     ]);
                 }
             }
 
             // Update Sum Target Store to All Summary
-            if($role == 'Demonstrator DA'){
-                $sumStoreDemo->update([
-                    'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
-                    'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
-                ]);
-            }else{
-                $sumStorePromo->update([
-                    'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
-                    'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
-                ]);
-            }
+            // if($role == 'Demonstrator DA'){
+            //     $sumStoreDemo->update([
+            //         'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
+            //         'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
+            //     ]);
+            // }else{
+            //     $sumStorePromo->update([
+            //         'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
+            //         'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
+            //     ]);
+            // }
 
-            $sumStore->update([
-                'sum_target_store' => $targetAfter->sum_target_store,
-                'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-            ]);
+            // $sumStore->update([
+            //     'sum_target_store' => $targetAfter->sum_target_store,
+            //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+            // ]);
 
-            $sumArea->update([
-                'sum_target_area' => $targetAfter->sum_target_area,
-                'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-            ]);
+            // $sumArea->update([
+            //     'sum_target_area' => $targetAfter->sum_target_area,
+            //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+            // ]);
 
-            $sumRegion->update([
-                'sum_target_region' => $targetAfter->sum_target_region,
-                'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-            ]);
+            // $sumRegion->update([
+            //     'sum_target_region' => $targetAfter->sum_target_region,
+            //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+            // ]);
 
 
         }else{ // DELETE
@@ -1164,40 +1164,40 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_da' => $targetAfter->target_da - $data['target_da'],
-                            'sum_target_store' => $sumTargetStore - $data['target_da'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_da'],
-                            'sum_target_area' => $sumTargetArea - $data['target_da'],
-                            'sum_target_region' => $sumTargetRegion - $data['target_da'],
+                            // 'sum_target_store' => $sumTargetStore - $data['target_da'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_da'],
+                            // 'sum_target_area' => $sumTargetArea - $data['target_da'],
+                            // 'sum_target_region' => $sumTargetRegion - $data['target_da'],
                         ]);
                     }else{
                         $targetAfter->update([
                             'target_da' => $targetAfter->target_da - $data['target_da'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_da'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_da'],
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_da' => $targetAfter->target_da - $data['target_da'],
-                        'sum_target_store' => $sumTargetStore - $data['target_da'],
-                        'sum_target_store_promo' => $sumTargetStorePromo - $data['target_da'],
-                        'sum_target_area' => $sumTargetArea - $data['target_da'],
-                        'sum_target_region' => $sumTargetRegion - $data['target_da'],
+                        // 'sum_target_store' => $sumTargetStore - $data['target_da'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo - $data['target_da'],
+                        // 'sum_target_area' => $sumTargetArea - $data['target_da'],
+                        // 'sum_target_region' => $sumTargetRegion - $data['target_da'],
                     ]);
                 }
             }
 
-            $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
-            $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
-            $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
-            $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
+            // $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
+            // $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
+            // $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
-            // Error Handler
-            if(!$sumTargetStore) $sumTargetStore = 0;
-            if(!$sumTargetArea) $sumTargetArea = 0;
-            if(!$sumTargetRegion) $sumTargetRegion = 0;
-            if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
-            if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
+            // // Error Handler
+            // if(!$sumTargetStore) $sumTargetStore = 0;
+            // if(!$sumTargetArea) $sumTargetArea = 0;
+            // if(!$sumTargetRegion) $sumTargetRegion = 0;
+            // if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
+            // if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
 
             // PC
             if (isset($data['target_pc']) && $data['target_pc'] > 0) {
@@ -1205,40 +1205,40 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pc' => $targetAfter->target_pc - $data['target_pc'],
-                            'sum_target_store' => $sumTargetStore - $data['target_pc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_pc'],
-                            'sum_target_area' => $sumTargetArea - $data['target_pc'],
-                            'sum_target_region' => $sumTargetRegion - $data['target_pc'],
+                            // 'sum_target_store' => $sumTargetStore - $data['target_pc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_pc'],
+                            // 'sum_target_area' => $sumTargetArea - $data['target_pc'],
+                            // 'sum_target_region' => $sumTargetRegion - $data['target_pc'],
                         ]);
                     }else{
                         $targetAfter->update([
                             'target_pc' => $targetAfter->target_pc - $data['target_pc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_pc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_pc'],
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pc' => $targetAfter->target_pc - $data['target_pc'],
-                        'sum_target_store' => $sumTargetStore - $data['target_pc'],
-                        'sum_target_store_promo' => $sumTargetStorePromo - $data['target_pc'],
-                        'sum_target_area' => $sumTargetArea - $data['target_pc'],
-                        'sum_target_region' => $sumTargetRegion - $data['target_pc'],
+                        // 'sum_target_store' => $sumTargetStore - $data['target_pc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo - $data['target_pc'],
+                        // 'sum_target_area' => $sumTargetArea - $data['target_pc'],
+                        // 'sum_target_region' => $sumTargetRegion - $data['target_pc'],
                     ]);
                 }
             }
 
-            $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
-            $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
-            $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
-            $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumTargetStore = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_target_store;
+            // $sumTargetArea =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_target_area;
+            // $sumTargetRegion = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_target_region;
+            // $sumTargetStorePromo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemo = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
-            // Error Handler
-            if(!$sumTargetStore) $sumTargetStore = 0;
-            if(!$sumTargetArea) $sumTargetArea = 0;
-            if(!$sumTargetRegion) $sumTargetRegion = 0;
-            if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
-            if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
+            // // Error Handler
+            // if(!$sumTargetStore) $sumTargetStore = 0;
+            // if(!$sumTargetArea) $sumTargetArea = 0;
+            // if(!$sumTargetRegion) $sumTargetRegion = 0;
+            // if($sumTargetStorePromo->first()) $sumTargetStorePromo = $sumTargetStorePromo->first()->sum_target_store_promo; else $sumTargetStorePromo = 0;
+            // if($sumTargetStoreDemo->first()) $sumTargetStoreDemo = $sumTargetStoreDemo->first()->sum_target_store_demo; else $sumTargetStoreDemo = 0;
 
             // MCC
             if (isset($data['target_mcc']) && $data['target_mcc'] > 0) {
@@ -1246,24 +1246,24 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_mcc' => $targetAfter->target_mcc - $data['target_mcc'],
-                            'sum_target_store' => $sumTargetStore - $data['target_mcc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_mcc'],
-                            'sum_target_area' => $sumTargetArea - $data['target_mcc'],
-                            'sum_target_region' => $sumTargetRegion - $data['target_mcc'],
+                            // 'sum_target_store' => $sumTargetStore - $data['target_mcc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_mcc'],
+                            // 'sum_target_area' => $sumTargetArea - $data['target_mcc'],
+                            // 'sum_target_region' => $sumTargetRegion - $data['target_mcc'],
                         ]);
                     }else{
                         $targetAfter->update([
                             'target_mcc' => $targetAfter->target_mcc - $data['target_mcc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_mcc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemo - $data['target_mcc'],
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_mcc' => $targetAfter->target_mcc - $data['target_mcc'],
-                        'sum_target_store' => $sumTargetStore - $data['target_mcc'],
-                        'sum_target_store_promo' => $sumTargetStorePromo - $data['target_mcc'],
-                        'sum_target_area' => $sumTargetArea - $data['target_mcc'],
-                        'sum_target_region' => $sumTargetRegion - $data['target_mcc'],
+                        // 'sum_target_store' => $sumTargetStore - $data['target_mcc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromo - $data['target_mcc'],
+                        // 'sum_target_area' => $sumTargetArea - $data['target_mcc'],
+                        // 'sum_target_region' => $sumTargetRegion - $data['target_mcc'],
                     ]);
                 }
             }
@@ -1274,41 +1274,41 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pf_da' => $targetAfter->target_pf_da - $data['target_pf_da'],
-                            'sum_target_store' => $sumTargetStorePF - $data['target_pf_da'],
-                            'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_da'],
-                            'sum_target_area' => $sumTargetAreaPF - $data['target_pf_da'],
-                            'sum_target_region' => $sumTargetRegionPF - $data['target_pf_da'],
+                            // 'sum_target_store' => $sumTargetStorePF - $data['target_pf_da'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_da'],
+                            // 'sum_target_area' => $sumTargetAreaPF - $data['target_pf_da'],
+                            // 'sum_target_region' => $sumTargetRegionPF - $data['target_pf_da'],
                         ]);
                     }else{
                         $targetAfter->update([
                             'target_pf_da' => $targetAfter->target_pf_da - $data['target_pf_da'],
-                            'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_da'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_da'],
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_da' => $targetAfter->target_pf_da - $data['target_pf_da'],
-                        'sum_target_store' => $sumTargetStorePF - $data['target_pf_da'],
-                        'sum_target_store_promo' => $sumTargetStorePromoPF - $data['target_pf_da'],
-                        'sum_target_area' => $sumTargetAreaPF - $data['target_pf_da'],
-                        'sum_target_region' => $sumTargetRegionPF - $data['target_pf_da'],
+                        // 'sum_target_store' => $sumTargetStorePF - $data['target_pf_da'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromoPF - $data['target_pf_da'],
+                        // 'sum_target_area' => $sumTargetAreaPF - $data['target_pf_da'],
+                        // 'sum_target_region' => $sumTargetRegionPF - $data['target_pf_da'],
                     ]);
                 }
             }
 
             // PF
-            $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
-            $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
-            $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
-            $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
+            // $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
+            // $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
+            // $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
-            // Error Handler
-            if(!$sumTargetStorePF) $sumTargetStorePF = 0;
-            if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
-            if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
-            if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
-            if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
+            // // Error Handler
+            // if(!$sumTargetStorePF) $sumTargetStorePF = 0;
+            // if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
+            // if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
+            // if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
+            // if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
 
             // Product Focus PC
             if (isset($data['target_pf_pc']) && $data['target_pf_pc'] > 0) {
@@ -1316,41 +1316,41 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pf_pc' => $targetAfter->target_pf_pc - $data['target_pf_pc'],
-                            'sum_target_store' => $sumTargetStorePF - $data['target_pf_pc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_pc'],
-                            'sum_target_area' => $sumTargetAreaPF - $data['target_pf_pc'],
-                            'sum_target_region' => $sumTargetRegionPF - $data['target_pf_pc'],
+                            // 'sum_target_store' => $sumTargetStorePF - $data['target_pf_pc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_pc'],
+                            // 'sum_target_area' => $sumTargetAreaPF - $data['target_pf_pc'],
+                            // 'sum_target_region' => $sumTargetRegionPF - $data['target_pf_pc'],
                         ]);
                     }else{
                         $targetAfter->update([
                             'target_pf_pc' => $targetAfter->target_pf_pc - $data['target_pf_pc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_pc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_pc'],
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_pc' => $targetAfter->target_pf_pc - $data['target_pf_pc'],
-                        'sum_target_store' => $sumTargetStorePF - $data['target_pf_pc'],
-                        'sum_target_store_promo' => $sumTargetStorePromoPF - $data['target_pf_pc'],
-                        'sum_target_area' => $sumTargetAreaPF - $data['target_pf_pc'],
-                        'sum_target_region' => $sumTargetRegionPF - $data['target_pf_pc'],
+                        // 'sum_target_store' => $sumTargetStorePF - $data['target_pf_pc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromoPF - $data['target_pf_pc'],
+                        // 'sum_target_area' => $sumTargetAreaPF - $data['target_pf_pc'],
+                        // 'sum_target_region' => $sumTargetRegionPF - $data['target_pf_pc'],
                     ]);
                 }
             }
 
             // PF
-            $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
-            $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
-            $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
-            $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
-            $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
+            // $sumTargetStorePF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_store;
+            // $sumTargetAreaPF =  SummaryTargetActual::where('area_id', $target->area_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_area;
+            // $sumTargetRegionPF = SummaryTargetActual::where('region_id', $target->region_id)->where('sell_type', $data['sell_type'])->first()->sum_pf_target_region;
+            // $sumTargetStorePromoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Promoter');
+            // $sumTargetStoreDemoPF = SummaryTargetActual::where('storeId',$target->storeId)->where('sell_type', $data['sell_type'])->where('user_role', 'Demonstrator');
 
-            // Error Handler
-            if(!$sumTargetStorePF) $sumTargetStorePF = 0;
-            if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
-            if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
-            if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
-            if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
+            // // Error Handler
+            // if(!$sumTargetStorePF) $sumTargetStorePF = 0;
+            // if($sumTargetStorePromoPF->first()) $sumTargetStorePromoPF = $sumTargetStorePromoPF->first()->sum_pf_target_store_promo; else $sumTargetStorePromoPF = 0;
+            // if($sumTargetStoreDemoPF->first()) $sumTargetStoreDemoPF = $sumTargetStoreDemoPF->first()->sum_pf_target_store_demo; else $sumTargetStoreDemoPF = 0;
+            // if(!$sumTargetAreaPF) $sumTargetAreaPF = 0;
+            // if(!$sumTargetRegionPF) $sumTargetRegionPF = 0;
 
             // Product Focus MCC
             if (isset($data['target_pf_mcc']) && $data['target_pf_mcc'] > 0) {
@@ -1358,24 +1358,24 @@ trait TargetTrait {
                     if($demoPartner == 0){
                         $targetAfter->update([
                             'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['target_pf_mcc'],
-                            'sum_target_store' => $sumTargetStorePF - $data['target_pf_mcc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_mcc'],
-                            'sum_target_area' => $sumTargetAreaPF - $data['target_pf_mcc'],
-                            'sum_target_region' => $sumTargetRegionPF - $data['target_pf_mcc'],
+                            // 'sum_target_store' => $sumTargetStorePF - $data['target_pf_mcc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_mcc'],
+                            // 'sum_target_area' => $sumTargetAreaPF - $data['target_pf_mcc'],
+                            // 'sum_target_region' => $sumTargetRegionPF - $data['target_pf_mcc'],
                         ]);
                     }else{
                         $targetAfter->update([
                             'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['target_pf_mcc'],
-                            'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_mcc'],
+                            // 'sum_target_store_demo' => $sumTargetStoreDemoPF - $data['target_pf_mcc'],
                         ]);
                     }
                 }else{
                     $targetAfter->update([
                         'target_pf_mcc' => $targetAfter->target_pf_mcc - $data['target_pf_mcc'],
-                        'sum_target_store' => $sumTargetStorePF - $data['target_pf_mcc'],
-                        'sum_target_store_promo' => $sumTargetStorePromoPF - $data['target_pf_mcc'],
-                        'sum_target_area' => $sumTargetAreaPF - $data['target_pf_mcc'],
-                        'sum_target_region' => $sumTargetRegionPF - $data['target_pf_mcc'],
+                        // 'sum_target_store' => $sumTargetStorePF - $data['target_pf_mcc'],
+                        // 'sum_target_store_promo' => $sumTargetStorePromoPF - $data['target_pf_mcc'],
+                        // 'sum_target_area' => $sumTargetAreaPF - $data['target_pf_mcc'],
+                        // 'sum_target_region' => $sumTargetRegionPF - $data['target_pf_mcc'],
                     ]);
                 }
             }
@@ -1383,32 +1383,32 @@ trait TargetTrait {
             $targetAfter = SummaryTargetActual::where('id', $target->id)->first();
 
             // Update Sum Target Store to All Summary
-            if($role == 'Demonstrator DA'){
-                $sumStoreDemo->update([
-                    'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
-                    'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
-                ]);
-            }else{
-                $sumStorePromo->update([
-                    'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
-                    'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
-                ]);
-            }
+            // if($role == 'Demonstrator DA'){
+            //     $sumStoreDemo->update([
+            //         'sum_target_store_demo' => $targetAfter->sum_target_store_demo,
+            //         'sum_pf_target_store_demo' => $targetAfter->sum_pf_target_store_demo,
+            //     ]);
+            // }else{
+            //     $sumStorePromo->update([
+            //         'sum_target_store_promo' => $targetAfter->sum_target_store_promo,
+            //         'sum_pf_target_store_promo' => $targetAfter->sum_pf_target_store_promo,
+            //     ]);
+            // }
 
-            $sumStore->update([
-                'sum_target_store' => $targetAfter->sum_target_store,
-                'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
-            ]);
+            // $sumStore->update([
+            //     'sum_target_store' => $targetAfter->sum_target_store,
+            //     'sum_pf_target_store' => $targetAfter->sum_pf_target_store,
+            // ]);
 
-            $sumArea->update([
-                'sum_target_area' => $targetAfter->sum_target_area,
-                'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
-            ]);
+            // $sumArea->update([
+            //     'sum_target_area' => $targetAfter->sum_target_area,
+            //     'sum_pf_target_area' => $targetAfter->sum_pf_target_area,
+            // ]);
 
-            $sumRegion->update([
-                'sum_target_region' => $targetAfter->sum_target_region,
-                'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
-            ]);
+            // $sumRegion->update([
+            //     'sum_target_region' => $targetAfter->sum_target_region,
+            //     'sum_pf_target_region' => $targetAfter->sum_pf_target_region,
+            // ]);
 
 
         }
