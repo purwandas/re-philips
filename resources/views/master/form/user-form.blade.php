@@ -465,7 +465,7 @@
 	                    if(obj.store_name_2 != null){
                             return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
+	                    return {id: obj.id+','+obj.store_id, text: obj.store_id + " - " + obj.store_name_1}
 	                })
 	            }
 	        }));
@@ -663,16 +663,16 @@
 				if(data){
                     var element = $("#stores");
                     $.each(data, function() {
-                    	if(this.store_name_2 != null){
+                    // 	if(this.store_name_2 != null){
 							// setSelect2IfPatch(element, this.id+","+this.store_id+","+this.dedicate, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
-							// console.log('patch2#'+this.id);
+							console.log('patch2#'+this.id);
 
 							if(this.store_name_2 != null){
-                            	setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+                            	setSelect2IfPatch(element, this.id+','+this.store_id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
                         	}
 
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1);
-						}
+							setSelect2IfPatch(element, this.id+','+this.store_id, this.store_id + " - " + this.store_name_1 + " (null)");
+				// 		}
 					});
 
             	}	

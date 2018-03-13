@@ -65,7 +65,7 @@
                 <!-- BEGIN LOGO -->
                 <div class="page-logo">
                     <a href="{{ url('/') }}">
-                        <img src="{{ asset('assets/layouts/layout2/img/logo-default-new.png') }}" alt="logo" class="logo-default" /> </a>
+                        <img src="{{ asset('assets/layouts/layout2/img/logo-default-new3.png') }}" alt="logo" class="logo-default" /> </a>
                     <div class="menu-toggler sidebar-toggler">
                         <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
                     </div>
