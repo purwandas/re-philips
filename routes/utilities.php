@@ -103,21 +103,32 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::post('data/region', ['as'=> 'data.region','uses'=>'Master\RegionController@getDataWithFilters']);
 	Route::post('data/area', ['as'=> 'data.area','uses'=>'Master\AreaController@getDataWithFilters']);
+    Route::post('data/areaC', ['as'=> 'data.areaC','uses'=>'Master\AreaController@getDataWithFiltersCheck']);
     Route::post('data/globalchannel', ['as'=> 'data.globalchannel','uses'=>'Master\GlobalChannelController@getDataWithFilters']);
     Route::post('data/channel', ['as'=> 'data.channel','uses'=>'Master\ChannelController@getDataWithFilters']);
+    Route::post('data/channelC', ['as'=> 'data.channelC','uses'=>'Master\ChannelController@getDataWithFiltersCheck']);
     Route::post('data/subchannel', ['as'=> 'data.subchannel','uses'=>'Master\SubChannelController@getDataWithFilters']);
+    Route::post('data/subchannelC', ['as'=> 'data.subchannelC','uses'=>'Master\SubChannelController@getDataWithFiltersCheck']);
     Route::post('data/distributor', ['as'=> 'data.distributor','uses'=>'Master\DistributorController@getDataWithFilters']);
+    Route::post('data/distributorC', ['as'=> 'data.distributorC','uses'=>'Master\DistributorController@getDataWithFiltersCheck']);
     Route::post('data/district', ['as'=> 'data.district','uses'=>'Master\DistrictController@getDataWithFilters']);
+    Route::post('data/districtC', ['as'=> 'data.districtC','uses'=>'Master\DistrictController@getDataWithFiltersCheck']);
     Route::post('data/employee', ['as'=> 'data.employee','uses'=>'UserController@getDataWithFilters']);
     Route::post('data/promoter', ['as'=> 'data.promoter','uses'=>'UserController@getDataPromoterWithFilters']);
     Route::post('data/nonPromoter', ['as'=> 'data.nonPromoter','uses'=>'UserController@getDataNonPromoterWithFilters']);
+    Route::post('data/nonPromoterC', ['as'=> 'data.nonPromoterC','uses'=>'UserController@getDataNonPromoterWithFiltersCheck']);
     Route::post('data/groupPromoter', ['as'=> 'data.groupPromoter','uses'=>'UserPromoterController@getDataGroupPromoterWithFilters']);
+    Route::post('data/groupPromoterC', ['as'=> 'data.groupPromoterC','uses'=>'UserPromoterController@getDataGroupPromoterWithFiltersCheck']);
     Route::post('data/userpromoter', ['as'=> 'data.userpromoter','uses'=>'UserPromoterController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/stores', ['as'=> 'data.stores','uses'=>'Master\StoreController@getStoresDataWithFilters']);
+    Route::post('data/storesC', ['as'=> 'data.storesC','uses'=>'Master\StoreController@getStoresDataWithFiltersCheck']);
     Route::post('data/place', ['as'=> 'data.place','uses'=>'Master\PlaceController@getDataWithFilters']);
+    Route::post('data/placeC', ['as'=> 'data.placeC','uses'=>'Master\PlaceController@getDataWithFiltersCheck']);
     Route::post('data/product', ['as'=> 'data.product','uses'=>'Master\ProductController@getDataWithFilters']);
+    Route::post('data/productC', ['as'=> 'data.productC','uses'=>'Master\ProductController@getDataWithFiltersCheck']);
     Route::post('data/price', ['as'=> 'data.price','uses'=>'Master\PriceController@getDataWithFilters']);
+    Route::post('data/priceC', ['as'=> 'data.priceC','uses'=>'Master\PriceController@getDataWithFiltersCheck']);
     Route::post('data/target', ['as'=> 'data.target','uses'=>'Master\TargetController@getDataWithFilters']);
     Route::post('data/productfocus', ['as'=> 'data.productfocus','uses'=>'Master\ProductFocusController@getDataWithFilters']);
     Route::post('data/salesmantarget', ['as'=> 'data.salesmantarget','uses'=>'Master\TargetSalesmanController@getDataWithFilters']);
@@ -130,6 +141,7 @@ Route::group(['middleware' => ['auth']], function () {
     
     Route::post('data/groupproduct', ['as'=> 'data.groupproduct','uses'=>'Master\GroupProductController@getDataWithFilters']);
     Route::post('data/group', ['as'=> 'data.group','uses'=>'Master\GroupController@getDataWithFilters']);
+    Route::post('data/groupC', ['as'=> 'data.groupC','uses'=>'Master\GroupController@getDataWithFiltersCheck']);
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
     Route::post('data/feedbackCategory', ['as'=> 'data.feedbackCategory','uses'=>'Master\FeedbackCategoryController@getDataWithFilters']);
     Route::post('data/feedbackQuestion', ['as'=> 'data.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
@@ -263,22 +275,35 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
     Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
-                    // -------- MASTER --------
+    
+    // -------- MASTER --------
     Route::post('util/export-area', ['uses'=>'Master\ExportController@exportArea']);
+    Route::post('util/export-area-all', ['uses'=>'Master\ExportController@exportAreaAll']);
     Route::post('util/export-district', ['uses'=>'Master\ExportController@exportDistrict']);
+    Route::post('util/export-district-all', ['uses'=>'Master\ExportController@exportDistrictAll']);
     Route::post('util/export-store', ['uses'=>'Master\ExportController@exportStore']);
     Route::post('util/export-store-all', ['uses'=>'Master\ExportController@exportStoreAll']);
     Route::post('util/export-store-all-alt', ['uses'=>'Master\ExportController@exportStoreAllAlt']);
     Route::post('util/export-channel', ['uses'=>'Master\ExportController@exportChannel']);
+    Route::post('util/export-channel-all', ['uses'=>'Master\ExportController@exportChannelAll']);
     Route::post('util/export-subchannel', ['uses'=>'Master\ExportController@exportSubchannel']);
+    Route::post('util/export-subchannel-all', ['uses'=>'Master\ExportController@exportSubchannelAll']);
     Route::post('util/export-distributor', ['uses'=>'Master\ExportController@exportDistributor']);
+    Route::post('util/export-distributor-all', ['uses'=>'Master\ExportController@exportDistributorAll']);
     Route::post('util/export-place', ['uses'=>'Master\ExportController@exportPlace']);
+    Route::post('util/export-place-all', ['uses'=>'Master\ExportController@exportPlaceAll']);
     Route::post('util/export-promoter', ['uses'=>'Master\ExportController@exportUserPromoter']);
+    Route::post('util/export-promoter-all', ['uses'=>'Master\ExportController@exportUserPromoterAll']);
     Route::post('util/export-nonpromoter', ['uses'=>'Master\ExportController@exportUserNonPromoter']);
+    Route::post('util/export-nonpromoter-all', ['uses'=>'Master\ExportController@exportUserNonPromoterAll']);
     Route::post('util/export-group', ['uses'=>'Master\ExportController@exportGroup']);
+    Route::post('util/export-group-all', ['uses'=>'Master\ExportController@exportGroupAll']);
     Route::post('util/export-category', ['uses'=>'Master\ExportController@exportCategory']);
+    Route::post('util/export-category-all', ['uses'=>'Master\ExportController@exportCategoryAll']);
     Route::post('util/export-product', ['uses'=>'Master\ExportController@exportProduct']);
+    Route::post('util/export-product-all', ['uses'=>'Master\ExportController@exportProductAll']);
     Route::post('util/export-price', ['uses'=>'Master\ExportController@exportPrice']);
+    Route::post('util/export-price-all', ['uses'=>'Master\ExportController@exportPriceAll']);
     Route::post('util/export-price-template', ['uses'=>'Master\ExportController@exportPriceTemplate']);
     Route::post('util/export-target', ['uses'=>'Master\ExportController@exportTarget']);
     Route::post('util/export-productfocus', ['uses'=>'Master\ExportController@exportProductFocus']);

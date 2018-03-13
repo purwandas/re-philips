@@ -48,6 +48,15 @@ class SubChannelController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(SubChannelFilters $filters){
+        $data = SubChannel::filter($filters)->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->select('sub_channels.*', 'channels.name as channel_name', 'global_channels.name as globalchannel_name')
+                    ->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

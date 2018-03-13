@@ -694,7 +694,7 @@
                             	setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
                         	}
 
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1);
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (nul)");
 					});
 
             	}	
@@ -722,7 +722,7 @@
 			var role = $('#selectedRole').val();
 			var selectedRolev = role.split('`');
 
-			if(selectedRolev[1] == 'DM' || selectedRolev[1] == 'RSM' || selectedRolev[1] == 'Admin'){
+			if(selectedRolev[1] == 'DM' || selectedRolev[1] == 'RSM' || selectedRolev[1] == 'Admin' || selectedRolev[1] == 'Trainer' || selectedRolev[1] == 'Head Trainer'){
 				return true;
 			}
 

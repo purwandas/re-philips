@@ -48,6 +48,16 @@ class CategoryController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(CategoryFilters $filters){        
+        $data = Category::filter($filters)
+                ->join('groups', 'categories.group_id', '=', 'groups.id')
+                ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')
+                ->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

@@ -221,7 +221,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/nonPromoter',
+            url: 'data/nonPromoterC',
             dataType: 'json',
             global: false,
             async: false,
@@ -328,7 +328,7 @@
 
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/nonPromoter',
+                                    url: 'data/nonPromoterC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,
@@ -453,48 +453,19 @@
 
             if ($('#exportAll').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/nonPromoter',
-                    dataType: 'json',
-                    global: false,
-                    async: false,
-                    success: function (results) {
-
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-nonpromoter',
+                    url: 'util/export-nonpromoter-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: {data: filters},
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
-
 
                     }
                 });

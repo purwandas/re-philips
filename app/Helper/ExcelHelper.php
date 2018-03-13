@@ -671,8 +671,8 @@ class ExcelHelper
             return [
                 'ID' => @$item['id'],
                 'STORE ID' => @$item['store_id'],
-                'STORE NAME 1' => @$item['store_name_1'],
-                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE NAME 1' => html_entity_decode(@$item['store_name_1']),
+                'CUSTOMER CODE' => html_entity_decode(@$item['store_name_2']),
                 'DEDICATE' => @$item['dedicate'],
                 'LONGITUDE' => @$item['longitude'],
                 'LATITUDE' => @$item['latitude'],
