@@ -1399,15 +1399,15 @@ trait ActualTrait {
 
 
             if($summary_ta->user_role == 'Promoter'){
-                $sumActualStore = ($sumActualStore) ? $sumActualStore->sum_actual_store - $totalActual : 0;
-                $sumActualStorePromo = ($sumActualStorePromo) ? $sumActualStorePromo->sum_actual_store_promo - $totalActual : 0;
-                $sumActualArea = ($sumActualArea) ? $sumActualArea->sum_actual_area - $totalActual : 0;
-                $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
+                // $sumActualStore = ($sumActualStore) ? $sumActualStore->sum_actual_store - $totalActual : 0;
+                // $sumActualStorePromo = ($sumActualStorePromo) ? $sumActualStorePromo->sum_actual_store_promo - $totalActual : 0;
+                // $sumActualArea = ($sumActualArea) ? $sumActualArea->sum_actual_area - $totalActual : 0;
+                // $sumActualRegion = ($sumActualRegion) ? $sumActualRegion->sum_actual_region - $totalActual : 0;
 
-                $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
-                $sumActualStorePromoPF = ($sumActualStorePromoPF) ? $sumActualStorePromoPF->sum_pf_actual_store_promo - $totalActualPF : 0;
-                $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
-                $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
+                // $sumActualStorePF = ($sumActualStorePF) ? $sumActualStorePF->sum_pf_actual_store - $totalActualPF : 0;
+                // $sumActualStorePromoPF = ($sumActualStorePromoPF) ? $sumActualStorePromoPF->sum_pf_actual_store_promo - $totalActualPF : 0;
+                // $sumActualAreaPF = ($sumActualAreaPF) ? $sumActualAreaPF->sum_pf_actual_area - $totalActualPF : 0;
+                // $sumActualRegionPF = ($sumActualRegionPF) ? $sumActualRegionPF->sum_pf_actual_region - $totalActualPF : 0;
 
                 /* Delete Actual Data */
                 $summary_ta->update([
