@@ -102,7 +102,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/area',
+            url: 'data/areaC',
             dataType: 'json',
             global: false,
             async: false,
@@ -200,7 +200,7 @@
 
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/area',
+                                    url: 'data/areaC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,
@@ -278,48 +278,18 @@
 
             if ($('#exportAll').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/area',
-                    dataType: 'json',
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-area',
+                    url: 'util/export-area-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
-
                     }
                 });
 

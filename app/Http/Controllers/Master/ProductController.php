@@ -52,6 +52,17 @@ class ProductController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(ProductFilters $filters){        
+        $data = Product::filter($filters)
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))
+                ->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

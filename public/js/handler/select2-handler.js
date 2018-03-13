@@ -178,8 +178,10 @@ function filteringReport(arrayOfData) {
 
                         if(count > 0){
                             $(arrayOfData[6]).removeAttr('disabled');
+                            $('#exportAll').removeAttr('disabled');
                         }else{
                             $(arrayOfData[6]).attr('disabled','disabled');
+                            $('#exportAll').attr('disabled','disabled');
                         }
                     }
 

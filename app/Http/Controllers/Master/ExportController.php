@@ -4,15 +4,24 @@ namespace App\Http\Controllers\Master;
 
 use App\Filters\SellinFilters;
 use App\Filters\StoreFilters;
+use App\Filters\UserFilters;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use File;
 use Carbon\Carbon;
 use App\Helper\ExcelHelper as ExcelHelper;
-use App\Product;
 use App\Area;
+use App\District;
+use App\Channel;
+use App\SubChannel;
+use App\Distributor;
 use App\Store;
+use App\Place;
+use App\User;
+use App\Group;
+use App\Category;
+use App\Product;
 use DB;
 use Auth;
 
@@ -1257,6 +1266,78 @@ class ExportController extends Controller
 
     }
 
+    public function exportAreaAll(){
+
+        $filename = 'Philips Retail Master Data Area ' . Carbon::now()->format('d-m-Y');
+        
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;
+        
+        $data = Area::join('regions', 'areas.region_id', '=', 'regions.id')
+                ->select('areas.*', 'regions.name as region_name')
+                ->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->pluck('areas.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->pluck('dm_areas.area_id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->pluck('areas.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Area');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Area Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Area', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportArea($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
     //
     public function exportDistrict(Request $request){
 
@@ -1301,6 +1382,82 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportDistrictAll(){
+
+        $filename = 'Philips Retail Master Data District ' . Carbon::now()->format('d-m-Y');
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;       
+
+        $data = District::join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->select('districts.*', 'areas.name as area_name', 'regions.name as region_name')->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->pluck('districts.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->pluck('districts.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->pluck('districts.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data District');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('District Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master District', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportDistrict($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
     //
     public function exportStore(Request $request){
 
@@ -1524,6 +1681,53 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportChannelAll(){
+
+        $filename = 'Philips Retail Master Data Channel ' . Carbon::now()->format('d-m-Y');
+
+        $data = Channel::join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                ->select('channels.*', 'global_channels.name as globalchannel_name')
+                ->get();
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Channel');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Channel Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Channel', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportChannel($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
     //
     public function exportSubchannel(Request $request){
 
@@ -1568,14 +1772,105 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportSubchannelAll(){
+
+        $filename = 'Philips Retail Master Data Subchannel ' . Carbon::now()->format('d-m-Y');
+        
+        $data = SubChannel::join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                ->select('sub_channels.*', 'channels.name as channel_name', 'global_channels.name as globalchannel_name')
+                ->get();
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Subchannel');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Subchannel Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Subchannel', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportSubchannel($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
     //
     public function exportDistributor(Request $request){
 
         $filename = 'Philips Retail Master Data Distributor ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
-
-
         
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Distributor');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Distributor Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Distributor', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportDistributor($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportDistributorAll(){
+
+        $filename = 'Philips Retail Master Data Distributor ' . Carbon::now()->format('d-m-Y');
+        
+        $data = Distributor::get();
+
+        $data = $data->toArray();
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -1620,6 +1915,51 @@ class ExportController extends Controller
 
 
         
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Place');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Place Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Place', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:G1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportPlace($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:G1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:G1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportPlaceAll(){
+
+        $filename = 'Philips Retail Master Data Place ' . Carbon::now()->format('d-m-Y');
+        
+        $data = Place::get();
+
+        $data = $data->toArray();
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -1767,8 +2107,6 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Timegone ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-
-        
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -1896,6 +2234,91 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportUserPromoterAll(UserFilters $filters){ 
+        
+        $filename = 'Philips Retail Master Data User Promoter ' . Carbon::now()->format('d-m-Y');
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id; 
+
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+
+        $data = User::filter($filters)
+            ->join('roles','roles.id','users.role_id')
+            ->leftJoin('gradings','gradings.id','users.grading_id')
+            ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->whereIn('role_group',$roles)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('rsm_regions.user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('dm_areas.user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('stores.user_id', $userId)
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data User Promoter');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('User Promoter Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master User Promoter', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:J1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportUser($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:J1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:J1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
     //
     public function exportUserNonPromoter(Request $request){
 
@@ -1903,6 +2326,96 @@ class ExportController extends Controller
         $data = $request->data;
 
 
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data User Non Promoter');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('User Non Promoter Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master User Non Promoter', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:J1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportUser($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:J1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:J1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportUserNonPromoterAll(UserFilters $filters){
+
+        $filename = 'Philips Retail Master Data User Non Promoter ' . Carbon::now()->format('d-m-Y');
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;       
+
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
+
+        if ($userRole != 'Master') {
+            $roles[] = 'Master';
+            $roles[] = 'Admin';
+        }
+
+        $data = User::filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->leftJoin('gradings','gradings.id','users.grading_id')
+                ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+                ->whereNotIn('roles.role_group',$roles)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('rsm_regions.user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('dm_areas.user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('stores.user_id', $userId)
+                        ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
+                        ->join('users', 'employee_stores.user_id', '=', 'users.id')
+                        ->pluck('users.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        $data = $data->toArray();
         
         Excel::create($filename, function($excel) use ($data) {
 
@@ -1984,6 +2497,53 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportGroupAll(){
+
+        $filename = 'Philips Retail Master Data Group ' . Carbon::now()->format('d-m-Y');
+        
+        $data = Group::join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('groups.*', 'group_products.name as groupproduct_name')
+                ->get();
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Group');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Group Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Group', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:C1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportGroup($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
     //
     public function exportCategory(Request $request){
 
@@ -1991,6 +2551,53 @@ class ExportController extends Controller
         $data = $request->data;
 
 
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Category');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Category Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Category', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:D1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportCategory($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:D1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:D1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportCategoryAll(){
+
+        $filename = 'Philips Retail Master Data Category ' . Carbon::now()->format('d-m-Y');
+        
+        $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
+                ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
+
+        $data = $data->toArray();
         
         Excel::create($filename, function($excel) use ($data) {
 
@@ -2072,6 +2679,55 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
+
+    public function exportProductAll(){
+
+        $filename = 'Philips Retail Master Data Product ' . Carbon::now()->format('d-m-Y');
+        
+    $data = Product::join('categories', 'products.category_id', '=', 'categories.id')
+                ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))
+                ->get();
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Product');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Product Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Product', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:F1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportProduct($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:F1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:F1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
     //
     public function exportPrice(Request $request){
 
@@ -2079,6 +2735,61 @@ class ExportController extends Controller
         $data = $request->data;
 
 
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Master Data Price');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Price Master Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Master Price', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:H1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportPrice($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:H1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:H1', 'thin');
+                // $sheet->cell('B1:C1', function($cell) {
+                //     // manipulate the cell
+                //     $cell->setBackground('#f4df24');
+                // });
+                // $sheet->cell('H1', function($cell) {
+                //     // manipulate the cell
+                //     $cell->setBackground('#75ff56');
+                // });
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportPriceAll(PriceFilters $filters){
+
+        $filename = 'Philips Retail Master Data Price ' . Carbon::now()->format('d-m-Y');
+        
+        $data = Price::filter($filters)->join('products', 'prices.product_id', '=', 'products.id')
+                    ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
+                    ->select('prices.*', 'products.name as product_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'), 'global_channels.name as globalchannel_name')->get();
+
+        $data = $data->toArray();
         
         Excel::create($filename, function($excel) use ($data) {
 

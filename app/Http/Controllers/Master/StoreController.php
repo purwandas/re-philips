@@ -194,6 +194,56 @@ class StoreController extends Controller
         return $data;
     }
 
+    public function getStoresDataWithFiltersCheck(StoreFilters $filters){
+
+        $userRole = Auth::user()->role;
+        $userId = Auth::user()->id;       
+
+        $data = Store::filter($filters)
+                ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')
+                    ->leftJoin('areas', 'districts.area_id', '=', 'areas.id')
+                    ->leftJoin('regions', 'areas.region_id', '=', 'regions.id')
+                    ->leftJoin('classifications', 'classifications.id', '=', 'stores.classification_id')
+                    ->leftJoin('users', 'users.id', '=', 'stores.user_id')
+                    ->leftJoin('spv_demos', 'stores.id', '=', 'spv_demos.store_id')
+                    ->leftJoin('users as user2', 'user2.id', '=', 'spv_demos.user_id')
+                    ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
+                        ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'classifications.classification as classification_id', 'users.name as spv_name', 'user2.name as spv_demo'
+                        )
+                ->limit(1)
+                ->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('rsm_regions.user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->pluck('stores.id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('dm_areas.user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('districts', 'areas.id', '=', 'districts.area_id')
+                        ->join('stores', 'districts.id', '=', 'stores.district_id')
+                        ->pluck('stores.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->pluck('stores.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

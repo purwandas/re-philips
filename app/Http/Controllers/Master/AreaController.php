@@ -46,13 +46,49 @@ class AreaController extends Controller
     }
 
     // Data for select2 with Filters
-    public function getDataWithFilters(AreaFilters $filters){     
+    public function getDataWithFilters(AreaFilters $filters){
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;       
 
         $data = Area::filter($filters)
                 ->join('regions', 'areas.region_id', '=', 'regions.id')
                 ->select('areas.*', 'regions.name as region_name')
+                ->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->join('regions', 'rsm_regions.region_id', '=', 'regions.id')
+                        ->join('areas', 'regions.id', '=', 'areas.region_id')
+                        ->pluck('areas.id');
+            $data = $data->whereIn('id', $region);
+        // return response()->json($data);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->pluck('dm_areas.area_id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->pluck('areas.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        return $data;
+    }
+
+    public function getDataWithFiltersCheck(AreaFilters $filters){
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;       
+
+        $data = Area::filter($filters)
+                ->join('regions', 'areas.region_id', '=', 'regions.id')
+                ->select('areas.*', 'regions.name as region_name')
+                ->limit(1)
                 ->get();
 
         if ($userRole == 'RSM') {

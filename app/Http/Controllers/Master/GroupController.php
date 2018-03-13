@@ -48,6 +48,15 @@ class GroupController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(GroupFilters $filters){        
+        $data = Group::filter($filters)
+                ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+                ->select('groups.*', 'group_products.name as groupproduct_name')
+                ->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

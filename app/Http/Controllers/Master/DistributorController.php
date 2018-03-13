@@ -44,6 +44,12 @@ class DistributorController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(DistributorFilters $filters){
+        $data = Distributor::filter($filters)->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

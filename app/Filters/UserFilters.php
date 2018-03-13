@@ -75,6 +75,13 @@ class UserFilters extends QueryFilters
 //        });
 //    }
 
+    /**
+     * Ordering data by name
+     */
+    public function byName($value) {
+        return (!$this->requestAllData($value)) ? $this->builder->where('users.id', $value) : null;
+    }
+
     // Ordering by district
     public function byDistrict($value) {
         return $this->builder->whereHas('employeeStores.store.district', function ($query) use ($value) {
@@ -93,6 +100,13 @@ class UserFilters extends QueryFilters
     public function byRegion($value) {
         return $this->builder->whereHas('employeeStores.store.district.area.region', function ($query) use ($value) {
             return $query->where('regions.id',$value);
+        });
+    }
+
+    // Ordering by Role
+    public function byRole($value){
+        return $this->builder->whereHas('role', function ($query) use ($value) {
+            return $query->where('roles.role_group',$value);
         });
     }
 
