@@ -18,16 +18,16 @@ class AreaController extends Controller
 
         $region = Region::select('id', 'name')->get();
 
-        if($user->role->role_group == 'Salesman Explorer'){
+        // if($user->role->role_group == 'Salesman Explorer'){
 
-            $region = Region::where( function($query) {
-                            return $query->where('name', 'NOT LIKE', '%2')
-                                         ->where('name', 'NOT LIKE', '%3')
-                                         ->where('name', 'NOT LIKE', '%4')
-                                         ->where('name', 'NOT LIKE', '%MCC');
-                        })->select('id', 'name')->get();
+        //     $region = Region::where( function($query) {
+        //                     return $query->where('name', 'NOT LIKE', '%2')
+        //                                  ->where('name', 'NOT LIKE', '%3')
+        //                                  ->where('name', 'NOT LIKE', '%4')
+        //                                  ->where('name', 'NOT LIKE', '%MCC');
+        //                 })->select('id', 'name')->get();
 
-        }
+        // }
 
         return response()->json($region);
 
