@@ -401,6 +401,7 @@ trait SalesTrait {
                 'product_name' => $summarySellOutDetail->product_name,
                 'unit_price' => $summarySellOutDetail->unit_price,
                 'quantity' => $summarySellOutDetail->quantity,
+                'value' => $summarySellOutDetail->value,
                 'value_pf_mr' => $summarySellOutDetail->value_pf_mr,
                 'value_pf_tr' => $summarySellOutDetail->value_pf_tr,
                 'value_pf_ppe' => $summarySellOutDetail->value_pf_ppe,
