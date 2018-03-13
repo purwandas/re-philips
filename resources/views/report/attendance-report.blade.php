@@ -164,10 +164,10 @@
                 }
             });
 
+            filteringAttendanceReport(paramFilter);
+
             initSelect2();
             initDateTimePicker();
-
-            filteringAttendanceReport(paramFilter);
         
         });
 
