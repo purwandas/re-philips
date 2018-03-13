@@ -28,7 +28,7 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-map-o font-blue"></i>
+                        <i class="fa fa-cog font-blue"></i>
                         <span class="caption-subject font-blue bold uppercase">FILTER REPORT</span>
                     </div>
                 </div>
@@ -68,14 +68,19 @@
 
                 <br><br>
 
-                </div>
-
-                <div class="portlet light bordered display-hide" id="dataContent">
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-map-o font-blue"></i>
+                            <i class="fa fa-file-text-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Visit PLan</span>
+                        </div>
+                        <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                        </div>
+                        <div class="actions" style="text-align: left; padding-right: 10px;">
+                            <a id="exportAll" class="btn green-dark" disabled="disabled">
+                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                         </div>
                     </div>
 
@@ -159,6 +164,33 @@
             initSelect2();
             initDateTimePicker();
 
+            var table = $('#visitPlan').dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    url: "{{ route('datatable.visitplan') }}",
+                    data: filters,
+                    dataType: 'json',
+                    type: 'POST',
+                    dataSrc: function (res) {
+                        var count = res.data.length;
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
+                },
+                "rowId": "id",
+                "columns": tableColumns,
+                "columnDefs": columnDefs,
+                "order": order,
+            });
+
         });
 
         function initSelect2(){
@@ -223,7 +255,7 @@
         $("#resetButton").click( function(){
 
             // Hide Table Content
-            $('#dataContent').addClass('display-hide');
+            // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
             $('#filterMonth').val(moment().format('MMMM YYYY'));
@@ -234,7 +266,7 @@
         $("#filterButton").click( function(){
 
             // Set Table Content
-            $('#dataContent').removeClass('display-hide');
+            // $('#dataContent').removeClass('display-hide');
 
         });
 
