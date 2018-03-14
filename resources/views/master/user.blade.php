@@ -87,8 +87,13 @@
                             <option value="Supervisor Hybrid">Supervisor Hybrid</option>
                             <option value="DM">DM</option>
                             <option value="RSM">RSM</option>
+
+                            @if(Auth::user()->role->role_group == 'Master')
+
                             <option value="Admin">Admin</option>
                             <option value="Master">Master</option>
+
+                            @endif
                         </select>
                     </div>
                 </div>
