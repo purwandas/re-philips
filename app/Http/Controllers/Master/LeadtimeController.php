@@ -49,6 +49,13 @@ class LeadtimeController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(LeadtimeFilters $filters){
+        $data = Leadtime::filter($filters)->join('areas', 'areas.id', '=', 'leadtimes.area_id')
+                    ->select('leadtimes.*', 'areas.name as area_name')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

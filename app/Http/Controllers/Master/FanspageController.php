@@ -56,7 +56,12 @@ class FanspageController extends Controller
                     <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                 })
-                ->rawColumns(['action'])
+                ->editColumn('url', function ($item) {
+
+                   return "<a href='$item->url' target='_blank'>$item->url</a>";
+
+                })
+                ->rawColumns(['action','url'])
                 ->make(true);
 
     }

@@ -71,6 +71,14 @@ class TargetController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(TargetFilters $filters){
+        $data = Target::filter($filters)->join('users', 'targets.user_id', '=', 'users.id')
+                    ->join('stores', 'targets.store_id', '=', 'stores.id')
+                    ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 
