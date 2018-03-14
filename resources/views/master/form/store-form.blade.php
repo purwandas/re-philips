@@ -134,7 +134,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-					            	<select class="select2select" name="kepemilikan_toko" id="kepemilikan_toko" required>
+					            	<select class="select2select" name="kepemilikan_toko" id="kepemilikan_toko">
 	                                	<option></option>
 										<option value="Milik Sendiri">Milik Sendiri</option>
 										<option value="Sewa">Sewa</option>
@@ -148,7 +148,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-					            	<select class="select2select" name="lokasi_toko" id="lokasi_toko" required>
+					            	<select class="select2select" name="lokasi_toko" id="lokasi_toko">
 	                                	<option></option>
 										<option value="Mall">Mall</option>
 										<option value="ITC">ITC</option>
@@ -163,7 +163,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            		<select class="select2select" name="kondisi_toko" id="kondisi_toko" required>
+				            		<select class="select2select" name="kondisi_toko" id="kondisi_toko">
 	                                	<option></option>
 										<option value="Ada AC">Ada AC</option>
 										<option value="Tidak Ada AC">Tidak Ada AC</option>
@@ -177,7 +177,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            		<select class="select2select" name="tipe_transaksi" id="tipe_transaksi" required>
+				            		<select class="select2select" name="tipe_transaksi" id="tipe_transaksi">
 	                                	<option></option>
 										<option value="Transaksi via Mesin/Kasir">Transaksi via Mesin/Kasir</option>
 										<option value="Nota Manual">Nota Manual</option>
@@ -191,7 +191,7 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-				            		<select class="select2select" name="tipe_transaksi_2" id="tipe_transaksi_2" required>
+				            		<select class="select2select" name="tipe_transaksi_2" id="tipe_transaksi_2">
 	                                	<option></option>
 										<option value="Konsumen Langsung">Konsumen Langsung</option>
 										<option value="Online">Online</option>

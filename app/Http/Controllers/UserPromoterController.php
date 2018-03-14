@@ -652,7 +652,24 @@ class UserPromoterController extends Controller
     // update new phone for user
     public function updatehp($id)
     {   
-        $user = User::find($id);            
+        $user = User::find($id); 
+
+        $attendance = Attendance::where('user_id', $user->id)->where('date', Carbon::now()->format('Y-m-d'))->first();
+
+        if($attendance){
+
+            $attendanceDetail = AttendanceDetail::where('attendance_id', $attendance->id)->orderBy('id', 'DESC')->first();
+
+            if($attendanceDetail){
+
+                $attendanceDetail->update([
+                    'check_out' => Carbon::now()->format('h:i:s'),
+                ]);
+
+            }
+
+        }
+
         $user->update([
             'status_login' => 'Logout',
             'hp_id' => null,
