@@ -47,6 +47,13 @@ class PosmController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(PosmFilters $filters){
+        $data = Posm::filter($filters)->join('groups', 'posms.group_id', '=', 'groups.id')
+            ->select('posms.*', 'groups.name as group_name')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

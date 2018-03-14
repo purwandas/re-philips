@@ -54,6 +54,14 @@ class GroupCompetitorController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(GroupCompetitorFilters $filters){        
+        $data = GroupCompetitor::filter($filters)->join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
+                    ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
+                    ->select('group_competitors.*', 'groups.id as group_id', 'groups.name as group_name')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

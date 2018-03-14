@@ -64,6 +64,15 @@ class PriceController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(PriceFilters $filters){
+        $data = Price::filter($filters)->join('products', 'prices.product_id', '=', 'products.id')
+                    ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
+                    ->select('prices.*', 'products.name as product_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'), 'global_channels.name as globalchannel_name')
+                    ->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

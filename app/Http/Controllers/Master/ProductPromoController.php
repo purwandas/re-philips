@@ -45,6 +45,13 @@ class ProductPromoController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(ProductPromoFilters $filters){
+        $data = ProductPromos::filter($filters)->join('products', 'product_promos.product_id', '=', 'products.id')
+                    ->select('product_promos.*', 'products.name as product_name')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

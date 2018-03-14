@@ -15,4 +15,9 @@ class PriceFilters extends QueryFilters
         return (!$this->requestAllData($value)) ? $this->builder->where('price', $value) : null;
     }
 
+    // Ordering data by Global Channel
+    public function byGChannel($value) {
+        return (!$this->requestAllData($value)) ? $this->builder->where('globalchannel_id', $value) : null;
+    }    
+
 }

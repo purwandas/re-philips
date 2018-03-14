@@ -427,7 +427,7 @@ class UserController extends Controller
                     /*
                     1. select all store with STORE ID selected
                     */
-                    $stores = explode(',', $storeId); // id,store_id
+                    $stores = explode('`', $storeId); // id,store_id
                     // return response()->json($stores[1]);
                     if ($request['status_spv'] == "Demonstrator") 
                     {
@@ -540,7 +540,7 @@ class UserController extends Controller
                     /*
                     1. select all store with STORE ID selected
                     */
-                    $stores = explode(',', $storeId);
+                    $stores = explode('`', $storeId);
                     $store = Store::where('deleted_at',null)
                                     ->where('store_id',$stores[1])->get();
                         $status = false;
@@ -1035,7 +1035,7 @@ class UserController extends Controller
                     /*
                     1. select all store with STORE ID selected
                     */
-                    $stores = explode(',', $storeId); // id,store_id
+                    $stores = explode('`', $storeId); // id,store_id
                     // return response()->json($stores[1]);
                     if ($request['status_spv'] == "Demonstrator") 
                     {
@@ -1150,7 +1150,7 @@ class UserController extends Controller
                     /*
                     1. select all store with STORE ID selected
                     */
-                    $stores = explode(',', $storeId);
+                    $stores = explode('`', $storeId);
                     $store = Store::where('deleted_at',null)
                                     ->where('store_id',$stores[1])->get();
                         $status = false;

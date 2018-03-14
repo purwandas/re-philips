@@ -47,6 +47,12 @@ class TimeGoneController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(TimeGoneFilters $filters){
+        $data = TimeGone::filter($filters)->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

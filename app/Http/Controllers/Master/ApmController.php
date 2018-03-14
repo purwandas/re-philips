@@ -101,6 +101,19 @@ class ApmController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(ApmFilters $filters){        
+
+        $data = Apm::filter($filters)
+                ->join('stores', 'apms.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('products', 'apms.product_id', '=', 'products.id')
+                    ->select('apms.*', 'stores.store_name_1 as store_name', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 
