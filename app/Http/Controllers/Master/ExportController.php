@@ -9,6 +9,7 @@ use App\Filters\PriceFilters;
 use App\Filters\TargetFilters;
 use App\Filters\ApmFilters;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use File;
@@ -36,6 +37,10 @@ use App\Posm;
 use App\GroupCompetitor;
 use App\TimeGone;
 use App\Apm;
+use App\Reports\SummarySellIn;
+use App\Reports\HistorySellIn;
+use App\Reports\SummarySellOut;
+use App\Reports\HistorySellOut;
 use DB;
 use Auth;
 
@@ -91,10 +96,198 @@ class ExportController extends Controller
 
     }
 
-    public function exportSellInAll(SellinFilters $filters){
-
+    public function exportSellInAll(Request $request){
+        
         $filename = 'Philips Retail Report Sell Thru ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        
+            // Check data summary atau history
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $monthNow = Carbon::now()->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            $yearNow = Carbon::now()->format('Y');
+            
+            $userRole = Auth::user()->role->role_group;
+            $userId = Auth::user()->id;
+
+            if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+
+                if ($userRole == 'RSM') {
+                    $region = RsmRegion::where('user_id', $userId)
+                                ->pluck('rsm_regions.region_id');
+                        $data = SummarySellIn::where('region_id', $region)->get();
+                }
+
+                elseif ($userRole == 'DM') {
+                    $area = DmArea::where('user_id', $userId)
+                                ->pluck('dm_areas.area_id');
+                        $data = SummarySellIn::where('area_id', $area)->get();
+                }
+
+                elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                    $store = Store::where('user_id', $userId)
+                                ->pluck('stores.store_id');
+                        $data = SummarySellIn::wherein('store_id', $store)->get();
+                }
+                else{
+                    $data = SummarySellIn::all();
+                }
+
+                $filter = $data;
+
+                /* If filter */
+                if($request['searchMonth']){
+                    $month = Carbon::parse($request['searchMonth'])->format('m');
+                    $year = Carbon::parse($request['searchMonth'])->format('Y');
+                    $date1 = "$year-$month-01";
+                    $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                    $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                    $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                }
+
+                if($request['byRegion']){
+                    $filter = $filter->where('region_id', $request['byRegion']);
+                }
+
+                if($request['byArea']){
+                    $filter = $filter->where('area_id', $request['byArea']);
+                }
+
+                if($request['byDistrict']){
+                    $filter = $filter->where('district_id', $request['byDistrict']);
+                }
+
+                if($request['byStore']){
+                    $store = Store::where('stores.id', $request['byStore'])
+                                    ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                    ->pluck('storeses.id');
+                    $filter = $filter->whereIn('storeId', $store);
+                }
+
+                if($request['byEmployee']){
+                    $filter = $filter->where('user_id', $request['byEmployee']);
+                }
+
+            }else{ // Fetch data from history
+
+                $historyData = new Collection();
+                $history = HistorySellIn::where('year', $yearRequest)
+                            ->where('month', $monthRequest)->get();
+
+                foreach ($history as $data) {
+
+                    $details = json_decode($data->details);
+
+                    foreach ($details as $detail) {
+
+                        foreach ($detail->transaction as $transaction) {
+
+                            $collection = new Collection();
+
+                            /* Get Data and Push them to collection */
+                            $collection['id'] = $data->id;
+                            $collection['region_id'] = $detail->region_id;
+                            $collection['area_id'] = $detail->area_id;
+                            $collection['district_id'] = $detail->district_id;
+                            $collection['storeId'] = $detail->storeId;
+                            $collection['user_id'] = $detail->user_id;
+                            $collection['week'] = $detail->week;
+                            $collection['distributor_code'] = $detail->distributor_code;
+                            $collection['distributor_name'] = $detail->distributor_name;
+                            $collection['region'] = $detail->region;
+                            $collection['channel'] = $detail->channel;
+                            $collection['sub_channel'] = $detail->sub_channel;
+                            $collection['area'] = $detail->area;
+                            $collection['district'] = $detail->district;
+                            $collection['store_name_1'] = $detail->store_name_1;
+                            $collection['store_name_2'] = $detail->store_name_2;
+                            $collection['store_id'] = $detail->store_id;
+                            $collection['nik'] = $detail->nik;
+                            $collection['promoter_name'] = $detail->promoter_name;
+                            $collection['date'] = $detail->date;
+                            $collection['model'] = $transaction->model;
+                            $collection['group'] = $transaction->group;
+                            $collection['category'] = $transaction->category;
+                            $collection['product_name'] = $transaction->product_name;
+                            $collection['quantity'] = $transaction->quantity;
+                            $collection['unit_price'] = $transaction->unit_price;
+                            $collection['value'] = $transaction->value;
+                            $collection['value_pf_mr'] = $transaction->value_pf_mr;
+                            $collection['value_pf_tr'] = $transaction->value_pf_tr;
+                            $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
+                            $collection['irisan'] = $transaction->irisan;
+                            $collection['role'] = $detail->role;
+                            $collection['role_id'] = $detail->role_id;
+                            $collection['role_group'] = $detail->role_group;
+                            $collection['spv_name'] = $detail->spv_name;
+                            $collection['dm_name'] = $detail->dm_name;
+                            $collection['trainer_name'] = $detail->trainer_name;
+
+                            $historyData->push($collection);
+
+                        }
+
+                    }
+
+                }
+
+                $filter = $historyData;            
+
+                /* If filter */
+                if($request['searchMonth']){
+                    $month = Carbon::parse($request['searchMonth'])->format('m');
+                    $year = Carbon::parse($request['searchMonth'])->format('Y');
+                    $date1 = "$year-$month-01";
+                    $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                    $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                    $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                }
+
+                if($request['byRegion']){
+                    $filter = $filter->where('region_id', $request['byRegion']);
+                }
+
+                if($request['byArea']){
+                    $filter = $filter->where('area_id', $request['byArea']);
+                }
+
+                if($request['byDistrict']){
+                    $filter = $filter->where('district_id', $request['byDistrict']);
+                }
+
+                if($request['byStore']){
+                    $store = Store::where('stores.id', $request['byStore'])
+                                    ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                    ->pluck('storeses.id');
+                    $filter = $filter->whereIn('storeId', $store);
+                }
+
+                if($request['byEmployee']){
+                    $filter = $filter->where('user_id', $request['byEmployee']);
+                }
+
+                if ($userRole == 'RSM') {
+                    $regionIds = RsmRegion::where('user_id', $userId)
+                                        ->pluck('rsm_regions.region_id');
+                    $filter = $filter->whereIn('region_id', $regionIds);
+                }
+
+                if ($userRole == 'DM') {
+                    $areaIds = DmArea::where('user_id', $userId)
+                                        ->pluck('dm_areas.area_id');
+                    $filter = $filter->whereIn('area_id', $areaIds);
+                }
+
+                if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                    $storeIds = Store::where('user_id', $userId)
+                                        ->pluck('stores.store_id');
+                    $filter = $filter->whereIn('store_id', $storeIds);
+                }
+
+            }
+            $filter->all();
+            $data = $filter->toArray();
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -178,7 +371,197 @@ class ExportController extends Controller
     public function exportSellOutAll(Request $request){
 
         $filename = 'Philips Retail Report Sell Out ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        
+        // Check data summary atau history
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+        
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummarySellOut::where('region_id', $region)->get();
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummarySellOut::where('area_id', $area)->get();
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummarySellOut::wherein('store_id', $store)->get();
+            }
+            else{
+                $data = SummarySellOut::all();
+            }
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+        }else{ // Fetch data from history
+
+            $historyData = new Collection();
+
+            $history = HistorySellOut::where('year', $yearRequest)
+                        ->where('month', $monthRequest)->get();
+
+            foreach ($history as $data) {
+
+                $details = json_decode($data->details);
+
+                foreach ($details as $detail) {
+
+                    foreach ($detail->transaction as $transaction) {
+
+                        $collection = new Collection();
+
+                        /* Get Data and Push them to collection */
+                        $collection['id'] = $data->id;
+                        $collection['region_id'] = $detail->region_id;
+                        $collection['area_id'] = $detail->area_id;
+                        $collection['district_id'] = $detail->district_id;
+                        $collection['storeId'] = $detail->storeId;
+                        $collection['user_id'] = $detail->user_id;
+                        $collection['week'] = $detail->week;
+                        $collection['distributor_code'] = $detail->distributor_code;
+                        $collection['distributor_name'] = $detail->distributor_name;
+                        $collection['region'] = $detail->region;
+                        $collection['channel'] = $detail->channel;
+                        $collection['sub_channel'] = $detail->sub_channel;
+                        $collection['area'] = $detail->area;
+                        $collection['district'] = $detail->district;
+                        $collection['store_name_1'] = $detail->store_name_1;
+                        $collection['store_name_2'] = $detail->store_name_2;
+                        $collection['store_id'] = $detail->store_id;
+                        $collection['nik'] = $detail->nik;
+                        $collection['promoter_name'] = $detail->promoter_name;
+                        $collection['date'] = $detail->date;
+                        $collection['model'] = $transaction->model;
+                        $collection['group'] = $transaction->group;
+                        $collection['category'] = $transaction->category;
+                        $collection['product_name'] = $transaction->product_name;
+                        $collection['quantity'] = $transaction->quantity;
+                        $collection['unit_price'] = $transaction->unit_price;
+                        $collection['value'] = $transaction->value;
+                        $collection['value_pf_mr'] = $transaction->value_pf_mr;
+                        $collection['value_pf_tr'] = $transaction->value_pf_tr;
+                        $collection['value_pf_ppe'] = $transaction->value_pf_ppe;
+                        $collection['irisan'] = $transaction->irisan;
+                        $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
+                        $collection['spv_name'] = $detail->spv_name;
+                        $collection['dm_name'] = $detail->dm_name;
+                        $collection['trainer_name'] = $detail->trainer_name;
+
+                        $historyData->push($collection);
+
+                    }
+
+                }
+
+            }
+
+            $filter = $historyData;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+            
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
+            }
+
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
+            }
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
+            }
+
+        }
+
+            $filter->all();
+            $data = $filter->toArray();
 
         Excel::create($filename, function($excel) use ($data) {
 

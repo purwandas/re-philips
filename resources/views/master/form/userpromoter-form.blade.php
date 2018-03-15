@@ -620,10 +620,11 @@
 				//Set Store
 		    	setStore(status);
 		    	if(role[1] == 'Demonstrator DA'){
-		    		if($('input[name=_method]').val() != "PATCH"){
+		    		// if($('input[name=_method]').val() != "PATCH"){
+			    		$('input[type=radio][name=status]').prop('checked', false);
 			    		$('#storeContent').addClass('display-hide');
 			    		// console.log('ADD');
-					}
+					// }
 					$('#statusContent').removeClass('display-hide');
 					$("#dedicate").removeAttr("required");
 					$('#dedicatePromoter').addClass('display-hide');

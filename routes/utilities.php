@@ -166,6 +166,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/sellinreport', ['as'=> 'data.sellinreport','uses'=>'Master\ReportController@sellInDataAll']);
     Route::post('data/sellinreportC', ['as'=> 'data.sellinreportC','uses'=>'Master\ReportController@sellInDataAllCheck']);
     Route::post('data/selloutreport', ['as'=> 'data.selloutreport','uses'=>'Master\ReportController@sellOutDataAll']);
+    Route::post('data/selloutreportC', ['as'=> 'data.selloutreportC','uses'=>'Master\ReportController@sellOutDataAllCheck']);
     Route::post('data/retdistributorreport', ['as'=> 'data.retdistributorreport','uses'=>'Master\ReportController@retDistributorDataAll']);
     Route::post('data/retconsumentreport', ['as'=> 'data.retconsumentreport','uses'=>'Master\ReportController@retConsumentDataAll']);
     Route::post('data/freeproductreport', ['as'=> 'data.freeproductreport','uses'=>'Master\ReportController@freeproductDataAll']);
@@ -263,7 +264,7 @@ Route::group(['middleware' => ['auth']], function () {
      */
 
     Route::post('util/export-sellin', ['uses'=>'Master\ExportController@exportSellIn']);
-    Route::post('util/export-sellin-all', ['uses'=>'Master\ExportController@exportSellInAllExcell']);
+    Route::post('util/export-sellin-all', ['uses'=>'Master\ExportController@exportSellInAll']);
     Route::post('util/export-sellout', ['uses'=>'Master\ExportController@exportSellOut']);
     Route::post('util/export-sellout-all', ['uses'=>'Master\ExportController@exportSellOutAll']);
     Route::post('util/export-retconsument', ['uses'=>'Master\ExportController@exportRetConsument']);
