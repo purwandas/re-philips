@@ -45,6 +45,7 @@ class MaintenanceRequestController extends Controller
                 $category = str_replace('"', '', $content->category);
                 $channel = str_replace('"', '', $content->channel);
                 $type = str_replace('"', '', $content->type);
+                $report = str_replace('"', '', $content->report);
 
                 /** Insert Maintenance Request **/
 
@@ -56,7 +57,7 @@ class MaintenanceRequestController extends Controller
                     'category' => $category,
                     'channel' => $channel,
                     'type' => $type,
-                    'report' => $content->report,
+                    'report' => $report,
                     // 'month' => (integer)Carbon::now()->format('m'),
                     // 'year' => (integer)Carbon::now()->format('Y'),
                     'date' => Carbon::now(),
