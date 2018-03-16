@@ -36,7 +36,7 @@
             <div class="portlet-title">
             <!-- MAIN CONTENT -->
                 <div class="btn-group">
-                    <a id="add-leadtime" class="btn green" data-toggle="modal" href="#timegone"><i
+                    <a id="add-timegone" class="btn green" data-toggle="modal" href="#timegone"><i
                         class="fa fa-plus"></i> Add Timegone</a>
                 </div>
                 <div class="btn-group">
@@ -114,7 +114,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/timegone',
+            url: 'data/timegoneC',
             dataType: 'json',
             global: false,
             async: false,
@@ -199,7 +199,7 @@
 
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/timegone',
+                                    url: 'data/timegoneC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,
@@ -282,47 +282,18 @@
 
         if ($('#export').attr('disabled') != 'disabled') {
 
-            $.ajax({
-                type: 'POST',
-                url: 'data/timegone',
-                dataType: 'json',
-                global: false,
-                async: false,
-                success: function (results) {
-                    dataAll = results;
-                }
-            });
-
             // Export data
             exportFile = '';
 
             $.ajax({
                 type: 'POST',
-                url: 'util/export-timegone',
+                url: 'util/export-timegone-all',
                 dataType: 'json',
-                data: {data: dataAll},
-                global: false,
-                async: false,
                 success: function (data) {
 
                     console.log(data);
 
                     window.location = data.url;
-
-                    // setTimeout(function () {
-                    //     $.ajax({
-                    //         type: 'POST',
-                    //         url: 'util/export-delete',
-                    //         dataType: 'json',
-                    //         data: {data: data.url},
-                    //         global: false,
-                    //         async: false,
-                    //         success: function (data) {
-                    //             console.log(data);
-                    //         }
-                    //     });
-                    // }, 1000);
-
 
                 }
             });
@@ -336,17 +307,6 @@
 
         if ($('#export').attr('disabled') != 'disabled') {
 
-            $.ajax({
-                type: 'POST',
-                url: 'data/timegone',
-                dataType: 'json',
-                global: false,
-                async: false,
-                success: function (results) {
-                    dataAll = results;
-                }
-            });
-
             // Export data
             exportFile = '';
 
@@ -354,29 +314,11 @@
                 type: 'POST',
                 url: 'util/export-timegone-template',
                 dataType: 'json',
-                data: {data: dataAll},
-                global: false,
-                async: false,
                 success: function (data) {
 
                     console.log(data);
 
                     window.location = data.url;
-
-                    // setTimeout(function () {
-                    //     $.ajax({
-                    //         type: 'POST',
-                    //         url: 'util/export-delete',
-                    //         dataType: 'json',
-                    //         data: {data: data.url},
-                    //         global: false,
-                    //         async: false,
-                    //         success: function (data) {
-                    //             console.log(data);
-                    //         }
-                    //     });
-                    // }, 1000);
-
 
                 }
             });
@@ -395,7 +337,7 @@
         modalTitle.innerHTML = "ADD NEW ";
 
         $('#day').val('');
-        $('#timegone').val('');
+        $('#percent').val('');
 
         // Set action url form for add
         var postDataUrl = "{{ url('timegone') }}";
@@ -432,7 +374,7 @@
         $.get(getDataUrl + '/' + id, function (data) {
 
                     $('#day').val(data.day);
-                    $('#timegone').val(data.timegone);
+                    $('#percent').val(data.percent);
 
         })
 
