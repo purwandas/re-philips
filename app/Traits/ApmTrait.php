@@ -266,9 +266,16 @@ trait ApmTrait {
     public function getPriceCurrent($storeId, $productId){
 
         $globalchannel_id = Store::where('id', $storeId)->first()->subChannel->channel->globalChannel->id;
+        $globalchannel_name = Store::where('id', $storeId)->first()->subChannel->channel->globalChannel->name;
+
+        $sell_type = 'Sell In';
+
+        if($globalchannel_name == 'MR' || $globalchannel_name == 'Modern Retail'){
+            $sell_type = 'Sell Out';
+        }
 
         $price = Price::where('product_id', $productId)->where('globalchannel_id', $globalchannel_id)
-                    ->where('sell_type', 'Sell Out')->first();
+                    ->where('sell_type', $sell_type)->first();
 
         if($price){
             return $price->price;
