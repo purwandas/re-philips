@@ -694,7 +694,7 @@
                             	setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
                         	}
 
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (nul)");
+							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1);
 					});
 
             	}	
