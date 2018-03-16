@@ -114,7 +114,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/leadtime',
+            url: 'data/leadtimeC',
             dataType: 'json',
             global: false,
             async: false,
@@ -199,7 +199,7 @@
 
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/leadtime',
+                                    url: 'data/leadtimeC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,
@@ -282,47 +282,18 @@
 
         if ($('#export').attr('disabled') != 'disabled') {
 
-            $.ajax({
-                type: 'POST',
-                url: 'data/leadtime',
-                dataType: 'json',
-                global: false,
-                async: false,
-                success: function (results) {
-                    dataAll = results;
-                }
-            });
-
             // Export data
             exportFile = '';
 
             $.ajax({
                 type: 'POST',
-                url: 'util/export-leadtime',
+                url: 'util/export-leadtime-all',
                 dataType: 'json',
-                data: {data: dataAll},
-                global: false,
-                async: false,
                 success: function (data) {
 
                     console.log(data);
 
                     window.location = data.url;
-
-                    // setTimeout(function () {
-                    //     $.ajax({
-                    //         type: 'POST',
-                    //         url: 'util/export-delete',
-                    //         dataType: 'json',
-                    //         data: {data: data.url},
-                    //         global: false,
-                    //         async: false,
-                    //         success: function (data) {
-                    //             console.log(data);
-                    //         }
-                    //     });
-                    // }, 1000);
-
 
                 }
             });
@@ -336,17 +307,6 @@
 
         if ($('#export').attr('disabled') != 'disabled') {
 
-            $.ajax({
-                type: 'POST',
-                url: 'data/leadtime',
-                dataType: 'json',
-                global: false,
-                async: false,
-                success: function (results) {
-                    dataAll = results;
-                }
-            });
-
             // Export data
             exportFile = '';
 
@@ -354,29 +314,11 @@
                 type: 'POST',
                 url: 'util/export-leadtime-template',
                 dataType: 'json',
-                data: {data: dataAll},
-                global: false,
-                async: false,
                 success: function (data) {
 
                     console.log(data);
 
                     window.location = data.url;
-
-                    // setTimeout(function () {
-                    //     $.ajax({
-                    //         type: 'POST',
-                    //         url: 'util/export-delete',
-                    //         dataType: 'json',
-                    //         data: {data: data.url},
-                    //         global: false,
-                    //         async: false,
-                    //         success: function (data) {
-                    //             console.log(data);
-                    //         }
-                    //     });
-                    // }, 1000);
-
 
                 }
             });

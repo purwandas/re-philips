@@ -227,7 +227,7 @@
             // Get data district to var data
             $.ajax({
                 type: 'POST',
-                url: 'data/apm',
+                url: 'data/apmC',
                 dataType: 'json',
                 global: false,
                 async: false,
@@ -395,17 +395,6 @@
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/apm',
-                    dataType: 'json',
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
@@ -413,9 +402,7 @@
                     type: 'POST',
                     url: 'util/export-apm-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
                     success: function (data) {
 
                         console.log(data);

@@ -49,6 +49,13 @@ class TargetSalesmanController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(TargetSalesmanFilters $filters){
+        $data = SalesmanTarget::filter($filters)->join('users', 'salesman_targets.user_id', '=', 'users.id')
+                    ->select('salesman_targets.*', 'users.name as salesman_name')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 

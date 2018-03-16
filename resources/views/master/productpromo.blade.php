@@ -111,7 +111,7 @@
         // Get data district to var data
         $.ajax({
             type: 'POST',
-            url: 'data/productpromo',
+            url: 'data/productpromoC',
             dataType: 'json',
             global: false,
             async: false,
@@ -201,7 +201,7 @@
                                 // Get data district to var data
                                 $.ajax({
                                     type: 'POST',
-                                    url: 'data/productpromo',
+                                    url: 'data/productpromoC',
                                     dataType: 'json',
                                     global: false,
                                     async: false,
@@ -334,47 +334,18 @@
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/productpromo',
-                    dataType: 'json',
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-productpromo',
+                    url: 'util/export-productpromo-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });
@@ -388,17 +359,6 @@
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/productpromo',
-                    dataType: 'json',
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
@@ -406,29 +366,11 @@
                     type: 'POST',
                     url: 'util/export-productpromo-template',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });

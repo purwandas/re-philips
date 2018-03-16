@@ -52,6 +52,13 @@ class ProductFocusController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(ProductFocusFilters $filters){
+        $data = ProductFocuses::filter($filters)->join('products', 'product_focuses.product_id', '=', 'products.id')
+                    ->select('product_focuses.*', 'products.name as product_name')->limit(1)->get();
+
+        return $data;
+    }
+
     // Datatable template
     public function makeTable($data){
 
