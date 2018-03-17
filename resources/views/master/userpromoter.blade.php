@@ -255,14 +255,14 @@
         $('#userTable').on('click', 'tr td button.deleteButton', function () {
             var id = $(this).val();
 
-                if(userRelation(id)){
-                    swal("Warning", "This data still related to others! Please check the relation first.", "warning");
-                    return;
-                }
+                // if(userRelation(id)){
+                //     swal("Warning", "This data still related to others! Please check the relation first.", "warning");
+                //     return;
+                // }
 
             	swal({
 					title: "Are you sure?",
-                    text: "You will not be able to recover data!",
+                    text: "User's Relation will be Deleted!",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonClass: "btn-danger",
@@ -285,28 +285,29 @@
                             type: "DELETE",
                             url:  'userpromoter/' + id,
                             success: function (data) {
+                                
                                 console.log(data);
 
-                                $("#"+id).remove();
-                                // $('#sportsTable').DataTable().ajax.reload();
+                                // $("#"+id).remove();
+                                // // $('#sportsTable').DataTable().ajax.reload();
 
-                                $.ajax({
-                                    type: 'POST',
-                                    url: 'data/groupPromoterC',
-                                    dataType: 'json',
-                                    global: false,
-                                    async: false,
-                                    success: function (results) {
-                                        var count = results.length;
+                                // $.ajax({
+                                //     type: 'POST',
+                                //     url: 'data/groupPromoterC',
+                                //     dataType: 'json',
+                                //     global: false,
+                                //     async: false,
+                                //     success: function (results) {
+                                //         var count = results.length;
 
-                                                if(count > 0){
-                                                    $('#exportAll').removeAttr('disabled');
-                                                }else{
-                                                    $('#exportAll').attr('disabled','disabled');
-                                                }
-                                        dataAll = results;
-                                    }
-                                });
+                                //                 if(count > 0){
+                                //                     $('#exportAll').removeAttr('disabled');
+                                //                 }else{
+                                //                     $('#exportAll').attr('disabled','disabled');
+                                //                 }
+                                //         dataAll = results;
+                                //     }
+                                // });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -314,6 +315,7 @@
                         });                        
 
                         swal("Deleted!", "Data has been deleted.", "success");
+                        window.location = 'userpromoter';
                     } else {
                         swal("Cancelled", "Data is safe ", "success");
                     }
