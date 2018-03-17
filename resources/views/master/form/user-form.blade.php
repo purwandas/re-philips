@@ -448,15 +448,17 @@
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	         	var selectedRolev = $('#selectedRole').val();
 				selectedRolev = selectedRolev.split('`');
-	         	if (selectedRolev[1] == 'Supervisor' || selectedRolev[1] == 'Supervisor Hybrid') {
+	         	if (selectedRolev[1] == 'Supervisor') {
 		        	filters['bySpvNew'] = $('#penampungUserId').val();
 		        	var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
 		        	if (statusSpv == "Demonstrator") {
 		        		filters['byDedicateSpv'] = "DA";
 		        	}else{
 		        		filters['byDedicateSpv'] = $('#dedicate').val();
-		        		console.log("tes: "+$('#dedicate').val());
 		        	}
+		        }else if (selectedRolev[1] == 'Supervisor Hybrid') {
+		        	filters['bySpvNew'] = $('#penampungUserId').val();
+		        	filters['byDedicateSpvHybrid'] = $('#dedicate').val();
 		        }
 	            return filterData('store', params.term);
 	        }, function (data, params) {
