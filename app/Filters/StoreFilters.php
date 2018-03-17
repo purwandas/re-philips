@@ -83,6 +83,32 @@ class StoreFilters extends QueryFilters
         // return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);
     }
 
+    public function byDedicateSpvHybrid($value) {
+        
+        if ($value=="HYBRID") {
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate', ['DA','PC','HYBRID','MCC'])
+                            ->orwhereNull('dedicate');
+            });
+        }else if ($value=="DA"){
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate',['DA','HYBRID'])
+                            ->orwhereNull('dedicate');
+            });
+        }else if ($value=="PC"){
+            return $this->builder->where(function ($query) {
+                return $query->whereIn('dedicate',['PC','HYBRID'])
+                            ->orwhereNull('dedicate');
+            });
+        }else{
+            return $this->builder->where(function ($query) {
+                return $query->where('dedicate',"MCC")
+                            ->orwhereNull('dedicate');
+            });
+        }
+        // return $this->builder->whereNull('dedicate')->orwhere('dedicate',$value);
+    }
+
     // Ordering by dedicate Promoter
     public function byDedicatePromoter($value) {
         
