@@ -38,9 +38,14 @@ class MaintenanceRequestController extends Controller
         try {
             DB::transaction(function () use ($content, $user, $folderPath) {
 
-                $category = str_replace_array('"', explode(" ", $content->category), '');
-                $channel = str_replace_array('"', explode(" ",$content->channel),'');
-                $type = str_replace_array('"', explode(" ",$content->type),'');
+                // $category = str_replace_array('"', explode(" ", $content->category), '');
+                // $channel = str_replace_array('"', explode(" ",$content->channel),'');
+                // $type = str_replace_array('"', explode(" ",$content->type),'');
+
+                $category = str_replace('"', '', $content->category);
+                $channel = str_replace('"', '', $content->channel);
+                $type = str_replace('"', '', $content->type);
+                $report = str_replace('"', '', $content->report);
 
                 /** Insert Maintenance Request **/
 
@@ -49,10 +54,10 @@ class MaintenanceRequestController extends Controller
                     'region_id' => $content->region_id,
                     'area_id' => $content->area_id,
                     'store_id' => $content->id,
-                    'category' => $content->category,
-                    'channel' => $content->channel,
-                    'type' => $content->type,
-                    'report' => $content->report,
+                    'category' => $category,
+                    'channel' => $channel,
+                    'type' => $type,
+                    'report' => $report,
                     // 'month' => (integer)Carbon::now()->format('m'),
                     // 'year' => (integer)Carbon::now()->format('Y'),
                     'date' => Carbon::now(),

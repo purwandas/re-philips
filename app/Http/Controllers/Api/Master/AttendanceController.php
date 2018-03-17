@@ -31,13 +31,21 @@ class AttendanceController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = JWTAuth::parseToken()->authenticate();
 
+        // CHECK PROMOTER OR NOT
+        $promoter = 0;
+
+        if($user->role->role_group == 'Promoter' || $user->role->role_group == 'Promoter Additional' || $user->role->role_group == 'Promoter Event' || $user->role->role_group == 'Demonstrator MCC' || $user->role->role_group == 'Demonstrator DA' || $user->role->role_group == 'ACT'  || $user->role->role_group == 'PPE' || $user->role->role_group == 'BDT' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'HIC' || $user->role->role_group == 'HIE' || $user->role->role_group == 'SMD Additional' || $user->role->role_group == 'ASC'){
+            $promoter = 1;
+        }
+
         // Check header
         $attendanceHeader = Attendance::where('user_id', $user->id)->where('date', '=', date('Y-m-d'))->first();
 
 //        return response()->json($attendanceHeader);
 
         // Response if header was not set (command -> init:attendance)
-        if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'DM' || $user->role->role_group == 'Trainer' || $user->role->role_group == 'RSM' || $user->role->role_group == 'Salesman Explorer'){
+        // if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'DM' || $user->role->role_group == 'Trainer' || $user->role->role_group == 'RSM' || $user->role->role_group == 'Salesman Explorer'){
+        if($promoter == 0){
 
             if(!$attendanceHeader) {
                 $attendanceHeader = Attendance::create([
@@ -70,7 +78,8 @@ class AttendanceController extends Controller
 
         if($param == 1){ /* CHECK IN */
 
-            if($user->role->role_group != 'Salesman Explorer') {
+            // if($user->role->role_group != 'Salesman Explorer') {
+            if($promoter == 1){
 
                 if ($content['is_store'] == 1) {
                     $location = Store::where('id', $content['id'])->first();
@@ -208,6 +217,47 @@ class AttendanceController extends Controller
 
         } elseif ($param == 3){ /* SAKIT */
 
+            // NOT PROMOTER 
+            if($promoter == 0){
+
+                // Check if promoter has approvement
+                if($attendanceHeader->status == 'Sakit'){
+                    return response()->json(['status' => false, 'message' => 'Anda sudah berada dalam status (Sakit)'], 200);
+                }
+
+                // If user has attendance data
+                if($attendanceDetailsCount > 0){
+
+                    // Get last attendance detail
+                    $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
+
+                    if($attendanceDetail->check_out == null){
+                        return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                    }
+
+                }
+
+                if($attendanceDetailsCount == 0){
+
+                    try{
+                        DB::transaction(function () use ($content, $attendanceHeader) {
+
+                            // Attendance Header Update
+                            $attendanceHeader->update([
+                                'status' => 'Sakit',
+                            ]);
+
+                        });
+                    }catch(\Exception $e){
+                        return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                    }
+                    return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Sakit)']);
+
+                }
+
+                return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda sudah terhitung masuk untuk hari ini, status sakit tidak akan terhitung didalam data absensi']);
+            }
+
             // Check if promoter has approvement
             if($attendanceHeader->status == 'Sakit'){
                 return response()->json(['status' => false, 'message' => 'Status anda (sakit) telah diverifikasi, anda tidak bisa mengganti status anda ke (sakit atau izin)'], 200);
@@ -314,6 +364,47 @@ class AttendanceController extends Controller
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda sudah terhitung masuk untuk hari ini, status sakit tidak akan terhitung didalam data absensi']);
 
         } elseif ($param == 4){ /* IZIN */
+
+            // NOT PROMOTER 
+            if($promoter == 0){
+
+                // Check if promoter has approvement
+                if($attendanceHeader->status == 'Izin'){
+                    return response()->json(['status' => false, 'message' => 'Anda sudah berada dalam status (Izin)'], 200);
+                }
+
+                // If user has attendance data
+                if($attendanceDetailsCount > 0){
+
+                    // Get last attendance detail
+                    $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
+
+                    if($attendanceDetail->check_out == null){
+                        return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                    }
+
+                }
+
+                if($attendanceDetailsCount == 0){
+
+                    try{
+                        DB::transaction(function () use ($content, $attendanceHeader) {
+
+                            // Attendance Header Update
+                            $attendanceHeader->update([
+                                'status' => 'Izin',
+                            ]);
+
+                        });
+                    }catch(\Exception $e){
+                        return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                    }
+                    return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Izin)']);
+
+                }
+
+                return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda sudah terhitung masuk untuk hari ini, status izin tidak akan terhitung didalam data absensi']);
+            }
 
             // Check if promoter has approvement
             if($attendanceHeader->status == 'Sakit'){
@@ -423,6 +514,47 @@ class AttendanceController extends Controller
             return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda sudah terhitung masuk untuk hari ini, status izin tidak akan terhitung didalam data absensi']);
 
         } elseif ($param == 5){ /* OFF || LIBUR */
+
+            // NOT PROMOTER 
+            if($promoter == 0){
+
+                // Check if promoter has approvement
+                if($attendanceHeader->status == 'Off'){
+                    return response()->json(['status' => false, 'message' => 'Anda sudah berada dalam status (Off)'], 200);
+                }
+
+                // If user has attendance data
+                if($attendanceDetailsCount > 0){
+
+                    // Get last attendance detail
+                    $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
+
+                    if($attendanceDetail->check_out == null){
+                        return response()->json(['status' => false, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                    }
+
+                }
+
+                if($attendanceDetailsCount == 0){
+
+                    try{
+                        DB::transaction(function () use ($content, $attendanceHeader) {
+
+                            // Attendance Header Update
+                            $attendanceHeader->update([
+                                'status' => 'Off',
+                            ]);
+
+                        });
+                    }catch(\Exception $e){
+                        return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                    }
+                    return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Absensi Berhasil (Off)']);
+
+                }
+
+                return response()->json(['status' => true, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda sudah terhitung masuk untuk hari ini, status off tidak akan terhitung didalam data absensi']);
+            }
 
             // Check if promoter has already in off status
             if($attendanceHeader->status == 'Off'){

@@ -43,6 +43,7 @@
                                   <option value="RE Support">RE Support</option>
                                   <option value="Supervisor">Supervisor</option>
                                   <option value="Trainer">Trainer</option>
+                                  <option value="Trainer Demo">Trainer Demo</option>
                                   <option value="Head Trainer">Head Trainer</option>
                                   <option value="Supervisor Hybrid">Supervisor Hybrid</option>
                                   <option value="DM">DM</option>
