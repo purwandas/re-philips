@@ -668,10 +668,10 @@
 							console.log('patch2#'+this.id);
 
 							if(this.store_name_2 != null){
-                            	setSelect2IfPatch(element, this.id+','+this.store_id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+                            	setSelect2IfPatch(element, this.id+'`'+this.store_id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
                         	}
 
-							setSelect2IfPatch(element, this.id+','+this.store_id, this.store_id + " - " + this.store_name_1);
+							setSelect2IfPatch(element, this.id+'`'+this.store_id, this.store_id + " - " + this.store_name_1);
 
 				// 		}
 					});
@@ -692,10 +692,10 @@
 						// console.log('patch2#'+this.id);
 
 						if(this.store_name_2 != null){
-                            	setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
+                            	setSelect2IfPatch(element, this.id+'`'+this.store_id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
                         	}
 
-							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1);
+							setSelect2IfPatch(element, this.id+'`'+this.store_id, this.store_id + " - " + this.store_name_1);
 					});
 
             	}	
