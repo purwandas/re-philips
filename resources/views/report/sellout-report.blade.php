@@ -205,7 +205,7 @@
             // Get data district to var data
             $.ajax({
                 type: 'POST',
-                url: 'data/selloutreport',
+                url: 'data/selloutreportC',
                 dataType: 'json',
                 data: filters,
                 global: false,
@@ -301,7 +301,7 @@
                 }
             }));
             $('#filterDistrict').on('select2:select', function () {
-                self.selected('byAreaApp', $('#filterDistrict').val());
+                self.selected('byDistrict', $('#filterDistrict').val());
             });
 
             $('#filterStore').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
@@ -381,7 +381,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'data/selloutreport',
+                url: 'data/selloutreportC',
                 dataType: 'json',
                 data: filters,
                 global: false,
@@ -448,18 +448,6 @@
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/selloutreport',
-                    dataType: 'json',
-                    data: filters,
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
@@ -467,29 +455,12 @@
                     type: 'POST',
                     url: 'util/export-sellout-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });

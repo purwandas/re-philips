@@ -207,7 +207,7 @@
             // Get data district to var data
             $.ajax({
                 type: 'POST',
-                url: 'data/sellinreport',
+                url: 'data/sellinreportC',
                 data: filters,
                 dataType: 'json',
                 global: false,
@@ -382,7 +382,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'data/sellinreport',
+                url: 'data/sellinreportC',
                 data: filters,
                 dataType: 'json',
                 global: false,
@@ -449,18 +449,6 @@
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/sellinreport',
-                    dataType: 'json',
-                    data: filters,
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
@@ -468,29 +456,12 @@
                     type: 'POST',
                     url: 'util/export-sellin-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });
