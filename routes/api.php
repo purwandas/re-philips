@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 /* No Authentication Route */
 
 Route::get('tes', 'Api\AuthController@tes');
+Route::get('mailTes', 'Api\Master\SuggestionOrderController@mailTes');
 
 /* JWT Authentication */
 

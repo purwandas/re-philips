@@ -263,12 +263,12 @@ class UserController extends Controller
                     return 
                     "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-success btn-sm openAccessButton' data-toggle='confirmation' data-singleton='true' title='Open access new Phone' value='".$item->id." '><i class='fa fa-unlock'></i></button>
-                    <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    ";
                     } else {
                     return 
                     "<a href='".url('usernon/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>
-                    <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    ";
                     }
                     
                 })
@@ -1564,6 +1564,17 @@ class UserController extends Controller
         }
 
         $user = User::find($id);
+
+        // If Exists SpvDemo Data
+        $spvDemo = SpvDemo::where('user_id', $user->id);
+        if($spvDemo->count() > 0){
+            $spvDemo->delete();
+        } 
+
+        /* SPV Multiple Store */
+        if ($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid') {
+            $store = Store::where('user_id', $user->id)->update(['user_id'=>null]);
+        }
 
         if($user->photo != "") {
             /* Delete Image */
