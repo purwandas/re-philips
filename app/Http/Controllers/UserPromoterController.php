@@ -23,6 +23,7 @@ use Auth;
 use App\Filters\UserFilters;
 use File;
 use App\NewsRead;
+use App\ProductKnowledge;
 use App\ProductKnowledgeRead;
 use App\Reports\HistoryEmployeeStore;
 use Carbon\Carbon;
@@ -95,17 +96,18 @@ class UserPromoterController extends Controller
                     
                 })
                 ->addColumn('action', function ($item) {
-
+                    $action='';
                     if ($item->status_login == 'Login' or $item->hp_id != null or $item->jenis_hp != null) {
-                    return 
-                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    $action .= "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-success btn-sm openAccessButton' data-toggle='confirmation' data-singleton='true' title='Open access new Phone' value='".$item->id." '><i class='fa fa-unlock'></i></button>";
                     } else {
-                    return 
-                    "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
+                    $action .= "<a href='".url('userpromoter/edit/'.$item->id)."' class='btn btn-sm btn-warning'><i class='fa fa-pencil'></i></a>
                     <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>";
                     }
-                                        // <button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    
+                    $action .= "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' title='Resign' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+
+                    return $action;
                     
                 })
                 ->addColumn('store', function ($item) {
@@ -763,5 +765,53 @@ class UserPromoterController extends Controller
         $user->destroy($id);
 
         return response()->json($id);
+    }
+
+    public function resign($id)
+    {
+        /* Deleting related to user */
+
+        /* Delete if any relation exist in employee store */
+        $empStore = EmployeeStore::where('user_id', $id);
+        if($empStore->count() > 0){
+            $empStore->delete();
+        }
+
+        // News Reads
+        $newsRead = NewsRead::where('user_id', $id);
+        if($newsRead->count() > 0){
+            $newsRead->delete();
+        }
+
+        // Guidelines Reads
+        $guidelinesRead = ProductKnowledgeRead::where('user_id', $id);
+        $updateGuidelinesRead = $guidelinesRead->get();
+        if($guidelinesRead->count() > 0){
+            
+            // update total read Guidelines
+            foreach ($updateGuidelinesRead as $key => $value) {
+                $guidelines = ProductKnowledge::where('id',$value->productknowledge_id)->decrement('total_read');
+            }
+
+            $guidelinesRead->delete();
+        }
+
+
+        // Attendance
+        $attendance = Attendance::where('user_id', $id);
+        $cek = [];
+            foreach ($attendance as $key => $value) {
+                $attendanceDetail = AttendanceDetail::where('attendance_id', $value->id);
+                $cek[] = $value;
+                if($attendanceDetail->count() > 0){
+                    $attendanceDetail->delete();
+                }            
+            }
+        if($attendance->count() > 0){
+            $attendance->delete();
+        }
+
+        return response()->json(['url' => url('userpromoter')]);
+        // return response()->json($id);
     }
 }

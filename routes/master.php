@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('userpromoter/edit/{id}', 'UserPromoterController@edit');
         Route::patch('userpromoter/{id}', 'UserPromoterController@update');
         Route::patch('userpromoter/openhp/{id}', 'UserPromoterController@updatehp');
-        Route::delete('userpromoter/{id}', 'UserPromoterController@destroy');
+        Route::delete('userpromoter/{id}', 'UserPromoterController@resign');
 
         /** Sell In **/
         Route::get('sellin', ['as'=>'sellin', 'uses'=>'Master\SellInController@index']);

@@ -1,4 +1,4 @@
-<!-- @extends('layouts.app')
+@extends('layouts.app')
 
 @section('header')
 <div class="page-head">
@@ -220,31 +220,45 @@
 	                        	<hr>
 	                        </div>
 
+	                        <div class="form-group display-hide newstore">
+                        		<div style="padding-left: 4%;">
+	                        		<a class="btn btn-md green" href="{{ url('store/create') }}" target="_blank">
+				                		<i class="fa fa-plus"></i> New Store
+				                	</a>
+			                	</div>
+                        	</div>
+
 	                        <div id="oneStoreContent" class="display-hide">
+	                        	
 		                        <div class="form-group">
-		                          <label class="col-sm-2 control-label">Employee's Store</label>
-		                          <div class="col-sm-9">
+			                        <label class="col-sm-2 control-label">Employee's Store</label>
+			                        <div class="col-sm-9">
 
-		                          <div class="input-group" style="width: 100%;">
-		     
-		                                <select class="select2select" name="store_id" id="store" required="required"></select>
-		                                
-		                                <span class="input-group-addon display-hide">
-		                                    <i class="fa"></i>
-		                                </span>
+				                        <div class="input-group" style="width: 100%;">
+			     
+			                                <select class="select2select" name="store_id" id="store" required="required"></select>
+			                                
+			                                <span class="input-group-addon display-hide">
+			                                    <i class="fa"></i>
+			                                </span>
 
-		                            </div>
-		                            
-		                          </div>
-		                        </div>
+				                        </div>
+
+				                        
+			                            
+			                        </div>
+			                        
+			                    </div>
 	                        </div>
+                        </div>
 
 	                        <div id="multipleStoreContent" class="display-hide">
+	                        	
 		                        <div class="form-group">
 		                          <label class="col-sm-2 control-label">Employee's Store</label>
 		                          <div class="col-sm-9">
 
-		                          <div class="input-group" style="width: 100%;">
+		                          	<div class="input-group col-sm-12" style="float: left;">
 		     
 		                                <select class="select2select" name="store_ids[]" id="stores" multiple="multiple" required="required"></select>
 		                                
@@ -253,7 +267,48 @@
 		                                </span>
 
 		                            </div>
-		                            
+
+		                            <div class="input-group col-sm-2 display-hide newstore" style="float: right;padding-left: 10px;">
+			                        	<p class="btn btn-md green">
+		                                	Add
+		                                </p>
+			                        </div>
+
+		                            <hr>
+			                        <div class="portlet light bg-inverse display-hide newstore">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span class="caption-subject font-green-haze bold uppercase">Stores</span>
+                                                <span class="caption-helper">Selected (#)</span>
+                                            </div>
+                                            <div class="tools">
+                                                <a href="" class="expand" data-original-title="" title=""> </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body form" style="display: none;">
+                                            
+                                            <div class="row">
+					                            <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search for names.." title="Type in a name">
+					                            <ul id="myUL">
+					                            </ul>
+					                        </div>
+                                            
+                                        </div>
+                                    </div>
+				                    <div class="box box-default collapsed-box col-sm-12">
+				                        
+			                        </div>
+			                        <!-- /.box-header -->
+			                        <div class="box-body" style="">
+			                          
+			                          <!-- /.row -->
+			                        </div>
+			                        <!-- /.box-body -->
+			                        <div class="box-footer no-padding" style="">
+			                          
+			                        </div>
+			                        <!-- /.footer -->
 		                          </div>
 		                        </div>
 	                        </div>
@@ -620,11 +675,11 @@
 				//Set Store
 		    	setStore(status);
 		    	if(role[1] == 'Demonstrator DA'){
-		    		// if($('input[name=_method]').val() != "PATCH"){
+		    		if($('input[name=_method]').val() != "PATCH"){
 			    		$('input[type=radio][name=status]').prop('checked', false);
 			    		$('#storeContent').addClass('display-hide');
 			    		// console.log('ADD');
-					// }
+					}
 					$('#statusContent').removeClass('display-hide');
 					$("#dedicate").removeAttr("required");
 					$('#dedicatePromoter').addClass('display-hide');
@@ -780,5 +835,153 @@
 
 		});
 
-	</script>	
-@endsection -->
+	</script>
+
+	<!-- New Multiple Store -->
+	<script>
+		var addNumber = 0;
+		$(document).ready(function () {
+		  $.ajaxSetup({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    }
+		  });
+
+		  // $('[data-toggle="tooltip"]').tooltip(); 
+		  $('#addProduct').tooltip();
+
+		  var idx = 0;
+		  $("#addProduct").click(function(){
+		    var selectedProduct = $('#inputProduct').val();
+		        
+		    if (selectedProduct != '' && selectedProduct != null) {
+		      var temp = selectedProduct.split('`');
+		      var inputId = temp[0];
+		      var inputValue = temp[1];
+		      var hiddenInput = "<input type='hidden' name='product_id[]' value='"+inputId+"'>";
+		      $("#myUL").append("<li><div><span>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+")' class='btn btn-danger delete fa fa-trash-o liDelete"+idx+"'> delete</p></div></li>");
+		      var x = document.getElementsByClassName("liDelete"+idx+"");
+		      x[0].setAttribute('onClick', "deleteItem('p"+idx+"')");
+		      idx++;
+		      addNumber++;
+		      $('#cek').val('ok');
+		      select2Reset($('#inputProduct'));
+		      $(this).attr('data-toggle','tooltip');
+		      $(this).attr('title','Select Product First');
+		      $(this).attr('data-placement','top');
+		      $(this).attr('data-original-title','Please Select Product First');
+		      $('.box-default').removeClass('collapsed-box');
+		    } 
+		      
+		  });
+
+		  $(document.body).on("change","#inputProduct",function(){
+		    var input = $('#inputProduct').val();
+		    if (input != '' && input != null) {
+		      $('#addProduct').removeAttr('data-toggle');
+		      $('#addProduct').removeAttr('title');
+		      $('#addProduct').removeAttr('data-placement');
+		      $('#addProduct').removeAttr('data-original-title');
+		    } else {
+		      $('#addProduct').attr('data-toggle','tooltip');
+		      $('#addProduct').attr('title','Select Product First');
+		      $('#addProduct').attr('data-placement','top');
+		      $('#addProduct').attr('data-original-title','Please Select Product First');
+		    }
+		  });
+
+		  $('#inputProduct').select2(setOptions('{{ route("data.product") }}', 'Select Product, then Add', function (params) {
+		      return filterData('name', params.term);
+		  }, function (data, params) {
+		      return {
+		          results: $.map(data, function (obj) {                                
+		              return {id: obj.id +'`'+ obj.name, text: obj.name}
+		          })
+		      }
+		  }));
+
+		});
+
+
+		@if (!empty($product)) 
+		  $('.box-default').removeClass('collapsed-box');
+		  $('#cek').val('ok');
+		  @foreach ($product as $key => $value)
+		    @php
+		      $index = 1000 + $key;
+		      $hiddenInput = "<input type='hidden' name='product_id[]' value='".$value->id."'>";
+		    @endphp
+		    addNumber++;
+		      $("#myUL").append("<li><div><span>{{ @$value->name }}</span>{!! @$hiddenInput !!} <p id='p{{ @$index }}' onClick='deleteItem(p{{ @$index }})' class='btn btn-danger delete fa fa-trash-o liDelete{{ @$index }}'> delete</p></div></li>");
+		      var x = document.getElementsByClassName("liDelete{{ @$index }}");
+		      x[0].setAttribute('onClick', "deleteItem('p{{ @$index }}')");
+
+		  @endforeach
+		  
+		@endif
+
+
+		function deleteItem(id) {
+		  $('#'+id).parent().parent().remove();
+		  addNumber--;
+		  if (addNumber == 0) {
+		    $('#cek').val('');
+		  }
+		}
+
+		function searchFunction() {
+		    var input, filter, ul, li, a, i;
+		    input = document.getElementById("myInput");
+		    filter = input.value.toUpperCase();
+		    ul = document.getElementById("myUL");
+		    li = ul.getElementsByTagName("li");
+		    for (i = 0; i < li.length; i++) {
+		        a = li[i].getElementsByTagName("span")[0];
+		        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+		            li[i].style.display = "";
+		        } else {
+		            li[i].style.display = "none";
+
+		        }
+		    }
+		}
+		</script>
+	<style type="text/css">
+		#myInput {
+		  background-image: url('{{ asset('image/searchicon.png') }}');
+		  background-position: 10px 12px;
+		  background-repeat: no-repeat;
+		  width: 100%;
+		  font-size: 13px;
+		  padding: 12px 20px 12px 40px;
+		  border: 1px solid #ddd;
+		  margin-bottom: 12px;
+		}
+
+		#myUL {
+		  list-style-type: none;
+		  padding: 0;
+		  margin: 0;
+		}
+
+		#myUL li div {
+		  border: 1px solid #ddd;
+		  margin-top: -1px; /* Prevent double borders */
+		  background-color: #f6f6f6;
+		  padding: 12px;
+		  text-decoration: none;
+		  font-size: 13px;
+		  color: black;
+		  display: block
+		}
+
+		#myUL li div p {
+		  float: right;
+		}
+
+		#myUL li div:hover:not(.header) {
+		  background-color: #eee;
+		}
+	</style>
+	<!-- END New Multiple Store -->
+@endsection
