@@ -18,6 +18,7 @@ use App\Store;
 use App\EmployeeStore;
 use App\User;
 use App\DmArea;
+use App\TrainerArea;
 use App\RsmRegion;
 use App\Attendance;
 use DB;
@@ -757,7 +758,7 @@ class AchievementController extends Controller
 
             $result = $this->getSupervisorCollection($supervisor, $spvdemo);
 
-            return response()->json($result);
+            // return response()->json($result);
 
             foreach ($result as $item) {
 
@@ -800,8 +801,8 @@ class AchievementController extends Controller
                 // $item['target'] = $target;
                 // $item['actual'] = $actual;
 
-                // $item['target'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[0];
-                // $item['actual'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[1];
+                $item['target'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[0];
+                $item['actual'] = $this->getAchievementForSupervisorWithParamAlt($sell_param, $item['id'])[1];
 
             }
 
@@ -809,11 +810,16 @@ class AchievementController extends Controller
 
         }else if($param == 3) { // BY AREA
 
-            $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+            $areaIds = [];
+            if($user->role->role_group == 'DM'){
+                $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+            }else if($user->role->role_group == 'Trainer'){
+                $areaIds = TrainerArea::where('user_id', $user->id)->pluck('area_id');
+            }
             // $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
             // if(in_array("HYBRID", $dedicates)){
             //     array_push($dedicates, "DA", "PC");
-            // }
+            // }            
 
             $supervisor = User::where(function ($query) {
                 // return $query->where('role', 'Supervisor')->orWhere('role', 'Supervisor Hybrid');
@@ -829,9 +835,15 @@ class AchievementController extends Controller
                     // })
                     ->get();
 
-            $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
-                                return $query->whereIn('areas.id', $areaIds);
-                           })->pluck('user_id');
+            $demoStoreIds = [];
+            if($user->role->role_group != 'Trainer Demo'){
+                $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
+                                    return $query->whereIn('areas.id', $areaIds);
+                               })->pluck('user_id');
+            }else{ // TRAINER DEMO
+                $demoStoreIds = SpvDemo::pluck('user_id');
+            }
+
             $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
 
             $result = $this->getSupervisorCollection($supervisor, $spvdemo);
@@ -1080,7 +1092,11 @@ class AchievementController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+        if($user->role->role_group == 'DM'){
+                $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+            }else if($user->role->role_group == 'Trainer'){
+                $areaIds = TrainerArea::where('user_id', $user->id)->pluck('area_id');
+            }
 //         $dedicates = DmArea::where('user_id', $user->id)->pluck('dedicate')->toArray();
 // //        $area = Area::whereIn('id', $areaIds)->get();
 //         if(in_array("HYBRID", $dedicates)){
@@ -1099,15 +1115,51 @@ class AchievementController extends Controller
         $totalTargetPF = 0;
         $totalActualPF = 0;
 
-        foreach ($area as $data) {
+        if($user->role->role_group != 'Trainer Demo'){
 
-            $summary = SummaryTargetActual::where('area_id', $data['id'])
-                        ->where('partner', 0)
+            foreach ($area as $data) {
+
+                $summary = SummaryTargetActual::where('area_id', $data['id'])
+                            ->where('partner', 0)
+                            ->where('sell_type', 'Sell In')->get();
+
+                if($param == 2){
+                    $summary = SummaryTargetActual::where('area_id', $data['id'])
+                                ->where('partner', 0)
+                                ->where('sell_type', 'Sell Out')->get();
+                }
+
+                if($summary) {
+
+                    foreach ($summary as $detail) {
+                        
+                        $totalTarget += $detail->target_da;
+                        $totalTarget += $detail->target_pc;
+                        $totalTarget += $detail->target_mcc;
+
+                        $totalActual += $detail->actual_da;
+                        $totalActual += $detail->actual_pc;
+                        $totalActual += $detail->actual_mcc;
+
+                        $totalTargetPF += $detail->target_pf_da;
+                        $totalTargetPF += $detail->target_pf_pc;
+                        $totalTargetPF += $detail->target_pf_mcc;
+
+                        $totalActualPF += $detail->actual_pf_da;
+                        $totalActualPF += $detail->actual_pf_pc;
+                        $totalActualPF += $detail->actual_pf_mcc;
+
+                    }                
+                }
+            }
+
+        }else{ // TRAINER DEMO
+
+            $summary = SummaryTargetActual::where('user_role', 'Demonstrator')
                         ->where('sell_type', 'Sell In')->get();
 
             if($param == 2){
-                $summary = SummaryTargetActual::where('area_id', $data['id'])
-                            ->where('partner', 0)
+                $summary = SummaryTargetActual::where('user_role', 'Demonstrator')
                             ->where('sell_type', 'Sell Out')->get();
             }
 
@@ -1133,6 +1185,7 @@ class AchievementController extends Controller
 
                 }                
             }
+
         }
 
         return response()->json([

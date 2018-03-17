@@ -138,24 +138,24 @@ class SuggestionOrderController extends Controller
                         }
                         $poNeededQty = floor($poNeededValue / $this->getPriceCurrent($store_id, $value));
 
-                       $test = ([
-                           'apm' => $apm,
-                           'apm per day' => round($apmPerDay,2),
-                           'percent kontribusi produk' => $percentProduct,
-                           'total target toko' => $totalTarget,
-                           '%kontribusi * total target' => $contribution,
-                           'leadtime value' => $leadtime,
-                           'stock value' => $stock,
-                           'sell in value' => $sellIn,
-                           'sell out value' => $sellOut,
-                           'total stock' => $totalStock,
-                           'po needed value' => $poNeededValue,
-                           'po needed qty' => $poNeededQty,
-                       ]);
+                       // $test = ([
+                       //     'apm' => $apm,
+                       //     'apm per day' => round($apmPerDay,2),
+                       //     'percent kontribusi produk' => $percentProduct,
+                       //     'total target toko' => $totalTarget,
+                       //     '%kontribusi * total target' => $contribution,
+                       //     'leadtime value' => $leadtime,
+                       //     'stock value' => $stock,
+                       //     'sell in value' => $sellIn,
+                       //     'sell out value' => $sellOut,
+                       //     'total stock' => $totalStock,
+                       //     'po needed value' => $poNeededValue,
+                       //     'po needed qty' => $poNeededQty,
+                       // ]);
 
-                       $products->push($test);
+                       // $products->push($test);
 
-                       continue;
+                       // continue;
 
                         if ($poNeededQty > 0) {
 
