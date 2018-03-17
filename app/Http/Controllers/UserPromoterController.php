@@ -137,13 +137,22 @@ class UserPromoterController extends Controller
                         $spvDemo = '';
 
                         if(count($newSpvDemoIds) > 0){
+                            $check = 0;
                             foreach ($newSpvDemoIds as $key => $value){
-                                $user = User::where('id', $value)->first()->name;
-
-                                if ($key > 0) {
+                                $user = User::where('id', $value)->first();
+                                $userTmp = (isset($user)) ? $user->name : '';
+                                
+                                
+                                if ($check > 0 && $userTmp != '') {
                                     $spvDemo .= ', ';
                                 }
-                                $spvDemo .= $user;
+                                
+                                
+                                if (isset($userTmp) && !empty($userTmp) && $userTmp != ''){
+                                    $spvDemo .= $userTmp;
+                                    $check = 1;
+                                }
+                                
                             }
                         }
 

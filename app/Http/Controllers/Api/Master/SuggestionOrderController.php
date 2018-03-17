@@ -26,6 +26,16 @@ class SuggestionOrderController extends Controller
     use ApmTrait;
     use StringTrait;
 
+    public function mailTes()
+    {   
+        $data['email'] = "teserahaaja@gmail.com";
+        $data['store'] = "XCY";
+        Mail::send('mail.tes', $data, function($message) use ($data){
+            $message->to($data['email']);
+            $message->subject('Suggestion Order (SO) Toko '.$data['store']);
+        });
+    }
+
     public function oos(Request $request){
         $user = JWTAuth::parseToken()->authenticate();
 
