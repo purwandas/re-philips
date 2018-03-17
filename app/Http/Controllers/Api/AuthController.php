@@ -126,6 +126,8 @@ class AuthController extends Controller
         if($user->role->role_group == 'Salesman Explorer') $access = "Salesman";
         if($user->role->role_group == 'Supervisor') $access = "Supervisor";
         if($user->role->role_group == 'DM') $access = "DM";
+        if($user->role->role_group == 'Trainer') $access = "DM";
+        if($user->role->role_group == 'Trainer Demo') $access = "DM";
         if($user->role->role_group == 'RSM') $access = "RSM";
         if($user->role->role_group == 'REM') $access = "REM";
 

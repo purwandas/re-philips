@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Master;
 use App\Attendance;
 use App\AttendanceDetail;
 use App\DmArea;
+use App\TrainerArea;
 use App\EmployeeStore;
 use App\Reports\SummaryTargetActual;
 use App\RsmRegion;
@@ -579,7 +580,14 @@ class PromoterController extends Controller
 
         }else if($param == 3) { // BY AREA
 
-            $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+            // SET AREA BY DM OR TRAINER
+
+            $areaIds = [];
+            if($user->role->role_group == 'DM'){
+                $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+            }else if($user->role->role_group == 'Trainer'){
+                $areaIds = TrainerArea::where('user_id', $user->id)->pluck('area_id');
+            }   
 
             $supervisor = User::where(function ($query) {
                     return $query->whereHas('role', function($query2){
@@ -590,9 +598,15 @@ class PromoterController extends Controller
                         return $query->whereIn('id', $areaIds);
                     })->get();
 
-            $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
-                                return $query->whereIn('id', $areaIds);
-                           })->pluck('user_id');
+            $demoStoreIds = [];
+            if($user->role->role_group != 'Trainer Demo'){
+                $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
+                                    return $query->whereIn('areas.id', $areaIds);
+                               })->pluck('user_id');
+            }else{ // TRAINER DEMO
+                $demoStoreIds = SpvDemo::pluck('user_id');
+            }
+            
             $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
 
 //            return response()->json($spvdemo);

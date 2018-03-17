@@ -245,7 +245,12 @@ class StoreController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+        $areaIds = [];
+        if($user->role->role_group == 'DM'){
+                $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
+            }else if($user->role->role_group == 'Trainer'){
+                $areaIds = TrainerArea::where('user_id', $user->id)->pluck('area_id');
+            }
 
         $data = Store::whereHas('district.area', function ($query) use ($areaIds){
                     return $query->whereIn('id', $areaIds);
@@ -253,6 +258,15 @@ class StoreController extends Controller
                 ->join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+
+        if($user->role->role_group == 'Trainer Demo'){
+            $storeIds = SpvDemo::pluck('store_id');
+
+            $data = Store::whereIn('id', $storeIds)
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
+        }
 
     	return response()->json($data);
 
