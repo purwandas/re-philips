@@ -363,7 +363,7 @@
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
-	                    return {id: obj.id, text: obj.name}
+	                    return {id: obj.id, text: obj.name + ' - ' + obj.channel_name + ' - ' + obj.globalchannel_name}
 	                })
 	            }
 	        }));   
@@ -436,7 +436,7 @@
             });
 
             // Set select2 if method PATCH            
-	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }}");
+	       setSelect2IfPatch($("#subchannel"), "{{ @$data->subchannel_id }}", "{{ @$data->subchannel->name }} - {{ @$data->subchannel->channel->name }} - {{ @$data->subchannel->channel->globalchannel->name }}");
 	       setSelect2IfPatch($("#district"), "{{ @$data->district_id }}", "{{ @$data->district->name }}");
 	       setSelect2IfPatch($("#classification"), "{{ @$data->classification->id }}", "{{ @$data->classification->classification }}");
 
