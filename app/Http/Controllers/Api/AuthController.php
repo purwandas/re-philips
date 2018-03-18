@@ -323,4 +323,25 @@ class AuthController extends Controller
 		return response()->json(['status' => false, 'message' => 'token kosong'], 200);
 	}
 
+	public function changePassword(Request $request){
+
+	    $user = JWTAuth::parseToken()->authenticate();
+
+        $userData = User::where('id', $user->id)->first();
+        if (!isset($userData)) {
+        	return response()->json(['status' => false, 'message' => 'User not found'], 404);
+        }
+
+        $userData->update([
+            'password' => bcrypt($request->password),
+        ]);
+
+        if ($userData) {
+        	return response()->json(['status' => true, 'message' => 'Password berhasil di ubah'], 200);
+        }
+
+        return response()->json(['status' => false, 'message' => 'Password gagal di ubah'], 500);
+
+    }
+
 }
