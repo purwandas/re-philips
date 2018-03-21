@@ -30,6 +30,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('/user', 'Api\AuthController@getUser');
     Route::post('/change-password', 'Api\AuthController@changePassword');
     Route::post('/fcm-token', 'Api\AuthController@getFcmTokenToDB');
+    Route::get('/check-resign', 'Api\AuthController@checkResign');
 
 	/**
      * Master Module(s)

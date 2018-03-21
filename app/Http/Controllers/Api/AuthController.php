@@ -44,11 +44,16 @@ class AuthController extends Controller
 		// Get user data
 		$user = Auth::user();
 
+		// Check if user was resign
+		if($user->is_resign == 1){
+			return response()->json(['status' => 'false', 'message' => 'Maaf anda berada dalam status resign.' ], 200);
+		}
+
 		// If user has not login
 		if ( $user->status_login != 'Login') {
 			// if hp login pertama berbeda
 			if ( $user->hp_id != null and $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
-				return response()->json(['status' => 'false', 'message' => 'cant_login_in_other_HP' ], 200);
+				return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
 			}
 			// update status, jenis_hp and id hp ketika null
 			if ( $user->hp_id == null ) {
@@ -61,7 +66,7 @@ class AuthController extends Controller
 
 		} else {
 			// user has login
-			return response()->json(['status' => 'false', 'message' => 'user_has_been_login'], 200);
+			return response()->json(['status' => 'false', 'message' => 'User has been logged in'], 200);
 		}
 
 		// Check Promoter Group
@@ -323,6 +328,7 @@ class AuthController extends Controller
 		return response()->json(['status' => false, 'message' => 'token kosong'], 200);
 	}
 
+
 	public function changePassword(Request $request){
 
 	    $user = JWTAuth::parseToken()->authenticate();
@@ -341,6 +347,14 @@ class AuthController extends Controller
         }
 
         return response()->json(['status' => false, 'message' => 'Password gagal di ubah'], 500);
+
+    }
+
+    public function checkResign(){
+
+    	$user = JWTAuth::parseToken()->authenticate();
+
+    	return response()->json(['is_resign' => $user->is_resign]);
 
     }
 

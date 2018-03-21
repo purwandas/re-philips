@@ -32,10 +32,19 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('userpromoter', 'UserPromoterController@index');
         Route::get('userpromoter/create', 'UserPromoterController@create');
         Route::post('userpromoter', 'UserPromoterController@store');
+        Route::get('userpromoter/get-data/{id}', 'UserPromoterController@getData');
         Route::get('userpromoter/edit/{id}', 'UserPromoterController@edit');
         Route::patch('userpromoter/{id}', 'UserPromoterController@update');
         Route::patch('userpromoter/openhp/{id}', 'UserPromoterController@updatehp');
         Route::delete('userpromoter/{id}', 'UserPromoterController@resign');
+
+        /** Resign **/
+        Route::get('resign', 'Master\ResignController@index');
+        Route::post('resign', 'UserPromoterController@resign');
+
+        /** Resign **/
+        Route::get('rejoin', 'Master\ResignController@indexRejoin');
+        Route::post('rejoin', 'UserPromoterController@rejoin');
 
         /** Sell In **/
         Route::get('sellin', ['as'=>'sellin', 'uses'=>'Master\SellInController@index']);

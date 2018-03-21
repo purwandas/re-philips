@@ -18,18 +18,30 @@ trait AchievementTrait {
 
     public function dataNational(){
 
-        $region = Region::whereIn('id', [1, 2, 3, 4])->get();
+        $region = Region::all();
 
         $totalTargetSellIn = 0;
         $totalActualSellIn = 0;
 
         foreach ($region as $data) {
 
-            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell In')->first();
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('partner', 0)->where('sell_type', 'Sell In')->get();
 
             if($summary) {
-                $totalTargetSellIn += $summary->sum_target_region;
-                $totalActualSellIn += $summary->sum_actual_region;
+                // $totalTargetSellIn += $summary->sum_target_region;
+                // $totalActualSellIn += $summary->sum_actual_region;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellIn += $detail->target_da;
+                    $totalTargetSellIn += $detail->target_pc;
+                    $totalTargetSellIn += $detail->target_mcc;
+
+                    $totalActualSellIn += $detail->actual_da;
+                    $totalActualSellIn += $detail->actual_pc;
+                    $totalActualSellIn += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -38,11 +50,23 @@ trait AchievementTrait {
 
         foreach ($region as $data) {
 
-            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell Out')->first();
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('partner', 0)->where('sell_type', 'Sell Out')->get();
 
             if($summary) {
-                $totalTargetSellOut += $summary->sum_target_region;
-                $totalActualSellOut += $summary->sum_actual_region;
+                // $totalTargetSellOut += $summary->sum_target_region;
+                // $totalActualSellOut += $summary->sum_actual_region;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellOut += $detail->target_da;
+                    $totalTargetSellOut += $detail->target_pc;
+                    $totalTargetSellOut += $detail->target_mcc;
+
+                    $totalActualSellOut += $detail->actual_da;
+                    $totalActualSellOut += $detail->actual_pc;
+                    $totalActualSellOut += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -71,11 +95,23 @@ trait AchievementTrait {
 
         foreach ($region as $data) {
 
-            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell In')->first();
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('partner', 0)->where('sell_type', 'Sell In')->get();
 
             if($summary) {
-                $totalTargetSellIn += $summary->sum_target_region;
-                $totalActualSellIn += $summary->sum_actual_region;
+                // $totalTargetSellIn += $summary->sum_target_region;
+                // $totalActualSellIn += $summary->sum_actual_region;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellIn += $detail->target_da;
+                    $totalTargetSellIn += $detail->target_pc;
+                    $totalTargetSellIn += $detail->target_mcc;
+
+                    $totalActualSellIn += $detail->actual_da;
+                    $totalActualSellIn += $detail->actual_pc;
+                    $totalActualSellIn += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -84,11 +120,23 @@ trait AchievementTrait {
 
         foreach ($region as $data) {
 
-            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('sell_type', 'Sell Out')->first();
+            $summary = SummaryTargetActual::where('region_id', $data['id'])->where('partner', 0)->where('sell_type', 'Sell Out')->get();
 
             if($summary) {
-                $totalTargetSellOut += $summary->sum_target_region;
-                $totalActualSellOut += $summary->sum_actual_region;
+                // $totalTargetSellOut += $summary->sum_target_region;
+                // $totalActualSellOut += $summary->sum_actual_region;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellOut += $detail->target_da;
+                    $totalTargetSellOut += $detail->target_pc;
+                    $totalTargetSellOut += $detail->target_mcc;
+
+                    $totalActualSellOut += $detail->actual_da;
+                    $totalActualSellOut += $detail->actual_pc;
+                    $totalActualSellOut += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -127,11 +175,23 @@ trait AchievementTrait {
 
         foreach ($stores as $data) {
 
-            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell In')->first();
+            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('partner', 0)->where('sell_type', 'Sell In')->get();
 
             if($summary) {
-                $totalTargetSellIn += $summary->sum_target_store;
-                $totalActualSellIn += $summary->sum_actual_store;
+                // $totalTargetSellIn += $summary->sum_target_store;
+                // $totalActualSellIn += $summary->sum_actual_store;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellIn += $detail->target_da;
+                    $totalTargetSellIn += $detail->target_pc;
+                    $totalTargetSellIn += $detail->target_mcc;
+
+                    $totalActualSellIn += $detail->actual_da;
+                    $totalActualSellIn += $detail->actual_pc;
+                    $totalActualSellIn += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -140,11 +200,23 @@ trait AchievementTrait {
 
         foreach ($stores as $data) {
 
-            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell Out')->first();
+            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('partner', 0)->where('sell_type', 'Sell Out')->get();
 
             if($summary) {
-                $totalTargetSellOut += $summary->sum_target_store;
-                $totalActualSellOut += $summary->sum_actual_store;
+                // $totalTargetSellOut += $summary->sum_target_store;
+                // $totalActualSellOut += $summary->sum_actual_store;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellOut += $detail->target_da;
+                    $totalTargetSellOut += $detail->target_pc;
+                    $totalTargetSellOut += $detail->target_mcc;
+
+                    $totalActualSellOut += $detail->actual_da;
+                    $totalActualSellOut += $detail->actual_pc;
+                    $totalActualSellOut += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -173,11 +245,23 @@ trait AchievementTrait {
 
         foreach ($store as $data) {
 
-            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell In')->first();
+            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell In')->get();
 
             if($summary) {
-                $totalTargetSellIn += $summary->sum_target_store;
-                $totalActualSellIn += $summary->sum_actual_store;
+                // $totalTargetSellIn += $summary->sum_target_store;
+                // $totalActualSellIn += $summary->sum_actual_store;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellIn += $detail->target_da;
+                    $totalTargetSellIn += $detail->target_pc;
+                    $totalTargetSellIn += $detail->target_mcc;
+
+                    $totalActualSellIn += $detail->actual_da;
+                    $totalActualSellIn += $detail->actual_pc;
+                    $totalActualSellIn += $detail->actual_mcc;
+
+                }
             }
         }
 
@@ -186,11 +270,23 @@ trait AchievementTrait {
 
         foreach ($store as $data) {
 
-            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell Out')->first();
+            $summary = SummaryTargetActual::where('storeId', $data['id'])->where('sell_type', 'Sell Out')->get();
 
             if($summary) {
-                $totalTargetSellOut += $summary->sum_target_store;
-                $totalActualSellOut += $summary->sum_actual_store;
+                // $totalTargetSellOut += $summary->sum_target_store;
+                // $totalActualSellOut += $summary->sum_actual_store;
+
+                foreach ($summary as $detail) {
+                    
+                    $totalTargetSellOut += $detail->target_da;
+                    $totalTargetSellOut += $detail->target_pc;
+                    $totalTargetSellOut += $detail->target_mcc;
+
+                    $totalActualSellOut += $detail->actual_da;
+                    $totalActualSellOut += $detail->actual_pc;
+                    $totalActualSellOut += $detail->actual_mcc;
+
+                }
             }
         }
 
