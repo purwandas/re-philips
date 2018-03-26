@@ -64,6 +64,7 @@
                                   <option value="HIE">HIE</option>
                                   <option value="SMD Additional">SMD Additional</option>
                                   <option value="ASC">ASC</option>
+                                  <option value="Master">Master</option> 
                                 </select>
                                 
                                 <span class="input-group-addon display-hide">

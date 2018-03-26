@@ -102,6 +102,13 @@ $(document).on("click", ".open-employee-store-modal", function () {
 
             $.each(data, function() {
 
+                var storeName2 = '';
+                var storeName2B = '-';
+                if(this.store_name_2 != null){
+                    storeName2 = '( ' + this.store_name_2 + ') ';
+                    storeName2B = this.store_name_2;
+                }
+
                 if(this.spv_name != "") {
 
                     content.innerHTML += '<div class="list-todo-line blue"></div>' +
@@ -113,7 +120,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<div class="list-todo-item grey">' +
                         '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.store_id + this.id + '"  aria-expanded="false">' +
                         '<div class="list-toggle done uppercase">' +
-                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')'+ '</div>' +
+                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + storeName2 + '</div>' +
                         '</div>' +
                         '</a>' +
                         '<div class="task-list panel-collapse collapse" id="' + this.store_id + this.id + '" aria-expanded="false" style="height: 0px;">' +
@@ -128,7 +135,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
                         '</li>' +
                         '<li>' +
-                        '<h5> Customer Code : ' + this.store_name_2 + '</h5>' +
+                        '<h5> Customer Code : ' + storeName2B + '</h5>' +
                         '</li>' +
                         '<li>' +
                         '<h5> Region : ' + this.region_name + '</h5>' +
@@ -161,7 +168,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<div class="list-todo-item grey">' +
                         '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.store_id + this.id + '"  aria-expanded="false">' +
                         '<div class="list-toggle done uppercase">' +
-                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')' +'</div>' +
+                        '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + storeName2 +'</div>' +
                         '</div>' +
                         '</a>' +
                         '<div class="task-list panel-collapse collapse" id="' + this.store_id + this.id + '" aria-expanded="false" style="height: 0px;">' +
@@ -176,7 +183,7 @@ $(document).on("click", ".open-employee-store-modal", function () {
                         '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
                         '</li>' +
                         '<li>' +
-                        '<h5> Customer Code : ' + this.store_name_2 + '</h5>' +
+                        '<h5> Customer Code : ' + storeName2B + '</h5>' +
                         '</li>' +
                         '<li>' +
                         '<h5> Region : ' + this.region_name + '</h5>' +
@@ -221,6 +228,13 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
         if(data) {
             $.each(data, function() {
 
+                var storeName2 = '';
+                var storeName2B = '-';
+                if(this.store_name_2 != null){
+                    storeName2 = '( ' + this.store_name_2 + ') ';
+                    storeName2B = this.store_name_2;
+                }
+
                 content.innerHTML += 
                 '<div class="list-todo-line blue"></div>' +
                 '<ul>' +
@@ -231,7 +245,7 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
                         '<div class="list-todo-item grey">' +
                             '<a class="list-toggle-container font-white collapsed" data-toggle="collapse" href="#' + this.store_id + this.id + '"  aria-expanded="false">' +
                                 '<div class="list-toggle done uppercase">' +
-                                    '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + ' (' + this.store_name_2 + ')' + 
+                                    '<div class="list-toggle-title bold">' + this.store_id + ' - ' + this.store_name_1 + storeName2 + 
                                     '</div>' +
                                 '</div>' +
                             '</a>' +
@@ -256,7 +270,7 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
                                                     '<h5> Store Name 1 : ' + this.store_name_1 + '</h5>' +
                                                 '</li>' +
                                                 '<li>' +
-                                                    '<h5> Customer Code : ' + this.store_name_2 + '</h5>' +
+                                                    '<h5> Customer Code : ' + storeName2B + '</h5>' +
                                                 '</li>' +
                                                 '<li>' +
                                                     '<h5> Store ID : ' + this.storeId + '</h5>' +
@@ -298,6 +312,12 @@ $(document).on("click", ".open-history-employee-store-modal", function () {
             $.each(data2, function() {
                     // console.log('kampret: serID ='+this.user_id);
                     // content.innerHTML += this.year+'<br>';
+
+                    var storeName2 = '';
+                    if(this.store_name_2 != null){
+                        storeName2 = ' - ' + this.store_name_2;
+                    }
+
                     if (cek > 0) {
                         bgAktif = '';
                     };
@@ -327,7 +347,7 @@ $(document).on("click", ".open-history-employee-store-modal", function () {
                                                          var myStore = this.stores;
                                                           $.each(this.stores.store_id, function() {
                                                             // console.log('poiuytrew');
-                                                            penampung += myStore.store_id[index_s] + ' - ' + myStore.store_name_1[index_s] + ' - ' + myStore.store_name_2[index_s] +' <br> ';  
+                                                            penampung += myStore.store_id[index_s] + ' - ' + myStore.store_name_1[index_s] + storeName2 +' <br> ';  
                                                             index_s++;
                                                         });
 
