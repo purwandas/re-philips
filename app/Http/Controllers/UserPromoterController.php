@@ -67,8 +67,8 @@ class UserPromoterController extends Controller
         $filter = $data;
 
         /* If filter */
-            if($request['byName']){
-                $filter = $filter->where('users.id', $request['byName']);
+            if($request['byName2']){
+                $filter = $filter->where('users.id', $request['byName2']);
             }
 
             if($request['byNik']){
@@ -314,30 +314,32 @@ class UserPromoterController extends Controller
                 SE save ke employeestore, tanpa pilih dedicate
         */
             
-        $user = User::create($request->all());
+        // $user = User::create($request->all());
 
         // /* Insert user relation */
-       
+       $status = '';
             /* Employee One Store */
-            if($request['store_id']){
+            if($request['store_id'] && $request['status'] == 'stay'){
+                $status .= "stay";
                 // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-                EmployeeStore::create([
-                    'user_id' => $user->id,
-                    'store_id' => $request['store_id'],
-                ]);
+                // EmployeeStore::create([
+                //     'user_id' => $user->id,
+                //     'store_id' => $request['store_id'],
+                // ]);
             }
 
             /* Employee Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                    EmployeeStore::create([
-                        'user_id' => $user->id,
-                        'store_id' => $storeId,
-                    ]);
-                }
+            if($request['store_ids'] && $request['status'] == 'mobile'){
+                $status .= 'mobile';
+                // foreach ($request['store_ids'] as $storeId) {
+                //     // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+                //     EmployeeStore::create([
+                //         'user_id' => $user->id,
+                //         'store_id' => $storeId,
+                //     ]);
+                // }
             }
-
+return response()->json($status);
         // If DM or Trainer
         if(isset($request->area)){
             if($request['role'] == 'DM') {
@@ -432,11 +434,10 @@ class UserPromoterController extends Controller
             where('users.id', $id)
             ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
-            ->join('employee_stores','users.id','employee_stores.user_id')
-            ->join('stores','employee_stores.store_id','stores.id')
+            ->leftJoin('employee_stores','users.id','employee_stores.user_id')
+            ->leftJoin('stores','employee_stores.store_id','stores.id')
             ->select('users.*', 'stores.dedicate as dedicate', 'roles.id as role_id', 'roles.role_group as role_group', 'roles.role as role', 'gradings.id as grading_id', 'gradings.grading as grading')
             ->first();
-
         if ($data->role_group == 'Salesman Explorer') {
             $salesmanDedicate = SalesmanDedicate::
                 with('store')
@@ -480,22 +481,7 @@ class UserPromoterController extends Controller
         $empStore = EmployeeStore::where('user_id', $user->id);
         if($empStore->count() > 0){
             $empStore->delete();
-        }
-
-        if ($request['role'] == 'Supervisor' || $request['role'] == 'Supervisor Hybrid') {
-            /* SPV Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    $store = Store::find($storeId)->update(['user_id'=>null]);
-                }
-            }
-        }else{
-            $empStore = Store::where('user_id', $user->id);
-            if($empStore->count() > 0){
-                $empStore->update(['user_id'=>null]);
-            }
-        }
-        
+        }        
 
         // DM AREA 
         $dmArea = DmArea::where('user_id', $user->id);
@@ -582,25 +568,28 @@ class UserPromoterController extends Controller
         
             EmployeeStore::where('user_id',$user->id)->delete();
 
-            /* Employee One Store */
-            if($request['store_id']){
-                // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-                EmployeeStore::create([
-                    'user_id' => $user->id,
-                    'store_id' => $request['store_id'],
-                ]);
-            }
-
-            /* Employee Multiple Store */
-            if($request['store_ids']){
-                foreach ($request['store_ids'] as $storeId) {
-                    // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+            if ($request['status'] == 'stay') {
+                /* Employee One Store */
+                if($request['store_id']){
+                    // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
                     EmployeeStore::create([
                         'user_id' => $user->id,
-                        'store_id' => $storeId,
+                        'store_id' => $request['store_id'],
                     ]);
                 }
+            }else{
+                /* Employee Multiple Store */
+                if($request['store_ids']){
+                    foreach ($request['store_ids'] as $storeId) {
+                        // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
+                        EmployeeStore::create([
+                            'user_id' => $user->id,
+                            'store_id' => $storeId,
+                        ]);
+                    }
+                }    
             }
+            
 
         if($user->photo != null && $request->photo_file != null && $oldPhoto != "") {
             /* Delete Image */
@@ -787,7 +776,7 @@ class UserPromoterController extends Controller
         $guidelinesRead = ProductKnowledgeRead::where('user_id', $id);
         $updateGuidelinesRead = $guidelinesRead->get();
         if($guidelinesRead->count() > 0){
-            
+
             // update total read Guidelines
             foreach ($updateGuidelinesRead as $key => $value) {
                 $guidelines = ProductKnowledge::where('id',$value->productknowledge_id)->decrement('total_read');

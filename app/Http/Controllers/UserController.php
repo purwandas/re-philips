@@ -66,8 +66,8 @@ class UserController extends Controller
         $filter = $data;
 
         /* If filter */
-            if($request['byName']){
-                $filter = $filter->where('users.id', $request['byName']);
+            if($request['byName2']){
+                $filter = $filter->where('users.id', $request['byName2']);
             }
 
             if($request['byNik']){
@@ -418,29 +418,32 @@ class UserController extends Controller
 //        return response()->json($request->all());
 
         /* Insert user relation */
-        if ($request['selectedRole'] == 'Supervisor') {
-
+        if ($request['selectedRole'] == 'Supervisor' || $request['selectedRole'] == 'Supervisor Hybrid') {
             /* SPV Multiple Store */
             if($request['store_ids']){
                 // return response()->json($request['store_ids']);
-                foreach ($request['store_ids'] as $storeId) {
+                foreach ($request['store_ids'] as $key => $storeId) {
+                    if ($request['selectedRole'] == 'Supervisor Hybrid') {
+                        $newDedicate = $request['dedicate'][$key];
+                    }else{
+                        $newDedicate = $request['dedicate'];    
+                    }
+                    
                     /*
                     1. select all store with STORE ID selected
                     */
                     $stores = explode('`', $storeId); // id,store_id
-                    // return response()->json($stores[1]);
+                    // return response()->json($newDedicate);
                     if ($request['status_spv'] == "Demonstrator") 
                     {
-                        
                         SpvDemo::create([
                             'user_id' => $user->id,
                             'store_id' => $stores[0],
                         ]);
 
                     }else{
-                        
                         $store = Store::where('deleted_at',null)
-                                    ->where('store_id',$stores[1])->get();
+                                ->where('store_id',$stores[1])->get();
                         $status = false;
                         $store_id   = '';
                         $store_name_1   = '';
@@ -461,25 +464,34 @@ class UserController extends Controller
                         $kondisi_toko = '';
                         $history = '';
                         
-                        foreach ($store as $key => $value) {
+                        foreach ($store as $value) {
                             /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
                             $storesDedicate = '';
                             if (isset($value->dedicate)) {
                                 $storesDedicate = $value->dedicate;
                             }
-                            if ( ($storesDedicate == '' || $storesDedicate == $request['dedicate']) && $status == false)
+                            if ( ($storesDedicate == '' || $storesDedicate == $newDedicate) && $status == false)
                             {
                                 Store::where('id',$value->id)
-                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
+                                // $return .= ", NowYoueSeeMe #1 $storesDedicate -> $newDedicate";
                                 $status = true;
                             }
                             if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
                             {
-                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                                if ($newDedicate == 'DA' || $newDedicate == 'PC' || $newDedicate == 'HYBRID')
                                 {
-                                    Store::where('id',$value->id)
-                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                                    $status = true;
+                                    if ($value->dedicate == 'HYBRID') {
+                                        Store::where('id',$value->id)
+                                        ->update(['user_id'=>$user->id,'dedicate'=>'HYBRID']);
+                                        $status = true;
+                                        // $return .= ", NowYoueSeeMe #2 $storesDedicate -> HYBRID";
+                                    }else{
+                                        Store::where('id',$value->id)
+                                        ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
+                                        $status = true;
+                                        // $return .= ", NowYoueSeeMe #2 $storesDedicate -> ".$request['dedicate'][$key];
+                                    }
                                 }
                             }
 
@@ -489,7 +501,7 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification->classification;
+                            $classification = $value->classification_id;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
 
@@ -503,7 +515,8 @@ class UserController extends Controller
                             $kondisi_toko = $value->kondisi_toko;
                         }
 
-                        if ($status == false) {
+                        //Executed when old dedicate is Mcc, and new one is the other. Or old dedicate is the other, and new one is Mcc
+                        if ($status == false) { 
                             Store::create([
                                 'store_id' => $store_id,
                                 'store_name_1' => $store_name_1,
@@ -515,7 +528,7 @@ class UserController extends Controller
                                 'subchannel_id' => $subchannel_id,
                                 'district_id' => $district_id,
                                 'user_id' => $user->id,
-                                'dedicate' => $request['dedicate'],
+                                'dedicate' => $newDedicate,
 
                                 'no_telp_toko' => $no_telp_toko,
                                 'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
@@ -526,6 +539,7 @@ class UserController extends Controller
                                 'tipe_transaksi' => $tipe_transaksi,
                                 'kondisi_toko' => $kondisi_toko,
                             ]);
+                            // $return .= ", NowYoueSeeMe #3 $storesDedicate -> $newDedicate";
                             $status = true;
                         }
 
@@ -533,10 +547,13 @@ class UserController extends Controller
                             
                 }
             }
-        }else if ($request['selectedRole'] == 'Supervisor Hybrid') {
+
+        }else if ($request['selectedRole'] == 'Supervisor Hybrid') { //Udah ga kepake, dokumentasi aja
             if($request['store_ids']){
-                // return response()->json($request['store_ids']);
-                foreach ($request['store_ids'] as $storeId) {
+                // return response()->json($request['dedicate'][0]);
+                $result = '';
+                foreach ($request['store_ids'] as $key => $storeId) {
+
                     /*
                     1. select all store with STORE ID selected
                     */
@@ -567,7 +584,7 @@ class UserController extends Controller
                         $kondisi_toko = '';
                         
                         // return response()->json($store);
-                        foreach ($store as $key => $value) {
+                        foreach ($store as $value) {
                             /* ini masih foreach, harusnya cuma 1 kali aja untuk setiap store*/
                             $storesDedicate = '';
                             $store_id = $value->store_id;
@@ -576,7 +593,7 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification->classification;
+                            $classification = $value->classification_id;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
                                 $no_telp_toko = $value->no_telp_toko;
@@ -593,44 +610,47 @@ class UserController extends Controller
                             }
                             if ( ($storesDedicate == '') && $status == false)
                             {
-                                Store::where('id',$value->id)
-                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                // Store::where('id',$value->id)
+                                // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate'][$key]]);
+                                $result .= ', '. "NowYoueSeeMe #4 ".$storeId.' -> '.$request['dedicate'][$key];
 
-                                if ($request['dedicate'] == 'HYBRID') {
-                                    Store::create([
-                                        'store_id' => $store_id,
-                                        'store_name_1' => $store_name_1,
-                                        'store_name_2' => $store_name_2,
-                                        'latitude' => $latitude,
-                                        'longitude' => $longitude,
-                                        'address' => $address,
-                                        'classification_id' => $classification,
-                                        'subchannel_id' => $subchannel_id,
-                                        'district_id' => $district_id,
-                                        'user_id' => $user->id,
-                                        'dedicate' => 'MCC',
+                                if ($request['dedicate'][$key] == 'HYBRID') { //ini karna awalnya pas dia pick hybrid,berarti dia pilih hybrid mcc, dan di kondisi ini, store yang dibuat baru 1 sehingga perlu store baru untuk mcc
+                                    // Store::create([
+                                    //     'store_id' => $store_id,
+                                    //     'store_name_1' => $store_name_1,
+                                    //     'store_name_2' => $store_name_2,
+                                    //     'latitude' => $latitude,
+                                    //     'longitude' => $longitude,
+                                    //     'address' => $address,
+                                    //     'classification_id' => $classification,
+                                    //     'subchannel_id' => $subchannel_id,
+                                    //     'district_id' => $district_id,
+                                    //     'user_id' => $user->id,
+                                    //     'dedicate' => 'MCC',
 
-                                        'no_telp_toko' => $no_telp_toko,
-                                        'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
-                                        'kepemilikan_toko' => $kepemilikan_toko,
-                                        'district_id' => $district_id,
-                                        'lokasi_toko' => $lokasi_toko,
-                                        'tipe_transaksi_2' => $tipe_transaksi_2,
-                                        'tipe_transaksi' => $tipe_transaksi,
-                                        'kondisi_toko' => $kondisi_toko,
-                                    ]);
+                                    //     'no_telp_toko' => $no_telp_toko,
+                                    //     'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                    //     'kepemilikan_toko' => $kepemilikan_toko,
+                                    //     'district_id' => $district_id,
+                                    //     'lokasi_toko' => $lokasi_toko,
+                                    //     'tipe_transaksi_2' => $tipe_transaksi_2,
+                                    //     'tipe_transaksi' => $tipe_transaksi,
+                                    //     'kondisi_toko' => $kondisi_toko,
+                                    // ]);
+                                    $result .= ', '. "NowYoueSeeMe #5";
                                 }
                                 $status = true;
                             }
                             
-                            if ( ($storesDedicate == $request['dedicate']) && $status == false && $request['dedicate'] != 'HYBRID')
+                            if ( ($storesDedicate == $request['dedicate'][$key]) && $status == false && $request['dedicate'][$key] != 'HYBRID')
                             {
-                                Store::where('id',$value->id)
-                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                // Store::where('id',$value->id)
+                                // ->update(['user_id'=>$user->id]);
+                                $result .= ', '. "NowYoueSeeMe #6";
                                 $status = true;
                             }
 
-                            if ( ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC') && $status == false)
+                            if ( ($request['dedicate'][$key] == 'DA' || $request['dedicate'][$key] == 'PC') && $status == false)
                             {
                                 
                                 if ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID')
@@ -638,22 +658,24 @@ class UserController extends Controller
                                     $hybridData = true;
                                     $dedicateStored = $storesDedicate;
 
-                                    Store::where('id',$value->id)
-                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    // Store::where('id',$value->id)
+                                    // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate'][$key]]);
+                                    $result .= ', '. "NowYoueSeeMe #7";
                                     $status = true;
                                 }
                             }
                             
-                            if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                            if ( ($request['dedicate'][$key] == 'MCC') && $status == false ) 
                             {
                                 if ($storesDedicate == 'MCC') {
-                                    Store::where('id',$value->id)
-                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                    // Store::where('id',$value->id)
+                                    // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate'][$key]]);
+                                    $result .= ', '. "NowYoueSeeMe #8";
                                     $status = true;
                                 }
                             }
 
-                            if ( ($request['dedicate'] == 'HYBRID') && $status == false ) 
+                            if ( ($request['dedicate'][$key] == 'HYBRID') && $status == false ) 
                             {
                                 $hybrid = true;
                             }
@@ -684,23 +706,25 @@ class UserController extends Controller
                             // return response()->json($hybridData);
                             if ($hybridData == true) 
                             {
-                                Store::where('deleted_at',null)
-                                ->where('store_id',$stores[1])
-                                ->where('dedicate',$dedicateStored)
-                                ->update([
-                                    'user_id'=>$user->id,'dedicate'=>'HYBRID',
-                                ]);
+                                // Store::where('deleted_at',null)
+                                // ->where('store_id',$stores[1])
+                                // ->where('dedicate',$dedicateStored)
+                                // ->update([
+                                //     'user_id'=>$user->id,'dedicate'=>'HYBRID',
+                                // ]);
+                                $result .= ', '. "NowYoueSeeMe #9".$storeId.' -> '.$request['dedicate'][$key];
                                 $status = true;
                             }
 
                             if ($mccData == true) 
                             {
-                                Store::where('deleted_at',null)
-                                ->where('store_id',$stores[1])
-                                ->where('dedicate','MCC')
-                                ->update([
-                                    'user_id'=>$user->id,'dedicate'=>'MCC',
-                                ]);
+                                // Store::where('deleted_at',null)
+                                // ->where('store_id',$stores[1])
+                                // ->where('dedicate','MCC')
+                                // ->update([
+                                //     'user_id'=>$user->id,'dedicate'=>'MCC',
+                                // ]);
+                                $result .= ', '. "NowYoueSeeMe #10".$storeId.' -> '.$request['dedicate'][$key];
                                 $status = true;
                             }
 
@@ -710,97 +734,104 @@ class UserController extends Controller
                                         ->whereIn('dedicate',['HYBRID','DA','PC'])
                                         ->get();
                                 if ($checkStore->count() == 0 ) {
-                                    Store::create([
-                                        'store_id' => $store_id,
-                                        'store_name_1' => $store_name_1,
-                                        'store_name_2' => $store_name_2,
-                                        'latitude' => $latitude,
-                                        'longitude' => $longitude,
-                                        'address' => $address,
-                                        'classification_id' => $classification,
-                                        'subchannel_id' => $subchannel_id,
-                                        'district_id' => $district_id,
-                                        'user_id' => $user->id,
-                                        'dedicate' => 'HYBRID',
+                                    // Store::create([
+                                    //     'store_id' => $store_id,
+                                    //     'store_name_1' => $store_name_1,
+                                    //     'store_name_2' => $store_name_2,
+                                    //     'latitude' => $latitude,
+                                    //     'longitude' => $longitude,
+                                    //     'address' => $address,
+                                    //     'classification_id' => $classification,
+                                    //     'subchannel_id' => $subchannel_id,
+                                    //     'district_id' => $district_id,
+                                    //     'user_id' => $user->id,
+                                    //     'dedicate' => 'HYBRID',
 
-                                        'no_telp_toko' => $no_telp_toko,
-                                        'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
-                                        'kepemilikan_toko' => $kepemilikan_toko,
-                                        'district_id' => $district_id,
-                                        'lokasi_toko' => $lokasi_toko,
-                                        'tipe_transaksi_2' => $tipe_transaksi_2,
-                                        'tipe_transaksi' => $tipe_transaksi,
-                                        'kondisi_toko' => $kondisi_toko,
-                                    ]);
+                                    //     'no_telp_toko' => $no_telp_toko,
+                                    //     'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                    //     'kepemilikan_toko' => $kepemilikan_toko,
+                                    //     'district_id' => $district_id,
+                                    //     'lokasi_toko' => $lokasi_toko,
+                                    //     'tipe_transaksi_2' => $tipe_transaksi_2,
+                                    //     'tipe_transaksi' => $tipe_transaksi,
+                                    //     'kondisi_toko' => $kondisi_toko,
+                                    // ]);
+                                    $result .= ', '. "NowYoueSeeMe #11".$storeId.' -> '.$request['dedicate'][$key];
                                 }else{
-                                    Store::where('deleted_at',null)
-                                        ->where('store_id',$stores[1])
-                                        ->whereIn('dedicate',['HYBRID','DA','PC'])
-                                        ->update([
-                                            'user_id'=>$user->id,'dedicate'=>'HYBRID',
-                                        ]);
+                                    // Store::where('deleted_at',null)
+                                    //     ->where('store_id',$stores[1])
+                                    //     ->whereIn('dedicate',['HYBRID','DA','PC'])
+                                    //     ->update([
+                                    //         'user_id'=>$user->id,'dedicate'=>'HYBRID',
+                                    //     ]);
+                                    $result .= ', '. "NowYoueSeeMe #12";
                                 }
                                 $status = true;
                             }
                             
                             if ($mccData == false) {
-                                Store::create([
-                                    'store_id' => $store_id,
-                                    'store_name_1' => $store_name_1,
-                                    'store_name_2' => $store_name_2,
-                                    'latitude' => $latitude,
-                                    'longitude' => $longitude,
-                                    'address' => $address,
-                                    'classification_id' => $classification,
-                                    'subchannel_id' => $subchannel_id,
-                                    'district_id' => $district_id,
-                                    'user_id' => $user->id,
-                                    'dedicate' => 'MCC',
+                                // Store::create([
+                                //     'store_id' => $store_id,
+                                //     'store_name_1' => $store_name_1,
+                                //     'store_name_2' => $store_name_2,
+                                //     'latitude' => $latitude,
+                                //     'longitude' => $longitude,
+                                //     'address' => $address,
+                                //     'classification_id' => $classification,
+                                //     'subchannel_id' => $subchannel_id,
+                                //     'district_id' => $district_id,
+                                //     'user_id' => $user->id,
+                                //     'dedicate' => 'MCC',
 
-                                    'no_telp_toko' => $no_telp_toko,
-                                    'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
-                                    'kepemilikan_toko' => $kepemilikan_toko,
-                                    'district_id' => $district_id,
-                                    'lokasi_toko' => $lokasi_toko,
-                                    'tipe_transaksi_2' => $tipe_transaksi_2,
-                                    'tipe_transaksi' => $tipe_transaksi,
-                                    'kondisi_toko' => $kondisi_toko,
-                                ]);
+                                //     'no_telp_toko' => $no_telp_toko,
+                                //     'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                                //     'kepemilikan_toko' => $kepemilikan_toko,
+                                //     'district_id' => $district_id,
+                                //     'lokasi_toko' => $lokasi_toko,
+                                //     'tipe_transaksi_2' => $tipe_transaksi_2,
+                                //     'tipe_transaksi' => $tipe_transaksi,
+                                //     'kondisi_toko' => $kondisi_toko,
+                                // ]);
+                                $result .= ', '. "NowYoueSeeMe #13".$storeId.' -> '.$request['dedicate'][$key];
                                 $status = true;
                             }
 
                         }
 
-                        if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                        if ( ($request['dedicate'][$key] == 'MCC') && $status == false ) 
                         {
-                            Store::create([
-                                'store_id' => $store_id,
-                                'store_name_1' => $store_name_1,
-                                'store_name_2' => $store_name_2,
-                                'latitude' => $latitude,
-                                'longitude' => $longitude,
-                                'address' => $address,
-                                'classification_id' => $classification,
-                                'subchannel_id' => $subchannel_id,
-                                'district_id' => $district_id,
-                                'user_id' => $user->id,
-                                'dedicate' => 'MCC',
+                            // Store::create([
+                            //     'store_id' => $store_id,
+                            //     'store_name_1' => $store_name_1,
+                            //     'store_name_2' => $store_name_2,
+                            //     'latitude' => $latitude,
+                            //     'longitude' => $longitude,
+                            //     'address' => $address,
+                            //     'classification_id' => $classification,
+                            //     'subchannel_id' => $subchannel_id,
+                            //     'district_id' => $district_id,
+                            //     'user_id' => $user->id,
+                            //     'dedicate' => 'MCC',
 
-                                'no_telp_toko' => $no_telp_toko,
-                                'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
-                                'kepemilikan_toko' => $kepemilikan_toko,
-                                'district_id' => $district_id,
-                                'lokasi_toko' => $lokasi_toko,
-                                'tipe_transaksi_2' => $tipe_transaksi_2,
-                                'tipe_transaksi' => $tipe_transaksi,
-                                'kondisi_toko' => $kondisi_toko,
-                            ]);
+                            //     'no_telp_toko' => $no_telp_toko,
+                            //     'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
+                            //     'kepemilikan_toko' => $kepemilikan_toko,
+                            //     'district_id' => $district_id,
+                            //     'lokasi_toko' => $lokasi_toko,
+                            //     'tipe_transaksi_2' => $tipe_transaksi_2,
+                            //     'tipe_transaksi' => $tipe_transaksi,
+                            //     'kondisi_toko' => $kondisi_toko,
+                            // ]);
+                            $result .= ', '. "NowYoueSeeMe #14";
                             $status = true;
                         }
                         
+                $result .= '<hr>';
                 }
             }
         }
+
+        
 
         // If DM or Trainer
         if(isset($request->area)){
@@ -880,7 +911,7 @@ class UserController extends Controller
             where('users.id', $id)
             ->select('users.*')//, 'stores.dedicate as dedicate')
             ->first();
-        
+        // return response()->json($data->role->role_group);
         if ($data->role->role_group == 'Supervisor' || $data->role->role_group == 'Supervisor Hybrid' ) {
             $spvDedicate = Store::
                 where('user_id',$data->id)
@@ -901,7 +932,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\response
      */
     public function update(Request $request, $id)
     {
@@ -911,8 +942,6 @@ class UserController extends Controller
         //             // $dmArea = DmArea::create(['user_id' => $user->id, 'area_id' => $request->area[$i]]);
         //     $s .= 'A';
         //         }
-
-        //         return response()->json($s);
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
@@ -942,8 +971,9 @@ class UserController extends Controller
         } 
 
         // If Exists Spv Data
-        // Store::where('user_id',$user->id)
-        //     ->update(['user_id'=>null]);    
+        Store::where('user_id',$user->id)
+            ->update(['user_id'=>null]);    
+
         $role = explode('`',$request['selectedRole']);
         $request['selectedRole'] = $role[1];
 
@@ -1026,17 +1056,23 @@ class UserController extends Controller
         $user->update($requestNew->all()); 
 
         /* Insert user relation */
-        if ($request['selectedRole'] == 'Supervisor') {
+        if ($request['selectedRole'] == 'Supervisor' || $request['selectedRole'] == 'Supervisor Hybrid') {
+
 
             /* SPV Multiple Store */
             if($request['store_ids']){
                 // return response()->json($request['store_ids']);
-                foreach ($request['store_ids'] as $storeId) {
+                foreach ($request['store_ids'] as $key => $storeId) {
+
+                    if ($request['selectedRole'] == 'Supervisor Hybrid') {
+                        $newDedicate = $request['dedicate'][$key];
+                    }else{
+                        $newDedicate = $request['dedicate'];    
+                    }
                     /*
                     1. select all store with STORE ID selected
                     */
                     $stores = explode('`', $storeId); // id,store_id
-                    // return response()->json($stores[1]);
                     if ($request['status_spv'] == "Demonstrator") 
                     {
                         
@@ -1044,6 +1080,7 @@ class UserController extends Controller
                             'user_id' => $user->id,
                             'store_id' => $stores[0],
                         ]);
+                        // return "NowYoueSeeMe #15 $stores[0]";
 
                     }else{
                         
@@ -1076,19 +1113,29 @@ class UserController extends Controller
                             if (isset($value->dedicate)) {
                                 $storesDedicate = $value->dedicate;
                             }
-                            if ( ($storesDedicate == '' || $storesDedicate == $request['dedicate']) && $status == false)
+
+                            if ( ($storesDedicate == '' || $storesDedicate == $newDedicate) && $status == false)
                             {
                                 Store::where('id',$value->id)
-                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
                                 $status = true;
+                                // return "NowYoueSeeMe #16";
                             }
                             if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
                             {
-                                if ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC' || $request['dedicate'] == 'HYBRID')
+                                if ($newDedicate == 'DA' || $newDedicate == 'PC' || $newDedicate == 'HYBRID')
                                 {
-                                    Store::where('id',$value->id)
-                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                                    $status = true;
+                                    if ($value->dedicate == 'HYBRID') {
+                                        Store::where('id',$value->id)
+                                        ->update(['user_id'=>$user->id,'dedicate'=>'HYBRID']);
+                                        $status = true;
+                                        // return "NowYoueSeeMe #17 HYBRID";
+                                    }else{
+                                        Store::where('id',$value->id)
+                                        ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
+                                        $status = true;
+                                        // return "NowYoueSeeMe #17#2 $request[dedicate]";
+                                    }
                                 }
                             }
 
@@ -1098,7 +1145,7 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification->classification;
+                            $classification = $value->classification_id;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
 
@@ -1124,7 +1171,7 @@ class UserController extends Controller
                                 'subchannel_id' => $subchannel_id,
                                 'district_id' => $district_id,
                                 'user_id' => $user->id,
-                                'dedicate' => $request['dedicate'],
+                                'dedicate' => $newDedicate,
 
                                 'no_telp_toko' => $no_telp_toko,
                                 'no_telp_pemilik_toko' => $no_telp_pemilik_toko,
@@ -1136,17 +1183,18 @@ class UserController extends Controller
                                 'kondisi_toko' => $kondisi_toko,
                             ]);
                             $status = true;
+                            // return "NowYoueSeeMe #18";
                         }
 
                     }
                             
                 }
             }
-        }else if ($request['selectedRole'] == 'Supervisor Hybrid') {
+        }else if ($request['selectedRole'] == 'Supervisor Hybrid') { //Udah ga kepake, dokumentasi aja
             // return response()->json($request['store_ids']);
             if($request['store_ids']){
-                // return response()->json($request['store_ids']);
-                foreach ($request['store_ids'] as $storeId) {
+                return response()->json($request['dedicate'][0]);
+                foreach ($request['store_ids'] as $key => $storeId) {
                     /*
                     1. select all store with STORE ID selected
                     */
@@ -1186,7 +1234,7 @@ class UserController extends Controller
                             $latitude = $value->latitude;
                             $longitude = $value->longitude;
                             $address = $value->address;
-                            $classification = $value->classification->classification;
+                            $classification = $value->classification_id;
                             $subchannel_id = $value->subchannel_id;
                             $district_id = $value->district_id;
                                 $no_telp_toko = $value->no_telp_toko;
@@ -1203,10 +1251,11 @@ class UserController extends Controller
                             }
                             if ( ($storesDedicate == '') && $status == false)
                             {
-                                Store::where('id',$value->id)
-                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                // Store::where('id',$value->id)
+                                // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
+                                return "NowYoueSeeMe #19";
 
-                                if ($request['dedicate'] == 'HYBRID') {
+                                if ($request['dedicate'][$key] == 'HYBRID') {
                                     Store::create([
                                         'store_id' => $store_id,
                                         'store_name_1' => $store_name_1,
@@ -1233,14 +1282,15 @@ class UserController extends Controller
                                 $status = true;
                             }
                             
-                            if ( ($storesDedicate == $request['dedicate']) && $status == false && $request['dedicate'] != 'HYBRID')
+                            if ( ($storesDedicate == $request['dedicate'][$key]) && $status == false && $request['dedicate'][$key] != 'HYBRID')
                             {
-                                Store::where('id',$value->id)
-                                ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                                $status = true;
+                                // Store::where('id',$value->id)
+                                // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate'][$key]]);
+                                // $status = true;
+                                return "NowYoueSeeMe #20";
                             }
 
-                            if ( ($request['dedicate'] == 'DA' || $request['dedicate'] == 'PC') && $status == false)
+                            if ( ($request['dedicate'][$key] == 'DA' || $request['dedicate'][$key] == 'PC') && $status == false)
                             {
                                 
                                 if ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID')
@@ -1248,22 +1298,24 @@ class UserController extends Controller
                                     $hybridData = true;
                                     $dedicateStored = $storesDedicate;
 
-                                    Store::where('id',$value->id)
-                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                                    $status = true;
+                                    // Store::where('id',$value->id)
+                                    // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate'][$key]]);
+                                    // $status = true;
+                                    return "NowYoueSeeMe #21";
                                 }
                             }
                             
-                            if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                            if ( ($request['dedicate'][$key] == 'MCC') && $status == false ) 
                             {
                                 if ($storesDedicate == 'MCC') {
-                                    Store::where('id',$value->id)
-                                    ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate']]);
-                                    $status = true;
+                                    // Store::where('id',$value->id)
+                                    // ->update(['user_id'=>$user->id,'dedicate'=>$request['dedicate'][$key]]);
+                                    // $status = true;
+                                    return "NowYoueSeeMe #22";
                                 }
                             }
 
-                            if ( ($request['dedicate'] == 'HYBRID') && $status == false ) 
+                            if ( ($request['dedicate'][$key] == 'HYBRID') && $status == false ) 
                             {
                                 $hybrid = true;
                             }
@@ -1294,6 +1346,7 @@ class UserController extends Controller
                             // return response()->json($hybridData);
                             if ($hybridData == true) 
                             {
+                                return "NowYoueSeeMe #23";
                                 Store::where('deleted_at',null)
                                 ->where('store_id',$stores[1])
                                 ->where('dedicate',$dedicateStored)
@@ -1305,6 +1358,7 @@ class UserController extends Controller
 
                             if ($mccData == true) 
                             {
+                                return "NowYoueSeeMe #24";
                                 Store::where('deleted_at',null)
                                 ->where('store_id',$stores[1])
                                 ->where('dedicate','MCC')
@@ -1320,6 +1374,7 @@ class UserController extends Controller
                                         ->whereIn('dedicate',['HYBRID','DA','PC'])
                                         ->get();
                                 if ($checkStore->count() == 0 ) {
+                                    return "NowYoueSeeMe #25";
                                     Store::create([
                                         'store_id' => $store_id,
                                         'store_name_1' => $store_name_1,
@@ -1343,6 +1398,7 @@ class UserController extends Controller
                                         'kondisi_toko' => $kondisi_toko,
                                     ]);
                                 }else{
+                                    return "NowYoueSeeMe #26";
                                     Store::where('deleted_at',null)
                                         ->where('store_id',$stores[1])
                                         ->whereIn('dedicate',['HYBRID','DA','PC'])
@@ -1354,6 +1410,7 @@ class UserController extends Controller
                             }
                             
                             if ($mccData == false) {
+                                return "NowYoueSeeMe #27";
                                 Store::create([
                                     'store_id' => $store_id,
                                     'store_name_1' => $store_name_1,
@@ -1381,8 +1438,9 @@ class UserController extends Controller
 
                         }
 
-                        if ( ($request['dedicate'] == 'MCC') && $status == false ) 
+                        if ( ($request['dedicate'][$key] == 'MCC') && $status == false ) 
                         {
+                            return "NowYoueSeeMe #28";
                             Store::create([
                                 'store_id' => $store_id,
                                 'store_name_1' => $store_name_1,
