@@ -55,7 +55,7 @@
         <!-- BEGIN PAGE LEVEL PLUGINS -->    
         <link href="{{ asset('assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css') }}" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
-        <link rel="shortcut icon" href="favicon.ico" /> 
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" /> 
     </head>
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">

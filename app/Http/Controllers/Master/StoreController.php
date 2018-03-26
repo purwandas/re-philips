@@ -346,6 +346,8 @@ class StoreController extends Controller
     public function store(Request $request)
     {
         $error = '';
+        
+        $request['store_id'] = $this->traitGetStoreId();
 //        return response()->json($request->all());
 
             $this->validate($request, [
