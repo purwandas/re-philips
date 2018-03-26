@@ -4270,47 +4270,39 @@ class ReportController extends Controller
 
     public function attendanceData(Request $request){
 
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
-        $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
-        $yearNow = Carbon::now()->format('Y');
-
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        
-            $data = Attendance::
-                    join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
-                    ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
-                    ->join('districts', 'stores.district_id', '=', 'districts.id')
-                    ->join('areas', 'districts.area_id', '=', 'areas.id')
-                    ->join('regions', 'areas.region_id', '=', 'regions.id')
-                    ->join('users', 'attendances.user_id', '=', 'users.id')
-                    ->join('roles','roles.id','users.role_id')
-                    ->groupBy('attendances.user_id')
-                    ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')//,DB::raw('count(*) as total_hk'))
-                    // ->where('attendances.status', '!=', 'Off')
-                    ->get();
+                
 
-            $filter = $data;
+
+       $month = Carbon::parse($request['searchMonth'])->format('m');
+       $year = Carbon::parse($request['searchMonth'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            // ->where('attendances.status', '!=', 'Off')
+            ->get();
+
+           $filter = $data;
+
+           // return $filter->all();
 
             /* If filter */
-
-           if($request['searchMonth']){
-               $month = Carbon::parse($request['searchMonth'])->format('m');
-               $year = Carbon::parse($request['searchMonth'])->format('Y');
-               // $filter = $data->where('month', $month)->where('year', $year);
-               $date1 = "$year-$month-01";
-               $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-               $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-               $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-           }
-
             if($request['byStore']){
-                $store = Store::where('stores.id', $request['byStore'])
-                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
-                                ->pluck('storeses.id');
-                $filter = $filter->whereIn('storeId', $store);
+                // return $request['byStore'];
+                $filter = $filter->where('storeId', $request['byStore']);
             }
 
             if($request['byDistrict']){
@@ -4346,6 +4338,7 @@ class ReportController extends Controller
                                     ->pluck('stores.store_id');
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
+
 
             return Datatables::of($filter->all())
             ->addColumn('total_hk', function ($item) {

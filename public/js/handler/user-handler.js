@@ -244,12 +244,18 @@ var FormValidation = function () {
                     // return;
 
                     // Check if employee is mobile and just select one store
-                    if($('#stores').val() != null){
-                        var storesLength = $('#stores').val().length;
+                    if (selectedRolev[1] == 'Supervisor' || selectedRolev[1] == 'Supervisor Hybrid'){
+                        if($('#check').val() < 1){
+                            swal("Warning", "Supervisor must have at least 1 store.", "warning");
+                            return;
+                        }
+                    }else{
+                        var status = $('input[name=status]:checked').val();
+                        if(status == 'mobile'){
+                            var storesLength = $('#check').val();
 
-                        if (selectedRolev[1]!='Supervisor' && selectedRolev[1]!='Supervisor Hybrid')
-                        {
-                            if(storesLength == 1){
+                            console.log('length= '+storesLength);
+                            if(storesLength < 2){
                                 swal("Warning", "Mobile employee must have at least 2 stores.", "warning");
                                 return;
                             }

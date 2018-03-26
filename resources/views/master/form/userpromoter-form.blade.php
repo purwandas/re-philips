@@ -220,7 +220,7 @@
 	                        	<hr>
 	                        </div>
 
-	                        <div class="form-group display-hide newstore">
+	                        <div class="form-group newstore">
                         		<div style="padding-left: 4%;">
 	                        		<a class="btn btn-md green" href="{{ url('store/create') }}" target="_blank">
 				                		<i class="fa fa-plus"></i> New Store
@@ -258,9 +258,9 @@
 		                          <label class="col-sm-2 control-label">Employee's Store</label>
 		                          <div class="col-sm-9">
 
-		                          	<div class="input-group col-sm-12" style="float: left;">
+		                          	<div class="input-group col-sm-10" style="float: left;">
 		     
-		                                <select class="select2select" name="store_ids[]" id="stores" multiple="multiple" required="required"></select>
+		                                <select class="select2select" id="stores" required="required"></select>
 		                                
 		                                <span class="input-group-addon display-hide">
 		                                    <i class="fa"></i>
@@ -268,25 +268,29 @@
 
 		                            </div>
 
-		                            <div class="input-group col-sm-2 display-hide newstore" style="float: right;padding-left: 10px;">
-			                        	<p class="btn btn-md green">
+		                            <div class="input-group col-sm-2 newstore" style="float: right;padding-left: 10px;">
+		                                <p class="btn btn-md red" id="clearStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-left: 1%;">
+		                                	Clear
+		                                </p>
+		                                <p class="btn btn-md green" id="addStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-right: 1%;">
 		                                	Add
 		                                </p>
 			                        </div>
 
 		                            <hr>
-			                        <div class="portlet light bg-inverse display-hide newstore">
+			                        <div class="portlet light bg-inverse newstore" style="padding-top: 0px;">
                                         <div class="portlet-title">
                                             <div class="caption">
                                                 <i class="fa fa-shopping-cart"></i>
                                                 <span class="caption-subject font-green-haze bold uppercase">Stores</span>
-                                                <span class="caption-helper">Selected (#)</span>
+                                                <span class="caption-helper">Selected (<span id="storeCount">0</span>)</span>
+                                                <input type="hidden" name="check" id="check" value="0">
                                             </div>
                                             <div class="tools">
-                                                <a href="" class="expand" data-original-title="" title=""> </a>
+                                                <a id="toggleButton" href="" class="expand" data-original-title="show/hide" title="show/hide"> </a>
                                             </div>
                                         </div>
-                                        <div class="portlet-body form" style="display: none;">
+                                        <div id="toggleContent" class="portlet-body form" style="display: none;">
                                             
                                             <div class="row">
 					                            <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search for names.." title="Type in a name">
@@ -296,19 +300,7 @@
                                             
                                         </div>
                                     </div>
-				                    <div class="box box-default collapsed-box col-sm-12">
-				                        
-			                        </div>
-			                        <!-- /.box-header -->
-			                        <div class="box-body" style="">
-			                          
-			                          <!-- /.row -->
-			                        </div>
-			                        <!-- /.box-body -->
-			                        <div class="box-footer no-padding" style="">
-			                          
-			                        </div>
-			                        <!-- /.footer -->
+
 		                          </div>
 		                        </div>
 	                        </div>
@@ -560,9 +552,9 @@
 	            return {
 	                results: $.map(data, function (obj) {                                
 	                    if(obj.store_name_2 != null){
-                            return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                            return {id: obj.id+'`'+obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")", text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
-	                    return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
+	                    return {id: obj.id+'`'+obj.store_id + " - " + obj.store_name_1, text: obj.store_id + " - " + obj.store_name_1}
 	                })
 	            }
 	        }));
@@ -657,7 +649,7 @@
 				    $('#multipleStoreContent').removeClass('display-hide');
 				    $('#statusContentSalesman').removeClass('display-hide');
 				    $('#storeContent').removeClass('display-hide');
-		            $('#stores').attr('required', 'required');
+		            // $('#stores').attr('required', 'required');
 					$('#dedicate').prop('required',false);
 				}else{
 					if(role[1] != 'Demonstrator DA'){
@@ -734,21 +726,18 @@
 
 			$.get(getDataUrl + '/' + userId, function (data) {
 				if(data){
-                    var element = $("#store");
-                    if(status == 'mobile'){
-                    	element = $("#stores");
-                    }
-                    select2Reset($('#store'));
+					select2Reset($('#store'));
                     select2Reset($('#stores'));
-
-
-	                    $.each(data, function() {
+                    var element = $("#store");
+                    if(status != 'mobile'){
+                    	$.each(data, function() {
 	                    	if(this.store_name_2 != null){
                             	setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1 + " (" + this.store_name_2 + ")");
                         	}
 
 							setSelect2IfPatch(element, this.id, this.store_id + " - " + this.store_name_1);
 						});
+                    }
 
             	}	
 
@@ -761,10 +750,10 @@
 			$('#storeContent').removeClass('display-hide');				
 			if(value == 'stay'){			
 				$('#oneStoreContent').removeClass('display-hide');
-	            $('#store').attr('required', 'required');
+	            // $('#store').attr('required', 'required');
 			}else if(value == 'mobile'){	
 				$('#multipleStoreContent').removeClass('display-hide');			
-	            $('#stores').attr('required', 'required');
+	            // $('#stores').attr('required', 'required');
 			}			
 		}		
 
@@ -819,6 +808,7 @@
 				// if(role[1] != 'Demonstrator DA'){
 		    		resetStore();
 			        setStore(this.value);
+			        // clearStore();
 		    	// }
 		    });
 
@@ -835,6 +825,12 @@
 
 		});
 
+		function clearStore() {
+			$("#myUL").html('');
+			addNumber = 0;
+			$("#storeCount").html('0');
+		}
+
 	</script>
 
 	<!-- New Multiple Store -->
@@ -848,82 +844,109 @@
 		  });
 
 		  // $('[data-toggle="tooltip"]').tooltip(); 
-		  $('#addProduct').tooltip();
+		  $('#addStores').tooltip();
+
+		  $("#clearStores").click(function(){
+		  	clearStore();
+		  });
 
 		  var idx = 0;
-		  $("#addProduct").click(function(){
-		    var selectedProduct = $('#inputProduct').val();
+		  $("#addStores").click(function(){
+		    var selectedStore = $('#stores').val();
 		        
-		    if (selectedProduct != '' && selectedProduct != null) {
-		      var temp = selectedProduct.split('`');
+		    if (selectedStore != '' && selectedStore != null) {
+		    	if (idx == 0) {
+		    		$('#toggleButton').removeClass('expand');
+		    		$('#toggleButton').addClass('collapse');
+		    		$('#toggleContent').removeAttr('style');
+		    		$('#toggleContent').attr('style','display:block');
+		    		console.log('NowYouSeeMe');
+		    	}
+		      var temp = selectedStore.split('`');
 		      var inputId = temp[0];
 		      var inputValue = temp[1];
-		      var hiddenInput = "<input type='hidden' name='product_id[]' value='"+inputId+"'>";
-		      $("#myUL").append("<li><div><span>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+")' class='btn btn-danger delete fa fa-trash-o liDelete"+idx+"'> delete</p></div></li>");
+		      var hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
+		      $("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
 		      var x = document.getElementsByClassName("liDelete"+idx+"");
 		      x[0].setAttribute('onClick', "deleteItem('p"+idx+"')");
 		      idx++;
 		      addNumber++;
 		      $('#cek').val('ok');
-		      select2Reset($('#inputProduct'));
+		      $('#storeCount').html(addNumber);
+		      $('#check').val(addNumber);
+		      select2Reset($('#stores'));
 		      $(this).attr('data-toggle','tooltip');
-		      $(this).attr('title','Select Product First');
+		      $(this).attr('title','Select Store First');
 		      $(this).attr('data-placement','top');
-		      $(this).attr('data-original-title','Please Select Product First');
+		      $(this).attr('data-original-title','Please Select Store First');
 		      $('.box-default').removeClass('collapsed-box');
-		    } 
+		    }else{
+		    	swal("Warning", "You Have to Select Store First!", "warning");
+                return;
+		    }
 		      
 		  });
 
-		  $(document.body).on("change","#inputProduct",function(){
-		    var input = $('#inputProduct').val();
+		  $(document.body).on("change","#stores",function(){
+		    var input = $('#stores').val();
 		    if (input != '' && input != null) {
-		      $('#addProduct').removeAttr('data-toggle');
-		      $('#addProduct').removeAttr('title');
-		      $('#addProduct').removeAttr('data-placement');
-		      $('#addProduct').removeAttr('data-original-title');
+		      $('#addStores').removeAttr('data-toggle');
+		      $('#addStores').removeAttr('title');
+		      $('#addStores').removeAttr('data-placement');
+		      $('#addStores').removeAttr('data-original-title');
 		    } else {
-		      $('#addProduct').attr('data-toggle','tooltip');
-		      $('#addProduct').attr('title','Select Product First');
-		      $('#addProduct').attr('data-placement','top');
-		      $('#addProduct').attr('data-original-title','Please Select Product First');
+		      $('#addStores').attr('data-toggle','tooltip');
+		      $('#addStores').attr('title','Select Store First');
+		      $('#addStores').attr('data-placement','top');
+		      $('#addStores').attr('data-original-title','Please Select Store First');
 		    }
 		  });
-
-		  $('#inputProduct').select2(setOptions('{{ route("data.product") }}', 'Select Product, then Add', function (params) {
-		      return filterData('name', params.term);
-		  }, function (data, params) {
-		      return {
-		          results: $.map(data, function (obj) {                                
-		              return {id: obj.id +'`'+ obj.name, text: obj.name}
-		          })
-		      }
-		  }));
 
 		});
 
 
-		@if (!empty($product)) 
+		var statusStore = $('input[name=status]:checked').val();
+		if (statusStore == 'mobile' && $('input[name=_method]').val() == "PATCH") {
 		  $('.box-default').removeClass('collapsed-box');
-		  $('#cek').val('ok');
-		  @foreach ($product as $key => $value)
-		    @php
-		      $index = 1000 + $key;
-		      $hiddenInput = "<input type='hidden' name='product_id[]' value='".$value->id."'>";
-		    @endphp
-		    addNumber++;
-		      $("#myUL").append("<li><div><span>{{ @$value->name }}</span>{!! @$hiddenInput !!} <p id='p{{ @$index }}' onClick='deleteItem(p{{ @$index }})' class='btn btn-danger delete fa fa-trash-o liDelete{{ @$index }}'> delete</p></div></li>");
-		      var x = document.getElementsByClassName("liDelete{{ @$index }}");
-		      x[0].setAttribute('onClick', "deleteItem('p{{ @$index }}')");
-
-		  @endforeach
+		  var getDataUrl = "{{ url('util/empstore/') }}";
+		  var index = 0;
+		  var hiddenInput = '';
+		  var storeName = '';
+			$.get(getDataUrl + '/' + userId, function (data) {
+				if (data) {
+					$.each(data, function() {
+						storeName = this.store_id + ' - ' + this.store_name_1;
+						if (this.store_name_2 != null) {
+							storeName += '('+this.store_name_2+')';
+						}
+						// console.log("Store Name: "+storeName+userId);
+			    		$('#toggleButton').removeClass('expand');
+			    		$('#toggleButton').addClass('collapse');
+			    		$('#toggleContent').removeAttr('style');
+			    		$('#toggleContent').attr('style','display:block');
+			    		// console.log('NowYouSeeMe #2');
+				    
+				      	index = 1000 + addNumber;
+				      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+this.id+"'>";
+				    
+					    addNumber++;
+					    $('#storeCount').html(addNumber);
+					    $('#check').val(addNumber);
+				      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
+				      	var x = document.getElementsByClassName("liDelete"+index);
+				      	x[0].setAttribute('onClick', "deleteItem('p"+index+"')");
+					});
+				}
+		  	});
 		  
-		@endif
+		}
 
 
 		function deleteItem(id) {
 		  $('#'+id).parent().parent().remove();
 		  addNumber--;
+		  $('#storeCount').html(addNumber);
+		  $('#check').val(addNumber);
 		  if (addNumber == 0) {
 		    $('#cek').val('');
 		  }
@@ -972,16 +995,20 @@
 		  text-decoration: none;
 		  font-size: 13px;
 		  color: black;
-		  display: block
+		  display: block;
 		}
 
 		#myUL li div p {
 		  float: right;
+		  margin-top: -2px;
+		  margin-bottom: -2px;
+	      width: 36px;
 		}
 
 		#myUL li div:hover:not(.header) {
 		  background-color: #eee;
 		}
+
 	</style>
 	<!-- END New Multiple Store -->
 @endsection
