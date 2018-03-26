@@ -19,7 +19,7 @@
                         <br><br>
 
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Promoter</label>
+                          <label class="col-sm-3 control-label">Salesman Explorer</label>
                           <div class="col-sm-8">
 
                           <div class="input-group" style="width: 100%;">

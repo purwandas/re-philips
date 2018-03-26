@@ -86,7 +86,8 @@
             </li>
 
             <li class="nav-item 
-            {{ Request::is('user*') ? 'active open' : '' }} {{ Request::is('role') ? 'active open' : '' }} {{ Request::is('grading') ? 'active open' : '' }}
+            {{ Request::is('user*') ? 'active open' : '' }} {{ Request::is('role') ? 'active open' : '' }} {{ Request::is('grading') ? 'active open' : '' }} {{ Request::is('resign') ? 'active open' : '' }}
+            {{ Request::is('rejoin') ? 'active open' : '' }}
             ">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="fa fa-group"></i>
@@ -116,6 +117,16 @@
                     <li class="nav-item {{ Request::is('grading') ? 'active open' : '' }}">
                         <a href="{{ url('grading') }}" class="nav-link nav-toggle">                    
                             <span class="title">Employee Grading</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('resign') ? 'active open' : '' }}">
+                        <a href="{{ url('resign') }}" class="nav-link nav-toggle">                    
+                            <span class="title">Employee Resign</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ Request::is('rejoin') ? 'active open' : '' }}">
+                        <a href="{{ url('rejoin') }}" class="nav-link nav-toggle">                    
+                            <span class="title">Employee Join Back</span>
                         </a>
                     </li>
                 </ul>

@@ -102,7 +102,7 @@ class InitAttendance extends Command
 
         $employee = User::whereHas('role', function($query) use ($role){
                         return $query->whereIn('role_group', $role);
-                    })->get();
+                    })->where('is_resign', 0)->get();
 
         return $employee;
     }

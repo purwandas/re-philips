@@ -53,8 +53,8 @@ class UserPromoterController extends Controller
     public function masterDataTable(Request $request){
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
         
-        $data = User::
-            join('roles','roles.id','users.role_id')
+        $data = User::where('is_resign', 0)
+            ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
             ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
             ->where('users.id', '<>', Auth::user()->id)
@@ -105,7 +105,7 @@ class UserPromoterController extends Controller
                     <button class='btn btn-danger disabled'><i class='fa fa-lock'></i></button>";
                     }
                     
-                    $action .= "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' title='Resign' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
+                    // $action .= "<button class='btn btn-danger btn-sm btn-delete deleteButton' data-toggle='confirmation' title='Resign' data-singleton='true' value='".$item->id."'><i class='fa fa-remove'></i></button>";
 
                     return $action;
                     
@@ -228,13 +228,14 @@ class UserPromoterController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(UserFilters $filters){ 
-        $data = User::filter($filters)->get();
+        $data = User::filter($filters)->where('is_resign', 0)->get();
 
         return $data;
     }
     public function getDataPromoterWithFilters(UserFilters $filters){ 
         $data = User::filter($filters)
                 ->join('roles','roles.id','users.role_id')
+                ->where('is_resign', 0)
                 ->whereIn('roles.role_group','=','Promoter')->get();
 
         return $data;
@@ -246,6 +247,7 @@ class UserPromoterController extends Controller
             ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
             ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->where('is_resign', 0)
             ->whereIn('role_group',$roles)->get();
 
         return $data;
@@ -258,6 +260,7 @@ class UserPromoterController extends Controller
             ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
             ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
+            ->where('is_resign', 0)
             ->limit(1)
             ->whereIn('role_group',$roles)->get();
 
@@ -432,17 +435,21 @@ class UserPromoterController extends Controller
             where('users.id', $id)
             ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
-            ->join('employee_stores','users.id','employee_stores.user_id')
-            ->join('stores','employee_stores.store_id','stores.id')
+            ->leftJoin('employee_stores','users.id','employee_stores.user_id')
+            ->leftJoin('stores','employee_stores.store_id','stores.id')
             ->select('users.*', 'stores.dedicate as dedicate', 'roles.id as role_id', 'roles.role_group as role_group', 'roles.role as role', 'gradings.id as grading_id', 'gradings.grading as grading')
             ->first();
 
-        if ($data->role_group == 'Salesman Explorer') {
-            $salesmanDedicate = SalesmanDedicate::
-                with('store')
-                ->where('user_id',$data->id)
-                ->first();
-            // $salesmanDedicate = $data->id;
+        if($data){
+
+            if ($data->role_group == 'Salesman Explorer') {
+                $salesmanDedicate = SalesmanDedicate::
+                    with('store')
+                    ->where('user_id',$data->id)
+                    ->first();
+                // $salesmanDedicate = $data->id;
+            }
+
         }
 
         // return response()->json($data);  
@@ -653,6 +660,9 @@ class UserPromoterController extends Controller
                 }
             }
 
+        // UPDATE RESIGN = 0
+        $user->update(['is_resign' => 0]);
+
         return response()->json(
             [
                 'url' => url('userpromoter'),
@@ -767,8 +777,17 @@ class UserPromoterController extends Controller
         return response()->json($id);
     }
 
-    public function resign($id)
+    public function resign(Request $request)
     {
+        // return response()->json($request->employeeId);
+
+        $id = $request->employeeId;
+
+        // Update Is Resign
+        $user = User::where('id', $id)->first();
+
+        $user->update(['is_resign' => 1, 'alasan_resign' => $request->alasan_resign]);
+
         /* Deleting related to user */
 
         /* Delete if any relation exist in employee store */
@@ -811,7 +830,14 @@ class UserPromoterController extends Controller
             $attendance->delete();
         }
 
-        return response()->json(['url' => url('userpromoter')]);
+        return response()->json(['url' => url('resign')]);
         // return response()->json($id);
+    }
+
+    public function getData($id)
+    {
+        $data = User::with('role', 'grading')->where('id', $id)->first();
+
+        return response()->json($data);
     }
 }

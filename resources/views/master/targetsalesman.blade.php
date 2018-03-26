@@ -413,7 +413,7 @@
          *
          */
 
-        $('#promoter').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
+        $('#promoter').select2(setOptions('{{ route("data.employee") }}', 'Salesman Explorer', function (params) {
 	        	filters['roleGroup'] = ['Salesman Explorer'];
 	            return filterData('employee', params.term);
 	        }, function (data, params) {

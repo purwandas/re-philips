@@ -17,6 +17,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('datatable/user', ['as'=> 'datatable.user','uses'=>'UserController@masterDataTable']);
     Route::post('datatable/userpromoter', ['as'=> 'datatable.userpromoter','uses'=>'UserPromoterController@masterDataTable']);
+    Route::post('datatable/resign', ['as'=> 'datatable.resign','uses'=>'Master\ResignController@masterDataTable']);
+    Route::post('datatable/rejoin', ['as'=> 'datatable.rejoin','uses'=>'Master\ResignController@masterDataTableRejoin']);
     Route::post('datatable/area', ['as'=> 'datatable.area','uses'=>'Master\AreaController@masterDataTable']);
     Route::post('datatable/sellin', ['as'=> 'datatable.sellin','uses'=>'Master\SellInController@masterDataTable']);
     Route::post('datatable/sellout', ['as'=> 'datatable.sellout','uses'=>'Master\SellOutController@masterDataTable']);
@@ -118,7 +120,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/nonPromoter', ['as'=> 'data.nonPromoter','uses'=>'UserController@getDataNonPromoterWithFilters']);
     Route::post('data/nonPromoterC', ['as'=> 'data.nonPromoterC','uses'=>'UserController@getDataNonPromoterWithFiltersCheck']);
     Route::post('data/groupPromoter', ['as'=> 'data.groupPromoter','uses'=>'UserPromoterController@getDataGroupPromoterWithFilters']);
+    Route::post('data/groupPromoterRejoin', ['as'=> 'data.groupPromoterRejoin','uses'=>'Master\ResignController@getDataGroupPromoterWithFilters']);
     Route::post('data/groupPromoterC', ['as'=> 'data.groupPromoterC','uses'=>'UserPromoterController@getDataGroupPromoterWithFiltersCheck']);
+    Route::post('data/groupPromoterCRejoin', ['as'=> 'data.groupPromoterCRejoin','uses'=>'Master\ResignController@getDataGroupPromoterWithFiltersCheck']);
     Route::post('data/userpromoter', ['as'=> 'data.userpromoter','uses'=>'UserPromoterController@getDataWithFilters']);
     Route::post('data/store', ['as'=> 'data.store','uses'=>'Master\StoreController@getDataWithFilters']);
     Route::post('data/stores', ['as'=> 'data.stores','uses'=>'Master\StoreController@getStoresDataWithFilters']);
