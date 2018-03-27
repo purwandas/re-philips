@@ -317,32 +317,27 @@ class UserPromoterController extends Controller
                 SE save ke employeestore, tanpa pilih dedicate
         */
             
-        // $user = User::create($request->all());
+        $user = User::create($request->all());
 
         // /* Insert user relation */
-       $status = '';
             /* Employee One Store */
             if($request['store_id'] && $request['status'] == 'stay'){
-                $status .= "stay";
-                // $store = Store::find($request['store_id'])->update(['user_id'=>$user->id]);
-                // EmployeeStore::create([
-                //     'user_id' => $user->id,
-                //     'store_id' => $request['store_id'],
-                // ]);
+                EmployeeStore::create([
+                    'user_id' => $user->id,
+                    'store_id' => $request['store_id'],
+                ]);
             }
 
             /* Employee Multiple Store */
             if($request['store_ids'] && $request['status'] == 'mobile'){
-                $status .= 'mobile';
-                // foreach ($request['store_ids'] as $storeId) {
-                //     // $store = Store::find($storeId)->update(['user_id'=>$user->id]);
-                //     EmployeeStore::create([
-                //         'user_id' => $user->id,
-                //         'store_id' => $storeId,
-                //     ]);
-                // }
+                foreach ($request['store_ids'] as $storeId) {
+                    EmployeeStore::create([
+                        'user_id' => $user->id,
+                        'store_id' => $storeId,
+                    ]);
+                }
             }
-return response()->json($status);
+            
         // If DM or Trainer
         if(isset($request->area)){
             if($request['role'] == 'DM') {
