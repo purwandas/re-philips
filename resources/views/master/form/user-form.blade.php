@@ -215,6 +215,10 @@
 	                        		<a class="btn btn-md green" href="{{ url('store/create') }}" target="_blank">
 				                		<i class="fa fa-plus"></i> New Store
 				                	</a>
+				                	<p class="btn btn-md red" id="clearStores">
+				                		<i class="fa fa-refresh"></i>
+	                                	Clear Selected
+	                                </p>
 			                	</div>
                         	</div>
 
@@ -271,9 +275,9 @@
 			                                </select>
 		                            	</div>
 			                        	
-		                                <p class="btn btn-md red" id="clearStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-left: 1%;">
+		                                <!-- <p class="btn btn-md red" id="clearStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-left: 1%;">
 		                                	Clear
-		                                </p>
+		                                </p> -->
 		                                <p class="btn btn-md green" id="addStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-right: 1%;">
 		                                	Add
 		                                </p>
