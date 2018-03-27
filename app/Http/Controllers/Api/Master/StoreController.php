@@ -86,6 +86,15 @@ class StoreController extends Controller
 
         }
 
+        if($user->role->role_group == 'Supervisor Hybrid'){
+            
+            $data = Store::where('user_id', $user->id)
+                ->join('districts', 'stores.district_id', '=', 'districts.id')
+                ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
+                    'stores.latitude', 'stores.address', 'districts.name as district_name')->groupBy('store_id')->get();
+
+        }
+
     	return response()->json($data);
 
     }
@@ -223,6 +232,14 @@ class StoreController extends Controller
         // End Store Activities
 
         $store->update(['longitude' => $request->longitude, 'latitude' => $request->latitude, 'address' => $request->address]);
+
+        // UPDATE STORE WITH SAME STORE ID
+
+        $storeOther = Store::where('store_id', $store->store_id)->first();
+
+        if($storeOther){
+            $storeOther->update(['longitude' => $request->longitude, 'latitude' => $request->latitude, 'address' => $request->address]);
+        }
 
         return response()->json(['status' => true, 'message' => 'Update longitude dan latitude store berhasil']);
 
