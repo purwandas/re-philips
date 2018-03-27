@@ -500,18 +500,18 @@
                 self.selected('byNik', $('#filterNik').val());
             });
 
-            $('#filterName').select2(setOptions('{{ route("data.nonPromoter") }}', 'Name', function (params) {
+            $('#filterName').select2(setOptions('{{ route("data.nonPromoter") }}', 'Name', function(params){
                 return filterData('employee', params.term);
-            }, function (data, params) {
+            }, function(params) {
                 return {
-                    results: $.map(data, function (obj) {
+                    results: $.map(data, function(obj) {
                         return {id: obj.id, text: obj.name}
                     })
                 }
             }));
-            $('#filterName').on('select2:select', function () {
+            $('#filterName').on('select2:select', function() {
                 select2Reset($('#filterNik'));
-                self.selected('byName', $('#filterName').val());
+                self.selected('byName2', $('#filterName').val());
             });
 
             // $("#filterRole").attr("data-placeholder","bar");

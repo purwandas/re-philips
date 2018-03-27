@@ -210,6 +210,14 @@
 	                        	<hr>
 	                        </div>
 
+	                        <div class="form-group newstore">
+                        		<div style="padding-left: 4%;">
+	                        		<a class="btn btn-md green" href="{{ url('store/create') }}" target="_blank">
+				                		<i class="fa fa-plus"></i> New Store
+				                	</a>
+			                	</div>
+                        	</div>
+
 	                        <div id="oneStoreContent" class="display-hide">
 		                        <div class="form-group">
 		                          <label class="col-sm-2 control-label">Employee's Store</label>
@@ -234,15 +242,66 @@
 		                          <label class="col-sm-2 control-label">Employee's Store</label>
 		                          <div class="col-sm-9">
 
-		                          <div class="input-group" style="width: 100%;">
+		                          	<div class="input-group col-sm-10" style="float: left;">
 		     
-		                                <select class="select2select" name="store_ids[]" id="stores" multiple="multiple" required="required"></select>
+		                                <select class="select2select" id="stores"></select>
 		                                
 		                                <span class="input-group-addon display-hide">
 		                                    <i class="fa"></i>
 		                                </span>
 
 		                            </div>
+
+		                            <div class="input-group col-sm-2 newstore" style="float: right;padding-left: 10px;">
+		                            	<div class="display-hide" id="divDedicate2">
+		                            		<select class="select2select" name="dedicate" id="dedicate2">
+							            		<option></option>
+												<option value="DA">
+													DA
+												</option>
+												<option value="PC">
+													PC
+												</option>
+												<option value="MCC">
+													MCC
+												</option>
+												<option value="HYBRID">
+													HYBRID
+												</option>
+			                                </select>
+		                            	</div>
+			                        	
+		                                <p class="btn btn-md red" id="clearStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-left: 1%;">
+		                                	Clear
+		                                </p>
+		                                <p class="btn btn-md green" id="addStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-right: 1%;">
+		                                	Add
+		                                </p>
+			                        </div>
+
+		                            <hr>
+			                        <div class="portlet light bg-inverse newstore col-sm-12" style="padding-top: 0px;">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span class="caption-subject font-green-haze bold uppercase">Stores</span>
+                                                <span class="caption-helper">Selected (<span id="storeCount">0</span>)</span>
+                                                <input type="hidden" name="check" id="check" value="0">
+                                            </div>
+                                            <div class="tools">
+                                                <a id="toggleButton" href="" class="expand" data-original-title="show/hide" title="show/hide"> </a>
+                                            </div>
+                                        </div>
+                                        <div id="toggleContent" class="portlet-body form" style="display: none;">
+                                            
+                                            <div class="row">
+					                            <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search for names.." title="Type in a name">
+					                            <ul id="myUL">
+					                            </ul>
+					                        </div>
+                                            
+                                        </div>
+                                    </div>
 		                            
 		                          </div>
 		                        </div>
@@ -448,26 +507,27 @@
 	         $('#stores').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {
 	         	var selectedRolev = $('#selectedRole').val();
 				selectedRolev = selectedRolev.split('`');
+				filters['bySpvNew'] = $('#penampungUserId').val();
 	         	if (selectedRolev[1] == 'Supervisor') {
-		        	filters['bySpvNew'] = $('#penampungUserId').val();
 		        	var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
 		        	if (statusSpv == "Demonstrator") {
 		        		filters['byDedicateSpv'] = "DA";
-		        	}else{
-		        		filters['byDedicateSpv'] = $('#dedicate').val();
 		        	}
-		        }else if (selectedRolev[1] == 'Supervisor Hybrid') {
-		        	filters['bySpvNew'] = $('#penampungUserId').val();
-		        	filters['byDedicateSpvHybrid'] = $('#dedicate').val();
+		        	// else{
+		        	// 	filters['byDedicateSpv'] = $('#dedicate').val();
+		        	// }
 		        }
+		        // else if (selectedRolev[1] == 'Supervisor Hybrid') {
+		        // 	filters['byDedicateSpvHybrid'] = $('#dedicate').val();
+		        // }
 	            return filterData('store', params.term);
 	        }, function (data, params) {
 	            return {
 	                results: $.map(data, function (obj) {                                
 	                    if(obj.store_name_2 != null){
-                            return {id: obj.id+'`'+obj.store_id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
+                            return {id: obj.id+'`'+obj.store_id + "`" + obj.store_name_1 + " (" + obj.store_name_2 + ")", text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
-	                    return {id: obj.id+'`'+obj.store_id, text: obj.store_id + " - " + obj.store_name_1}
+	                    return {id: obj.id+'`'+obj.store_id + "`" + obj.store_name_1, text: obj.store_id + " - " + obj.store_name_1}
 	                })
 	            }
 	        }));
@@ -489,6 +549,11 @@
 			$('#selectedRole').val("{{ @$data->role->id }}`{{ @$data->role->role_group }}");
 
             $('#dedicate').select2({
+                width: '100%',
+                placeholder: 'Dedicate'
+            });
+
+            $('#dedicate2').select2({
                 width: '100%',
                 placeholder: 'Dedicate'
             });
@@ -537,6 +602,10 @@
 
 			resetForm();
 			resetStore();
+			// clearStore();
+
+			$('#dedicate2').removeAttr('name');
+			$('#divDedicate2').addClass('display-hide');
 
 			role = role.split('`');
 
@@ -574,7 +643,7 @@
 
 				$('#storeContent').removeClass('display-hide');				
 				$('#multipleStoreContent').removeClass('display-hide');			
-	            $('#stores').attr('required', 'required');
+	            // $('#stores').attr('required', 'required');
 	            $('#dedicateContent').removeClass('display-hide');
 
 	            if (role[1] == 'Supervisor') {
@@ -589,6 +658,11 @@
 				            $('#dedicate').removeAttr('required');
 				       	}
 				    }
+                }else if (role[1] == 'Supervisor Hybrid') {
+                	$('#dedicate').removeAttr('required');
+                	$('#dedicateContent').addClass('display-hide');
+                	$('#divDedicate2').removeClass('display-hide');
+                	$('#dedicate2').attr('name', 'dedicate');
                 }
                 
 			}
@@ -628,7 +702,7 @@
 		function resetStore(){
 			var role = $('#selectedRole').val();
 			var selectedRolev = role.split('`');
-			console.log("role"+selectedRolev[1]);
+			// console.log("role"+selectedRolev[1]);
 
 			$('#store').removeAttr('required');
 			$('#stores').removeAttr('required');
@@ -653,8 +727,8 @@
 			
 			if($('input[name=_method]').val() == "PATCH" && (selectedRolev[1] == 'Supervisor' || selectedRolev[1] == 'Supervisor Hybrid')){
 				select2Reset($('#stores'));
-				updateStoreSpv();
-				updateStoreSpvDemo();
+				// updateStoreSpv();
+				// updateStoreSpvDemo();
 			}			
 		}
 
@@ -712,7 +786,7 @@
 	            $('#store').attr('required', 'required');
 			}else if(value == 'mobile'){	
 				$('#multipleStoreContent').removeClass('display-hide');			
-	            $('#stores').attr('required', 'required');
+	            // $('#stores').attr('required', 'required');
 			}			
 		}		
 
@@ -816,6 +890,7 @@
 
 		$(document.body).on("change","#statusSpvCheck2",function(){
 			var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
+			// clearStore();
 	       	if (statusSpv) {
 		       	if (statusSpv == "Demonstrator")
 		       	{
@@ -828,6 +903,7 @@
 
 		$(document.body).on("change","#statusSpvCheck",function(){
 			var statusSpv = $('input[type=radio][name=status_spv]:checked').val();
+			// clearStore();
 	       	if (statusSpv) {
 		       	if (statusSpv == "Promoter") 
 		       	{
@@ -856,5 +932,246 @@
 		    // $('div').removeClass('display-hide');
 		});
 
-	</script>	
+		function clearStore() {
+			$("#myUL").html('');
+			addNumber = 0;
+			$("#storeCount").html('0');
+		}
+
+	</script>
+
+	<!-- New Multiple Store -->
+	<script>
+		var addNumber = 0;
+		$(document).ready(function () {
+		  $.ajaxSetup({
+		    headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    }
+		  });
+
+		  // $('[data-toggle="tooltip"]').tooltip(); 
+		  $('#addStores').tooltip();
+
+		  var idx = 0;
+		  // Clear Store Click
+		  $("#clearStores").click(function(){
+		  	clearStore();
+		  });
+
+		  // Add Store Click
+		  $("#addStores").click(function(){
+		  	var role = $('#selectedRole').val()
+			role = role.split('`');
+		    var selectedStore = $('#stores').val();
+		        
+		    if (selectedStore != '' && selectedStore != null) {
+		    	console.log(" #ses? "+ $('#dedicate2').val() );
+		    	if($('#dedicate2').val() == '' && role[1] == 'Supervisor Hybrid'){
+                    swal("Warning", "You Have to Select Dedicate First!", "warning");
+                    return;
+                }
+
+		    	if (idx == 0) {
+		    		$('#toggleButton').removeClass('expand');
+		    		$('#toggleButton').addClass('collapse');
+		    		$('#toggleContent').removeAttr('style');
+		    		$('#toggleContent').attr('style','display:block');
+		    	}
+		      var temp = selectedStore.toString().split('`');
+		      var inputId = temp[0] + '`' + temp[1];
+		      var inputValue = '<b>' + temp[1] + '</b> ' + temp[2];
+		      var hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
+		      	if (role[1] == 'Supervisor Hybrid') {
+		      		hiddenInput += "<input type='hidden' name='dedicate[]' value='"+$('#dedicate2').val()+"'>";
+		      		inputValue += ' <b>'+ $('#dedicate2').val() + '</b>';
+		      		select2Reset($('#dedicate2'));
+		      	}
+		      $("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
+		      var x = document.getElementsByClassName("liDelete"+idx+"");
+		      x[0].setAttribute('onClick', "deleteItem('p"+idx+"')");
+		      idx++;
+		      addNumber++;
+		      $('#cek').val('ok');
+		      $('#storeCount').html(addNumber);
+		      $('#check').val(addNumber);
+		      select2Reset($('#stores'));
+		      $(this).attr('data-toggle','tooltip');
+		      $(this).attr('title','Select Store First');
+		      $(this).attr('data-placement','top');
+		      $(this).attr('data-original-title','Please Select Store First');
+		      $('.box-default').removeClass('collapsed-box');
+		    }else{
+		    	swal("Warning", "You Have to Select Store First!", "warning");
+                return;
+		    }
+		      
+		  });
+
+		  $(document.body).on("change","#stores",function(){
+		    var input = $('#stores').val();
+		    if (input != '' && input != null) {
+		      $('#addStores').removeAttr('data-toggle');
+		      $('#addStores').removeAttr('title');
+		      $('#addStores').removeAttr('data-placement');
+		      $('#addStores').removeAttr('data-original-title');
+		    } else {
+		      $('#addStores').attr('data-toggle','tooltip');
+		      $('#addStores').attr('title','Select Store First');
+		      $('#addStores').attr('data-placement','top');
+		      $('#addStores').attr('data-original-title','Please Select Store First');
+		    }
+		  });
+
+		});
+
+
+		if ($('input[name=_method]').val() == "PATCH") {
+
+		  $('.box-default').removeClass('collapsed-box');
+		  var roles = "{{ @$data->role->role_group }}";
+
+			  // Set STORE for Supervisor Promoter
+			  // console.log("PATCH SPV Promoter Store");
+			  var getDataUrl = "{{ url('util/spvstore/') }}";
+			  var index = 0;
+			  var hiddenInput = '';
+			  var storeName = '';
+				$.get(getDataUrl + '/' + userId, function (data) {
+					if (data) {
+						$.each(data, function() {
+							storeName = '<b>' + this.store_id + '</b> ' +this.store_name_1;
+							if (this.store_name_2 != null) {
+								storeName += '('+this.store_name_2+')';
+							}
+							// console.log("Store Name: "+storeName+userId);
+				    		$('#toggleButton').removeClass('expand');
+				    		$('#toggleButton').addClass('collapse');
+				    		$('#toggleContent').removeAttr('style');
+				    		$('#toggleContent').attr('style','display:block');
+				    		// console.log('NowYouSeeMe #2');
+					    
+					      	index = 1000 + addNumber;
+					      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+this.id+'`'+this.store_id+"'>";
+
+					      	if (roles == 'Supervisor Hybrid') {
+					      		hiddenInput += "<input type='hidden' name='dedicate[]' value='"+this.dedicate+"'>";
+					      		storeName += ' <b>'+ this.dedicate + '</b>';
+					      		select2Reset($('#dedicate2'));
+					      	}
+					    
+						    addNumber++;
+						    $('#storeCount').html(addNumber);
+						    $('#check').val(addNumber);
+					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
+					      	var x = document.getElementsByClassName("liDelete"+index);
+					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"')");
+						});
+					}
+			  	});
+			
+			  	// Set STORE for Supervisor Demonstrator
+			  	// console.log("PATCH SPV Demonstrator Store");
+			  	var getDataUrl = "{{ url('util/spvdemostore/') }}";
+			  	var index = 0;
+			  	var hiddenInput = '';
+			  	var storeName = '';
+				$.get(getDataUrl + '/' + userId, function (data) {
+					if (data) {
+						$.each(data, function() {
+							storeName = '<b>' + this.store_id + '</b> ' +this.store_name_1;
+							if (this.store_name_2 != null) {
+								storeName += '('+this.store_name_2+')';
+							}
+							// console.log("Store Name: "+storeName+userId);
+				    		$('#toggleButton').removeClass('expand');
+				    		$('#toggleButton').addClass('collapse');
+				    		$('#toggleContent').removeAttr('style');
+				    		$('#toggleContent').attr('style','display:block');
+				    		// console.log('NowYouSeeMe #2');
+					    
+					      	index = 1000 + addNumber;
+					      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+this.id+'`'+this.store_id+"'>";
+					    
+						    addNumber++;
+						    $('#storeCount').html(addNumber);
+						    $('#check').val(addNumber);
+					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
+					      	var x = document.getElementsByClassName("liDelete"+index);
+					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"')");
+						});
+					}
+			  	});
+		}
+
+
+		function deleteItem(id) {
+		  $('#'+id).parent().parent().remove();
+		  addNumber--;
+		  $('#storeCount').html(addNumber);
+		  $('#check').val(addNumber);
+		  if (addNumber == 0) {
+		    $('#cek').val('');
+		  }
+		}
+
+		function searchFunction() {
+		    var input, filter, ul, li, a, i;
+		    input = document.getElementById("myInput");
+		    filter = input.value.toUpperCase();
+		    ul = document.getElementById("myUL");
+		    li = ul.getElementsByTagName("li");
+		    for (i = 0; i < li.length; i++) {
+		        a = li[i].getElementsByTagName("span")[0];
+		        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+		            li[i].style.display = "";
+		        } else {
+		            li[i].style.display = "none";
+
+		        }
+		    }
+		}
+		</script>
+	<style type="text/css">
+		#myInput {
+		  background-image: url('{{ asset('image/searchicon.png') }}');
+		  background-position: 10px 12px;
+		  background-repeat: no-repeat;
+		  width: 100%;
+		  font-size: 13px;
+		  padding: 12px 20px 12px 40px;
+		  border: 1px solid #ddd;
+		  margin-bottom: 12px;
+		}
+
+		#myUL {
+		  list-style-type: none;
+		  padding: 0;
+		  margin: 0;
+		}
+
+		#myUL li div {
+		  border: 1px solid #ddd;
+		  margin-top: -1px; /* Prevent double borders */
+		  background-color: #f6f6f6;
+		  padding: 12px;
+		  text-decoration: none;
+		  font-size: 13px;
+		  color: black;
+		  display: block;
+		}
+
+		#myUL li div p {
+		  float: right;
+		  margin-top: -2px;
+		  margin-bottom: -2px;
+	      width: 36px;
+		}
+
+		#myUL li div:hover:not(.header) {
+		  background-color: #eee;
+		}
+
+	</style>
+	<!-- END New Multiple Store -->
 @endsection
