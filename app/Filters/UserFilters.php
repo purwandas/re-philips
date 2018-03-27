@@ -17,7 +17,15 @@ class UserFilters extends QueryFilters
 
     public function employee($value) {
         if(!$this->requestAllData($value)){
-        	$this->builder->where(function ($query) use ($value){
+            $this->builder->where(function ($query) use ($value){
+                return $query->where('users.name', 'like', '%'.$value.'%')->orWhere('users.nik', 'like', '%'.$value.'%');
+            });
+        }
+    }
+
+    public function employee2($value) {
+        if(!$this->requestAllData($value)){
+            $this->builder->where(function ($query) use ($value){
                 return $query->where('users.name', 'like', '%'.$value.'%')->orWhere('users.nik', 'like', '%'.$value.'%');
             });
         }

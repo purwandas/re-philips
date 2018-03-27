@@ -471,8 +471,22 @@
             }));
             $('#filterName').on('select2:select', function () {
                 select2Reset($('#filterNik'));
-                self.selected('byName', $('#filterName').val());
+                self.selected('byName2', $('#filterName').val());
             });
+
+            // $('#filterName').select2(setOptions('{{ route("data.groupPromoter") }}', 'Name', function(params){
+            //     return filterData('employee', params.term);
+            // }, function(params) {
+            //     return {
+            //         results: $.map(data, function(obj) {
+            //             return {id: obj.id, text: obj.name}
+            //         })
+            //     }
+            // }));
+            // $('#filterName').on('select2:select', function() {
+            //     select2Reset($('#filterNik'));
+            //     self.selected('byName', $('#filterName').val());
+            // });
 
             // $("#filterRole").attr("data-placeholder","bar");
             // $("#filterRole").select2();
