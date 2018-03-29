@@ -49,7 +49,7 @@ class ImportTarget extends Command
 
         foreach ($dataFile as $detail) {
 
-            $tempSellType = strtolower($detail['sell_type']);
+            $tempSellType = trim(strtolower($detail['sell_type']));
 
             $sellType = 'Sell In';
 
