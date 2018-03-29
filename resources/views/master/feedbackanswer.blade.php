@@ -97,6 +97,7 @@
                                 <th> No. </th>
                                 <th> Assessor </th>
                                 <th> Promoter </th>
+                                <th> Category </th>
                                 <th> Question </th>   
                                 <th> Score </th>    
                                 <th> Options </th>                        
@@ -148,6 +149,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'assessor_name', name: 'assessor_name'},
                 {data: 'promoter_name', name: 'promoter_name'},
+                {data: 'feedback_category', name: 'feedback_category'},
                 {data: 'feedback_question', name: 'feedback_question'},
                 {data: 'answer', name: 'answer'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},              
@@ -177,6 +179,7 @@
                 {data: 'id', name: 'id'},
                 {data: 'assessor_name', name: 'assessor_name'},
                 {data: 'promoter_name', name: 'promoter_name'},
+                {data: 'feedback_category', name: 'feedback_category'},
                 {data: 'feedback_question', name: 'feedback_question'},
                 {data: 'answer', name: 'answer'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
