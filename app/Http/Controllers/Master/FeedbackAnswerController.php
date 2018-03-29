@@ -37,7 +37,8 @@ class FeedbackAnswerController extends Controller
                     ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'assessors.id')
                     ->join('users as promoters', 'feedback_answers.promoter_id', '=', 'promoters.id')
                     ->join('feedback_questions', 'feedback_answers.feedbackQuestion_id', '=', 'feedback_questions.id')
-                    ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as promoter_name', 'feedback_questions.question as feedback_question' )->get();
+                    ->join('feedback_categories', 'feedback_questions.feedbackCategory_id', '=', 'feedback_categories.id')
+                    ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as promoter_name', 'feedback_questions.question as feedback_question', 'feedback_categories.name as feedback_category')->get();
 
         $filter = $data;
 
