@@ -68,14 +68,18 @@ class MaintenanceRequestController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
         }
+        
+        $reportRep = str_replace('"', '', $content->report);
 
         // Check Maintenance Request header after insert
         $maintenanceRequestAfter = MaintenanceRequest::where('user_id', $user->id)
             ->where('store_id', $content->id)
-            ->where('report', $content->report)
+            ->where('report', $reportRep)
             ->where('date', Carbon::now()->format('Y-m-d'))
             ->first();
             // return response()->json($maintenanceRequestAfter);
+            
+        // return response()->json($maintenanceRequestAfter);
 
        // Upload image process
        $imagePath = explode('/', $maintenanceRequestAfter->photo);

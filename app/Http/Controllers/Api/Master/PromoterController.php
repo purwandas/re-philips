@@ -21,6 +21,7 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use DB;
+use App\News;
 
 class PromoterController extends Controller
 {
@@ -518,8 +519,10 @@ class PromoterController extends Controller
                 'store_name' => $data->store_name,
             ]);
         }
+        
+        $sorted = $result->sortBy('date');
 
-        return response()->json($result);
+        return response()->json($sorted->values()->all());
 
     }
 
