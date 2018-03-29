@@ -280,10 +280,10 @@ class AchievementController extends Controller
         $totalTargetPF = 0;
         $totalActualPF = 0;
 
-        $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeIds)->where('sell_type', 'Sell In')->where('partner', 0)->get();
+        $data = SummaryTargetActual::where('user_id', $id)->whereIn('storeId', $storeIds)->where('sell_type', 'Sell In')->where('partner', 0)->get();
 
         if($param == 2){
-            $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeIds)->where('sell_type', 'Sell Out')->where('partner', 0)->get();
+            $data = SummaryTargetActual::where('user_id', $id)->whereIn('storeId', $storeIds)->where('sell_type', 'Sell Out')->where('partner', 0)->get();
         }
 
         foreach ($data as $detail){
@@ -520,6 +520,8 @@ class AchievementController extends Controller
         }
 
         $promoters = User::whereIn('id', $promoterIds)->get();
+
+        // return response()->json(['asd' => $promoters]);
 
         foreach($promoters as $promoter){
 
