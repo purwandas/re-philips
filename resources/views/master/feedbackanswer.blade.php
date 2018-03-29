@@ -186,7 +186,7 @@
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [2,3,5,6]]},
+                {"className": "dt-center", "targets": [2,3,5,6]},
             ],
             "order": [ [0, 'desc'] ],
         });
