@@ -142,7 +142,7 @@
         var order = [ [0, 'desc'] ];
         var columnDefs = [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [2,4,5]},
+                {"className": "dt-center", "targets": [2,3,5,6]},
             ];
 
         var tableColumns = [
@@ -186,7 +186,7 @@
             ],
             "columnDefs": [
                 {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [2,4,5]},
+                {"className": "dt-center", "targets": [2,3,5,6]]},
             ],
             "order": [ [0, 'desc'] ],
         });
