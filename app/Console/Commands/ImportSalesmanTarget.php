@@ -51,6 +51,12 @@ class ImportSalesmanTarget extends Command
             
             $target = SalesmanTarget::where('user_id', $detail['user_id'])->first();
 
+            if($detail['target_call'] == '' || $detail['target_call'] == null) $detail['target_call'] = 0;
+            if($detail['target_active_outlet'] == '' || $detail['target_active_outlet'] == null) $detail['target_active_outlet'] = 0;
+            if($detail['target_effective_call'] == '' || $detail['target_effective_call'] == null) $detail['target_effective_call'] = 0;
+            if($detail['target_sales'] == '' || $detail['target_sales'] == null) $detail['target_sales'] = 0;
+            if($detail['target_sales_pf'] == '' || $detail['target_sales_pf'] == null) $detail['target_sales_pf'] = 0;
+
             if($target){ // UPDATE
 
                 $targetOldCall = $target->target_call;
@@ -95,6 +101,27 @@ class ImportSalesmanTarget extends Command
                     } 
 
                 }
+
+            }else{ // INSERT
+
+                $target = SalesmanTarget::create([
+                    'user_id' => $detail['user_id'],
+                    'target_call' => $detail['target_call'],
+                    'target_active_outlet' => $detail['target_active_outlet'],
+                    'target_effective_call' => $detail['target_effective_call'],
+                    'target_sales' => $detail['target_sales'],
+                    'target_sales_pf' => $detail['target_sales_pf'],                    
+                ]);
+
+                /* Summary Target Add and/or Change */ // On Progress
+                $summary['user_id'] = $target->user_id;
+                $summary['target_call'] = $target->target_call;
+                $summary['target_active_outlet'] = $target->target_active_outlet;
+                $summary['target_effective_call'] = $target->target_effective_call;
+                $summary['target_sales'] = $target->target_sales;
+                $summary['target_sales_pf'] = $target->target_sales_pf;
+
+                $this->changeTargetSalesman($summary, 'change');
 
             }
 

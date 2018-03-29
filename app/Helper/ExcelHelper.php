@@ -907,6 +907,7 @@ class ExcelHelper
         $collection = collect($data);
 
         return $collection->map(function ($item) {
+            if(@$item['sell_type'] == 'Sell In') @$item['sell_type'] = 'Sell Thru';
             return [
                 'ID' => @$item['id'],
                 'USER ID' => @$item['user_id'],
