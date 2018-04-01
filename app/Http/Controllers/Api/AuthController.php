@@ -50,23 +50,28 @@ class AuthController extends Controller
 		}
 
 		// If user has not login
-		if ( $user->status_login != 'Login') {
-			// if hp login pertama berbeda
-			if ( $user->hp_id != null and $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
-				return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
-			}
-			// update status, jenis_hp and id hp ketika null
-			if ( $user->hp_id == null ) {
-		        $user->update([
-					'status_login' => 'Login',
-					'jenis_hp' => $request->jenis_hp,
-					'hp_id' => $request->hp_id
-				]);
-		    }
+		// if ( $user->status_login != 'Login') {
+		// 	// if hp login pertama berbeda
+		// 	if ( $user->hp_id != null and $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
+		// 		return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
+		// 	}
+		// 	// update status, jenis_hp and id hp ketika null
+		// 	if ( $user->hp_id == null ) {
+		//         $user->update([
+		// 			'status_login' => 'Login',
+		// 			'jenis_hp' => $request->jenis_hp,
+		// 			'hp_id' => $request->hp_id
+		// 		]);
+		//     }
 
-		} else {
-			// user has login
-			return response()->json(['status' => 'false', 'message' => 'User has been logged in'], 200);
+		// } else {
+		// 	// user has login
+		// 	return response()->json(['status' => 'false', 'message' => 'User has been logged in'], 200);
+		// }
+
+		// CHECK HP
+		if ( $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
+			return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
 		}
 
 		// Check Promoter Group
