@@ -57,11 +57,11 @@ class AuthController extends Controller
 		// 	}
 		// 	// update status, jenis_hp and id hp ketika null
 		// 	if ( $user->hp_id == null ) {
-		//         $user->update([
-		// 			'status_login' => 'Login',
-		// 			'jenis_hp' => $request->jenis_hp,
-		// 			'hp_id' => $request->hp_id
-		// 		]);
+		        $user->update([
+					'status_login' => 'Login',
+					'jenis_hp' => $request->jenis_hp,
+					'hp_id' => $request->hp_id
+				]);
 		//     }
 
 		// } else {
@@ -70,20 +70,9 @@ class AuthController extends Controller
 		// }
 
 		// CHECK HP
-		if($user->hp_id != null){
-			if ( $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
-				return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
-			}	
-		}
-
-		if ( $user->hp_id == null ) {
-	        $user->update([
-				'status_login' => 'Login',
-				'jenis_hp' => $request->jenis_hp,
-				'hp_id' => $request->hp_id
-			]);
-	    }
-		
+// 		if ( $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
+// 			return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
+// 		}
 
 		// Check Promoter Group
 		$isPromoter = 0;
