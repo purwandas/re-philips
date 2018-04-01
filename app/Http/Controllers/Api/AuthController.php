@@ -70,9 +70,20 @@ class AuthController extends Controller
 		// }
 
 		// CHECK HP
-		if ( $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
-			return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
+		if($user->hp_id != null){
+			if ( $user->hp_id != $request->hp_id and $user->jenis_hp != $request->jenis_hp ) {
+				return response()->json(['status' => 'false', 'message' => 'Cannot login in other handphone' ], 200);
+			}	
 		}
+
+		if ( $user->hp_id == null ) {
+	        $user->update([
+				'status_login' => 'Login',
+				'jenis_hp' => $request->jenis_hp,
+				'hp_id' => $request->hp_id
+			]);
+	    }
+		
 
 		// Check Promoter Group
 		$isPromoter = 0;
