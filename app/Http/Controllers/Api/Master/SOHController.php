@@ -45,7 +45,15 @@ class SOHController extends Controller
                 try {
                     DB::transaction(function () use ($content, $sohHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $sohDetail = SOHDetail::where('soh_id', $sohHeader->id)->where('product_id', $data['product_id'])->first();
 
@@ -208,7 +216,15 @@ class SOHController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $sohDetail = SOHDetail::where('soh_id', $transaction->id)->where('product_id', $data['product_id'])->first();
 

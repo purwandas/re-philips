@@ -45,7 +45,15 @@ class DisplayShareController extends Controller
                 try {
                     DB::transaction(function () use ($content, $displayShareHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['category_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['category_id']);
+                            }
 
                             $displayShareDetail = DisplayShareDetail::where('display_share_id', $displayShareHeader->id)->where('category_id', $data['category_id'])->first();
 
@@ -197,7 +205,15 @@ class DisplayShareController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
-                        foreach ($content['data'] as $data) {                            
+                        $arInsert = [];
+
+                        foreach ($content['data'] as $data) { 
+
+                            if(in_array($data['category_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['category_id']);
+                            }                           
 
                             $displayShareDetail = DisplayShareDetail::where('display_share_id', $transaction->id)->where('category_id', $data['category_id'])->first();
 

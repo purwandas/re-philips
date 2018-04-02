@@ -79,7 +79,15 @@ class SalesController extends Controller
                 try {
                     DB::transaction(function () use ($content, $sellInHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)
                                             ->where('product_id', $data['product_id'])
@@ -427,7 +435,15 @@ class SalesController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $sellInDetail = SellInDetail::where('sellin_id', $transaction->id)
                                             ->where('product_id', $data['product_id'])
@@ -463,9 +479,9 @@ class SalesController extends Controller
                                     ]);
 
                                     // Actual Summary
-                                    $summary_ta['user_id'] = $sellInHeader->user_id;
-                                    $summary_ta['store_id'] = $sellInHeader->store_id;
-                                    $summary_ta['week'] = $sellInHeader->week;
+                                    $summary_ta['user_id'] = $transaction->user_id;
+                                    $summary_ta['store_id'] = $transaction->store_id;
+                                    $summary_ta['week'] = $transaction->week;
                                     $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
                                     $summary_ta['value_old'] = $value_old;
                                     $summary_ta['value'] = $summary->value;
@@ -492,8 +508,8 @@ class SalesController extends Controller
                                     ]);
 
                                     // Actual Summary
-                                    $summary_ta['user_id'] = $sellInHeader->user_id;
-                                    $summary_ta['store_id'] = $sellInHeader->store_id;
+                                    $summary_ta['user_id'] = $transaction->user_id;
+                                    $summary_ta['store_id'] = $transaction->store_id;
                                     $summary_ta['pf'] = $summary->value_pf;
                                     $summary_ta['value_old'] = $value_old;
                                     $summary_ta['value'] = $summary->value;
@@ -788,7 +804,15 @@ class SalesController extends Controller
                try {
                    DB::transaction(function () use ($content, $sellOutHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $sellOutDetail = SellOutDetail::where('sellout_id', $sellOutHeader->id)
                                                 ->where('product_id', $data['product_id'])
@@ -1020,7 +1044,15 @@ class SalesController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $sellOutDetail = SellOutDetail::where('sellout_id', $transaction->id)
                                                 ->where('product_id', $data['product_id'])
@@ -1054,9 +1086,9 @@ class SalesController extends Controller
                                 ]);
 
                                 // Actual Summary
-                                $summary_ta['user_id'] = $sellOutHeader->user_id;
-                                $summary_ta['store_id'] = $sellOutHeader->store_id;
-                                $summary_ta['week'] = $sellOutHeader->week;
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['week'] = $transaction->week;
                                 $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
                                 $summary_ta['value_old'] = $value_old;
                                 $summary_ta['value'] = $summary->value;
@@ -1255,7 +1287,15 @@ class SalesController extends Controller
                 try {
                     DB::transaction(function () use ($content, $retDistributorHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $retDistributorDetail = RetDistributorDetail::where('retdistributor_id', $retDistributorHeader->id)->where('product_id', $data['product_id'])->first();
 
@@ -1431,7 +1471,15 @@ class SalesController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $retDistributorDetail = RetDistributorDetail::where('retdistributor_id', $transaction->id)->where('product_id', $data['product_id'])->first();
 
@@ -1610,7 +1658,15 @@ class SalesController extends Controller
                 try {
                     DB::transaction(function () use ($content, $retConsumentHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $retConsumentDetail = RetConsumentDetail::where('retconsument_id', $retConsumentHeader->id)->where('product_id', $data['product_id'])->first();
 
@@ -1786,7 +1842,15 @@ class SalesController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $retConsumentDetail = RetConsumentDetail::where('retconsument_id', $transaction->id)->where('product_id', $data['product_id'])->first();
 
@@ -1965,7 +2029,15 @@ class SalesController extends Controller
                 try {
                     DB::transaction(function () use ($content, $freeProductHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $freeProductDetail = FreeProductDetail::where('freeproduct_id', $freeProductHeader->id)->where('product_id', $data['product_id'])->first();
 
@@ -2141,7 +2213,15 @@ class SalesController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $freeProductDetail = FreeProductDetail::where('freeproduct_id', $transaction->id)->where('product_id', $data['product_id'])->first();
 
@@ -2320,7 +2400,15 @@ class SalesController extends Controller
                 try {
                     DB::transaction(function () use ($content, $tbatHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $tbatDetail = TbatDetail::where('tbat_id', $tbatHeader->id)->where('product_id', $data['product_id'])->first();
 
@@ -2517,7 +2605,15 @@ class SalesController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['product_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['product_id']);
+                            }
 
                             $tbatDetail = TbatDetail::where('tbat_id', $transaction->id)->where('product_id', $data['product_id'])->first();
 
