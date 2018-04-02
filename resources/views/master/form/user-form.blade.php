@@ -1008,7 +1008,7 @@
 		    		}
 		      		storeArray.push(storeKey);
 		      		console.log("after: "+storeArray);
-		      		$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+","+inputId+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
+		      		$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+","+storeKey+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
 		      		var x = document.getElementsByClassName("liDelete"+idx+"");
 		      		x[0].setAttribute('onClick', "deleteItem('p"+idx+"','"+inputId+"')");
 		      		idx++;
@@ -1093,7 +1093,7 @@
 						    $('#check').val(addNumber);
 					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+","+inputId+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
 					      	var x = document.getElementsByClassName("liDelete"+index);
-					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"','"+inputId+"')");
+					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"','"+storeKey+"')");
 						});
 					}
 			  	});
@@ -1129,7 +1129,7 @@
 						    $('#check').val(addNumber);
 					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+","+inputId+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
 					      	var x = document.getElementsByClassName("liDelete"+index);
-					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"','"+inputId+"')");
+					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"','"+this.store_id+"')");
 						});
 					}
 			  	});

@@ -365,6 +365,48 @@ class UserController extends Controller
 
         return $data;
     }
+
+    public function getDataSupervisorPromoterWithFilters(UserFilters $filters){ 
+        $roles = ['Supervisor','Supervisor Hybrid'];
+        $data = User::
+                filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->where('is_resign', 0)
+                ->whereIn('roles.role_group',$roles)
+                ->select('users.*')
+                ->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                          ->from('stores')
+                          ->whereRaw('stores.user_id = users.id');
+                })
+                ->get();
+        // $data = User::filter($filters)
+        //         ->join('roles','roles.id','users.role_id')
+        //         ->where('is_resign', 0)
+        //         ->whereIn('roles.role_group',$roles)
+        //         ->select('users.*')
+        //         ->get();
+
+        return $data;
+    }
+
+    public function getDataSupervisorDemonstratorWithFilters(UserFilters $filters){ 
+        $roles = ['Supervisor'];
+        $data = User::
+                filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->where('is_resign', 0)
+                ->whereIn('roles.role_group',$roles)
+                ->select('users.*')
+                ->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                          ->from('spv_demos')
+                          ->whereRaw('spv_demos.user_id = users.id');
+                })
+                ->get();
+       
+        return $data;
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -446,6 +488,14 @@ class UserController extends Controller
                             'user_id' => $user->id,
                             'store_id' => $stores[0],
                         ]);
+
+                        $store = Store::where('deleted_at',null)
+                                ->where('id',$stores[0])->first();
+
+                        if (empty($store->dedicate)) {
+                            Store::where('id',$stores[0])
+                            ->update(['dedicate'=>'HYBRID']);
+                        }
 
                     }else{
                         $store = Store::where('deleted_at',null)
@@ -1086,6 +1136,14 @@ class UserController extends Controller
                             'user_id' => $user->id,
                             'store_id' => $stores[0],
                         ]);
+
+                        $store = Store::where('deleted_at',null)
+                                ->where('id',$stores[0])->first();
+
+                        if (empty($store->dedicate)) {
+                            Store::where('id',$stores[0])
+                            ->update(['dedicate'=>'HYBRID']);
+                        }
                         // return "NowYoueSeeMe #15 $stores[0]";
 
                     }else{
