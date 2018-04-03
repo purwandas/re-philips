@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Filters\RegionFilters;
+use App\Filters\RegionFiltersSpv;
+use App\Filters\RegionFiltersDemo;
 use App\Traits\StringTrait;
 use DB;
 use Auth;
@@ -38,6 +40,70 @@ class RegionController extends Controller
 
     // Data for select2 with Filters
     public function getDataWithFilters(RegionFilters $filters){      
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;  
+
+        $data = Region::filter($filters)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->pluck('rsm_regions.region_id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('regions', 'areas.region_id', '=', 'regions.id')
+                        ->pluck('regions.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->join('regions', 'areas.region_id', '=', 'regions.id')
+                        ->pluck('regions.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        return $data;
+    }
+
+    public function getDataSpvWithFilters(RegionFiltersSpv $filters){      
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;  
+
+        $data = Region::filter($filters)->get();
+
+        if ($userRole == 'RSM') {
+            $region = RsmRegion::where('user_id', $userId)
+                        ->pluck('rsm_regions.region_id');
+            $data = $data->whereIn('id', $region);
+        }
+
+        if ($userRole == 'DM') {
+            $area = DmArea::where('user_id', $userId)
+                        ->join('areas', 'dm_areas.area_id', '=', 'areas.id')
+                        ->join('regions', 'areas.region_id', '=', 'regions.id')
+                        ->pluck('regions.id');
+            $data = $data->whereIn('id', $area);
+        }
+            
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $store = Store::where('user_id', $userId)
+                        ->join('districts', 'stores.district_id', '=', 'districts.id')
+                        ->join('areas', 'districts.area_id', '=', 'areas.id')
+                        ->join('regions', 'areas.region_id', '=', 'regions.id')
+                        ->pluck('regions.id');
+            $data = $data->whereIn('id', $store);
+        }
+
+        return $data;
+    }
+
+    public function getDataDemoWithFilters(RegionFiltersDemo $filters){      
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;  
 

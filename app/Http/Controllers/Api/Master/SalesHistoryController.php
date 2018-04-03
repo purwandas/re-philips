@@ -287,7 +287,7 @@ class SalesHistoryController extends Controller
                     ->join('products','products.id','soh_details.product_id')
                     ->join('categories','categories.id','products.category_id')
                     ->join('groups','groups.id','categories.group_id')
-                    ->select('soh_details.id as detail_id','products.name as product_name','soh_details.quantity','products.model','categories.name as category_name','groups.name as group_name','soh_details.id as tbat_detail_id','products.id as product_id')
+                    ->select('soh_details.id as detail_id','products.name as product_name','soh_details.quantity','products.model','categories.name as category_name','groups.name as group_name','soh_details.id as soh_detail_id','products.id as product_id')
                     ->get();
 
                         $result[$key]['id'] = $value->id;

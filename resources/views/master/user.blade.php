@@ -501,8 +501,9 @@
             });
 
             $('#filterName').select2(setOptions('{{ route("data.nonPromoter") }}', 'Name', function(params){
-                return filterData('employee', params.term);
-            }, function(params) {
+                console.log(params.term);
+                return filterData('employee2', params.term);
+            }, function(data, params) {
                 return {
                     results: $.map(data, function(obj) {
                         return {id: obj.id, text: obj.name}

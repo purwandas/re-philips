@@ -260,12 +260,12 @@
 		                            	<div class="display-hide" id="divDedicate2">
 		                            		<select class="select2select" name="dedicate" id="dedicate2">
 							            		<option></option>
-												<option value="DA">
+												<!-- <option value="DA">
 													DA
 												</option>
 												<option value="PC">
 													PC
-												</option>
+												</option> -->
 												<option value="MCC">
 													MCC
 												</option>
@@ -278,7 +278,7 @@
 		                                <!-- <p class="btn btn-md red" id="clearStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-left: 1%;">
 		                                	Clear
 		                                </p> -->
-		                                <p class="btn btn-md green" id="addStores" style="float: right;margin-bottom: 1px;margin-top: 1px;width: 49%;margin-right: 1%;">
+		                                <p class="btn btn-md green" id="addStores" style="float: right;margin-bottom: 1px;margin-top: 2px;width: 49%;">
 		                                	Add
 		                                </p>
 			                        </div>
@@ -947,6 +947,9 @@
 	<!-- New Multiple Store -->
 	<script>
 		var addNumber = 0;
+		var storeArray= [];
+		var storeIndex;
+
 		$(document).ready(function () {
 		  $.ajaxSetup({
 		    headers: {
@@ -965,46 +968,62 @@
 
 		  // Add Store Click
 		  $("#addStores").click(function(){
+		  	console.log("before: "+storeArray);
 		  	var role = $('#selectedRole').val()
 			role = role.split('`');
 		    var selectedStore = $('#stores').val();
 		        
 		    if (selectedStore != '' && selectedStore != null) {
-		    	console.log(" #ses? "+ $('#dedicate2').val() );
-		    	if($('#dedicate2').val() == '' && role[1] == 'Supervisor Hybrid'){
+		    	if(($('#dedicate2').val() == null || $('#dedicate2').val() == '') && role[1] == 'Supervisor Hybrid'){
                     swal("Warning", "You Have to Select Dedicate First!", "warning");
                     return;
                 }
 
-		    	if (idx == 0) {
-		    		$('#toggleButton').removeClass('expand');
-		    		$('#toggleButton').addClass('collapse');
-		    		$('#toggleContent').removeAttr('style');
-		    		$('#toggleContent').attr('style','display:block');
-		    	}
-		      var temp = selectedStore.toString().split('`');
-		      var inputId = temp[0] + '`' + temp[1];
-		      var inputValue = '<b>' + temp[1] + '</b> ' + temp[2];
-		      var hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
-		      	if (role[1] == 'Supervisor Hybrid') {
-		      		hiddenInput += "<input type='hidden' name='dedicate[]' value='"+$('#dedicate2').val()+"'>";
-		      		inputValue += ' <b>'+ $('#dedicate2').val() + '</b>';
-		      		select2Reset($('#dedicate2'));
-		      	}
-		      $("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
-		      var x = document.getElementsByClassName("liDelete"+idx+"");
-		      x[0].setAttribute('onClick', "deleteItem('p"+idx+"')");
-		      idx++;
-		      addNumber++;
-		      $('#cek').val('ok');
-		      $('#storeCount').html(addNumber);
-		      $('#check').val(addNumber);
-		      select2Reset($('#stores'));
-		      $(this).attr('data-toggle','tooltip');
-		      $(this).attr('title','Select Store First');
-		      $(this).attr('data-placement','top');
-		      $(this).attr('data-original-title','Please Select Store First');
-		      $('.box-default').removeClass('collapsed-box');
+                var temp = selectedStore.toString().split('`');
+		      	var inputId = temp[0] + '`' + temp[1];
+		      	var inputValue = '<b>' + temp[1] + '</b> ' + temp[2];
+	      		var hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
+	      		var storeKey = temp[1];
+	      		if (role[1] == 'Supervisor Hybrid') {
+	      			hiddenInput += "<input type='hidden' name='dedicate[]' value='"+$('#dedicate2').val()+"'>";
+	      			inputValue += ' <b>'+ $('#dedicate2').val() + '</b>';
+	      			storeKey += $('#dedicate2').val();
+	      			select2Reset($('#dedicate2'));
+	      		}
+
+				storeIndex = storeArray.indexOf(storeKey);
+				if (storeIndex > -1) {
+					// console.log(inputId);
+					console.log(storeArray);
+					select2Reset($('#stores'));
+					swal("Warning", "You have already selected "+temp[2]+"!", "warning");
+					return;
+				    // storeArray.splice(storeIndex, 1);
+				}else{
+		    		if (idx == 0) {
+		    			$('#toggleButton').removeClass('expand');
+		    			$('#toggleButton').addClass('collapse');
+		    			$('#toggleContent').removeAttr('style');
+			    		$('#toggleContent').attr('style','display:block');
+		    		}
+		      		storeArray.push(storeKey);
+		      		console.log("after: "+storeArray);
+		      		$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+","+storeKey+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
+		      		var x = document.getElementsByClassName("liDelete"+idx+"");
+		      		x[0].setAttribute('onClick', "deleteItem('p"+idx+"','"+inputId+"')");
+		      		idx++;
+		      		addNumber++;
+		      		$('#cek').val('ok');
+		      		$('#storeCount').html(addNumber);
+		      		$('#check').val(addNumber);
+		      		select2Reset($('#stores'));
+		      		$(this).attr('data-toggle','tooltip');
+		      		$(this).attr('title','Select Store First');
+		      		$(this).attr('data-placement','top');
+		      		$(this).attr('data-original-title','Please Select Store First');
+		      		$('.box-default').removeClass('collapsed-box');
+				}
+                
 		    }else{
 		    	swal("Warning", "You Have to Select Store First!", "warning");
                 return;
@@ -1041,6 +1060,8 @@
 			  var index = 0;
 			  var hiddenInput = '';
 			  var storeName = '';
+			  var inputId = '';
+			  var storeKey = '';
 				$.get(getDataUrl + '/' + userId, function (data) {
 					if (data) {
 						$.each(data, function() {
@@ -1056,20 +1077,23 @@
 				    		// console.log('NowYouSeeMe #2');
 					    
 					      	index = 1000 + addNumber;
-					      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+this.id+'`'+this.store_id+"'>";
+					      	inputId = this.id+'`'+this.store_id;
+					      	storeKey = this.store_id;
+					      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
 
 					      	if (roles == 'Supervisor Hybrid') {
 					      		hiddenInput += "<input type='hidden' name='dedicate[]' value='"+this.dedicate+"'>";
 					      		storeName += ' <b>'+ this.dedicate + '</b>';
+					      		storeKey += this.dedicate;
 					      		select2Reset($('#dedicate2'));
 					      	}
-					    
+					    	storeArray.push(storeKey);
 						    addNumber++;
 						    $('#storeCount').html(addNumber);
 						    $('#check').val(addNumber);
-					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
+					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+","+inputId+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
 					      	var x = document.getElementsByClassName("liDelete"+index);
-					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"')");
+					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"','"+storeKey+"')");
 						});
 					}
 			  	});
@@ -1080,6 +1104,7 @@
 			  	var index = 0;
 			  	var hiddenInput = '';
 			  	var storeName = '';
+			  	var inputId = '';
 				$.get(getDataUrl + '/' + userId, function (data) {
 					if (data) {
 						$.each(data, function() {
@@ -1095,21 +1120,23 @@
 				    		// console.log('NowYouSeeMe #2');
 					    
 					      	index = 1000 + addNumber;
-					      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+this.id+'`'+this.store_id+"'>";
+					      	inputId = this.id+'`'+this.store_id;
+					      	storeArray.push(this.store_id);
+					      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
 					    
 						    addNumber++;
 						    $('#storeCount').html(addNumber);
 						    $('#check').val(addNumber);
-					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
+					      	$("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+storeName+"</span>"+hiddenInput+" <p id='p"+index+"' onClick='col-sm-2 deleteItem(p"+index+","+inputId+")' class='btn btn-danger delete fa fa-trash-o liDelete"+index+"'> </p></div></li>");
 					      	var x = document.getElementsByClassName("liDelete"+index);
-					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"')");
+					      	x[0].setAttribute('onClick', "deleteItem('p"+index+"','"+this.store_id+"')");
 						});
 					}
 			  	});
 		}
 
 
-		function deleteItem(id) {
+		function deleteItem(id,inputId) {
 		  $('#'+id).parent().parent().remove();
 		  addNumber--;
 		  $('#storeCount').html(addNumber);
@@ -1117,6 +1144,12 @@
 		  if (addNumber == 0) {
 		    $('#cek').val('');
 		  }
+		  
+		  	storeIndex = storeArray.indexOf(inputId);
+			if (storeIndex > -1) {
+			    storeArray.splice(storeIndex, 1);
+			}
+			console.log(storeArray);
 		}
 
 		function searchFunction() {

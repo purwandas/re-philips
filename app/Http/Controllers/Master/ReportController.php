@@ -4268,12 +4268,11 @@ class ReportController extends Controller
 
     }
 
-    public function attendanceData(Request $request){
+    public function attendanceData(Request $request){// Promoter
+        
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-                
-
 
        $month = Carbon::parse($request['searchMonth'])->format('m');
        $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -4291,54 +4290,45 @@ class ReportController extends Controller
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
-            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
             // ->where('attendances.status', '!=', 'Off')
-            ->get();
+            // ->whereIn('stores.id',[$request['byStore']]);    
+            // ->get();
 
-           $filter = $data;
+        /* If filter */
+        if($request['byStore']){
+            $data = $data->whereIn('stores.id',[$request['byStore']]);
+        }
+        if($request['byDistrict']){
+            $data = $data->whereIn('districts.id', [$request['byDistrict']]);
+        }
+        if($request['byArea']){
+            $data = $data->whereIn('areas.id', [$request['byArea']]);
+        }
+        if($request['byRegion']){
+            $data = $data->whereIn('regions.id', [$request['byRegion']]);
+        }
+        if($request['byEmployee']){
+            $data = $data->where('attendances.user_id', $request['byEmployee']);
+        }
+        if ($userRole == 'RSM') {
+            $regionIds = RsmRegion::where('user_id', $userId)
+                                ->pluck('rsm_regions.region_id');
+            $data = $data->whereIn('region_id', [$regionIds]);
+        }
+        if ($userRole == 'DM') {
+            $areaIds = DmArea::where('user_id', $userId)
+                                ->pluck('dm_areas.area_id');
+            $data = $data->whereIn('area_id', [$areaIds]);
+        }
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $storeIds = Store::where('user_id', $userId)
+                                ->pluck('stores.store_id');
+            $data = $data->whereIn('store_id', [$storeIds]);
+        }
+        $data = $data->get();
 
-           // return $filter->all();
-
-            /* If filter */
-            if($request['byStore']){
-                // return $request['byStore'];
-                $filter = $filter->where('storeId', $request['byStore']);
-            }
-
-            if($request['byDistrict']){
-                $filter = $filter->where('district_id', $request['byDistrict']);
-            }
-
-            if($request['byArea']){
-                $filter = $filter->where('area_id', $request['byArea']);
-            }
-
-            if($request['byRegion']){
-                $filter = $filter->where('region_id', $request['byRegion']);
-            }
-
-            if($request['byEmployee']){
-                $filter = $filter->where('user_id', $request['byEmployee']);
-            }
-
-            if ($userRole == 'RSM') {
-                $regionIds = RsmRegion::where('user_id', $userId)
-                                    ->pluck('rsm_regions.region_id');
-                $filter = $filter->whereIn('region_id', $regionIds);
-            }
-
-            if ($userRole == 'DM') {
-                $areaIds = DmArea::where('user_id', $userId)
-                                    ->pluck('dm_areas.area_id');
-                $filter = $filter->whereIn('area_id', $areaIds);
-            }
-
-            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $storeIds = Store::where('user_id', $userId)
-                                    ->pluck('stores.store_id');
-                $filter = $filter->whereIn('store_id', $storeIds);
-            }
-
+            $filter = $data;
 
             return Datatables::of($filter->all())
             ->addColumn('total_hk', function ($item) {
@@ -4347,10 +4337,10 @@ class ReportController extends Controller
                 $minDate = "$year-$month-01";
                 $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
                 $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
-                $maxDate = date('Y-m-d');
 
                 $dataD = Attendance::
                         select(DB::raw('count(*) as total_hk'))
+                // select('status', 'date')
                         ->where('attendances.status', '!=', 'Off')
                         ->where('attendances.status', '!=', 'Sakit')
                         ->where('attendances.status', '!=', 'Izin')
@@ -4361,6 +4351,7 @@ class ReportController extends Controller
                         ->where('attendances.date','<=',$maxDate)
                         ->where('attendances.user_id',$item->user_id)
                         ->get()->all();
+                        // return $dataD;
                 $hk = 0;
                 foreach ($dataD as $key => $value) {
                     $hk = $value->total_hk;
@@ -4370,20 +4361,21 @@ class ReportController extends Controller
                 
             })
             ->addColumn('attendance_details', function ($item) {
-                // return 'kampret';
+                $currentMonth = Carbon::now()->format('m');
+                $currentYear = Carbon::now()->format('Y');
                 $month = Carbon::parse($item->date)->format('m');
                 $year = Carbon::parse($item->date)->format('Y');
                 $minDate = "$year-$month-01";
                 $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
                 $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
-                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Sakit(P)','Izin(P)', 'Off'];
-                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#95a5a6'];
-                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1'];
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Pending Off', 'Off'];
+                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#2ecc71','#95a5a6'];
+                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1','#ecf0f1'];
                     $tomorrowColor = "#ecf0f1";
                 // return $minDate.' / '.$maxDate; 
 
-                    // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
-                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
 
                     /* Get data from attendanceDetails then convert them into colored table */
                     // return $item->user_id;
@@ -4396,16 +4388,97 @@ class ReportController extends Controller
                         ->join('roles','roles.id','users.role_id')
                         ->whereIn('roles.role_group',$promoterGroup)
                         ->orderBy('id','asc')
-                        ->get()->all();                        
+                        ->get()->all();
+
+                if ($item->user_role == 'Salesman Explorer') {
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
                     foreach ($dataDetail as $key => $value) {
                         $statusAttendance[] = $value->status;
+                        $idAttendance[] = $value->id;
+                        $date = explode('-',$value->date);
+                        $dateAttendance[] = $date[2];
+                    }
+                    // return $dateAttendance;
+                    $report = '<table><tr>';
+
+                    /* Repeat as much as max day in month */
+                    
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=1; $i <= $totalDay ; $i++) {                         
+
+                        if (!empty(array_search((string)($i),$dateAttendance,true))) {
+                            $checkAttendance = array_search((string)($i),$dateAttendance);
+                            foreach ($status as $key => $value) {
+                                if (isset($statusAttendance[$checkAttendance-1])) {
+                                    if ($value == $statusAttendance[$checkAttendance-1]) {
+                                        $bgColor = $warna[$key];
+                                        $textColor = $text[$key];
+                                        $data_id = ($idAttendance[$checkAttendance-1]);
+                                        $index = $key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }else{
+                            $index = 0;
+                            $bgColor = $warna[0];
+                            $textColor = $text[0];
+                        }
+
+                        $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateNow = explode('-', $dateNow);
+                        $dateI = date("$year-$month-$i");
+                        $dateI = explode('-', $dateI);
+
+                        $indexz = $i;
+
+                        if ($indexz > $dateNow[2] && $month == $currentMonth && $year == $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }else if ($month > $currentMonth && $year >= $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }
+
+                        if (!isset($bgColor)) {
+                            $bgColor="#34495e";
+                        }
+
+                        if ($index == 1) {
+                            $report .= "<td 
+                            class='text-center open-attendance-detail-modal cursor-pointer $i' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }else{
+                            $report .= "<td 
+                            class='text-center'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }
+                        if (isset($joinDate)) {
+                            $displayDate = $i+$joinDate-1;
+                        }else{
+                            $displayDate = $i;
+                        }
+                        $report .= "<div style='width:85px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
+                    }
+                    $report .= '</tr></table>';
+                    return $report;
+                }else{
+                    $dateAttendance = [];
+                    foreach ($dataDetail as $key => $value) {
+                        $statusAttendance[] = $value->status;
+                        $idAttendance[] = $value->id;
+                        $dateAttendance[] = $value->date;
+
                         if ($key == 0) {
                             if (substr($value->date,-2) > 1) {
-                                $joinDate = substr($value->date, -2);
+                                $joinDate = substr($value->date, -2);//tanggal dia masuk, tanggal berapa
                                 $execOnce = false;
                             }
                         }
                     }
+
                     // return $statusAttendance;
                     $report = '<table><tr>';
 
@@ -4444,7 +4517,10 @@ class ReportController extends Controller
                             if (isset($joinDate)) {
                                 $indexz = $i + $joinDate - 1;
                             }
-                        if ($indexz > $dateNow[2]) {
+                        if ($indexz > $dateNow[2] && $month == $currentMonth && $year == $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }else if ($month > $currentMonth && $year >= $currentYear) {
                             $bgColor = $tomorrowColor; 
                             $textColor = 'black';
                         }
@@ -4453,27 +4529,28 @@ class ReportController extends Controller
                             $bgColor="#34495e";
                         }
 
+                        if (isset($joinDate) && $execOnce==false) {
+                            for ($jd=1; $jd < $joinDate; $jd++) { 
+                                $report .= "<td 
+                                    class='text-center $i'
+                                    style='background-color: $tomorrowColor;color:black;'
+                                    >";
+                                $report .= "<div style='width:85px'><b>$jd</b><br>-</div></td><td></td>";
+                            }
+                            $execOnce = true;
+                        }
+
                         if ($index == 1) {
                             if (isset($joinDate)) {
-                                $data_id = ($item->id+1);
+                                $data_id = ($idAttendance[$i-1]);
                             }else{
-                                $data_id = $item->id;
+                                $data_id = $idAttendance[$i-1];
                             }
                             $report .= "<td 
-                            class='text-center open-attendance-detail-modal cursor-pointer' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
+                            class='text-center open-attendance-detail-modal cursor-pointer $i' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
                             style='background-color: $bgColor;color:$textColor;'
                             >";
                         }else{
-                            if (isset($joinDate) && $execOnce==false) {
-                                for ($jd=1; $jd < $joinDate; $jd++) { 
-                                    $report .= "<td 
-                                        class='text-center'
-                                        style='background-color: $tomorrowColor;color:black;'
-                                        >";
-                                    $report .= "<div style='width:60px'><b>$jd</b><br>-</div><td>";
-                                }
-                                $execOnce = true;
-                            }
                             $report .= "<td 
                             class='text-center'
                             style='background-color: $bgColor;color:$textColor;'
@@ -4484,9 +4561,245 @@ class ReportController extends Controller
                         }else{
                             $displayDate = $i;
                         }
-                        $report .= "<div style='width:60px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
+                        $report .= "<div style='width:85px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
                     }
 
+                    $report .= '</tr></table>';
+                    return $report;
+                }
+            })
+            ->addColumn('attendance_detail_excell', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+
+                        $statusAttendance = '';
+                    foreach ($dataDetail as $key => $value) {
+                        if ($key==0) {
+                            if (substr($value->date,-2) > 1) {
+                                $joinDate = substr($value->date, -2);
+                                $execOnce = false;
+                            }
+
+                            if (isset($joinDate)) {
+                                $statusAttendance .= '-';
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $statusAttendance .= ',-';
+                                }
+                            }else{
+                                $statusAttendance .= $value->status;
+                            }
+                        }else{
+                            $statusAttendance .= ','.$value->status;
+                        }
+                    }
+
+                    return $statusAttendance;
+                })
+            ->rawColumns(['attendance_details'])
+            ->make(true);
+
+    }
+
+    public function attendanceDataSpv(Request $request){ //SPV Promoter & HYBRID + SEE
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+       $month = Carbon::parse($request['searchMonthSpv'])->format('m');
+       $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('stores', 'attendances.user_id', '=', 'stores.user_id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+            // ->where('attendances.status', '!=', 'Off')
+            // ->get();
+
+           /* If filter */
+            if($request['byStoreSpv']){
+                $data = $data->whereIn('stores.id',[$request['byStoreSpv']]);
+            }
+            if($request['byDistrictSpv']){
+                $data = $data->whereIn('districts.id', [$request['byDistrictSpv']]);
+            }
+            if($request['byAreaSpv']){
+                $data = $data->whereIn('areas.id', [$request['byAreaSpv']]);
+            }
+            if($request['byRegionSpv']){
+                $data = $data->whereIn('regions.id', [$request['byRegionSpv']]);
+            }
+            if($request['byEmployeeSpv']){
+                $data = $data->where('attendances.user_id', $request['byEmployeeSpv']);
+            }
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $data = $data->whereIn('region_id', [$regionIds]);
+            }
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $data = $data->whereIn('area_id', [$areaIds]);
+            }
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', [$storeIds]);
+            }
+            $data = $data->get();
+
+                $filter = $data;
+
+            return Datatables::of($filter->all())
+            ->addColumn('total_hk', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+
+                $dataD = Attendance::
+                        select(DB::raw('count(*) as total_hk'))
+                        ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.status', '!=', 'Sakit')
+                        ->where('attendances.status', '!=', 'Izin')
+                        ->where('attendances.status', '!=', 'Pending Sakit')
+                        ->where('attendances.status', '!=', 'Pending Izin')
+                        ->where('attendances.status', '!=', 'Alpha')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->get()->all();
+                $hk = 0;
+                foreach ($dataD as $key => $value) {
+                    $hk = $value->total_hk;
+                }
+
+                return "$hk";
+                
+            })
+            ->addColumn('attendance_details', function ($item) {
+                $currentMonth = Carbon::now()->format('m');
+                $currentYear = Carbon::now()->format('Y');
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Pending Off', 'Off'];
+                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#2ecc71','#95a5a6'];
+                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1','#ecf0f1'];
+                    $tomorrowColor = "#ecf0f1";
+                // return $minDate.' / '.$maxDate; 
+
+                    // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+                    /* Get data from attendanceDetails then convert them into colored table */
+                    // return $item->user_id;
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->join('users','users.id','attendances.user_id')
+                        ->join('roles','roles.id','users.role_id')
+                        ->whereNotIn('roles.role_group',$promoterGroup)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    foreach ($dataDetail as $key => $value) {
+                        $statusAttendance[] = $value->status;
+                        $idAttendance[] = $value->id;
+                        $date = explode('-',$value->date);
+                        $dateAttendance[] = $date[2];
+                    }
+                    // return $statusAttendance;
+                    $report = '<table><tr>';
+
+                    /* Repeat as much as max day in month */
+                    
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=1; $i <= $totalDay ; $i++) {                         
+
+                        if (!empty(array_search((string)($i),$dateAttendance))) {
+                            // return 0;
+                            $checkAttendance = array_search((string)($i),$dateAttendance);
+                            foreach ($status as $key => $value) {
+                                if (isset($statusAttendance[$checkAttendance-1])) {
+                                    if ($value == $statusAttendance[$checkAttendance-1]) {
+                                        $bgColor = $warna[$key];
+                                        $textColor = $text[$key];
+                                        $data_id = ($idAttendance[$checkAttendance-1]);
+                                        $index = $key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }else{
+                            $index = 0;
+                            $bgColor = $warna[0];
+                            $textColor = $text[0];
+                        }
+
+                        $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateNow = explode('-', $dateNow);
+                        $dateI = date("$year-$month-$i");
+                        $dateI = explode('-', $dateI);
+
+                        $indexz = $i;
+                        if ($indexz > $dateNow[2] && $month == $currentMonth && $year == $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }else if ($month > $currentMonth && $year >= $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }
+
+                        if (!isset($bgColor)) {
+                            $bgColor="#34495e";
+                        }
+
+                        if ($index == 1) {
+                            $report .= "<td 
+                            class='text-center open-attendance-detail-modal cursor-pointer $i' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }else{
+                            $report .= "<td 
+                            class='text-center'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }
+                        if (isset($joinDate)) {
+                            $displayDate = $i+$joinDate-1;
+                        }else{
+                            $displayDate = $i;
+                        }
+                        $report .= "<div style='width:85px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
+                    }
                     $report .= '</tr></table>';
                     return $report;
                 })
@@ -4533,6 +4846,482 @@ class ReportController extends Controller
             ->rawColumns(['attendance_details'])
             ->make(true);
 
+    }
+
+    public function attendanceDataDemo(Request $request){ //Spv Demo
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+                
+
+
+       $month = Carbon::parse($request['searchMonthDemo'])->format('m');
+       $year = Carbon::parse($request['searchMonthDemo'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('spv_demos', 'spv_demos.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'spv_demos.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
+            // , 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+            // ->where('attendances.status', '!=', 'Off')
+            // ->get();
+
+           $filter = $data;
+
+           // return $filter->all();
+
+            /* If filter */
+            if($request['byStoreDemo']){
+                $filter = $filter->where('storeId', $request['byStoreDemo']);
+            }
+
+            if($request['byDistrictDemo']){
+                $filter = $filter->where('district_id', $request['byDistrictDemo']);
+            }
+
+            if($request['byAreaDemo']){
+                $filter = $filter->where('area_id', $request['byAreaDemo']);
+            }
+
+            if($request['byRegionDemo']){
+                $filter = $filter->where('region_id', $request['byRegionDemo']);
+            }
+
+            if($request['byEmployeeDemo']){
+                $filter = $filter->where('user_id', $request['byEmployeeDemo']);
+            }
+
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
+            }
+
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
+            }
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
+            }
+
+
+            return Datatables::of($filter->get()->all())
+            ->addColumn('total_hk', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                // $maxDate = date('Y-m-d');
+
+                // return $minDate.' - '.$maxDate.' *'.$month;
+                $dataD = Attendance::
+                // select('attendances.status', 'attendances.date')
+                        select(DB::raw('count(*) as total_hk'))
+                        ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.status', '!=', 'Sakit')
+                        ->where('attendances.status', '!=', 'Izin')
+                        ->where('attendances.status', '!=', 'Pending Sakit')
+                        ->where('attendances.status', '!=', 'Pending Izin')
+                        ->where('attendances.status', '!=', 'Alpha')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->get()->all();
+                $hk = 0;
+                foreach ($dataD as $key => $value) {
+                    $hk = $value->total_hk;
+                }
+
+                return "$hk";
+                
+            })
+            ->addColumn('attendance_details', function ($item) {
+                $currentMonth = Carbon::now()->format('m');
+                $currentYear = Carbon::now()->format('Y');
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Pending Off', 'Off'];
+                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#2ecc71','#95a5a6'];
+                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1','#ecf0f1'];
+                    $tomorrowColor = "#ecf0f1";
+
+                    // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+
+                    /* Get data from attendanceDetails then convert them into colored table */
+                    // return $item->user_id;
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->join('users','users.id','attendances.user_id')
+                        ->join('roles','roles.id','users.role_id')
+                        ->whereNotIn('roles.role_group',$promoterGroup)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    foreach ($dataDetail as $key => $value) {
+                        $statusAttendance[] = $value->status;
+                        $idAttendance[] = $value->id;
+                        $date = explode('-',$value->date);
+                        $dateAttendance[] = $date[2];
+                    }
+                    // return $dateAttendance;
+                    $report = '<table><tr>';
+
+                    /* Repeat as much as max day in month */
+                    
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=1; $i <= $totalDay ; $i++) {                         
+
+                        if (!empty(array_search((string)($i),$dateAttendance))) {
+                            $checkAttendance = array_search((string)($i),$dateAttendance);
+                            foreach ($status as $key => $value) {
+                                if (isset($statusAttendance[$checkAttendance-1])) {
+                                    if ($value == $statusAttendance[$checkAttendance-1]) {
+                                        $bgColor = $warna[$key];
+                                        $textColor = $text[$key];
+                                        $data_id = ($idAttendance[$checkAttendance-1]);
+                                        $index = $key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }else{
+                            $index = 0;
+                            $bgColor = $warna[0];
+                            $textColor = $text[0];
+                        }
+
+                        $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateNow = explode('-', $dateNow);
+                        $dateI = date("$year-$month-$i");
+                        $dateI = explode('-', $dateI);
+
+                        $indexz = $i;
+
+                        if ($indexz > $dateNow[2] && $month == $currentMonth && $year == $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }else if ($month > $currentMonth && $year >= $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }
+
+                        if (!isset($bgColor)) {
+                            $bgColor="#34495e";
+                        }
+
+                        if ($index == 1) {
+                            $report .= "<td 
+                            class='text-center open-attendance-detail-modal cursor-pointer $i' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }else{
+                            $report .= "<td 
+                            class='text-center'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }
+                        if (isset($joinDate)) {
+                            $displayDate = $i+$joinDate-1;
+                        }else{
+                            $displayDate = $i;
+                        }
+                        $report .= "<div style='width:85px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
+                    }
+                    $report .= '</tr></table>';
+                    return $report;
+                })
+            ->addColumn('attendance_detail_excell', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+
+                        $statusAttendance = '';
+                    foreach ($dataDetail as $key => $value) {
+                        if ($key==0) {
+                            if (substr($value->date,-2) > 1) {
+                                $joinDate = substr($value->date, -2);
+                                $execOnce = false;
+                            }
+
+                            if (isset($joinDate)) {
+                                $statusAttendance .= '-';
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $statusAttendance .= ',-';
+                                }
+                            }else{
+                                $statusAttendance .= $value->status;
+                            }
+                        }else{
+                            $statusAttendance .= ','.$value->status;
+                        }
+                    }
+
+                    return $statusAttendance;
+                })
+            ->rawColumns(['attendance_details'])
+            ->make(true);
+
+    }
+
+    public function attendanceDataOthers(Request $request){ //Others
+
+       $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC', 'Supervisor', 'Supervisor Hybrid'];
+
+       $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+       $month = Carbon::parse($request['searchMonthSpv'])->format('m');
+       $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('stores', 'attendances.user_id', '=', 'stores.user_id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->whereNotIn('roles.role_group',$promoterGroup);
+            // ->where('attendances.status', '!=', 'Off')
+            // ->get();
+
+           /* If filter */
+            
+            if($request['byEmployee']){
+                $data = $data->where('attendances.user_id', $request['byEmployee']);
+            }
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $data = $data->whereIn('region_id', [$regionIds]);
+            }
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $data = $data->whereIn('area_id', [$areaIds]);
+            }
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', [$storeIds]);
+            }
+            $data = $data->get();
+
+                $filter = $data;
+
+            return Datatables::of($filter->all())
+            ->addColumn('total_hk', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+
+                $dataD = Attendance::
+                        select(DB::raw('count(*) as total_hk'))
+                        ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.status', '!=', 'Sakit')
+                        ->where('attendances.status', '!=', 'Izin')
+                        ->where('attendances.status', '!=', 'Pending Sakit')
+                        ->where('attendances.status', '!=', 'Pending Izin')
+                        ->where('attendances.status', '!=', 'Alpha')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->get()->all();
+                $hk = 0;
+                foreach ($dataD as $key => $value) {
+                    $hk = $value->total_hk;
+                }
+
+                return "$hk";
+                
+            })
+            ->addColumn('attendance_details', function ($item) {
+                $currentMonth = Carbon::now()->format('m');
+                $currentYear = Carbon::now()->format('Y');
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Pending Off', 'Off'];
+                    $warna = ['#e74c3c','#2ecc71',  '#3498db',  '#e67e22',  '#f1c40f',      '#f1c40f',      '#2ecc71','#95a5a6'];
+                    $text = ['#ecf0f1','#ecf0f1',  '#ecf0f1',  '#ecf0f1',  '#ecf0f1',      '#ecf0f1',      '#ecf0f1','#ecf0f1'];
+                    $tomorrowColor = "#ecf0f1";
+                // return $minDate.' / '.$maxDate; 
+
+                    // $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC'];
+                    $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT', 'PPE', 'BDT', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC', 'Supervisor', 'Supervisor Hybrid'];
+
+                    /* Get data from attendanceDetails then convert them into colored table */
+                    // return $item->user_id;
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->join('users','users.id','attendances.user_id')
+                        ->join('roles','roles.id','users.role_id')
+                        ->whereNotIn('roles.role_group',$promoterGroup)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    foreach ($dataDetail as $key => $value) {
+                        $statusAttendance[] = $value->status;
+                        $idAttendance[] = $value->id;
+                        $date = explode('-',$value->date);
+                        $dateAttendance[] = $date[2];
+                    }
+                    // return $dateAttendance;
+                    $report = '<table><tr>';
+
+                    /* Repeat as much as max day in month */
+                    
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=1; $i <= $totalDay ; $i++) {                         
+
+                        if (!empty(array_search((string)($i),$dateAttendance))) {
+                            $checkAttendance = array_search((string)($i),$dateAttendance);
+                            foreach ($status as $key => $value) {
+                                if (isset($statusAttendance[$checkAttendance-1])) {
+                                    if ($value == $statusAttendance[$checkAttendance-1]) {
+                                        $bgColor = $warna[$key];
+                                        $textColor = $text[$key];
+                                        $data_id = ($idAttendance[$checkAttendance-1]);
+                                        $index = $key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }else{
+                            $index = 0;
+                            $bgColor = $warna[0];
+                            $textColor = $text[0];
+                        }
+
+                        $dateNow = Carbon::now()->format('Y-m-d');
+                        $dateNow = explode('-', $dateNow);
+                        $dateI = date("$year-$month-$i");
+                        $dateI = explode('-', $dateI);
+
+                        $indexz = $i;
+
+                        if ($indexz > $dateNow[2] && $month == $currentMonth && $year == $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }else if ($month > $currentMonth && $year >= $currentYear) {
+                            $bgColor = $tomorrowColor; 
+                            $textColor = 'black';
+                        }
+
+                        if (!isset($bgColor)) {
+                            $bgColor="#34495e";
+                        }
+
+                        if ($index == 1) {
+                            $report .= "<td 
+                            class='text-center open-attendance-detail-modal cursor-pointer $i' data-target='#attendance-detail-modal' data-toggle='modal' data-url='util/attendancedetail' data-title='Attendance Detail' data-employee-name='".$item->user_name."' data-employee-nik='".$item->user_nik."' data-id='".$data_id."'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }else{
+                            $report .= "<td 
+                            class='text-center'
+                            style='background-color: $bgColor;color:$textColor;'
+                            >";
+                        }
+                        if (isset($joinDate)) {
+                            $displayDate = $i+$joinDate-1;
+                        }else{
+                            $displayDate = $i;
+                        }
+                        $report .= "<div style='width:85px'><b>$displayDate</b><br>".$status[$index]."</div><td>";
+                    }
+                    $report .= '</tr></table>';
+                    return $report;
+                })
+            ->addColumn('attendance_detail_excell', function ($item) {
+                $month = Carbon::parse($item->date)->format('m');
+                $year = Carbon::parse($item->date)->format('Y');
+                $minDate = "$year-$month-01";
+                $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+                $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$item->user_id)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+
+                        $statusAttendance = '';
+                    foreach ($dataDetail as $key => $value) {
+                        if ($key==0) {
+                            if (substr($value->date,-2) > 1) {
+                                $joinDate = substr($value->date, -2);
+                                $execOnce = false;
+                            }
+
+                            if (isset($joinDate)) {
+                                $statusAttendance .= '-';
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $statusAttendance .= ',-';
+                                }
+                            }else{
+                                $statusAttendance .= $value->status;
+                            }
+                        }else{
+                            $statusAttendance .= ','.$value->status;
+                        }
+                    }
+
+                    return $statusAttendance;
+                })
+            ->rawColumns(['attendance_details'])
+            ->make(true);
     }
     
     public function visitPlanData(Request $request){

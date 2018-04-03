@@ -34,6 +34,11 @@ class AttendanceDetail extends Model
         return $this->belongsTo('App\Attendance', 'attendance_id');
     }
 
+    public function store()
+    {
+        return $this->belongsTo('App\Store', 'store_id');
+    }
+
 	/**
      * Filtering Berdasarakan Request User
      * @param $query
