@@ -22,9 +22,12 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use DB;
 use App\News;
+use App\Traits\TargetTrait;
 
 class PromoterController extends Controller
 {
+    use TargetTrait;
+
     public function getAttendanceForSupervisor(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
