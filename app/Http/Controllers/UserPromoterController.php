@@ -648,6 +648,21 @@ class UserPromoterController extends Controller
         // UPDATE RESIGN = 0
         $user->update(['is_resign' => 0]);
 
+        // UPDATE ATTENDANCE
+        $attendance = Attendance::onlyTrashed()->where('user_id', $user->id);
+        $cek = [];
+            foreach ($attendance as $key => $value) {
+                $attendanceDetail = AttendanceDetail::onlyTrashed()->where('attendance_id', $value->id);
+                $cek[] = $value;
+                if($attendanceDetail->count() > 0){
+                    $attendanceDetail->restore();
+                }            
+            }
+        if($attendance->count() > 0){
+            $attendance->restore();
+        }
+
+
         return response()->json(
             [
                 'url' => url('userpromoter'),

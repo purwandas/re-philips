@@ -280,10 +280,10 @@ class AchievementController extends Controller
         $totalTargetPF = 0;
         $totalActualPF = 0;
 
-        $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeIds)->where('sell_type', 'Sell In')->where('partner', 0)->get();
+        $data = SummaryTargetActual::where('user_id', $id)->whereIn('storeId', $storeIds)->where('sell_type', 'Sell In')->where('partner', 0)->get();
 
         if($param == 2){
-            $data = SummaryTargetActual::where('user_id', $id)->where('storeId', $storeIds)->where('sell_type', 'Sell Out')->where('partner', 0)->get();
+            $data = SummaryTargetActual::where('user_id', $id)->whereIn('storeId', $storeIds)->where('sell_type', 'Sell Out')->where('partner', 0)->get();
         }
 
         foreach ($data as $detail){
@@ -520,6 +520,8 @@ class AchievementController extends Controller
         }
 
         $promoters = User::whereIn('id', $promoterIds)->get();
+
+        // return response()->json(['asd' => $promoters]);
 
         foreach($promoters as $promoter){
 
@@ -837,9 +839,9 @@ class AchievementController extends Controller
 
             $demoStoreIds = [];
             if($user->role->role_group != 'Trainer Demo'){
-                $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
-                                    return $query->whereIn('areas.id', $areaIds);
-                               })->pluck('user_id');
+                // $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
+                //                     return $query->whereIn('areas.id', $areaIds);
+                //                })->pluck('user_id');
             }else{ // TRAINER DEMO
                 $demoStoreIds = SpvDemo::pluck('user_id');
             }
@@ -978,12 +980,14 @@ class AchievementController extends Controller
                 $collection = new Collection();
 
                 foreach ($data->spvDemos as $detail) {
-                    if (!in_array($detail->store->district->area->name, $arr_area)) {
-                        array_push($arr_area, $detail->store->district->area->name);
-                    }
+                    if($detail->store){
+                        if (!in_array($detail->store->district->area->name, $arr_area)) {
+                            array_push($arr_area, $detail->store->district->area->name);
+                        }
 
-                    if (!in_array($detail->store->district->area->region->name, $arr_region)) {
-                        array_push($arr_region, $detail->store->district->area->region->name);
+                        if (!in_array($detail->store->district->area->region->name, $arr_region)) {
+                            array_push($arr_region, $detail->store->district->area->region->name);
+                        }
                     }
                 }
 

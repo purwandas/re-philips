@@ -21,9 +21,13 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Auth;
 use DB;
+use App\News;
+use App\Traits\TargetTrait;
 
 class PromoterController extends Controller
 {
+    use TargetTrait;
+
     public function getAttendanceForSupervisor(Request $request){
 
         $user = JWTAuth::parseToken()->authenticate();
@@ -518,8 +522,10 @@ class PromoterController extends Controller
                 'store_name' => $data->store_name,
             ]);
         }
+        
+        $sorted = $result->sortBy('date');
 
-        return response()->json($result);
+        return response()->json($sorted->values()->all());
 
     }
 
@@ -600,16 +606,16 @@ class PromoterController extends Controller
 
             $demoStoreIds = [];
             if($user->role->role_group != 'Trainer Demo'){
-                $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
-                                    return $query->whereIn('areas.id', $areaIds);
-                               })->pluck('user_id');
+                // $demoStoreIds = SpvDemo::whereHas('store.district.area', function ($query) use ($areaIds){
+                //                     return $query->whereIn('areas.id', $areaIds);
+                //               })->pluck('user_id');
             }else{ // TRAINER DEMO
                 $demoStoreIds = SpvDemo::pluck('user_id');
             }
             
             $spvdemo = User::with('spvDemos.store.district.area.region')->whereIn('id', $demoStoreIds)->get();
 
-//            return response()->json($spvdemo);
+            // return response()->json($spvdemo);
 
             return response()->json($this->getSupervisorCollection($supervisor, $spvdemo));
 
@@ -691,12 +697,14 @@ class PromoterController extends Controller
                 $collection = new Collection();
 
                 foreach ($data->spvDemos as $detail) {
-                    if (!in_array($detail->store->district->area->name, $arr_area)) {
-                        array_push($arr_area, $detail->store->district->area->name);
-                    }
+                    if($detail->store){
+                        if (!in_array($detail->store->district->area->name, $arr_area)) {
+                            array_push($arr_area, $detail->store->district->area->name);
+                        }
 
-                    if (!in_array($detail->store->district->area->region->name, $arr_region)) {
-                        array_push($arr_region, $detail->store->district->area->region->name);
+                        if (!in_array($detail->store->district->area->region->name, $arr_region)) {
+                            array_push($arr_region, $detail->store->district->area->region->name);
+                        }
                     }
                 }
 

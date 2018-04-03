@@ -45,7 +45,15 @@ class DisplayShareController extends Controller
                 try {
                     DB::transaction(function () use ($content, $displayShareHeader, $user) {
 
+                        $arInsert = [];
+
                         foreach ($content['data'] as $data) {
+
+                            if(in_array($data['category_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['category_id']);
+                            }
 
                             $displayShareDetail = DisplayShareDetail::where('display_share_id', $displayShareHeader->id)->where('category_id', $data['category_id'])->first();
 
@@ -197,108 +205,143 @@ class DisplayShareController extends Controller
                                             'date' => Carbon::now()
                                         ]);
 
-                        foreach ($content['data'] as $data) {
+                        $arInsert = [];
 
-                            // DETAILS
-                            $detail = DisplayShareDetail::create([
-                                    'display_share_id' => $transaction->id,
-                                    'category_id' => $data['category_id'],
-                                    'philips' => $data['philips'],
-                                    'all' => $data['all']
+                        foreach ($content['data'] as $data) { 
+
+                            if(in_array($data['category_id'], $arInsert)){
+                                continue;
+                            }else{
+                                array_push($arInsert, $data['category_id']);
+                            }                           
+
+                            $displayShareDetail = DisplayShareDetail::where('display_share_id', $transaction->id)->where('category_id', $data['category_id'])->first();
+
+                            if ($displayShareDetail) { // If data exist -> update
+
+                                $displayShareDetail->update([
+                                    'philips' => $displayShareDetail->quantity + $data['philips'],
+                                    'all' => $displayShareDetail->quantity + $data['all']
                                 ]);
 
+                                /** Update Summary **/
 
-                            /** Insert Summary **/
+                                $summary = SummaryDisplayShare::where('displayshare_detail_id', $displayShareDetail->id)->first();
 
-                            /* Store */
-                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
-                                        ->where('id', $transaction->store_id)->first();
-                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
+                                $summary->update([
+                                    'philips' => $data['philips'],
+                                    'all' => $data['all'],
+                                ]);
 
-                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
-                                if(count($spvDemoName) > 0){
-                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                // Update percentage
+                                $summary->update([
+                                    'percentage' => ($summary->philips / $summary->all ) * 100,
+                                ]);
+
+                            }else{
+
+                                // DETAILS
+                                $detail = DisplayShareDetail::create([
+                                        'display_share_id' => $transaction->id,
+                                        'category_id' => $data['category_id'],
+                                        'philips' => $data['philips'],
+                                        'all' => $data['all']
+                                    ]);
+
+
+                                /** Insert Summary **/
+
+                                /* Store */
+                                $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                            ->where('id', $transaction->store_id)->first();
+                                $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                    $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                    if(count($spvDemoName) > 0){
+                                        $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                    }
+
+                                    $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
+                                /* Category */
+                                $category = Category::where('id', $detail->category_id)->first();
+
+                                /* Distributor */
+                                $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                                $dist = Distributor::whereIn('id', $distIds)->get();
+
+                                $distributor_code = '';
+                                $distributor_name = '';
+                                foreach ($dist as $distDetail) {
+                                    $distributor_code .= $distDetail->code;
+                                    $distributor_name .= $distDetail->name;
+
+                                    if ($distDetail->id != $dist->last()->id) {
+                                        $distributor_code .= ', ';
+                                        $distributor_name .= ', ';
+                                    }
                                 }
 
-                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+                                /* DM */
+                                $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $dm = User::whereIn('id', $dmIds)->get();
 
-                            /* Category */
-                            $category = Category::where('id', $detail->category_id)->first();
+                                $dm_name = '';
+                                foreach ($dm as $dmDetail) {
+                                    $dm_name .= $dmDetail->name;
 
-                            /* Distributor */
-                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
-                            $dist = Distributor::whereIn('id', $distIds)->get();
-
-                            $distributor_code = '';
-                            $distributor_name = '';
-                            foreach ($dist as $distDetail) {
-                                $distributor_code .= $distDetail->code;
-                                $distributor_name .= $distDetail->name;
-
-                                if ($distDetail->id != $dist->last()->id) {
-                                    $distributor_code .= ', ';
-                                    $distributor_name .= ', ';
+                                    if ($dmDetail->id != $dm->last()->id) {
+                                        $dm_name .= ', ';
+                                    }
                                 }
+
+                                /* Trainer */
+                                $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                                $tr = User::whereIn('id', $trIds)->get();
+
+                                $trainer_name = '';
+                                foreach ($tr as $trDetail) {
+                                    $trainer_name .= $trDetail->name;
+
+                                    if ($trDetail->id != $tr->last()->id) {
+                                        $trainer_name .= ', ';
+                                    }
+                                }
+
+                                SummaryDisplayShare::create([
+                                    'displayshare_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $transaction->store_id,
+                                    'user_id' => $transaction->user_id,
+                                    'week' => $transaction->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $store->subChannel->channel->name,
+                                    'sub_channel' => $store->subChannel->name,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $customerCode,
+                                    'store_id' => $store->store_id,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $transaction->date,
+                                    'category' => $category->name,
+                                    'philips' => $data['philips'],
+                                    'all' => $data['all'],
+                                    'percentage' => (($data['philips'] / $data['all']) * 100),
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
+                                    'spv_name' => $spvName,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
+                                ]);
+
                             }
-
-                            /* DM */
-                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
-                            $dm = User::whereIn('id', $dmIds)->get();
-
-                            $dm_name = '';
-                            foreach ($dm as $dmDetail) {
-                                $dm_name .= $dmDetail->name;
-
-                                if ($dmDetail->id != $dm->last()->id) {
-                                    $dm_name .= ', ';
-                                }
-                            }
-
-                            /* Trainer */
-                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
-                            $tr = User::whereIn('id', $trIds)->get();
-
-                            $trainer_name = '';
-                            foreach ($tr as $trDetail) {
-                                $trainer_name .= $trDetail->name;
-
-                                if ($trDetail->id != $tr->last()->id) {
-                                    $trainer_name .= ', ';
-                                }
-                            }
-
-                            SummaryDisplayShare::create([
-                                'displayshare_detail_id' => $detail->id,
-                                'region_id' => $store->district->area->region->id,
-                                'area_id' => $store->district->area->id,
-                                'district_id' => $store->district->id,
-                                'storeId' => $transaction->store_id,
-                                'user_id' => $transaction->user_id,
-                                'week' => $transaction->week,
-                                'distributor_code' => $distributor_code,
-                                'distributor_name' => $distributor_name,
-                                'region' => $store->district->area->region->name,
-                                'channel' => $store->subChannel->channel->name,
-                                'sub_channel' => $store->subChannel->name,
-                                'area' => $store->district->area->name,
-                                'district' => $store->district->name,
-                                'store_name_1' => $store->store_name_1,
-                                'store_name_2' => $customerCode,
-                                'store_id' => $store->store_id,
-                                'nik' => $user->nik,
-                                'promoter_name' => $user->name,
-                                'date' => $transaction->date,
-                                'category' => $category->name,
-                                'philips' => $data['philips'],
-                                'all' => $data['all'],
-                                'percentage' => (($data['philips'] / $data['all']) * 100),
-                                'role' => $user->role->role,
-                                'role_id' => $user->role->id,
-                                'role_group' => $user->role->role_group,
-                                'spv_name' => $spvName,
-                                'dm_name' => $dm_name,
-                                'trainer_name' => $trainer_name,
-                            ]);
 
                         }
 
