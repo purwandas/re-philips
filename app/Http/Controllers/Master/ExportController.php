@@ -8,6 +8,7 @@ use App\Filters\UserFilters;
 use App\Filters\PriceFilters;
 use App\Filters\TargetFilters;
 use App\Filters\ApmFilters;
+use App\Filters\AttendanceFilters;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
@@ -37,6 +38,7 @@ use App\Posm;
 use App\GroupCompetitor;
 use App\TimeGone;
 use App\Apm;
+use App\Attendance;
 use App\Reports\SummarySellIn;
 use App\Reports\HistorySellIn;
 use App\Reports\SummarySellOut;
@@ -1482,6 +1484,105 @@ class ExportController extends Controller
 
     }
 
+    public function exportAttendanceReportAll(Request $request){
+
+        $filename = 'Philips Retail Report Attendance Report ' . Carbon::now()->format('d-m-Y');
+        
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+       $month = Carbon::parse($request['searchMonth'])->format('m');
+       $year = Carbon::parse($request['searchMonth'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+
+        /* If filter */
+        if($request['byStore']){
+            $data = $data->whereIn('stores.id',[$request['byStore']]);
+        }
+        if($request['byDistrict']){
+            $data = $data->whereIn('districts.id', [$request['byDistrict']]);
+        }
+        if($request['byArea']){
+            $data = $data->whereIn('areas.id', [$request['byArea']]);
+        }
+        if($request['byRegion']){
+            $data = $data->whereIn('regions.id', [$request['byRegion']]);
+        }
+        if($request['byEmployee']){
+            $data = $data->where('attendances.user_id', $request['byEmployee']);
+        }
+        if ($userRole == 'RSM') {
+            $regionIds = RsmRegion::where('user_id', $userId)
+                                ->pluck('rsm_regions.region_id');
+            $data = $data->whereIn('region_id', [$regionIds]);
+        }
+        if ($userRole == 'DM') {
+            $areaIds = DmArea::where('user_id', $userId)
+                                ->pluck('dm_areas.area_id');
+            $data = $data->whereIn('area_id', [$areaIds]);
+        }
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $storeIds = Store::where('user_id', $userId)
+                                ->pluck('stores.store_id');
+            $data = $data->whereIn('store_id', [$storeIds]);
+        }
+        $data = $data->get();
+        foreach ($data as $key => $value) {
+            $data->details = "sad";
+        }
+        $data = $data->toArray();
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Attendance');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Attendance Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('ATTENDANCE', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:AJ1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportAttendance($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:AB1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:AB1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
     public function exportAchievementReport(Request $request){
 
         $filename = 'Philips Retail Report Achievement Report ' . Carbon::now()->format('d-m-Y');
@@ -1949,7 +2050,6 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
 
         // GET DATA
-
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
         

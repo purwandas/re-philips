@@ -21,6 +21,8 @@ use App\Traits\UploadTrait;
 use App\Traits\StringTrait;
 use App\Traits\AttendanceTrait;
 use App\Filters\UserFilters;
+use App\Filters\UserFiltersSpv;
+use App\Filters\UserFiltersDemo;
 use App\Reports\HistoryEmployeeStore;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -366,7 +368,7 @@ class UserController extends Controller
         return $data;
     }
 
-    public function getDataSupervisorPromoterWithFilters(UserFilters $filters){ 
+    public function getDataSupervisorPromoterWithFilters(UserFiltersSpv $filters){ 
         $roles = ['Supervisor','Supervisor Hybrid'];
         $data = User::
                 filter($filters)
@@ -403,6 +405,19 @@ class UserController extends Controller
                           ->from('spv_demos')
                           ->whereRaw('spv_demos.user_id = users.id');
                 })
+                ->get();
+       
+        return $data;
+    }
+
+    public function getDataUserOthersWithFilters(UserFiltersDemo $filters){ 
+        $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC', 'Supervisor', 'Supervisor Hybrid'];
+        $data = User::
+                filter($filters)
+                ->join('roles','roles.id','users.role_id')
+                ->where('is_resign', 0)
+                ->whereNotIn('roles.role_group',$roles)
+                ->select('users.*', 'roles.role_group as role')
                 ->get();
        
         return $data;
@@ -1040,13 +1055,7 @@ class UserController extends Controller
                     $store = Store::where('user_id', $user->id)->update(['user_id'=>null]);
                 }
             }
-        }else{
-            $empStore = Store::where('user_id', $user->id);
-            if($empStore->count() > 0){
-                $empStore->update(['user_id'=>null]);
-            }
-        }
-        
+        }        
 
         // DM AREA 
         $dmArea = DmArea::where('user_id', $user->id);
