@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
         /** Resign **/
         Route::get('resign', 'Master\ResignController@index');
         Route::post('resign', 'UserPromoterController@resign');
+        Route::get('resign-non', 'Master\ResignController@indexNon');
 
         /** Resign **/
         Route::get('rejoin', 'Master\ResignController@indexRejoin');

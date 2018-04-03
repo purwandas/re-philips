@@ -47,10 +47,24 @@ class ImportTarget extends Command
     {
         $dataFile = Excel::selectSheets('Master Target')->load($this->argument('file'))->get();
 
-
         foreach ($dataFile as $detail) {
+
+            $tempSellType = trim(strtolower($detail['sell_type']));
+
+            $sellType = 'Sell In';
+
+            if($tempSellType == 'sell in' || $tempSellType == 'sell thru') $sellType = 'Sell In';
+            if($tempSellType == 'sell out') $sellType = 'Sell Out';
             
-            $target = Target::where('user_id', $detail['user_id'])->where('store_id', $detail['store_id'])->where('sell_type', $detail['sell_type'])->first();
+            $target = Target::where('user_id', $detail['user_id'])->where('store_id', $detail['store_id'])->where('sell_type', $sellType)->first();
+
+            if($detail['target_da'] == '' || $detail['target_da'] == null) $detail['target_da'] = 0;
+            if($detail['target_pf_da'] == '' || $detail['target_pf_da'] == null) $detail['target_pf_da'] = 0;
+            if($detail['target_pc'] == '' || $detail['target_pc'] == null) $detail['target_pc'] = 0;
+            if($detail['target_pf_pc'] == '' || $detail['target_pf_pc'] == null) $detail['target_pf_pc'] = 0;
+            if($detail['target_mcc'] == '' || $detail['target_mcc'] == null) $detail['target_mcc'] = 0;
+            if($detail['target_pf_mcc'] == '' || $detail['target_pf_mcc'] == null) $detail['target_pf_mcc'] = 0;
+            if($detail['partner'] == '' || $detail['partner'] == null) $detail['partner'] = 0;
 
             if($target){ // UPDATE
 
@@ -106,6 +120,36 @@ class ImportTarget extends Command
                     } 
 
                 }
+
+            }else{ // INSERT
+
+                $target = Target::create([
+                    'user_id' => $detail['user_id'],
+                    'store_id' => $detail['store_id'],
+                    'sell_type' => $sellType,
+                    'partner' => $detail['partner'],
+                    'target_da' => $detail['target_da'],
+                    'target_pf_da' => $detail['target_pf_da'],
+                    'target_pc' => $detail['target_pc'],
+                    'target_pf_pc' => $detail['target_pf_pc'],
+                    'target_mcc' => $detail['target_mcc'],
+                    'target_pf_mcc' => $detail['target_pf_mcc'],
+                ]);
+
+
+                /* Summary Target Add and/or Change */ // On Progress
+                $summary['user_id'] = $target->user_id;
+                $summary['store_id'] = $target->store_id;
+                $summary['partner'] = $target->partner;
+                $summary['target_da'] = $target->target_da;
+                $summary['target_pf_da'] = $target->target_pf_da;
+                $summary['target_pc'] = $target->target_pc;
+                $summary['target_pf_pc'] = $target->target_pf_pc;
+                $summary['target_mcc'] = $target->target_mcc;
+                $summary['target_pf_mcc'] = $target->target_pf_mcc;
+                $summary['sell_type'] = $target->sell_type;
+
+                $this->changeTarget($summary, 'change');
 
             }
 

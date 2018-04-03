@@ -2829,7 +2829,7 @@ class ExportController extends Controller
 
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
 
-        $data = User::filter($filters)
+        $data = User::filter($filters)->where('is_resign', 0)
             ->join('roles','roles.id','users.role_id')
             ->leftJoin('gradings','gradings.id','users.grading_id')
             ->select('users.*','roles.role_group as role','roles.role as roles', 'roles.role_group', 'gradings.grading')
