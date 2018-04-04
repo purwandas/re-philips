@@ -46,8 +46,8 @@ trait SummaryTrait {
                 $this->changeSummaryRetDistributor($data, $change);
                 $this->changeSummaryFreeProduct($data, $change);
                 $this->changeSummaryTbat($data, $change);
-//                $this->changeSummarySoh($data, $change);
-                $this->changeSummarySos($data, $change);
+               $this->changeSummarySoh($data, $change);
+                // $this->changeSummarySos($data, $change);
             } elseif ($data['sell_type'] == 'Sell Out') {
                 $this->changeSummarySellOut($data, $change);
             }
@@ -128,9 +128,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $sellInIds = SellIn::join('stores', 'stores.id', '=', 'sell_ins.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('sell_ins.date', '=', Carbon::now()->format('m'))
                         ->whereYear('sell_ins.date', '=', Carbon::now()->format('Y'))->pluck('sell_ins.id');
@@ -303,9 +303,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $sellOutIds = SellOut::join('stores', 'stores.id', '=', 'sell_outs.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('sell_outs.date', '=', Carbon::now()->format('m'))
                         ->whereYear('sell_outs.date', '=', Carbon::now()->format('Y'))->pluck('sell_outs.id');
@@ -427,9 +427,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $retConsumentIds = RetConsument::join('stores', 'stores.id', '=', 'ret_consuments.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('ret_consuments.date', '=', Carbon::now()->format('m'))
                         ->whereYear('ret_consuments.date', '=', Carbon::now()->format('Y'))->pluck('ret_consuments.id');
@@ -548,9 +548,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $retDistributorIds = RetDistributor::join('stores', 'stores.id', '=', 'ret_distributors.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('ret_distributors.date', '=', Carbon::now()->format('m'))
                         ->whereYear('ret_distributors.date', '=', Carbon::now()->format('Y'))->pluck('ret_distributors.id');
@@ -669,9 +669,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $freeProductIds = FreeProduct::join('stores', 'stores.id', '=', 'free_products.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('free_products.date', '=', Carbon::now()->format('m'))
                         ->whereYear('free_products.date', '=', Carbon::now()->format('Y'))->pluck('free_products.id');
@@ -790,9 +790,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $tbatIds = Tbat::join('stores', 'stores.id', '=', 'tbats.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('tbats.date', '=', Carbon::now()->format('m'))
                         ->whereYear('tbats.date', '=', Carbon::now()->format('Y'))->pluck('tbats.id');
@@ -911,9 +911,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $sohIds = SOH::join('stores', 'stores.id', '=', 'sohs.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('sohs.date', '=', Carbon::now()->format('m'))
                         ->whereYear('sohs.date', '=', Carbon::now()->format('Y'))->pluck('sohs.id');
@@ -1032,9 +1032,9 @@ trait SummaryTrait {
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
             $sosIds = SOS::join('stores', 'stores.id', '=', 'sos.store_id')
-                        ->join('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
-                        ->join('channels', 'channels.id', '=', 'sub_channels.channel_id')
-                        ->join('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('sos.date', '=', Carbon::now()->format('m'))
                         ->whereYear('sos.date', '=', Carbon::now()->format('Y'))->pluck('sos.id');
