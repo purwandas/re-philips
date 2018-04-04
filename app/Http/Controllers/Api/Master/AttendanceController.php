@@ -103,21 +103,27 @@ class AttendanceController extends Controller
 
             }
 
+            $checkOut = 0;
+
             // If promoter still didn't do check out
             if($attendanceDetailsCount > 0){
 
                 // Get last attendance detail
                 $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
-                if($attendanceDetail->check_out == null){
-                    return response()->json(['status' => false, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                // if($attendanceDetail->check_out == null){
+                //     return response()->json(['status' => false, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                // }
+
+                if($attendanceDetail->check_out != null){
+                    $checkOut = 1;
                 }
 
             }
 
             // Add attendance detail
             try {
-                DB::transaction(function () use ($content, $attendanceHeader, $user) {
+                DB::transaction(function () use ($content, $attendanceHeader, $user, $checkOut, $attendanceDetailsCount) {
 
                     // Attendance Header Update
                     $attendanceHeader->update([
@@ -126,20 +132,47 @@ class AttendanceController extends Controller
 
                     $detail = ($content['other_store'] == 1) ? 'User melakukan absensi di toko lain' : null;
 
-                    // Attendance Detail Add
-                    AttendanceDetail::create([
-                        'attendance_id' => $attendanceHeader->id,
-                        'store_id' => $content['id'],
-                        'is_store' => $content['is_store'],
-                        'check_in' => Carbon::now(),
-                        'check_in_longitude' => $content['longitude'],
-                        'check_in_latitude' => $content['latitude'],
-                        'check_in_location' => $content['location'],
-                        'detail' => $detail
-                    ]);
+                    if($attendanceDetailsCount == 0){
+                        // Attendance Detail Add
+                        AttendanceDetail::create([
+                            'attendance_id' => $attendanceHeader->id,
+                            'store_id' => $content['id'],
+                            'is_store' => $content['is_store'],
+                            'check_in' => Carbon::now(),
+                            'check_in_longitude' => $content['longitude'],
+                            'check_in_latitude' => $content['latitude'],
+                            'check_in_location' => $content['location'],
+                            'detail' => $detail
+                        ]);
+                    }
 
-                    // Change Actual Call - SEE
-                    $this->changeActualCall($user->id);
+                    if($checkOut == 1){
+
+                        // Attendance Detail Add
+                        AttendanceDetail::create([
+                            'attendance_id' => $attendanceHeader->id,
+                            'store_id' => $content['id'],
+                            'is_store' => $content['is_store'],
+                            'check_in' => Carbon::now(),
+                            'check_in_longitude' => $content['longitude'],
+                            'check_in_latitude' => $content['latitude'],
+                            'check_in_location' => $content['location'],
+                            'detail' => $detail
+                        ]);
+
+                    }
+
+                    if($attendanceDetailsCount > 0){
+                        $attendanceDetailSame = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->where('store_id', $content['id'])->count();
+
+                        if($attendanceDetailSame == 0){
+                            // Change Actual Call - SEE
+                            $this->changeActualCall($user->id);
+                        }
+                    }else{
+                        // Change Actual Call - SEE
+                        $this->changeActualCall($user->id);
+                    }                    
 
                 });
             } catch (\Exception $e) {
@@ -173,27 +206,36 @@ class AttendanceController extends Controller
             // Get last attendance detail
             $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
+            $checkIn = 0;
+
             // If promoter hasn't check in
             if($attendanceDetailsCount > 0){
 
+                // if($attendanceDetail->check_out != null){
+                //     return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 200);
+                // }
+
                 if($attendanceDetail->check_out != null){
-                    return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 200);
+                    $checkIn = 1;
                 }
 
             }
 
             // Update attendance detail
             try {
-                DB::transaction(function () use ($content, $attendanceDetail) {
+                DB::transaction(function () use ($content, $attendanceDetail, $checkIn) {
 
-                    // Attendance Detail Update
-                    $attendanceDetail->update([
-                        'check_out' => Carbon::now(),
-                        'check_out_longitude' => $content['longitude'],
-                        'check_out_latitude' => $content['latitude'],
-                        'check_out_location' => $content['location']
-                    ]);
+                    if($checkIn == 0){
 
+                        // Attendance Detail Update
+                        $attendanceDetail->update([
+                            'check_out' => Carbon::now(),
+                            'check_out_longitude' => $content['longitude'],
+                            'check_out_latitude' => $content['latitude'],
+                            'check_out_location' => $content['location']
+                        ]);
+
+                    }
 
                 });
             } catch (\Exception $e) {
