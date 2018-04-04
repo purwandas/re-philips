@@ -190,9 +190,13 @@ class ExcelHelper
         return $collection->map(function ($item) use ($arMonth) {
             return [
                 'NO.' => @$item['id'],
+                'GLOBAL CHANNEL' => @$item['global_channel'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
                 'REGION' => @$item['region'],
                 'AREA' => @$item['area'],
                 'DISTRICT' => @$item['district'],
+                'RE STORE ID' => @$item['re_store_id'],
                 'STORE' => @$item['store_name'],
                 'PRODUCT' => @$item['product_name'],
                 'SO VALUE '.$arMonth[0] => @$item['month_minus_1_value'],
@@ -221,10 +225,51 @@ class ExcelHelper
         return $collection->map(function ($item) use ($arMonth) {
             return [
                 'NO.' => @$item['id'],
+                'GLOBAL CHANNEL' => @$item['global_channel'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
                 'REGION' => @$item['region'],
                 'AREA' => @$item['area'],
                 'DISTRICT' => @$item['district'],
+                'RE STORE ID' => @$item['re_store_id'],
                 'STORE' => @$item['store_name'],
+                'PRODUCT' => @$item['product_name'],
+                'SO VALUE '.$arMonth[0] => number_format(@$item['month_minus_1_value']),
+                'SO VALUE '.$arMonth[1] => number_format(@$item['month_minus_2_value']),
+                'SO VALUE '.$arMonth[2] => number_format(@$item['month_minus_3_value']),
+                'SO VALUE '.$arMonth[3] => number_format(@$item['month_minus_4_value']),
+                'SO VALUE '.$arMonth[4] => number_format(@$item['month_minus_5_value']),
+                'SO VALUE '.$arMonth[5] => number_format(@$item['month_minus_6_value']),
+            ];
+        });
+    }
+
+    public function mapForExportApmTemplate(Array $data)
+    {
+        $collection = collect($data);
+
+        $arMonth = [
+                    Carbon::now()->subMonths(1)->format('F Y'),
+                    Carbon::now()->subMonths(2)->format('F Y'),
+                    Carbon::now()->subMonths(3)->format('F Y'),
+                    Carbon::now()->subMonths(4)->format('F Y'),
+                    Carbon::now()->subMonths(5)->format('F Y'),
+                    Carbon::now()->subMonths(6)->format('F Y'),
+                   ];
+
+        return $collection->map(function ($item) use ($arMonth) {
+            return [
+                'NO.' => @$item['id'],
+                'GLOBAL CHANNEL' => @$item['global_channel'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'REGION' => @$item['region'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE ID' => @$item['store_id'],
+                'RE STORE ID' => @$item['re_store_id'],
+                'STORE' => @$item['store_name'],
+                'PRODUCT ID' => @$item['product_id'],
                 'PRODUCT' => @$item['product_name'],
                 'SO VALUE '.$arMonth[0] => number_format(@$item['month_minus_1_value']),
                 'SO VALUE '.$arMonth[1] => number_format(@$item['month_minus_2_value']),
