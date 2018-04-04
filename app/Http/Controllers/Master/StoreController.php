@@ -415,7 +415,7 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        $error = '';
+        // return $request->all();
         
         $request['store_id'] = $this->traitGetStoreId();
 //        return response()->json($request->all());
