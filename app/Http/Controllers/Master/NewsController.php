@@ -36,6 +36,7 @@ class NewsController extends Controller
     public function masterDataTable(){
 
         $data = News::where('news.deleted_at', null)
+                    ->where('sender', '<>', 'notification')
         			->join('users', 'news.user_id', '=', 'users.id')
                     ->select('news.*', 'users.name as user_name')->get();
 
