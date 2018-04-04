@@ -350,6 +350,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-productpromo-template', ['uses'=>'Master\ExportController@exportProductPromoTemplate']);
     Route::post('util/export-apm', ['uses'=>'Master\ExportController@exportApm']);
     Route::post('util/export-apm-all', ['uses'=>'Master\ExportController@exportApmAll']);
+    Route::post('util/export-apm-template', ['uses'=>'Master\ExportController@exportApmTemplate']);
     Route::post('util/export-soh-all', ['uses'=>'Master\ExportController@exportSohAll']);
     Route::post('util/export-competitoractivity-all', ['uses'=>'Master\ExportController@exportCompetitorActivityAll']);
     Route::post('util/export-promoactivity-all', ['uses'=>'Master\ExportController@exportPromoActivityAll']);

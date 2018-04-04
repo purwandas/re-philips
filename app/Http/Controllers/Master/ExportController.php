@@ -4651,7 +4651,7 @@ class ExportController extends Controller
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
-            $excel->setTitle('Report Sell Thru');
+            $excel->setTitle('Report APM');
 
             // Chain the setters
             $excel->setCreator('Philips')
@@ -4666,16 +4666,16 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('APM', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:L1');
+                $sheet->setAutoFilter('A1:P1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportApm($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:L1', function ($cells) {
+                $sheet->cells('A1:P1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:L1', 'thin');
+                $sheet->setBorder('A1:P1', 'thin');
             });
 
 
@@ -4695,13 +4695,16 @@ class ExportController extends Controller
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('products', 'apms.product_id', '=', 'products.id')
-                    ->select('apms.*', 'stores.store_name_1 as store_name', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region')->get()->toArray();
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get()->toArray();
 
 
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
-            $excel->setTitle('Report Sell Thru');
+            $excel->setTitle('Report APM');
 
             // Chain the setters
             $excel->setCreator('Philips')
@@ -4716,16 +4719,69 @@ class ExportController extends Controller
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             $excel->sheet('APM', function ($sheet) use ($data) {
-                $sheet->setAutoFilter('A1:L1');
+                $sheet->setAutoFilter('A1:P1');
                 $sheet->setHeight(1, 25);
                 $sheet->fromModel($this->excelHelper->mapForExportApmAll($data), null, 'A1', true, true);
                 $sheet->row(1, function ($row) {
                     $row->setBackground('#82abde');
                 });
-                $sheet->cells('A1:L1', function ($cells) {
+                $sheet->cells('A1:P1', function ($cells) {
                     $cells->setFontWeight('bold');
                 });
-                $sheet->setBorder('A1:L1', 'thin');
+                $sheet->setBorder('A1:P1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportApmTemplate(ApmFilters $filters){
+
+        $filename = 'Philips Retail Report APM ' . Carbon::now()->format('d-m-Y');
+
+        $data = Apm::filter($filters)
+                ->join('stores', 'apms.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('products', 'apms.product_id', '=', 'products.id')
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get()->toArray();
+
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report APM');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('APM Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('APM', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:R1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportApmTemplate($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:R1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:R1', 'thin');
             });
 
 

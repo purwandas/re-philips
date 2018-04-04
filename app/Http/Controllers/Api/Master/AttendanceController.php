@@ -96,8 +96,8 @@ class AttendanceController extends Controller
                 $coordNow = Geotools::coordinate([$content['latitude'], $content['longitude']]);
                 $distance = Geotools::distance()->setFrom($coordStore)->setTo($coordNow)->flat();
 
-                // Check distance if above 250 meter(s)
-                if ($distance > 250) {
+                // Check distance if above 350 meter(s)
+                if ($distance > 350) {
                     return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari tempat absensi'], 200);
                 }
 
