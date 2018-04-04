@@ -124,6 +124,7 @@ class StoreController extends Controller
         // return response()->json($request->id);
         $store = Store::find($request->id);
 
+
         /* Case kalo ga bisa di update setelah first update */
 //        if($store->longitude != null && $store->latitude != null){
 //            return response()->json(['status' => false, 'message' => 'Longitude dan latitude untuk store ini telah diinput'], 500);
@@ -147,19 +148,19 @@ class StoreController extends Controller
             $globalchannel = '';
         }
 
-        if (isset($store->user_id)) {
-            $user_name = $store->user->name;
-            $nik = $store->user->nik;
-            $role_id = $store->user->role->id;
-            $role = $store->user->role->role;
-            $role_group = $store->user->role->role_group;
+        if (isset($user)) {
+            $user_name = $user->name;
+            $nik = $user->nik;
+            $role_id = $user->role->id;
+            $role = $user->role->role;
+            $role_group = $user->role->role_group;
             $grading = '';
             $grading_id = '';
-            if (isset($store->user->grading->grading)) {
-                $grading = $store->user->grading->grading;
+            if (isset($user->grading->grading)) {
+                $grading = $user->grading->grading;
             }
-            if (isset($store->user->grading->id)) {
-                $grading_id = $store->user->grading->id;
+            if (isset($user->grading->id)) {
+                $grading_id = $user->grading->id;
             }
         }else{
             $user_name = '';
