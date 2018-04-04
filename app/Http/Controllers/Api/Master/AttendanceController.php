@@ -103,47 +103,57 @@ class AttendanceController extends Controller
 
             }
 
+            $checkOut = 0;
+
             // If promoter still didn't do check out
             if($attendanceDetailsCount > 0){
 
                 // Get last attendance detail
                 $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
-                if($attendanceDetail->check_out == null){
-                    return response()->json(['status' => false, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                // if($attendanceDetail->check_out == null){
+                //     return response()->json(['status' => false, 'id_attendance' => $attendanceHeader->id, 'message' => 'Anda masih berada dalam status check in, silahkan check out terlebih dahulu'], 200);
+                // }
+
+                if($attendanceDetail->check_out != null){
+                    $checkOut = 1;
                 }
 
             }
 
-            // Add attendance detail
-            try {
-                DB::transaction(function () use ($content, $attendanceHeader, $user) {
+            if($checkOut == 1){
 
-                    // Attendance Header Update
-                    $attendanceHeader->update([
-                        'status' => 'Masuk'
-                    ]);
+                // Add attendance detail
+                try {
+                    DB::transaction(function () use ($content, $attendanceHeader, $user) {
 
-                    $detail = ($content['other_store'] == 1) ? 'User melakukan absensi di toko lain' : null;
+                        // Attendance Header Update
+                        $attendanceHeader->update([
+                            'status' => 'Masuk'
+                        ]);
 
-                    // Attendance Detail Add
-                    AttendanceDetail::create([
-                        'attendance_id' => $attendanceHeader->id,
-                        'store_id' => $content['id'],
-                        'is_store' => $content['is_store'],
-                        'check_in' => Carbon::now(),
-                        'check_in_longitude' => $content['longitude'],
-                        'check_in_latitude' => $content['latitude'],
-                        'check_in_location' => $content['location'],
-                        'detail' => $detail
-                    ]);
+                        $detail = ($content['other_store'] == 1) ? 'User melakukan absensi di toko lain' : null;
 
-                    // Change Actual Call - SEE
-                    $this->changeActualCall($user->id);
+                        // Attendance Detail Add
+                        AttendanceDetail::create([
+                            'attendance_id' => $attendanceHeader->id,
+                            'store_id' => $content['id'],
+                            'is_store' => $content['is_store'],
+                            'check_in' => Carbon::now(),
+                            'check_in_longitude' => $content['longitude'],
+                            'check_in_latitude' => $content['latitude'],
+                            'check_in_location' => $content['location'],
+                            'detail' => $detail
+                        ]);
 
-                });
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                        // Change Actual Call - SEE
+                        $this->changeActualCall($user->id);
+
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                }
+
             }
 
             if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'SMD Additional') {
