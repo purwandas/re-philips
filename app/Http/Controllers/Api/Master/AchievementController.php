@@ -1096,6 +1096,7 @@ class AchievementController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
+        $areaIds = [];
         if($user->role->role_group == 'DM'){
                 $areaIds = DmArea::where('user_id', $user->id)->pluck('area_id');
             }else if($user->role->role_group == 'Trainer'){
