@@ -316,6 +316,39 @@
 	                            
 	                          </div>
 	                        </div>
+
+	                        <div class="caption padding-caption">
+	                        	<span class="caption-subject font-dark bold uppercase">PHOTO</span>
+	                        	<hr>
+	                        </div>		        
+
+					        <!-- View for old image * PHOTO * -->
+					        @if (!empty($data))				        	
+					        	<div class="form-group">
+					          		<label class="col-sm-2 control-label">Photo</label>
+					         		<div class="col-sm-9">				          	
+						    			<img width="90px" height="90px" src="{{ @$data->photo }}" onError="this.onerror=null;this.src='{{ asset('image/missing.png') }}';">
+					         		</div>
+					        	</div>
+
+				          		<div class="form-group">
+					          		<label class="col-sm-2 control-label">Photo URL</label>
+					         		<div class="col-sm-9">				          	
+						    			<input type="text" class="form-control" value="{{ @$data->photo }}" disabled="disabled" />
+						    		</div>
+					        	</div>
+				        	@endif
+
+					        <div class="form-group">
+					          <label class="col-sm-2 control-label">{{ (!empty($data)) ? 'New ' : ' ' }}Photo</label>
+					          <div class="col-sm-9">
+					          	<div class="input-group" style="width: 100%;">
+						          	<input type="file" accept=".jpg,.jpeg,.png,.gif,.svg" class="form-control" id="photo_file" name="photo_file">
+						          	<p style="font-size: 10pt;" class="help-block"> (Type of file: jpg, jpeg, png, gif, svg - Max size : 2 MB) </p>
+						          	<div class="file_error_message" style="display: none;"></div>
+						      	</div>
+					          </div>
+					        </div>
 	                    </div>
 
 				        <div class="form-group" style="padding-top: 15pt;">
