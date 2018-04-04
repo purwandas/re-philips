@@ -838,6 +838,9 @@
 	<!-- New Multiple Store -->
 	<script>
 		var addNumber = 0;
+		var storeArray= [];
+		var storeIndex;
+
 		$(document).ready(function () {
 		  $.ajaxSetup({
 		    headers: {
@@ -853,7 +856,9 @@
 		  });
 
 		  var idx = 0;
+		  // Add Store Click
 		  $("#addStores").click(function(){
+		  	console.log(storeArray);
 		    var selectedStore = $('#stores').val();
 		        
 		    if (selectedStore != '' && selectedStore != null) {
@@ -862,11 +867,20 @@
 		    		$('#toggleButton').addClass('collapse');
 		    		$('#toggleContent').removeAttr('style');
 		    		$('#toggleContent').attr('style','display:block');
-		    		console.log('NowYouSeeMe');
 		    	}
 		      var temp = selectedStore.split('`');
 		      var inputId = temp[0];
-		      var inputValue = temp[1];
+		      var inputVal = temp[1].split(' - ');
+		      var inputValue = "<b>"+inputVal[0]+"</b> "+inputVal[1];
+		      	// if store exists
+				storeIndex = storeArray.indexOf(inputVal[0]);
+				if (storeIndex > -1) {
+					console.log(inputId);
+					console.log(storeArray);
+					swal("Warning", "You have already selected "+temp[1]+"!", "warning");
+				    return;
+				}
+				storeArray.push(inputVal[0]);
 		      var hiddenInput = "<input type='hidden' name='store_ids[]' value='"+inputId+"'>";
 		      $("#myUL").append("<li><div class='col-sm-12'><span class='col-sm-10'>"+inputValue+"</span>"+hiddenInput+" <p id='p"+idx+"' onClick='deleteItem(p"+idx+")' class='col-sm-2 btn btn-danger delete fa fa-trash-o liDelete"+idx+"'></p></div></li>");
 		      var x = document.getElementsByClassName("liDelete"+idx+"");
@@ -917,7 +931,7 @@
 			$.get(getDataUrl + '/' + userId, function (data) {
 				if (data) {
 					$.each(data, function() {
-						storeName = this.store_id + ' - ' + this.store_name_1;
+						storeName = '<b>'+this.store_id + '</b> ' + this.store_name_1;
 						if (this.store_name_2 != null) {
 							storeName += '('+this.store_name_2+')';
 						}
@@ -929,6 +943,7 @@
 			    		// console.log('NowYouSeeMe #2');
 				    
 				      	index = 1000 + addNumber;
+				      	storeArray.push(this.store_id);
 				      	hiddenInput = "<input type='hidden' name='store_ids[]' value='"+this.id+"'>";
 				    
 					    addNumber++;
@@ -952,6 +967,11 @@
 		  if (addNumber == 0) {
 		    $('#cek').val('');
 		  }
+		  	storeIndex = storeArray.indexOf(inputId);
+			if (storeIndex > -1) {
+			    storeArray.splice(storeIndex, 1);
+			}
+			console.log(storeArray);
 		}
 
 		function searchFunction() {

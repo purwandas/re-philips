@@ -33,9 +33,9 @@ class UtilController extends Controller
 
     //
     public function existEmailUser(Request $request){
-    	$user = User::where('email', $request->email);
+        $user = User::where('email', $request->email);
 
-    	if($user->count() > 0){
+        if($user->count() > 0){
             if($request->form_method == 'PATCH'){
 
                 $oldUser = User::find($request->userId);
@@ -43,10 +43,27 @@ class UtilController extends Controller
                 if($oldUser->email == $request->email){
                     return "true";
                 }    
-            }    		
-    		return "false";
-    	}
-    	return "true";
+            }           
+            return "false";
+        }
+        return "true";
+    }
+
+    public function existNikUser(Request $request){
+        $user = User::where('nik', $request->nik);
+
+        if($user->count() > 0){
+            if($request->form_method == 'PATCH'){
+
+                $oldUser = User::find($request->userId);
+
+                if($oldUser->nik == $request->nik){
+                    return "true";
+                }    
+            }           
+            return "false";
+        }
+        return "true";
     }
 
     public function existEmailEmployee(Request $request){               
@@ -199,12 +216,25 @@ class UtilController extends Controller
     }
 
     public function getAttendanceDetail($attendance_id){        
-        $attendance = AttendanceDetail::where('attendance_id',$attendance_id)
+        $store = AttendanceDetail::where('attendance_id',$attendance_id)
             ->join('stores','stores.id', 'attendance_details.store_id')
+            ->where('attendance_details.is_store','1')
             ->select('attendance_details.*', 'stores.store_id as storeId', 'stores.store_name_1', 'stores.store_name_2')
             ->get();
 
-        return response()->json($attendance);
+        return response()->json($store);
+    }
+
+
+    public function getAttendanceDetailPlace($attendance_id){
+
+        $place = AttendanceDetail::where('attendance_id',$attendance_id)
+            ->join('places','places.id', 'attendance_details.store_id')
+            ->where('attendance_details.is_store','0')
+            ->select('attendance_details.*', 'places.store_id', 'places.name as store_name_1', 'places.id as place_id')
+            ->get();
+
+        return response()->json($place);
     }
 
     public function getDistributorForStore($storeId){
