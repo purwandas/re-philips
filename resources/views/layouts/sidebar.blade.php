@@ -121,12 +121,12 @@
                     </li>
                     <li class="nav-item {{ Request::is('resign') ? 'active open' : '' }}">
                         <a href="{{ url('resign') }}" class="nav-link nav-toggle">                    
-                            <span class="title">Employee Resign</span>
+                            <span class="title">Employee Resignation</span>
                         </a>
                     </li>
                     <li class="nav-item {{ Request::is('rejoin') ? 'active open' : '' }}">
                         <a href="{{ url('rejoin') }}" class="nav-link nav-toggle">                    
-                            <span class="title">Employee Join Back</span>
+                            <span class="title">Resign Summary</span>
                         </a>
                     </li>
                 </ul>

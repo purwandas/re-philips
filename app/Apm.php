@@ -12,7 +12,7 @@ class Apm extends Model
 
     //
     protected $fillable = [
-        'store_id', 'product_id', 'month_minus_3_value', 'month_minus_2_value', 'month_minus_1_value'
+        'store_id', 'product_id', 'month_minus_3_value', 'month_minus_2_value', 'month_minus_1_value', 'month_minus_4_value', 'month_minus_5_value', 'month_minus_6_value',
     ];
 
     /**

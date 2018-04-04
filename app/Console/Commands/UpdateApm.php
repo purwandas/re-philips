@@ -58,6 +58,9 @@ class UpdateApm extends Command
                     if($apm){ // UPDATE
 
                         $apm->update([
+                            'month_minus_6_value' => $apm->month_minus_5_value,
+                            'month_minus_5_value' => $apm->month_minus_4_value,
+                            'month_minus_4_value' => $apm->month_minus_3_value,
                             'month_minus_3_value' => $apm->month_minus_2_value,
                             'month_minus_2_value' => $apm->month_minus_1_value,
                             'month_minus_1_value' => $this->getProductTotalCurrent($store['id'], $product['product_id']),
@@ -68,6 +71,9 @@ class UpdateApm extends Command
                         Apm::create([
                             'store_id' => $store['id'],
                             'product_id' => $product['product_id'],
+                            'month_minus_6_value' => 0,
+                            'month_minus_5_value' => 0,
+                            'month_minus_4_value' => 0,
                             'month_minus_3_value' => 0,
                             'month_minus_2_value' => 0,
                             'month_minus_1_value' => $this->getProductTotalCurrent($store['id'], $product['product_id']),

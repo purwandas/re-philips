@@ -74,12 +74,18 @@
                             <i class="fa fa-area-chart font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">APM</span>
                         </div>
+
                     </div>
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="btn-group">
                             <a id="set-apmmonth" class="btn green" data-toggle="modal" href="#apmmonth"><i
                                 class="fa fa-cog"></i> Set APM Month </a>
+
+                        </div>
+                        <div class="btn-group">
+                            <a id="upload" class="btn btn-primary" data-toggle="modal" href="#upload-price"><i
+                                class="fa fa-cloud-upload"></i> Update APM </a>
 
                         </div>
                         <div class="actions" style="text-align: left; padding-right: 10px;">
@@ -98,9 +104,13 @@
                             <thead>
                             <tr>
                                 <th> No. </th>
+                                <th> Global Channel </th>
+                                <th> Channel </th>
+                                <th> Sub Channel </th>
                                 <th> Region </th>
                                 <th> Area </th>
                                 <th> District </th>
+                                <th> RE Store ID </th>
                                 <th> Store Name </th>
                                 <th> Product </th>
                                 <th> 
@@ -163,6 +173,7 @@
             <!-- END EXAMPLE TABLE PORTLET-->
 
             @include('partial.modal.apm-modal')
+            @include('partial.modal.upload-apm-modal')
         </div>
     </div>
 @endsection
@@ -175,6 +186,7 @@
     <!-- END SELECT2 SCRIPTS -->
     <!-- BEGIN PAGE VALIDATION SCRIPTS -->
     <script src="{{ asset('js/handler/apm-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/upload-modal/upload-apm-handler.js') }}" type="text/javascript"></script>
     <!-- END PAGE VALIDATION SCRIPTS -->
 
     <script>
@@ -189,17 +201,24 @@
         var order = [ [0, 'desc'] ];
         var columnDefs = [
                             {"className": "dt-center", "targets": [0]},
-                            {"className": "dt-center", "targets": [6]},
-                            {"className": "dt-center", "targets": [7]},
-                            {"className": "dt-center", "targets": [8]},
-                            {"className": "dt-center", "targets": [9]},
+                            {"className": "dt-center", "targets": [1]},
+                            {"className": "dt-center", "targets": [2]},
+                            {"className": "dt-center", "targets": [3]},
                             {"className": "dt-center", "targets": [10]},
                             {"className": "dt-center", "targets": [11]},
+                            {"className": "dt-center", "targets": [12]},
+                            {"className": "dt-center", "targets": [13]},
+                            {"className": "dt-center", "targets": [14]},
+                            {"className": "dt-center", "targets": [15]},
                          ];
         var tableColumns = [{data: 'id', name: 'id', orderable: false},
+                            {data: 'global_channel', name: 'global_channel'},
+                            {data: 'channel', name: 'channel'},
+                            {data: 'sub_channel', name: 'sub_channel'},
                             {data: 'region', name: 'region'},
                             {data: 'area', name: 'area'},
                             {data: 'district', name: 'district'},
+                            {data: 're_store_id', name: 're_store_id'},
                             {data: 'store_name', name: 'store_name'},
                             {data: 'product_name', name: 'product_name'},
                             {data: 'month_minus_1_value', name: 'month_minus_1_value'},
@@ -401,6 +420,32 @@
                 $.ajax({
                     type: 'POST',
                     url: 'util/export-apm-all',
+                    dataType: 'json',
+                    data: filters,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportTemplate").click( function(){
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-apm-template',
                     dataType: 'json',
                     data: filters,
                     success: function (data) {
