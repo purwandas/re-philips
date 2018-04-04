@@ -200,9 +200,14 @@ class SalesController extends Controller
                                     }else{
                                         $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
 
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+
                                         $price = Price::where('product_id', $product->id)
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
-                                            ->where('global_channels.name',$dedicate->dedicate)
+                                            ->where('global_channels.name',$newDedicate)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
                                     }
@@ -564,9 +569,14 @@ class SalesController extends Controller
                                     }else{
                                         $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
 
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+
                                         $price = Price::where('product_id', $product->id)
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
-                                            ->where('global_channels.name',$dedicate->dedicate)
+                                            ->where('global_channels.name',$newDedicate)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
                                     }
