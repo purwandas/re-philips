@@ -131,6 +131,9 @@ trait SummaryTrait {
                         ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
                         ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
                         ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->join('users', 'users.id', '=', 'sell_ins.user_id')
+                        ->join('roles', 'roles.id', '=', 'users.role_id')
+                        ->where('roles.role_group', '<>', 'Salesman Explorer')
                         ->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('sell_ins.date', '=', Carbon::now()->format('m'))
                         ->whereYear('sell_ins.date', '=', Carbon::now()->format('Y'))->pluck('sell_ins.id');
@@ -140,7 +143,7 @@ trait SummaryTrait {
 
             foreach ($sellInDetail as $detail){
 
-                if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
+                // if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
 
                     $summary = SummarySellIn::where('sellin_detail_id', $detail->id)->first();
 
@@ -195,49 +198,79 @@ trait SummaryTrait {
 
                     }
 
-                }else { // SEE (Salesman Explorer)
+                // }else { // SEE (Salesman Explorer)
 
-                    $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
+                    
 
-                    if ($summary) {
+                // }
 
-                        if ($change == 'change') {
+            }
 
+
+            // SEE
+            $sellInIds = SellIn::join('stores', 'stores.id', '=', 'sell_ins.store_id')
+                        ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+                        ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+                        ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+                        ->join('users', 'users.id', '=', 'sell_ins.user_id')
+                        ->join('roles', 'roles.id', '=', 'users.role_id')
+                        ->where('roles.role_group', '=', 'Salesman Explorer')
+                        //->where('global_channels.id', $data['globalchannel_id'])
+                        ->whereMonth('sell_ins.date', '=', Carbon::now()->format('m'))
+                        ->whereYear('sell_ins.date', '=', Carbon::now()->format('Y'))->pluck('sell_ins.id');
+
+            $sellInDetail = SellInDetail::whereIn('sellin_id', $sellInIds)
+                                ->where('product_id', $data['product_id'])->get();
+
+            foreach ($sellInDetail as $detail){
+
+                // if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
+
+                $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
+
+                if ($summary) {
+
+                    if ($change == 'change') {
+
+                        $summary->update([
+                            'unit_price' => $data['price'],
+                            'value' => $summary->quantity * $data['price']
+                        ]);
+
+                        /* Product Focus */
+                        $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
+
+                        $summary->update([
+                            'value_pf' => 0,
+                        ]);
+
+                        if ($productFocus) { // Jika ada product focus
                             $summary->update([
-                                'unit_price' => $data['price'],
-                                'value' => $summary->quantity * $data['price']
-                            ]);
-
-                            /* Product Focus */
-                            $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
-
-                            $summary->update([
-                                'value_pf' => 0,
-                            ]);
-
-                            if ($productFocus) { // Jika ada product focus
-                                $summary->update([
-                                    'value_pf' => $summary->quantity * $data['price']
-                                ]);
-                            }
-
-
-                        } else if ($change == 'delete') {
-                            $summary->update([
-                                'unit_price' => 0,
-                                'value' => 0,
-                                'value_pf' => 0,
+                                'value_pf' => $summary->quantity * $data['price']
                             ]);
                         }
 
-                        /* Reset Actual */
-                        $this->resetActualSalesman($summary->user_id);
 
+                    } else if ($change == 'delete') {
+                        $summary->update([
+                            'unit_price' => 0,
+                            'value' => 0,
+                            'value_pf' => 0,
+                        ]);
                     }
+
+                    /* Reset Actual */
+                    $this->resetActualSalesman($summary->user_id);
 
                 }
 
-            }
+                // }else { // SEE (Salesman Explorer)
+
+                    
+
+                // }
+
+            }            
 
         }
 
