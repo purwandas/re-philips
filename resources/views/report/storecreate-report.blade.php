@@ -4,8 +4,8 @@
     <div class="page-head">
         <!-- BEGIN PAGE TITLE -->
         <div class="page-title">
-            <h1>Store Location Activity Report
-                <small>report store location activity</small>
+            <h1>Store Create Activity Report
+                <small>report store create activity</small>
             </h1>
         </div>
         <!-- END PAGE TITLE -->
@@ -16,7 +16,7 @@
             <i class="fa fa-circle"></i>
         </li>
         <li>
-            <span class="active">Store Location Activity Reporting</span>
+            <span class="active">Store Create Activity Reporting</span>
         </li>
     </ul>
 @endsection
@@ -79,7 +79,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-file-text-o font-blue"></i>
-                            <span class="caption-subject font-blue bold uppercase">Store Location Activity</span>
+                            <span class="caption-subject font-blue bold uppercase">Store Create Activity</span>
                         </div>
 
                         <div class="actions" style="text-align: left">
@@ -94,7 +94,7 @@
 
                     <div class="portlet-body">
 
-                        <table class="table table-striped table-hover table-bordered" id="storeLocationActivityReport" style="white-space: nowrap;">
+                        <table class="table table-striped table-hover table-bordered" id="storeCreateActivityReport" style="white-space: nowrap;">
                             <thead>
                             <tr>
                                 <th> No. </th>
@@ -108,9 +108,6 @@
                                 <th>Old Longitude</th>
                                 <th>Old Latitude</th>
                                 <th>Old Address</th>
-                                <th>New Longitude</th>
-                                <th>New Latitude</th>
-                                <th>New Address</th>
 
                                 <th>Store Telp. Number</th>
                                 <th>Owner Telp. Number</th>
@@ -159,7 +156,7 @@
          *
          */
         var filterId = ['#filterRegion', '#filterArea', '#filterDistrict', '#filterStore', '#filterEmployee', '#filterSellTyppe'];
-        var url = 'datatable/storelocationactivityreport';
+        var url = 'datatable/storecreateactivityreport';
         var order = [ [0, 'desc'] ];
         var columnDefs = [
                     {"className": "dt-center", "targets": [0]},
@@ -179,9 +176,6 @@
                             {data: 'longitude', name: 'longitude'},
                             {data: 'latitude', name: 'latitude'},
                             {data: 'address', name: 'address'},
-                            {data: 'new_longitude', name: 'new_longitude'},
-                            {data: 'new_latitude', name: 'new_latitude'},
-                            {data: 'new_address', name: 'new_address'},
 
                             {data: 'no_telp_toko', name: 'no_telp_toko'},
                             {data: 'no_telp_pemilik_toko', name: 'no_telp_pemilik_toko'},
@@ -205,9 +199,9 @@
 
                             ];
 
-        var paramFilter = ['storeLocationActivityReport', $('#storeLocationActivityReport'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['storeCreateActivityReport', $('#storeCreateActivityReport'), url, tableColumns, columnDefs, order];
 
-        var paramReset = [filterId, 'storeLocationActivityReport', $('#storeLocationActivityReport'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'storeCreateActivityReport', $('#storeCreateActivityReport'), url, tableColumns, columnDefs, order];
 
         $(document).ready(function () {
 
@@ -220,11 +214,11 @@
             initSelect2();
             initDateTimePicker();
 
-            var table = $('#storeLocationActivityReport').dataTable({
+            var table = $('#storeCreateActivityReport').dataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    url: "{{ route('datatable.storelocationactivityreport') }}",
+                    url: "{{ route('datatable.storecreateactivityreport') }}",
                     data: filters,
                     dataType: 'json',
                     type: 'POST',
