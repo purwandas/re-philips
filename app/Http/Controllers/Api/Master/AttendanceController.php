@@ -183,31 +183,41 @@ class AttendanceController extends Controller
             // Get last attendance detail
             $attendanceDetail = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->orderBy('id', 'DESC')->first();
 
+            $checkIn = 0;
+
             // If promoter hasn't check in
             if($attendanceDetailsCount > 0){
 
+                // if($attendanceDetail->check_out != null){
+                //     return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 200);
+                // }
+
                 if($attendanceDetail->check_out != null){
-                    return response()->json(['status' => false, 'message' => 'Anda belum berada dalam status check in'], 200);
+                    $checkIn = 1;
                 }
 
             }
 
-            // Update attendance detail
-            try {
-                DB::transaction(function () use ($content, $attendanceDetail) {
+            if($checkIn == 0){
 
-                    // Attendance Detail Update
-                    $attendanceDetail->update([
-                        'check_out' => Carbon::now(),
-                        'check_out_longitude' => $content['longitude'],
-                        'check_out_latitude' => $content['latitude'],
-                        'check_out_location' => $content['location']
-                    ]);
+                // Update attendance detail
+                try {
+                    DB::transaction(function () use ($content, $attendanceDetail) {
+
+                        // Attendance Detail Update
+                        $attendanceDetail->update([
+                            'check_out' => Carbon::now(),
+                            'check_out_longitude' => $content['longitude'],
+                            'check_out_latitude' => $content['latitude'],
+                            'check_out_location' => $content['location']
+                        ]);
 
 
-                });
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
+                }
+
             }
 
             if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
