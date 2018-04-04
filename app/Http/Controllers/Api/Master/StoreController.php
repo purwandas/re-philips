@@ -10,6 +10,7 @@ use App\SpvDemo;
 use App\Store;
 use App\Target;
 use App\Reports\StoreLocationActivity;
+use App\Reports\StoreCreateActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
@@ -130,9 +131,7 @@ class StoreController extends Controller
 //            return response()->json(['status' => false, 'message' => 'Longitude dan latitude untuk store ini telah diinput'], 500);
 //        }
 
-        // Begin Store Activities Here!
-
-        
+        // Begin Store Activities Here!        
         // ($var > 2 ? true : false);
         if (isset($store->subchannel_id)) {
             $subchannel = $store->subchannel->name;
@@ -148,19 +147,19 @@ class StoreController extends Controller
             $globalchannel = '';
         }
 
-        if (isset($user)) {
-            $user_name = $user->name;
-            $nik = $user->nik;
-            $role_id = $user->role->id;
-            $role = $user->role->role;
-            $role_group = $user->role->role_group;
+        if (isset($store->user_id)) {
+            $user_name = $store->user->name;
+            $nik = $store->user->nik;
+            $role_id = $store->user->role->id;
+            $role = $store->user->role->role;
+            $role_group = $store->user->role->role_group;
             $grading = '';
             $grading_id = '';
-            if (isset($user->grading->grading)) {
-                $grading = $user->grading->grading;
+            if (isset($store->user->grading->grading)) {
+                $grading = $store->user->grading->grading;
             }
-            if (isset($user->grading->id)) {
-                $grading_id = $user->grading->id;
+            if (isset($store->user->grading->id)) {
+                $grading_id = $store->user->grading->id;
             }
         }else{
             $user_name = '';
@@ -310,7 +309,7 @@ class StoreController extends Controller
     public function create(Request $request){
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
-
+        // return response()->json($request->all());
                 try {
                     $storeID = $this->traitGetStoreId();
                     DB::transaction(function () use ($request, $storeID, $user) {
@@ -341,6 +340,102 @@ class StoreController extends Controller
                                 'store_id' => $store->id,
                             ]
                         );
+
+                        // Begin Store Activities Here!
+                        if (isset($store->subchannel_id)) {
+                            $subchannel = $store->subchannel->name;
+                            $channel_id = $store->subchannel->channel->id;
+                            $channel = $store->subchannel->channel->name;
+                            $globalchannel_id = $store->subchannel->channel->globalchannel->id;
+                            $globalchannel = $store->subchannel->channel->globalchannel->name;
+                        }else{
+                            $subchannel = '';
+                            $channel_id = '';
+                            $channel = '';
+                            $globalchannel_id = '';
+                            $globalchannel = '';
+                        }
+
+                        if (isset($store->user_id)) {
+                            $user_name = $store->user->name;
+                            $nik = $store->user->nik;
+                            $role_id = $store->user->role->id;
+                            $role = $store->user->role->role;
+                            $role_group = $store->user->role->role_group;
+                            $grading = '';
+                            $grading_id = '';
+                            if (isset($store->user->grading->grading)) {
+                                $grading = $store->user->grading->grading;
+                            }
+                            if (isset($store->user->grading->id)) {
+                                $grading_id = $store->user->grading->id;
+                            }
+                        }else{
+                            $user_name = '';
+                            $nik = '';
+                            $role_id = '';
+                            $role = '';
+                            $role_group = '';
+                            $grading_id = '';
+                            $grading = '';
+                        }
+
+                        $details = new Collection();
+
+                            $data = ([
+                                'storeId' => $store->id,
+                                'store_id' => $store->store_id,
+                                'store_name_1' => $store->store_name_1,
+                                'store_name_2' => $store->store_name_2,
+                                'longitude' => $store->longitude,
+                                'latitude' => $store->latitude,
+                                'address' => $store->address,
+
+                                'subchannel_id' => $store->subchannel_id,
+                                'subchannel' => $subchannel,
+                                'channel_id' => $channel_id,
+                                'channel' => $channel,
+                                'globalchannel_id' => $globalchannel_id,
+                                'globalchannel' => $globalchannel,
+
+
+                                'no_telp_toko' => $store->no_telp_toko,
+                                'no_telp_pemilik_toko' => $store->no_telp_pemilik_toko,
+                                'kepemilikan_toko' => $store->kepemilikan_toko,
+                                
+                                'district_id' => $store->district_id,
+                                'district' => $store->district->name,
+                                'area_id' => $store->district->area->id,
+                                'area' => $store->district->area->name,
+                                'region_id' => $store->district->area->region->id,
+                                'region' => $store->district->area->region->name,
+
+                                'user_id' => $store->user_id,
+                                'user' => $user_name,
+                                'nik' => $nik,
+                                'role_id' => $role_id,
+                                'role' => $role,
+                                'role_group' => $role_group,
+                                'grading_id' => $grading_id,
+                                'grading' => $grading,
+
+                                'lokasi_toko' => $store->lokasi_toko,
+                                'tipe_transaksi_2' => $store->tipe_transaksi_2,
+                                'tipe_transaksi' => $store->tipe_transaksi,
+                                'kondisi_toko' => $store->kondisi_toko
+                            ]);
+
+                            $details->push($data);
+
+                            // return response()->json($details);
+                        $dt = Carbon::now();
+                        $date = $dt->toDateString(); 
+                        StoreCreateActivity::create([
+                            'user_id' => $user->id,
+                            'date' => $date,
+                            'details' => $details,
+                        ]);
+                        // End Store Activities
                     });
 
                     // Check store after insert

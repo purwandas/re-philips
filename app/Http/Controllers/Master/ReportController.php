@@ -38,6 +38,7 @@ use App\Reports\SummarySos;
 use App\Reports\HistorySos;
 use App\Reports\SalesActivity;
 use App\Reports\StoreLocationActivity;
+use App\Reports\StoreCreateActivity;
 use App\TrainerArea;
 use App\User;
 use Illuminate\Http\Request;
@@ -179,6 +180,10 @@ class ReportController extends Controller
 
     public function storeLocationActivityIndex(){
         return view('report.storelocation-report');
+    }
+
+    public function storeCreateActivityIndex(){
+        return view('report.storecreate-report');
     }
 
     public function sellInData(Request $request, SellinFilters $filters){
@@ -5810,6 +5815,8 @@ class ReportController extends Controller
                         /* Get Data and Push them to collection */
                         $collection['id'] =  $data->id;
                         $collection['user_id'] =  $data->user_id;
+                        $collection['user_name'] =  $data->user->name;
+                        $collection['user_role'] =  $data->user->role->role_group;
                         $collection['date'] =  $data->date;
 
                         $collection['storeId'] = $detail->storeId;
@@ -5855,6 +5862,144 @@ class ReportController extends Controller
                         $collection['new_longitude'] = $detail->new_longitude;
                         $collection['new_latitude'] = $detail->new_latitude;
                         $collection['new_address'] = $detail->new_address;
+
+                        $historyData->push($collection);
+
+
+                }
+
+            }
+
+            $filter = $historyData;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byStore']){
+                $filter = $filter->where('storeId', $request['byStore']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
+            }
+
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
+            }
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
+            }
+
+            return Datatables::of($filter->all())
+            ->make(true);
+
+    }
+
+    public function storeCreateActivityData(Request $request){
+
+        // Check data summary atau history
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+        
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+        
+            // Fetch data from history
+
+            $historyData = new Collection();
+
+            $history = StoreCreateActivity::get();
+
+            foreach ($history as $data) {
+
+                $details = json_decode($data->details);
+
+                foreach ($details as $detail) {
+
+
+                        $collection = new Collection();
+
+                        /* Get Data and Push them to collection */
+                        $collection['id'] =  $data->id;
+                        $collection['user_id'] =  $data->user_id;
+                        $collection['user_name'] =  $data->user->name;
+                        $collection['user_role'] =  $data->user->role->role_group;
+                        $collection['date'] =  $data->date;
+
+                        $collection['storeId'] = $detail->storeId;
+                        $collection['store_id'] = $detail->store_id;
+                        $collection['store_name_1'] = $detail->store_name_1;
+                        $collection['store_name_2'] = $detail->store_name_2;
+                        $collection['longitude'] = $detail->longitude;
+                        $collection['latitude'] = $detail->latitude;
+                        $collection['address'] = $detail->address;
+
+                        $collection['subchannel_id'] = $detail->subchannel_id;
+                        $collection['subchannel'] = $detail->subchannel;
+                        $collection['channel_id'] = $detail->channel_id;
+                        $collection['channel'] = $detail->channel;
+                        $collection['globalchannel_id'] = $detail->globalchannel_id;
+                        $collection['globalchannel'] = $detail->globalchannel;
+
+
+                        $collection['no_telp_toko'] = $detail->no_telp_toko;
+                        $collection['no_telp_pemilik_toko'] = $detail->no_telp_pemilik_toko;
+                        $collection['kepemilikan_toko'] = $detail->kepemilikan_toko;
+                        
+                        $collection['district_id'] = $detail->district_id;
+                        $collection['district'] = $detail->district;
+                        $collection['area_id'] = $detail->area_id;
+                        $collection['area'] = $detail->area;
+                        $collection['region_id'] = $detail->region_id;
+                        $collection['region'] = $detail->region;
+
+                        $collection['user_id'] = $detail->user_id;
+                        $collection['user'] = $detail->user;
+                        $collection['nik'] = $detail->nik;
+                        $collection['role'] = $detail->role;
+                        $collection['role_id'] = $detail->role_id;
+                        $collection['role_group'] = $detail->role_group;
+                        $collection['grading_id'] = $detail->grading_id;
+                        $collection['grading'] = $detail->grading;
+
+                        $collection['lokasi_toko'] = $detail->lokasi_toko;
+                        $collection['tipe_transaksi_2'] = $detail->tipe_transaksi_2;
+                        $collection['tipe_transaksi'] = $detail->tipe_transaksi;
+                        $collection['kondisi_toko'] = $detail->kondisi_toko;
 
                         $historyData->push($collection);
 
