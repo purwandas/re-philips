@@ -121,18 +121,32 @@ class AttendanceController extends Controller
 
             }
 
-            if($checkOut == 1){
+            // Add attendance detail
+            try {
+                DB::transaction(function () use ($content, $attendanceHeader, $user, $checkOut, $attendanceDetailsCount) {
 
-                // Add attendance detail
-                try {
-                    DB::transaction(function () use ($content, $attendanceHeader, $user) {
+                    // Attendance Header Update
+                    $attendanceHeader->update([
+                        'status' => 'Masuk'
+                    ]);
 
-                        // Attendance Header Update
-                        $attendanceHeader->update([
-                            'status' => 'Masuk'
+                    $detail = ($content['other_store'] == 1) ? 'User melakukan absensi di toko lain' : null;
+
+                    if($attendanceDetailsCount == 0){
+                        // Attendance Detail Add
+                        AttendanceDetail::create([
+                            'attendance_id' => $attendanceHeader->id,
+                            'store_id' => $content['id'],
+                            'is_store' => $content['is_store'],
+                            'check_in' => Carbon::now(),
+                            'check_in_longitude' => $content['longitude'],
+                            'check_in_latitude' => $content['latitude'],
+                            'check_in_location' => $content['location'],
+                            'detail' => $detail
                         ]);
+                    }
 
-                        $detail = ($content['other_store'] == 1) ? 'User melakukan absensi di toko lain' : null;
+                    if($checkOut == 1){
 
                         // Attendance Detail Add
                         AttendanceDetail::create([
@@ -146,14 +160,23 @@ class AttendanceController extends Controller
                             'detail' => $detail
                         ]);
 
+                    }
+
+                    if($attendanceDetailsCount > 0){
+                        $attendanceDetailSame = AttendanceDetail::where('attendance_id', $attendanceHeader->id)->where('store_id', $content['id'])->count();
+
+                        if($attendanceDetailSame == 0){
+                            // Change Actual Call - SEE
+                            $this->changeActualCall($user->id);
+                        }
+                    }else{
                         // Change Actual Call - SEE
                         $this->changeActualCall($user->id);
+                    }                    
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
-                }
-
+                });
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
             if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'SMD Additional') {
@@ -198,11 +221,11 @@ class AttendanceController extends Controller
 
             }
 
-            if($checkIn == 0){
+            // Update attendance detail
+            try {
+                DB::transaction(function () use ($content, $attendanceDetail, $checkIn) {
 
-                // Update attendance detail
-                try {
-                    DB::transaction(function () use ($content, $attendanceDetail) {
+                    if($checkIn == 0){
 
                         // Attendance Detail Update
                         $attendanceDetail->update([
@@ -212,12 +235,11 @@ class AttendanceController extends Controller
                             'check_out_location' => $content['location']
                         ]);
 
+                    }
 
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
-                }
-
+                });
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
             if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
