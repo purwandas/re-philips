@@ -345,6 +345,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('apm', 'Master\ApmController@index');
         Route::post('apm', 'Master\ApmController@setMonth');
 
+        /** GENERATE SUMMARY **/
+        // Route::get('summary/{param}', 'Master\AchievementController@summaryGenerate');
+
     });
 
     Route::group(['middleware' => ['supervisor']], function () {

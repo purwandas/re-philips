@@ -154,6 +154,18 @@ class SOHController extends Controller
                                     }
                                 }
 
+                                if (isset($store->subChannel->channel->name)){
+                                    $channel = $store->subChannel->channel->name;
+                                }else{
+                                    $channel = '';
+                                }
+
+                                if (isset($store->subChannel->name)){
+                                    $subChannel = $store->subChannel->name;
+                                }else{
+                                    $subChannel = '';
+                                }
+
                                 SummarySOH::create([
                                     'soh_detail_id' => $detail->id,
                                     'region_id' => $store->district->area->region->id,

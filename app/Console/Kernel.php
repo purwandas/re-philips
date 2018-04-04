@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ImportTarget',
         'App\Console\Commands\ImportSalesmanTarget',
         'App\Console\Commands\ImportApm',
+        'App\Console\Commands\GenerateSummary',
     ];
 
     /**
