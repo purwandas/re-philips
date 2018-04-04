@@ -31,6 +31,19 @@ var FormValidation = function () {
                                     }
                                 }
                              };
+            rules['nik'] = {                                 
+                                remote: {
+                                    type: "POST",
+                                    // global: false, 
+                                    // async: false,
+                                    url: "../util/existnikuser",
+                                    data: {
+                                      nik: function() {
+                                        return $( "#nik" ).val();
+                                      }
+                                    }
+                                }
+                            };
             rules['password']  = { minlength: 5, required: true };
             rules['password_confirmation']  = { minlength: 5, required: true, equalTo : "#password" };
             rules['role_id']  = { required: true };
@@ -50,6 +63,25 @@ var FormValidation = function () {
                                         data: {
                                           email: function() {
                                             return $( "#email" ).val();
+                                          },
+                                          form_method: function() {
+                                            return 'PATCH';
+                                          },
+                                          userId: function(){
+                                            return userId;
+                                          }
+                                        }
+                                    }
+                                 };
+                rules['nik'] = { 
+                                    remote: {
+                                        type: "POST",
+                                        // global: false, // --> penyebab error masih update padahal required
+                                        // async: false,
+                                        url: "../../util/existnikuser",
+                                        data: {
+                                          nik: function() {
+                                            return $( "#nik" ).val();
                                           },
                                           form_method: function() {
                                             return 'PATCH';
@@ -85,6 +117,9 @@ var FormValidation = function () {
                     },
                     email:{
                         remote: "Email already exist, choose another one.",
+                    },
+                    nik:{
+                        remote: "NIK already exist, choose another one.",
                     },
                     area:{
                         required: "Please select an Area!"
