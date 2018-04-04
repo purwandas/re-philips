@@ -27,10 +27,10 @@ use App\TbatDetail;
 use App\Reports\SummaryTbat;
 use App\SOH;
 use App\SOHDetail;
-use App\Reports\SummarySOH;
+use App\Reports\SummarySoh;
 use App\Sos;
 use App\SosDetail;
-use App\Reports\SummarySOS;
+use App\Reports\SummarySos;
 use App\ProductFocuses;
 
 trait SummaryTrait {
