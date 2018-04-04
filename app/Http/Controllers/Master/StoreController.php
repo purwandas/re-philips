@@ -13,6 +13,7 @@ use App\Filters\StoreFiltersSpv;
 use App\Filters\StoreFiltersDemo;
 use App\Traits\StringTrait;
 use App\Traits\StoreTrait;
+use App\Traits\UploadTrait;
 use Auth;
 use DB;
 use App\Store;
@@ -24,6 +25,7 @@ use App\DmArea;
 class StoreController extends Controller
 {
     use StringTrait;
+    use UploadTrait;
     use StoreTrait;
     /**
      * Display a listing of the resource.
@@ -424,11 +426,28 @@ class StoreController extends Controller
                 'store_name_1' => 'required|string|max:255',
                 'store_name_2' => 'max:255',
                 'district_id' => 'required',
+                'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
+
+        // Upload file process
+        ($request->photo_file != null) ? 
+            $photo_url = $this->getUploadPathName($request->photo_file, "store/".$this->getRandomPath(), 'STORE') : $photo_url = "";
+        
+        if($request->photo_file != null) $request['photo'] = $photo_url;
 
         // return response()->json($request->all());
 
         $store = Store::create($request->all());
+
+        if($request->photo_file != null){
+            /* Upload updated image */
+            $imagePath = explode('/', $store->photo);
+            $count = count($imagePath);
+            $imageFolder = "store/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+        }
 
         /* Store Distributor */
         if($request['distributor_ids']){
@@ -480,10 +499,22 @@ class StoreController extends Controller
         $this->validate($request, [
             'store_name_1' => 'required|string|max:255',
             'store_name_2' => 'max:255',
-            'district_id' => 'required'
+            'district_id' => 'required',
+            'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $store = Store::find($id);
+        $oldPhoto = "";
+        
+        if($store->photo != null && $request->photo_file != null) {
+            /* Save old photo path */
+            $oldPhoto = $store->photo;
+        }
+        // Upload file process
+        ($request->photo_file != null) ? 
+            $photo_url = $this->getUploadPathName($request->photo_file, "store/".$this->getRandomPath(), 'STORE') : $photo_url = "";
+        
+        if($request->photo_file != null) $request['photo'] = $photo_url;
 
         /* Delete if any relation exist in store distributor */
         $storeDist = StoreDistributor::where('store_id', $store->id);
@@ -492,6 +523,16 @@ class StoreController extends Controller
         }
 
         $store->update($request->all());
+
+        if($request->photo_file != null){
+            /* Upload updated image */
+            $imagePath = explode('/', $store->photo);
+            $count = count($imagePath);
+            $imageFolder = "store/" . $imagePath[$count - 2];
+            $imageName = $imagePath[$count - 1];
+
+            $this->upload($request->photo_file, $imageFolder, $imageName);
+        }
 
         /* Store Distributor */
         if($request['distributor_ids']){

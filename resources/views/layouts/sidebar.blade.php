@@ -545,10 +545,17 @@
                         </a>
                     </li>
 
-                    <li class="nav-item {{ Request::is('storelocationactivity') ? 'active open' : '' }}">
-                        <a href="{{ url('storelocationactivity') }}" class="nav-link nav-toggle">
+                    <li class="nav-item {{ Request::is('locationactivitystore') ? 'active open' : '' }}">
+                        <a href="{{ url('locationactivitystore') }}" class="nav-link nav-toggle">
                             <i class="fa fa-file-text-o"></i>
                             <span class="title">Store Location Activity</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {{ Request::is('createactivitystore') ? 'active open' : '' }}">
+                        <a href="{{ url('createactivitystore') }}" class="nav-link nav-toggle">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">Store Create Activity</span>
                         </a>
                     </li>
 
