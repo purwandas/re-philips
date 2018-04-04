@@ -309,6 +309,9 @@ class UserPromoterController extends Controller
         // return response()->json($request);
         $request['password'] = bcrypt($request['password']);
 
+        $role = explode('`',$request['role_id']);
+        $request['selectedRole'] = $role[1];
+
         // dd(public_path());        
 
         // Upload file process
@@ -406,7 +409,7 @@ class UserPromoterController extends Controller
                     ]);
         }
 
-        if($request['role'] == 'Salesman Explorer'){
+        if($request['selectedRole'] == 'Salesman Explorer'){
             if (isset($request['salesman_dedicate'])) {
                 SalesmanDedicate::create([
                     'user_id' => $user->id,
@@ -449,9 +452,7 @@ class UserPromoterController extends Controller
         if($data){
 
             if ($data->role_group == 'Salesman Explorer') {
-                $salesmanDedicate = SalesmanDedicate::
-                    with('store')
-                    ->where('user_id',$data->id)
+                $salesmanDedicate = SalesmanDedicate::where('user_id',$data->id)
                     ->first();
                 // $salesmanDedicate = $data->id;
             }
@@ -460,7 +461,7 @@ class UserPromoterController extends Controller
 
         // return response()->json($data);  
 
-        return view('master.form.userpromoter-form', compact('data','SalesmanDedicate'));
+        return view('master.form.userpromoter-form', compact('data','salesmanDedicate'));
     }
 
     /**
@@ -472,6 +473,7 @@ class UserPromoterController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         // return response()->json($request['store_id']);
         $user = User::where('nik', $request->nik);
         if($user->count() > 0){
@@ -498,6 +500,9 @@ class UserPromoterController extends Controller
 
         $user = User::find($id);
         $oldPhoto = "";
+
+        $role = explode('`',$request['role_id']);
+        $request['selectedRole'] = $role[1];
 
         if($user->photo != null && $request->photo_file != null) {
             /* Save old photo path */
@@ -580,7 +585,7 @@ class UserPromoterController extends Controller
 
         /* Insert user relation */
 
-            if($request['role'] == 'Salesman Explorer'){
+            if($request['selectedRole'] == 'Salesman Explorer'){
                 if (isset($request['salesman_dedicate'])) {
                     $salesmanDedicate = SalesmanDedicate::where('user_id',$user->id);
                     if ($salesmanDedicate->count() >0) {

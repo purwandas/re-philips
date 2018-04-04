@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->hasMany('App\SpvDemo', 'user_id');
     }
 
+    public function salesmanDedicates()
+    {
+        return $this->hasMany('App\SalesmanDedicate', 'user_id');
+    }
+
     public function rsmRegion()
     {
         return $this->hasOne('App\RsmRegion', 'user_id');
