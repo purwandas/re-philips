@@ -441,6 +441,16 @@ class UserController extends Controller
     public function store(Request $request)
     {
        // return response()->json($request->all());
+        
+        $oldUser = User::where('nik', $request['nik']);
+        if($oldUser->count() > 0){
+            return response()->json(['error'=>"NIK already exist!"]);
+        }
+
+        $oldUser = User::where('email', $request['email']);
+        if($oldUser->count() > 0){
+            return response()->json(['error'=>"Email already exist!"]);
+        }
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
@@ -1014,6 +1024,23 @@ class UserController extends Controller
         //     $s .= 'A';
         //         }
 
+        
+        $user = User::where('nik', $request->nik);
+        if($user->count() > 0){
+            $oldUser = User::find($id);
+            if($oldUser->nik != $request['nik']){
+                return response()->json(['error'=>"NIK already exist!"]);
+            }
+        }
+
+        $user = User::where('email', $request->email);
+        if($user->count() > 0){
+            $oldUser = User::find($id);
+            if($oldUser->email != $request['email']){
+                return response()->json(['error'=>"Email already exist!"]);
+            }
+        }
+        
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users'. ($id ? ",id,$id" : ''),

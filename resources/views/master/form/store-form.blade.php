@@ -148,12 +148,15 @@
 				          <div class="col-sm-9">
 				          	<div class="input-icon right">
 				          		<i class="fa"></i>
-					            	<select class="select2select" name="lokasi_toko" id="lokasi_toko">
+					            	<select class="select2select" id="lokasi_toko">
 	                                	<option></option>
 										<option value="Mall">Mall</option>
 										<option value="ITC">ITC</option>
 										<option value="Pasar">Pasar</option>
+										<option value="Other">Other</option>
 	                                </select>
+	                                <input type="hidden" id="lokasi_toko_value" name="lokasi_toko" value="{{ @$data->lokasi_toko }}">
+	                                <input type="text" id="lokasi_toko_others" class="form-control display-hide" placeholder="Other Location">
 				            </div>
 				          </div>
 				        </div>
@@ -441,11 +444,22 @@
 	       setSelect2IfPatch($("#classification"), "{{ @$data->classification->id }}", "{{ @$data->classification->classification }}");
 
 	       setSelect2IfPatch($("#kepemilikan_toko"), "{{ @$data->kepemilikan_toko }}", "{{ @$data->kepemilikan_toko }}");
-	       setSelect2IfPatch($("#lokasi_toko"), "{{ @$data->lokasi_toko }}", "{{ @$data->lokasi_toko }}");
 	       setSelect2IfPatch($("#tipe_transaksi_2"), "{{ @$data->tipe_transaksi_2 }}", "{{ @$data->tipe_transaksi_2 }}");
 	       setSelect2IfPatch($("#tipe_transaksi"), "{{ @$data->tipe_transaksi }}", "{{ @$data->tipe_transaksi }}");
 	       setSelect2IfPatch($("#kondisi_toko"), "{{ @$data->kondisi_toko }}", "{{ @$data->kondisi_toko }}");
 	       // setSelect2IfPatch($("#user"), "{{ @$data->user_id }}", "{{ @$data->user->name }}");
+
+	       var lokasi_toko = "{{ @$data->lokasi_toko }}";
+	       var lokasi_toko2 = lokasi_toko;
+	       if (lokasi_toko != "Mall" && lokasi_toko != "ITC" && lokasi_toko != "Pasar" && lokasi_toko != "") {
+	       		$('#lokasi_toko_others').removeClass('display-hide');
+	       		$('#lokasi_toko_others').val(lokasi_toko);
+	       		lokasi_toko = "Other";
+	       }else{
+	       		$('#lokasi_toko_others').addClass('display-hide');
+	       }
+	       setSelect2IfPatch($("#lokasi_toko"), lokasi_toko, lokasi_toko);
+	       $('#lokasi_toko_value').val(lokasi_toko2);
 
 	       updateDistributor();
 
@@ -471,6 +485,21 @@
 
         	})
 		}
+
+		$("#lokasi_toko").change(function(){
+			var lokasi = $('#lokasi_toko').val();
+		    $('#lokasi_toko_value').val(lokasi);
+		    if (lokasi == 'Other') {
+		    	$('#lokasi_toko_others').removeClass('display-hide');
+		    }else{
+		    	$('#lokasi_toko_others').addClass('display-hide');
+		    }
+		});
+
+		$("#lokasi_toko_others").change(function(){
+			var other = $('#lokasi_toko_others').val();
+		    $('#lokasi_toko_value').val(other);
+		});
 
 	</script>	
 

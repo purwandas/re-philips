@@ -312,7 +312,12 @@ var FormValidation = function () {
 
                             // console.log(data);
                             // return;
-                            
+                            if(typeof data.error !== 'undefined'){
+                                // console.log(data.error);
+                                swal("Error!", data.error, "error");
+                                return;
+                            }
+
                             var titleMsg;
                             var textMsg;
 

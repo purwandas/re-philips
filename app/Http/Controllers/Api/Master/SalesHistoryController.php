@@ -368,23 +368,28 @@ class SalesHistoryController extends Controller
     }
 
     public function getDataUser($param){
+        // perubahan param, jadi [parameter sales]`[id promoter]
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        // get promoter ID
-        $store = Store::where('user_id', $user->id)->get(); //->pluck('distributor_id');
-        $employeeStore = '';
-        // $index = 0;
-        foreach ($store as $key => $value) {
-            $employeeStore = EmployeeStore::where('store_id',$value->id)->get();
-            foreach ($employeeStore as $key2 => $value2) {
-                $users[] = $value2->user_id;
-            }
-        }
-        if (!isset($users)) {
-            return response()->json(['status' => false, 'message' => 'No data found'], 500);
-        }
-        $promoter = User::whereIn('id', $users)->pluck('id');
+        // // get promoter ID
+        // $store = Store::where('user_id', $user->id)->get(); //->pluck('distributor_id');
+        // $employeeStore = '';
+        // // $index = 0;
+        // foreach ($store as $key => $value) {
+        //     $employeeStore = EmployeeStore::where('store_id',$value->id)->get();
+        //     foreach ($employeeStore as $key2 => $value2) {
+        //         $users[] = $value2->user_id;
+        //     }
+        // }
+        // if (!isset($users)) {
+        //     return response()->json(['status' => false, 'message' => 'No data found'], 500);
+        // }
+        // $promoter = User::whereIn('id', $users)->pluck('id');
+
+        $newParam = explode('`', $param);
+        $param = $newParam[0];
+        $promoter = ["$newParam[1]"];
 
             $month = Carbon::now()->format('m');
             $year = Carbon::now()->format('Y');
@@ -400,7 +405,7 @@ class SalesHistoryController extends Controller
                     ->whereIn('sell_ins.user_id',$promoter)
                     ->join('users','users.id','sell_ins.user_id')
                     ->join('stores','stores.id','sell_ins.store_id')
-                    ->select('sell_ins.id','sell_ins.date as date','stores.store_name_1','stores.store_id')
+                    ->select('sell_ins.id','sell_ins.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellInDetail::where('sellin_id', $value->id)
@@ -426,6 +431,7 @@ class SalesHistoryController extends Controller
 
                         $result[$key]['id'] = $value->id;
                         $result[$key]['date'] = $value->date;
+                        $result[$key]['user_name'] = $value->user_name;
                         $result[$key]['store_name_1'] = $value->store_name_1;
                         $result[$key]['store_id'] = $value->store_id;
                         $result[$key]['detail'] = $detail;
@@ -446,7 +452,7 @@ class SalesHistoryController extends Controller
                     ->whereIn('sell_outs.user_id',$promoter)
                     ->join('users','users.id','sell_outs.user_id')
                     ->join('stores','stores.id','sell_outs.store_id')
-                    ->select('sell_outs.id','sell_outs.date as date','stores.store_name_1','stores.store_id')
+                    ->select('sell_outs.id','sell_outs.date as date','stores.store_name_1','stores.store_id','users.name as user_name')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellOutDetail::where('sellout_id', $value->id)
@@ -472,6 +478,7 @@ class SalesHistoryController extends Controller
 
                         $result[$key]['id'] = $value->id;
                         $result[$key]['date'] = $value->date;
+                        $result[$key]['user_name'] = $value->user_name;
                         $result[$key]['store_name_1'] = $value->store_name_1;
                         $result[$key]['store_id'] = $value->store_id;
                         $result[$key]['detail'] = $detail;
