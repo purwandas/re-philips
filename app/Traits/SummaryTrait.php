@@ -32,6 +32,8 @@ use App\Sos;
 use App\SosDetail;
 use App\Reports\SummarySos;
 use App\ProductFocuses;
+use App\SalesmanDedicate;
+use App\GlobalChannel;
 
 trait SummaryTrait {
 
@@ -127,117 +129,208 @@ trait SummaryTrait {
 
         }else if(isset($data['product_id']) && isset($data['globalchannel_id']) && isset($data['price'])) { /* Price Change */
 
+            // $sellInIds = SellIn::join('stores', 'stores.id', '=', 'sell_ins.store_id')
+            //             ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
+            //             ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
+            //             ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
+            //             ->join('users', 'users.id', '=', 'sell_ins.user_id')
+            //             ->join('roles', 'roles.id', '=', 'users.role_id')
+            //             ->where('roles.role_group', '<>', 'Salesman Explorer')
+            //             ->where('global_channels.id', $data['globalchannel_id'])
+            //             ->whereMonth('sell_ins.date', '=', Carbon::now()->format('m'))
+            //             ->whereYear('sell_ins.date', '=', Carbon::now()->format('Y'))->pluck('sell_ins.id');
+
+            // $sellInDetail = SellInDetail::whereIn('sellin_id', $sellInIds)
+            //                     ->where('product_id', $data['product_id'])->get();
+
+            // foreach ($sellInDetail as $detail){
+
+            //     // if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
+
+            //         $summary = SummarySellIn::where('sellin_detail_id', $detail->id)->first();
+
+            //         if($summary) {
+
+            //             if ($change == 'change') {
+
+            //                 $summary->update([
+            //                     'unit_price' => $data['price'],
+            //                     'value' => $summary->quantity * $data['price']
+            //                 ]);
+
+            //                 /* Product Focus */
+            //                 $productFocus = ProductFocuses::where('product_id', $data['product_id'])->get();
+
+            //                 $summary->update([
+            //                     'value_pf_mr' => 0,
+            //                     'value_pf_tr' => 0,
+            //                     'value_pf_ppe' => 0,
+            //                 ]);
+
+            //                 foreach ($productFocus as $focus) {
+
+            //                     if ($focus->type == 'Modern Retail') {
+            //                         $summary->update([
+            //                             'value_pf_mr' => $summary->quantity * $data['price']
+            //                         ]);
+            //                     } else if ($focus->type == 'Traditional Retail') {
+            //                         $summary->update([
+            //                             'value_pf_tr' => $summary->quantity * $data['price']
+            //                         ]);
+            //                     } else if ($focus->type == 'PPE') {
+            //                         $summary->update([
+            //                             'value_pf_ppe' => $summary->quantity * $data['price']
+            //                         ]);
+            //                     }
+
+            //                 }
+
+            //             } else if ($change == 'delete') {
+            //                 $summary->update([
+            //                     'unit_price' => 0,
+            //                     'value' => 0,
+            //                     'value_pf_mr' => 0,
+            //                     'value_pf_tr' => 0,
+            //                     'value_pf_ppe' => 0,
+            //                 ]);
+            //             }
+
+            //             /* Reset Actual */
+            //             $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
+
+            //         }
+
+            //     // }else { // SEE (Salesman Explorer)
+
+                    
+
+            //     // }
+
+            // }
+
+
+            // SEE
             $sellInIds = SellIn::join('stores', 'stores.id', '=', 'sell_ins.store_id')
                         ->leftJoin('sub_channels', 'sub_channels.id', '=', 'stores.subchannel_id')
                         ->leftJoin('channels', 'channels.id', '=', 'sub_channels.channel_id')
                         ->leftJoin('global_channels', 'global_channels.id', '=', 'channels.globalchannel_id')
-                        ->where('global_channels.id', $data['globalchannel_id'])
+                        ->join('users', 'users.id', '=', 'sell_ins.user_id')
+                        ->join('roles', 'roles.id', '=', 'users.role_id')
+                        ->where('roles.role_group', '=', 'Salesman Explorer')
+                        //->where('global_channels.id', $data['globalchannel_id'])
                         ->whereMonth('sell_ins.date', '=', Carbon::now()->format('m'))
-                        ->whereYear('sell_ins.date', '=', Carbon::now()->format('Y'))->pluck('sell_ins.id');
+                        ->whereYear('sell_ins.date', '=', Carbon::now()->format('Y'))->pluck('sell_ins.id');            
 
             $sellInDetail = SellInDetail::whereIn('sellin_id', $sellInIds)
                                 ->where('product_id', $data['product_id'])->get();
 
-            foreach ($sellInDetail as $detail){
+            foreach ($sellInDetail as $detail){                
 
-                if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
+                // if($detail->sellIn->user->role->role_group != 'Salesman Explorer') {
 
-                    $summary = SummarySellIn::where('sellin_detail_id', $detail->id)->first();
+                if($detail->sellIn->store->subchannel_id != null){
+                    if($detail->sellIn->store->subChannel->channel->globalChannel->id == $data['globalchannel_id']){
+                        $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
 
-                    if($summary) {
+                        if ($summary) {
 
-                        if ($change == 'change') {
+                            if ($change == 'change') {
 
-                            $summary->update([
-                                'unit_price' => $data['price'],
-                                'value' => $summary->quantity * $data['price']
-                            ]);
+                                $summary->update([
+                                    'unit_price' => $data['price'],
+                                    'value' => $summary->quantity * $data['price']
+                                ]);
 
-                            /* Product Focus */
-                            $productFocus = ProductFocuses::where('product_id', $data['product_id'])->get();
+                                /* Product Focus */
+                                $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
 
-                            $summary->update([
-                                'value_pf_mr' => 0,
-                                'value_pf_tr' => 0,
-                                'value_pf_ppe' => 0,
-                            ]);
+                                $summary->update([
+                                    'value_pf' => 0,
+                                ]);
 
-                            foreach ($productFocus as $focus) {
-
-                                if ($focus->type == 'Modern Retail') {
+                                if ($productFocus) { // Jika ada product focus
                                     $summary->update([
-                                        'value_pf_mr' => $summary->quantity * $data['price']
-                                    ]);
-                                } else if ($focus->type == 'Traditional Retail') {
-                                    $summary->update([
-                                        'value_pf_tr' => $summary->quantity * $data['price']
-                                    ]);
-                                } else if ($focus->type == 'PPE') {
-                                    $summary->update([
-                                        'value_pf_ppe' => $summary->quantity * $data['price']
+                                        'value_pf' => $summary->quantity * $data['price']
                                     ]);
                                 }
 
-                            }
 
-                        } else if ($change == 'delete') {
-                            $summary->update([
-                                'unit_price' => 0,
-                                'value' => 0,
-                                'value_pf_mr' => 0,
-                                'value_pf_tr' => 0,
-                                'value_pf_ppe' => 0,
-                            ]);
-                        }
-
-                        /* Reset Actual */
-                        $this->resetActual($summary->user_id, $summary->storeId, 'Sell In');
-
-                    }
-
-                }else { // SEE (Salesman Explorer)
-
-                    $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
-
-                    if ($summary) {
-
-                        if ($change == 'change') {
-
-                            $summary->update([
-                                'unit_price' => $data['price'],
-                                'value' => $summary->quantity * $data['price']
-                            ]);
-
-                            /* Product Focus */
-                            $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
-
-                            $summary->update([
-                                'value_pf' => 0,
-                            ]);
-
-                            if ($productFocus) { // Jika ada product focus
+                            } else if ($change == 'delete') {
                                 $summary->update([
-                                    'value_pf' => $summary->quantity * $data['price']
+                                    'unit_price' => 0,
+                                    'value' => 0,
+                                    'value_pf' => 0,
                                 ]);
                             }
 
+                            /* Reset Actual */
+                            $this->resetActualSalesman($summary->user_id);
 
-                        } else if ($change == 'delete') {
-                            $summary->update([
-                                'unit_price' => 0,
-                                'value' => 0,
-                                'value_pf' => 0,
-                            ]);
+                        }
+                    }
+                }else{
+                    $salesmanDedicate = SalesmanDedicate::where('user_id', $detail->sellIn->user->id); 
+                    $globalName = GlobalChannel::where('id', $data['globalchannel_id'])->first()->name;                  
+
+                    if($salesmanDedicate->count() > 0){
+
+                        $dedicateSee = $salesmanDedicate->first()->dedicate;
+
+                        if($dedicateSee == 'Traditional Retail') $dedicateSee = 'TR';
+                        if($dedicateSee == 'Mother Care & Child') $dedicateSee = 'MCC';
+
+                        if($dedicateSee == $globalName){
+                            $summary = SalesmanSummarySales::where('sellin_detail_id', $detail->id)->first();
+
+                            if ($summary) {
+
+                                if ($change == 'change') {
+
+                                    $summary->update([
+                                        'unit_price' => $data['price'],
+                                        'value' => $summary->quantity * $data['price']
+                                    ]);
+
+                                    /* Product Focus */
+                                    $productFocus = SalesmanProductFocuses::where('product_id', $data['product_id'])->first();
+
+                                    $summary->update([
+                                        'value_pf' => 0,
+                                    ]);
+
+                                    if ($productFocus) { // Jika ada product focus
+                                        $summary->update([
+                                            'value_pf' => $summary->quantity * $data['price']
+                                        ]);
+                                    }
+
+
+                                } else if ($change == 'delete') {
+                                    $summary->update([
+                                        'unit_price' => 0,
+                                        'value' => 0,
+                                        'value_pf' => 0,
+                                    ]);
+                                }
+
+                                /* Reset Actual */
+                                $this->resetActualSalesman($summary->user_id);
+
+                            }
                         }
 
-                        /* Reset Actual */
-                        $this->resetActualSalesman($summary->user_id);
-
                     }
-
                 }
 
-            }
+                
+
+                // }else { // SEE (Salesman Explorer)
+
+                    
+
+                // }
+
+            }            
 
         }
 
