@@ -53,7 +53,10 @@ class ApmController extends Controller
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('products', 'apms.product_id', '=', 'products.id')
-                    ->select('apms.*', 'stores.store_name_1 as store_name', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region');
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel');
 
         $filter = $data;
 
@@ -96,7 +99,10 @@ class ApmController extends Controller
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('products', 'apms.product_id', '=', 'products.id')
-                    ->select('apms.*', 'stores.store_name_1 as store_name', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region')->get();
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get();
 
         return $data;
     }
@@ -109,7 +115,10 @@ class ApmController extends Controller
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('products', 'apms.product_id', '=', 'products.id')
-                    ->select('apms.*', 'stores.store_name_1 as store_name', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region')->limit(1)->get();
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->limit(1)->get();
 
         return $data;
     }
@@ -150,9 +159,9 @@ class ApmController extends Controller
     	if(isset($request['month5'])) $count += 1;
     	if(isset($request['month6'])) $count += 1;
 
-    	if($count > 3){
+    	if($count == 0){
 
-    		return response()->json(['error' => 1, 'message' => 'Cannot select more than 3 month.']);
+    		return response()->json(['error' => 1, 'message' => 'Must select month.']);
 
     	}
 

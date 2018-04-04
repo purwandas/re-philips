@@ -120,14 +120,36 @@ trait ApmTrait {
 
                 $valueSelected = 0;
 
-                if($apmMonth->first()->selected == 1) $valueSelected += $data->month_minus_1_value;
-                if($apmMonth->get(1)->selected == 1) $valueSelected += $data->month_minus_2_value;
-                if($apmMonth->get(2)->selected == 1) $valueSelected += $data->month_minus_3_value;
-                if($apmMonth->get(3)->selected == 1) $valueSelected += $data->month_minus_4_value;
-                if($apmMonth->get(4)->selected == 1) $valueSelected += $data->month_minus_5_value;
-                if($apmMonth->get(5)->selected == 1) $valueSelected += $data->month_minus_6_value;
+                $countSelected = 0;
+
+                if($apmMonth->first()->selected == 1){
+                    $valueSelected += $apm->month_minus_1_value;
+                    $countSelected += 1;
+                }
+                if($apmMonth->get(1)->selected == 1){
+                    $valueSelected += $apm->month_minus_2_value;
+                    $countSelected += 1;
+                }
+                if($apmMonth->get(2)->selected == 1){
+                    $valueSelected += $apm->month_minus_3_value;
+                    $countSelected += 1;
+                }
+                if($apmMonth->get(3)->selected == 1){
+                    $valueSelected += $apm->month_minus_4_value;
+                    $countSelected += 1;
+                }
+                if($apmMonth->get(4)->selected == 1){
+                    $valueSelected += $apm->month_minus_5_value;
+                    $countSelected += 1;
+                }
+                if($apmMonth->get(5)->selected == 1){
+                    $valueSelected += $apm->month_minus_6_value;
+                    $countSelected += 1;
+                }
+
+                if($countSelected == 0) $countSelected = 1;
                 
-                $totalValue += $valueSelected / 3;
+                $totalValue += $valueSelected / $countSelected;
 
             }
 
@@ -176,14 +198,36 @@ trait ApmTrait {
 
             $valueSelected = 0;
 
-            if($apmMonth->first()->selected == 1) $valueSelected += $apm->month_minus_1_value;
-            if($apmMonth->get(1)->selected == 1) $valueSelected += $apm->month_minus_2_value;
-            if($apmMonth->get(2)->selected == 1) $valueSelected += $apm->month_minus_3_value;
-            if($apmMonth->get(3)->selected == 1) $valueSelected += $apm->month_minus_4_value;
-            if($apmMonth->get(4)->selected == 1) $valueSelected += $apm->month_minus_5_value;
-            if($apmMonth->get(5)->selected == 1) $valueSelected += $apm->month_minus_6_value;
+            $countSelected = 0;
+
+            if($apmMonth->first()->selected == 1){
+                $valueSelected += $apm->month_minus_1_value;
+                $countSelected += 1;
+            }
+            if($apmMonth->get(1)->selected == 1){
+                $valueSelected += $apm->month_minus_2_value;
+                $countSelected += 1;
+            }
+            if($apmMonth->get(2)->selected == 1){
+                $valueSelected += $apm->month_minus_3_value;
+                $countSelected += 1;
+            }
+            if($apmMonth->get(3)->selected == 1){
+                $valueSelected += $apm->month_minus_4_value;
+                $countSelected += 1;
+            }
+            if($apmMonth->get(4)->selected == 1){
+                $valueSelected += $apm->month_minus_5_value;
+                $countSelected += 1;
+            }
+            if($apmMonth->get(5)->selected == 1){
+                $valueSelected += $apm->month_minus_6_value;
+                $countSelected += 1;
+            }
+
+            if($countSelected == 0) $countSelected = 1;
             
-            $totalValue += $valueSelected / 3;
+            $totalValue += $valueSelected / $countSelected;
 
         }
 

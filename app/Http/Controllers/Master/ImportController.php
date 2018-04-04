@@ -57,6 +57,47 @@ class ImportController extends Controller
     	return response()->json(['url' => url('/price')]);
     }
 
+    public function importApm(Request $request){
+        $file = $request->upload_file;
+        $date = Carbon::now()->format('m').Carbon::now()->format('Y');
+
+        $file_origin = $this->getUploadPathNameFileForImport($request->upload_file, 'apm', $date);
+
+        $path = explode('/', $file_origin);
+        $count = count($path);
+        $folder = "apm/";
+        $file_name = $path[$count - 1];
+
+        $file_uploaded = $this->uploadFileForImport($request->upload_file, $folder, $file_name);
+
+        // $dataFile = Excel::selectSheets('APM')->load($file_uploaded)->get();
+
+        // $dataFile2 = Excel::selectSheets('APM')->load($file_uploaded)->first();
+
+        // $val = 'so_value_march_2018';
+
+        // $soMin6 = 'so_value_' . strtolower(Carbon::now()->subMonths(6)->format('F_Y'));
+        // $soMin5 = 'so_value_' . strtolower(Carbon::now()->subMonths(5)->format('F_Y'));
+        // $soMin4 = 'so_value_' . strtolower(Carbon::now()->subMonths(4)->format('F_Y'));
+        // $soMin3 = 'so_value_' . strtolower(Carbon::now()->subMonths(3)->format('F_Y'));
+        // $soMin2 = 'so_value_' . strtolower(Carbon::now()->subMonths(2)->format('F_Y'));
+        // $soMin1 = 'so_value_' . strtolower(Carbon::now()->subMonths(1)->format('F_Y'));
+
+        // $valueMin6 = (string)str_replace(',', '', $dataFile2[$soMin6]);
+        // $valueMin5 = (string)str_replace(',', '', $dataFile2[$soMin5]);
+        // $valueMin4 = (string)str_replace(',', '', $dataFile2[$soMin4]);
+        // $valueMin3 = (string)str_replace(',', '', $dataFile2[$soMin3]);
+        // $valueMin2 = (string)str_replace(',', '', $dataFile2[$soMin2]);
+        // $valueMin1 = (string)str_replace(',', '', $dataFile2[$soMin1]);
+
+        // // return response()->json($soMin1);
+        // return response()->json((double)$valueMin6);
+
+        Artisan::call("import:apm", ['file' => $file_uploaded]);
+
+        return response()->json(['url' => url('/apm')]);
+    }
+
     public function importPriceProcess(Request $request){
 
         Artisan::call("import:price", ['file_name' => $request->data]);
