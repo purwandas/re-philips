@@ -33,9 +33,9 @@ class UtilController extends Controller
 
     //
     public function existEmailUser(Request $request){
-    	$user = User::where('email', $request->email);
+        $user = User::where('email', $request->email);
 
-    	if($user->count() > 0){
+        if($user->count() > 0){
             if($request->form_method == 'PATCH'){
 
                 $oldUser = User::find($request->userId);
@@ -43,10 +43,27 @@ class UtilController extends Controller
                 if($oldUser->email == $request->email){
                     return "true";
                 }    
-            }    		
-    		return "false";
-    	}
-    	return "true";
+            }           
+            return "false";
+        }
+        return "true";
+    }
+
+    public function existNikUser(Request $request){
+        $user = User::where('nik', $request->nik);
+
+        if($user->count() > 0){
+            if($request->form_method == 'PATCH'){
+
+                $oldUser = User::find($request->userId);
+
+                if($oldUser->nik == $request->nik){
+                    return "true";
+                }    
+            }           
+            return "false";
+        }
+        return "true";
     }
 
     public function existEmailEmployee(Request $request){               

@@ -251,7 +251,8 @@ Route::group(['middleware' => ['auth']], function () {
      * Util
      */
 
-    Route::post('util/existemailuser', ['uses'=>'UtilController@existEmailUser']);    
+    Route::post('util/existemailuser', ['uses'=>'UtilController@existEmailUser']);
+    Route::post('util/existnikuser', ['uses'=>'UtilController@existNikUser']);
     Route::post('util/existemailemployee', ['uses'=>'UtilController@existEmailEmployee']);
     Route::get('util/empstore/{id}', ['uses'=>'UtilController@getStoreForEmployee']);
     Route::get('util/spvstore/{id}', ['uses'=>'UtilController@getStoreForSpvEmployee']);
