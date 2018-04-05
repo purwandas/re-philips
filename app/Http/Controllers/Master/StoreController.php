@@ -44,23 +44,38 @@ class StoreController extends Controller
      */
     public function masterDataTable(Request $request){
 
-        $data = Store::where('stores.deleted_at', null)
-//                    ->with('storeDistributors.distributor')
-        			// ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
-           //          ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
-           //          ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
-                    ->join('districts', 'stores.district_id', '=', 'districts.id')
-                    ->join('areas', 'districts.area_id', '=', 'areas.id')
-                    ->join('regions', 'areas.region_id', '=', 'regions.id')
-//                    ->join('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
-//                    ->join('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
-//                    ->join('users', 'stores.user_id', '=', 'users.id')
-//                    ->where(function($query) {
-//                        return $query->orWhere('stores.user_id', null);
-//                    })
+           //  $data = Store::where('stores.deleted_at', null)
+           //          // ->with('storeDistributors.distributor')
+        			// // ->join('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+           //           // ->join('channels', 'sub_channels.channel_id', '=', 'channels.id')
+           //           // ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+           //          ->join('districts', 'stores.district_id', '=', 'districts.id')
+           //          ->join('areas', 'districts.area_id', '=', 'areas.id')
+           //          ->join('regions', 'areas.region_id', '=', 'regions.id')
+           //          // ->join('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
+           //          // ->join('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
+           //          // ->join('users', 'stores.user_id', '=', 'users.id')
+           //          // ->where(function($query) {
+           //              // return $query->orWhere('stores.user_id', null);
+           //          // })
+           //          ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
+           //              // ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name'
+           //              );
+        $data = Store::whereNull('stores.deleted_at')
+                    ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                    ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                    ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')
+                    ->leftJoin('areas', 'districts.area_id', '=', 'areas.id')
+                    ->leftJoin('regions', 'areas.region_id', '=', 'regions.id')
+                    ->leftJoin('classifications', 'classifications.id', '=', 'stores.classification_id')
+                    ->leftJoin('users', 'users.id', '=', 'stores.user_id')
+                    ->leftJoin('spv_demos', 'stores.id', '=', 'spv_demos.store_id')
+                    ->leftJoin('users as user2', 'user2.id', '=', 'spv_demos.user_id')
                     ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
-                        // ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name'
+                        ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'classifications.classification as classification_id', 'users.name as spv_name', 'user2.name as spv_demo'
                         );
+                // ->get();
 
 
         $filter = $data;
