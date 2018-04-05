@@ -65,11 +65,11 @@ class SalesController extends Controller
             }
         }
 
-//        return response()->json($content);
+        // return response()->json($content);
 
         if($param == 1) { /* SELL IN(SELL THRU) */
 
-//         return response()->json($this->getPromoterTitle($user->id, $content['id']));
+         // return response()->json($this->getPromoterTitle($user->id, $content['id']));
 
             // Check sell in(Sell Thru) header
             $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
@@ -715,7 +715,7 @@ class SalesController extends Controller
                                     $summary_ta['sell_type'] = 'Sell In';
                                     $summary_ta['irisan'] = $summary->irisan;
 
-    //                                return $summary_ta;
+                                    // return $summary_ta;
 
                                     $this->changeActual($summary_ta, 'change');
 
@@ -1269,7 +1269,7 @@ class SalesController extends Controller
                                 $summary_ta['sell_type'] = 'Sell Out';
                                 $summary_ta['irisan'] = $summary->irisan;
 
-    //                            return response()->json($this->changeActual($summary_ta, 'change'));
+                                // return response()->json($this->changeActual($summary_ta, 'change'));
                                 $this->changeActual($summary_ta, 'change');
 
                             }

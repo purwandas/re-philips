@@ -110,12 +110,12 @@
                 </div>
                 <div class="actions" style="text-align: left">
                     <a id="export" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                        <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                 </div>
 
                 <div class="actions" style="text-align: left; padding-right: 10px;">
                     <a id="exportAll" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                        <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                 </div>
             </div>
 
@@ -373,8 +373,10 @@
     });
 
         $("#export").click( function(){
-
-            if ($('#export').attr('disabled') != 'disabled') {
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -383,11 +385,17 @@
                     type: 'POST',
                     url: 'util/export-promoter',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -417,7 +425,10 @@
 
         $("#exportAll").click( function(){
 
-            if ($('#exportAll').attr('disabled') != 'disabled') {
+            var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -427,8 +438,14 @@
                     url: 'util/export-promoter-all',
                     dataType: 'json',
                     data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
