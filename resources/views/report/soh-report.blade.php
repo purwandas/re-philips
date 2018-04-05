@@ -62,6 +62,9 @@
                     <div class="col-md-4">
                         <input type="text" id="filterMonth" class="form-control" placeholder="Month">
                     </div>
+                    <div class="col-md-4">
+                        <input type="text" id="filterDate" class="form-control" placeholder="Date">
+                    </div>
                 </div>
 
                 <br>
@@ -346,6 +349,14 @@
             $('#filterMonth').val(moment().format('MMMM YYYY'));
             filters['searchMonth'] = $('#filterMonth').val();
 
+            // Filter Date
+            $('#filterDate').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+
         }
 
         // On Change Search Date
@@ -354,6 +365,15 @@
             $('#filterMonth').change(function(){
                 filters['searchMonth'] = this.value;
                 console.log(filters);
+                $('#filterDate').val('');
+                delete filters['searchDate'];
+            });
+
+            $('#filterDate').change(function(){
+                filters['searchDate'] = this.value;
+                console.log(filters);
+                $('#filterMonth').val('');
+                delete filters['searchMonth'];
             });
 
         });
@@ -364,8 +384,10 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            // $('#filterMonth').val(moment().format('MMMM YYYY'));
-            // filters['searchMonth'] = $('#filterMonth').val();
+            $('#filterMonth').val(moment().format('MMMM YYYY'));
+            filters['searchMonth'] = $('#filterMonth').val();
+            $('#filterDate').val('');
+            delete filters['searchDate'];
 
         });
 
@@ -445,18 +467,6 @@
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/sohreport',
-                    dataType: 'json',
-                    data: filters,
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
                 // Export data
                 exportFile = '';
 
@@ -464,29 +474,12 @@
                     type: 'POST',
                     url: 'util/export-soh-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
                     success: function (data) {
 
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });
