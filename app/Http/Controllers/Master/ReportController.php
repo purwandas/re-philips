@@ -4395,7 +4395,9 @@ class ReportController extends Controller
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
-            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0);
+
             // ->where('attendances.status', '!=', 'Off')
             // ->whereIn('stores.id',[$request['byStore']]);    
             // ->get();
@@ -4738,7 +4740,8 @@ class ReportController extends Controller
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
-            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0);
             // ->where('attendances.status', '!=', 'Off')
             // ->get();
 
@@ -4977,7 +4980,8 @@ class ReportController extends Controller
             ->groupBy('attendances.user_id')
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
             // , 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
-            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0);
             // ->where('attendances.status', '!=', 'Off')
             // ->get();
 
@@ -5226,7 +5230,8 @@ class ReportController extends Controller
             ->groupBy('attendances.user_id')
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
-            ->whereNotIn('roles.role_group',$promoterGroup);
+            ->whereNotIn('roles.role_group',$promoterGroup)
+            ->where('is_resign',0);
             // ->where('attendances.status', '!=', 'Off')
             // ->get();
 
