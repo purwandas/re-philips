@@ -2217,12 +2217,10 @@ class ExportController extends Controller
 
     //
     public function exportStore(Request $request){
-
-        $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
-
-
         
+        $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
+        $data = json_decode($request['data'], true);
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -2326,6 +2324,7 @@ class ExportController extends Controller
                     ->select('stores.*', 'districts.name as district_name', 'areas.name as area_name', 'regions.name as region_name'
                         ,'sub_channels.name as subchannel_name', 'channels.name as channel_name', 'global_channels.name as globalchannel_name', 'classifications.classification as classification_id', 'users.name as spv_name', 'user2.name as spv_demo'
                         )
+                    ->whereNull('stores.deleted_at')
                 ->get();
 
         if ($userRole == 'RSM') {
@@ -3038,9 +3037,7 @@ class ExportController extends Controller
     public function exportUserPromoter(Request $request){
 
         $filename = 'Philips Retail Master Data User Promoter ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
-
-
+        $data = json_decode($request['data'], true);
         
         Excel::create($filename, function($excel) use ($data) {
 
@@ -3167,9 +3164,7 @@ class ExportController extends Controller
     public function exportUserNonPromoter(Request $request){
 
         $filename = 'Philips Retail Master Data User Non Promoter ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
-
-
+        $data = json_decode($request['data'], true);
         
         Excel::create($filename, function($excel) use ($data) {
 
