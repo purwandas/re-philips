@@ -62,6 +62,9 @@
                     <div class="col-md-4">
                         <input type="text" id="filterMonth" class="form-control" placeholder="Month">
                     </div>
+                    <div class="col-md-4">
+                        <input type="text" id="filterDate" class="form-control" placeholder="Date">
+                    </div>
                 </div>
 
                 <br>
@@ -84,11 +87,11 @@
 
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                         </div>
                         <div class="actions" style="text-align: left; padding-right: 10px;">
                             <a id="exportAll" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                         </div>
                     </div>
 
@@ -346,6 +349,14 @@
             $('#filterMonth').val(moment().format('MMMM YYYY'));
             filters['searchMonth'] = $('#filterMonth').val();
 
+            // Filter Date
+            $('#filterDate').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+
         }
 
         // On Change Search Date
@@ -354,6 +365,15 @@
             $('#filterMonth').change(function(){
                 filters['searchMonth'] = this.value;
                 console.log(filters);
+                $('#filterDate').val('');
+                delete filters['searchDate'];
+            });
+
+            $('#filterDate').change(function(){
+                filters['searchDate'] = this.value;
+                console.log(filters);
+                $('#filterMonth').val('');
+                delete filters['searchMonth'];
             });
 
         });
@@ -364,8 +384,10 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            // $('#filterMonth').val(moment().format('MMMM YYYY'));
-            // filters['searchMonth'] = $('#filterMonth').val();
+            $('#filterMonth').val(moment().format('MMMM YYYY'));
+            filters['searchMonth'] = $('#filterMonth').val();
+            $('#filterDate').val('');
+            delete filters['searchDate'];
 
         });
 
@@ -400,7 +422,10 @@
 
         $("#export").click( function(){
 
-            if ($('#export').attr('disabled') != 'disabled') {
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -412,8 +437,15 @@
                     data: {data: data},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
 
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -442,21 +474,10 @@
         });
 
         $("#exportAll").click( function(){
-
-            if ($('#export').attr('disabled') != 'disabled') {
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'data/sohreport',
-                    dataType: 'json',
-                    data: filters,
-                    global: false,
-                    async: false,
-                    success: function (results) {
-                        dataAll = results;
-                    }
-                });
-
+            var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
                 // Export data
                 exportFile = '';
 
@@ -464,29 +485,19 @@
                     type: 'POST',
                     url: 'util/export-soh-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
 
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
-
-                        // setTimeout(function () {
-                        //     $.ajax({
-                        //         type: 'POST',
-                        //         url: 'util/export-delete',
-                        //         dataType: 'json',
-                        //         data: {data: data.url},
-                        //         global: false,
-                        //         async: false,
-                        //         success: function (data) {
-                        //             console.log(data);
-                        //         }
-                        //     });
-                        // }, 1000);
-
 
                     }
                 });
