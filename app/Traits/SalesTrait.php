@@ -47,10 +47,13 @@ trait SalesTrait {
         // Find Detail then delete
         $sellInDetail = SellInDetail::where('id',$detailId)->first();
 
+        $roleGroup = SellIn::where('id', $sellInDetail->first()->sellin_id)->first()->user->role->role_group;
+
         $sellIn_id = $sellInDetail->sellin_id;
             
         $sellInDetail->forceDelete();
-        $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$detailId)->first();
+        if($roleGroup != 'Salesman Explorer'){ // Promoter
+            $summarySellInDetail = SummarySellIn::where('sellin_detail_id',$detailId)->first();
 
             /* begin insert sales activity */
             $data = new Collection();
@@ -113,20 +116,91 @@ trait SalesTrait {
             ]);
             /* end insert sales activity */
             
-        // Update Target Actuals
-        $summary_ta['user_id'] = $summarySellInDetail->user_id;
-        $summary_ta['store_id'] = $summarySellInDetail->storeId;
-        $summary_ta['week'] = $summarySellInDetail->week;
-        $summary_ta['pf'] = $summarySellInDetail->value_pf_mr + $summarySellInDetail->value_pf_tr + $summarySellInDetail->value_pf_ppe;
-        $summary_ta['value'] = $summarySellInDetail->value;
-        $summary_ta['group'] = $summarySellInDetail->group;
-        $summary_ta['sell_type'] = 'Sell In';
-        $summary_ta['irisan'] = $summarySellInDetail->irisan;
+            // Update Target Actuals
+            $summary_ta['user_id'] = $summarySellInDetail->user_id;
+            $summary_ta['store_id'] = $summarySellInDetail->storeId;
+            $summary_ta['week'] = $summarySellInDetail->week;
+            $summary_ta['pf'] = $summarySellInDetail->value_pf_mr + $summarySellInDetail->value_pf_tr + $summarySellInDetail->value_pf_ppe;
+            $summary_ta['value'] = $summarySellInDetail->value;
+            $summary_ta['group'] = $summarySellInDetail->group;
+            $summary_ta['sell_type'] = 'Sell In';
+            $summary_ta['irisan'] = $summarySellInDetail->irisan;
 
-        $this->changeActual($summary_ta, 'delete');
+            $this->changeActual($summary_ta, 'delete');
 
-        $summarySellInDetail->forceDelete();
+            $summarySellInDetail->forceDelete();
+        }else{  //SEE
+            $summary = SalesmanSummarySales::where('sellin_detail_id',$detailId)->first();
 
+            /* begin insert sales activity */
+            $data = new Collection();
+
+            /* Header Details */
+            $dataSummary = ([
+                'activity' => 'Delete',
+                'type' => 'Sell In',
+                'action_from' => 'Web',
+                'detail_id'=> $summary->sellin_detail_id,
+                'week' => $summary->week,
+                'distributor_code' => $summary->distributor_code,
+                'distributor_name' => $summary->distributor_name,
+                'region' => $summary->region,
+                'region_id' => $summary->region_id,
+                'channel' => $summary->channel,
+                'sub_channel' => $summary->sub_channel,
+                'area' => $summary->area,
+                'area_id' => $summary->area_id,
+                'district' => $summary->district,
+                'district_id' => $summary->district_id,
+                'store_name_1' => $summary->store_name_1,
+                'store_name_2' => $summary->store_name_2,
+                'store_id' => $summary->store_id,
+                'storeId' => $summary->storeId,
+                // 'dedicate' => $summary->dedicate,
+                'nik' => $summary->nik,
+                'promoter_name' => $summary->promoter_name,
+                'user_id' => $summary->user_id,
+                'date' => $summary->date,
+                'role' => $summary->role,
+                // 'spv_name' => $summarySellInDetail->spv_name,
+                // 'dm_name' => $summarySellInDetail->dm_name,
+                // 'trainer_name' => $summarySellInDetail->trainer_name,
+                'model' => $summary->model,
+                'group' => $summary->group,
+                'category' => $summary->category,
+                'product_name' => $summary->product_name,
+                'unit_price' => $summary->unit_price,
+                'quantity' => $summary->quantity,
+                'value' => $summary->value,
+                'value_pf' => $summary->value_pf,
+                'new_quantity' => '',
+                'new_value' => '',
+                'new_value_pf' => '',
+                // 'new_value_pf_tr' => $pf_tr,
+                // 'new_value_pf_ppe' => $pf_ppe,
+            ]);
+
+            $data->push($dataSummary);
+
+            $dt = Carbon::now();
+            $date = $dt->toDateString();               // 2015-12-19
+            SalesmanSalesActivity::create([
+                'user_id' => $userId,
+                'date' => $date,
+                'details' => $data,
+            ]);
+            /* end insert sales activity */
+            
+            // Update Target Actuals
+            $summary_ta['user_id'] = $summary->user_id;
+            $summary_ta['store_id'] = $summary->store_id;
+            $summary_ta['pf'] = $summary->value_pf;
+            $summary_ta['value'] = $summary->value;
+
+            $this->changeActualSalesman($summary_ta, 'delete');
+
+            $summary->forceDelete();
+        }
             // Check if no detail exist delete header
             $sellIn = SellIn::where('id',$sellIn_id)->first();
             $sellInDetail = SellInDetail::where('sellin_id',$sellIn->id)->get();
