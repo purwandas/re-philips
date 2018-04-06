@@ -101,7 +101,7 @@
                                                     <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
-                                                <a id="exportAll" class="btn green-dark" >
+                                                <a id="exportAll" class="btn green-dark" disabled >
                                                     <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
