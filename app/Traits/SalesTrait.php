@@ -197,13 +197,13 @@ trait SalesTrait {
             $summary_ta['pf'] = $summary->value_pf;
             $summary_ta['value'] = $summary->value;
 
-            $this->changeActualSalesman($summary_ta, 'delete');
-
             $summary->forceDelete();
+
+            $this->changeActualSalesman($summary_ta, 'delete');   
         }
             // Check if no detail exist delete header
             $sellIn = SellIn::where('id',$sellIn_id)->first();
-            $sellInDetail = SellInDetail::where('sellin_id',$sellIn->id)->get();
+            $sellInDetail = SellInDetail::where('sellin_id',$sellIn->id);
 
                 if($sellInDetail->count() == 0){
                     $sellIn->forceDelete();
