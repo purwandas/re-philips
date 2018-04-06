@@ -946,6 +946,7 @@ trait ActualTrait {
                 }
 
             } else { // DELETE
+            /* ============================================================================================ */
 
                 /* DA */
                 if ($data['group'] == 'DA') {
@@ -1671,7 +1672,7 @@ trait ActualTrait {
                 $countEC = SalesmanSummarySales::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
                     ->whereDate('date', Carbon::now()->format('Y-m-d'))->count();
 
-                if ($countEC == 1) { // 1 Count Per Transaction Per Day
+                if ($countEC == 0) { // 1 Count Per Transaction Per Day
                     if (!isset($data['value_old'])) {
                         $summary->update([ // ADD NEW VALUE
                             'actual_effective_call' => $summary->actual_effective_call + 1,
@@ -1684,7 +1685,7 @@ trait ActualTrait {
                 $countAO = SalesmanSummarySales::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
                     ->whereMonth('date', Carbon::now()->format('m'))->whereYear('date', Carbon::now()->format('Y'))->count();
 
-                if ($countAO == 1) { // 1 Count Per Transaction Per Month
+                if ($countAO == 0) { // 1 Count Per Transaction Per Month
                     if (!isset($data['value_old'])) {
                         $summary->update([ // ADD NEW VALUE
                             'actual_active_outlet' => $summary->actual_active_outlet + 1,
@@ -1696,6 +1697,54 @@ trait ActualTrait {
 
             } else { // DELETE
                 // ON PROGRESS
+
+                if ($summary->target_sales > 0) {
+
+                    $summary->update([ // SUBSTRACT OLD VALUE
+                        'actual_sales' => $summary->actual_sales - $data['value'],
+                        'sum_national_actual_sales' => $sumNationalActualSales - $data['value'],
+                    ]);
+                }
+
+                // PRODUCT FOCUS
+                if ($summary->target_sales_pf > 0) {
+
+                    if ($data['pf'] > 0) {
+
+                        $summary->update([ // SUBSTRACT OLD VALUE
+                            'actual_sales_pf' => $summary->actual_sales_pf - $data['value'],
+                            'sum_national_actual_sales_pf' => $sumNationalActualSalesPf - $data['value'],
+                        ]);
+
+                    }
+
+                }
+
+                // EFFECTIVE CALL
+                $countEC = SalesmanSummarySales::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
+                    ->whereDate('date', Carbon::now()->format('Y-m-d'))->count();
+
+                if ($countEC == 0) { // 1 Count Per Transaction Per Day
+                    if (!isset($data['value_old'])) {
+                        $summary->update([ // ADD NEW VALUE
+                            'actual_effective_call' => $summary->actual_effective_call - 1,
+                            'sum_national_actual_effective_call' => $sumNationalActualEffectiveCall - 1,
+                        ]);
+                    }
+                }
+
+                // ACTIVE OUTLET
+                $countAO = SalesmanSummarySales::where('user_id', $data['user_id'])->where('storeId', $data['store_id'])
+                    ->whereMonth('date', Carbon::now()->format('m'))->whereYear('date', Carbon::now()->format('Y'))->count();
+
+                if ($countAO == 0) { // 1 Count Per Transaction Per Month
+                    if (!isset($data['value_old'])) {
+                        $summary->update([ // ADD NEW VALUE
+                            'actual_active_outlet' => $summary->actual_active_outlet - 1,
+                            'sum_national_actual_active_outlet' => $sumNationalActualActiveOutlet - 1,
+                        ]);
+                    }
+                }
             }
 
             // Update Sum Target Store to All Summary
@@ -1834,7 +1883,7 @@ trait ActualTrait {
                 foreach ($store as $data){
 
                      $transactionCount = SalesmanSummarySales::where('user_id',  $userId)->where('storeId', $data->id)
-                                ->whereMonth('date', Carbon::now()->format('m'))->count();
+                                ->whereMonth('date', Carbon::now()->format('m'))->whereYear('date', Carbon::now()->format('Y'))->count();
 
                     if($transactionCount >= 1){
                         $activeOutlet += 1;
