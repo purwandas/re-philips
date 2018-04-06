@@ -4002,6 +4002,7 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
 
+            // return $filter->all();
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
                 // $folderPath = explode('/', $item->photo);
@@ -4014,17 +4015,17 @@ class ReportController extends Controller
                 // }
                     return $images;
                 })
-            ->editColumn('photo2', function ($item) {
-                $folderPath = explode('/', $item->photo2);
-                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                $files = File::allFiles($folder);
-                $images = '';
-                foreach ($files as $file)
-                {
-                    $images .= asset((string)$file)."\n";
-                }
-                    return $images;
-                })
+            // ->editColumn('photo2', function ($item) {
+            //     $folderPath = explode('/', $item->photo2);
+            //     $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+            //     $files = File::allFiles($folder);
+            //     $images = '';
+            //     foreach ($files as $file)
+            //     {
+            //         $images .= asset((string)$file)."\n";
+            //     }
+            //         return $images;
+            //     })
             ->rawColumns(['photo'])
             ->make(true);
 
