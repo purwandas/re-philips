@@ -4316,21 +4316,21 @@ class ReportController extends Controller
                     return '';
                 }
             })
-            ->editColumn('photo2', function ($item) {
-                if ($item->photo2 != '') {
-                    $folderPath = explode('/', $item->photo2);
-                    $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                    $files = File::allFiles($folder);
-                    $images = '';
-                    foreach ($files as $file)
-                    {
-                        $images .= asset((string)$file)."\n";
-                    }
-                        return $images;
-                }else{
-                    return '';
-                }
-            })
+            // ->editColumn('photo2', function ($item) {
+            //     if ($item->photo2 != '') {
+            //         $folderPath = explode('/', $item->photo2);
+            //         $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+            //         $files = File::allFiles($folder);
+            //         $images = '';
+            //         foreach ($files as $file)
+            //         {
+            //             $images .= asset((string)$file)."\n";
+            //         }
+            //             return $images;
+            //     }else{
+            //         return '';
+            //     }
+            // })
             ->rawColumns(['photo'])
             ->make(true);
 
