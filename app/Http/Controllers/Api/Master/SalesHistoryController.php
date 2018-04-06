@@ -63,6 +63,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sell_ins.user_id')
                     ->join('stores','stores.id','sell_ins.store_id')
                     ->select('sell_ins.id','sell_ins.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('sell_ins.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellInDetail::where('sellin_id', $value->id)
@@ -109,6 +110,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sell_outs.user_id')
                     ->join('stores','stores.id','sell_outs.store_id')
                     ->select('sell_outs.id','sell_outs.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('sell_outs.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellOutDetail::where('sellout_id', $value->id)
@@ -154,6 +156,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','ret_distributors.user_id')
                     ->join('stores','stores.id','ret_distributors.store_id')
                     ->select('ret_distributors.id','ret_distributors.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('ret_distributors.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = RetDistributorDetail::where('retdistributor_id', $value->id)
@@ -185,6 +188,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','ret_consuments.user_id')
                     ->join('stores','stores.id','ret_consuments.store_id')
                     ->select('ret_consuments.id','ret_consuments.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('ret_consuments.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = RetConsumentDetail::where('retconsument_id', $value->id)
@@ -216,6 +220,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','free_products.user_id')
                     ->join('stores','stores.id','free_products.store_id')
                     ->select('free_products.id','free_products.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('free_products.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = FreeProductDetail::where('freeproduct_id', $value->id)
@@ -248,6 +253,7 @@ class SalesHistoryController extends Controller
                     ->join('stores','stores.id','tbats.store_id')
                     ->join('stores as storeD','storeD.id','tbats.store_destination_id')
                     ->select('tbats.id','tbats.date as date','stores.store_name_1','stores.store_id','storeD.store_name_1 as storeD_name_1','storeD.store_id as storeD_id')
+                    ->orderBy('tbats.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = TbatDetail::where('tbat_id', $value->id)
@@ -281,6 +287,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sohs.user_id')
                     ->join('stores','stores.id','sohs.store_id')
                     ->select('sohs.id','sohs.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('sohs.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SohDetail::where('soh_id', $value->id)
@@ -312,6 +319,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','display_shares.user_id')
                     ->join('stores','stores.id','display_shares.store_id')
                     ->select('display_shares.id','display_shares.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('display_shares.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = DisplayShareDetail::where('display_share_id', $value->id)
@@ -342,6 +350,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','posm_activities.user_id')
                     ->join('stores','stores.id','posm_activities.store_id')
                     ->select('posm_activities.id','posm_activities.date as date','stores.store_name_1','stores.store_id')
+                    ->orderBy('posm_activities.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = PosmActivityDetail::where('posmactivity_id', $value->id)
@@ -406,6 +415,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sell_ins.user_id')
                     ->join('stores','stores.id','sell_ins.store_id')
                     ->select('sell_ins.id','sell_ins.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('sell_ins.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellInDetail::where('sellin_id', $value->id)
@@ -453,6 +463,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sell_outs.user_id')
                     ->join('stores','stores.id','sell_outs.store_id')
                     ->select('sell_outs.id','sell_outs.date as date','stores.store_name_1','stores.store_id','users.name as user_name')
+                    ->orderBy('sell_outs.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellOutDetail::where('sellout_id', $value->id)
@@ -499,6 +510,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','ret_distributors.user_id')
                     ->join('stores','stores.id','ret_distributors.store_id')
                     ->select('ret_distributors.id','ret_distributors.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('ret_distributors.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = RetDistributorDetail::where('retdistributor_id', $value->id)
@@ -531,6 +543,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','ret_consuments.user_id')
                     ->join('stores','stores.id','ret_consuments.store_id')
                     ->select('ret_consuments.id','ret_consuments.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('ret_consuments.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = RetConsumentDetail::where('retconsument_id', $value->id)
@@ -563,6 +576,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','free_products.user_id')
                     ->join('stores','stores.id','free_products.store_id')
                     ->select('free_products.id','free_products.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('free_products.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = FreeProductDetail::where('freeproduct_id', $value->id)
@@ -596,6 +610,7 @@ class SalesHistoryController extends Controller
                     ->join('stores','stores.id','tbats.store_id')
                     ->join('stores as storeD','storeD.id','tbats.store_destination_id')
                     ->select('tbats.id','tbats.date as date','stores.store_name_1','stores.store_id','storeD.store_name_1 as storeD_name_1','storeD.store_id as storeD_id','stores.store_id', 'users.name as user_name')
+                    ->orderBy('tbats.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = TbatDetail::where('tbat_id', $value->id)
@@ -630,13 +645,14 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sohs.user_id')
                     ->join('stores','stores.id','sohs.store_id')
                     ->select('sohs.id','sohs.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('sohs.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SohDetail::where('soh_id', $value->id)
                     ->join('products','products.id','soh_details.product_id')
                     ->join('categories','categories.id','products.category_id')
                     ->join('groups','groups.id','categories.group_id')
-                    ->select('soh_details.id as detail_id','products.name as product_name','soh_details.quantity','products.model','categories.name as category_name','groups.name as group_name','soh_details.id as tbat_detail_id','products.id as product_id')
+                    ->select('soh_details.id as detail_id','products.name as product_name','soh_details.quantity','products.model','categories.name as category_name','groups.name as group_name','soh_details.id as tbat_detail_id','products.id as product_id')                    
                     ->get();
 
                         $result[$key]['id'] = $value->id;
@@ -698,6 +714,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sell_ins.user_id')
                     ->join('stores','stores.id','sell_ins.store_id')
                     ->select('sell_ins.id','sell_ins.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('sell_ins.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellInDetail::where('sellin_id', $value->id)
@@ -745,6 +762,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sell_outs.user_id')
                     ->join('stores','stores.id','sell_outs.store_id')
                     ->select('sell_outs.id','sell_outs.date as date','stores.store_name_1','stores.store_id','users.name as user_name')
+                    ->orderBy('sell_outs.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SellOutDetail::where('sellout_id', $value->id)
@@ -791,6 +809,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','ret_distributors.user_id')
                     ->join('stores','stores.id','ret_distributors.store_id')
                     ->select('ret_distributors.id','ret_distributors.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('ret_distributors.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = RetDistributorDetail::where('retdistributor_id', $value->id)
@@ -823,6 +842,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','ret_consuments.user_id')
                     ->join('stores','stores.id','ret_consuments.store_id')
                     ->select('ret_consuments.id','ret_consuments.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('ret_consuments.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = RetConsumentDetail::where('retconsument_id', $value->id)
@@ -855,6 +875,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','free_products.user_id')
                     ->join('stores','stores.id','free_products.store_id')
                     ->select('free_products.id','free_products.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('free_products.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = FreeProductDetail::where('freeproduct_id', $value->id)
@@ -888,6 +909,7 @@ class SalesHistoryController extends Controller
                     ->join('stores','stores.id','tbats.store_id')
                     ->join('stores as storeD','storeD.id','tbats.store_destination_id')
                     ->select('tbats.id','tbats.date as date','stores.store_name_1','stores.store_id','storeD.store_name_1 as storeD_name_1','storeD.store_id as storeD_id','stores.store_id', 'users.name as user_name')
+                    ->orderBy('tbats.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = TbatDetail::where('tbat_id', $value->id)
@@ -922,6 +944,7 @@ class SalesHistoryController extends Controller
                     ->join('users','users.id','sohs.user_id')
                     ->join('stores','stores.id','sohs.store_id')
                     ->select('sohs.id','sohs.date as date','stores.store_name_1','stores.store_id', 'users.name as user_name')
+                    ->orderBy('sohs.date', 'DESC')
                     ->get();
                 foreach ($header as $key => $value) {
                     $detail = SohDetail::where('soh_id', $value->id)
