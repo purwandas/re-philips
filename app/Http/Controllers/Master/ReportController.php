@@ -3861,28 +3861,34 @@ class ReportController extends Controller
 
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
-                $folderPath = explode('/', $item->photo);
-                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                $files = File::allFiles($folder);
-                $images = '';
-                foreach ($files as $file)
-                {
-                    $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
-                }
+                // $folderPath = explode('/', $item->photo);
+                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                // $files = File::allFiles($folder);
+                    $images = '';
+                // foreach ($files as $file)
+                // {
+                //     $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
+                // }
+                    $images .= "<img src='".$item->photo."' height='100px'>\n";
                     return $images;
                 })
-            ->editColumn('photo2', function ($item) {
-                $folderPath = explode('/', $item->photo2);
-                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                $files = File::allFiles($folder);
-                $images = '';
-                foreach ($files as $file)
-                {
-                    $images .= asset((string)$file)."\n";
-                }
-                    return $images;
+            ->editColumn('report', function ($item) {
+                        // $report = hebrevc($item->report);
+                        $report = str_replace('\n',"<br>",$item->report);
+                    return $report;
                 })
-            ->rawColumns(['photo'])
+            // ->editColumn('photo2', function ($item) {
+            //     $folderPath = explode('/', $item->photo2);
+            //     $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+            //     $files = File::allFiles($folder);
+            //     $images = '';
+            //     foreach ($files as $file)
+            //     {
+            //         $images .= asset((string)$file)."\n";
+            //     }
+            //         return $images;
+            //     })
+            ->rawColumns(['photo','report'])
             ->make(true);
 
     }

@@ -61,7 +61,8 @@ class ExportController extends Controller
     public function exportSellIn(Request $request){
 
         $filename = 'Philips Retail Report Sell Thru ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        $data = json_decode($request['data'], true);
+        // $data = $request->data;
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -355,7 +356,8 @@ class ExportController extends Controller
     public function exportSellOut(Request $request){
 
         $filename = 'Philips Retail Report Sell Out ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -654,7 +656,8 @@ class ExportController extends Controller
     public function exportRetConsument(Request $request){
 
         $filename = 'Philips Retail Report Ret. Consument ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -696,7 +699,8 @@ class ExportController extends Controller
     public function exportRetConsumentAll(Request $request){
 
         $filename = 'Philips Retail Report Ret. Consument ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -738,7 +742,8 @@ class ExportController extends Controller
     public function exportRetDistributor(Request $request){
 
         $filename = 'Philips Retail Report Ret. Distributor ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -780,7 +785,8 @@ class ExportController extends Controller
     public function exportRetDistributorAll(Request $request){
 
         $filename = 'Philips Retail Report Ret. Distributor ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -822,7 +828,8 @@ class ExportController extends Controller
     public function exportFreeProduct(Request $request){
 
         $filename = 'Philips Retail Report Free Product ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -864,7 +871,8 @@ class ExportController extends Controller
     public function exportFreeProductAll(Request $request){
 
         $filename = 'Philips Retail Report Free Product ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -906,7 +914,8 @@ class ExportController extends Controller
     public function exportTbat(Request $request){
 
         $filename = 'Philips Retail Report TBAT ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -948,7 +957,8 @@ class ExportController extends Controller
     public function exportTbatAll(Request $request){
 
         $filename = 'Philips Retail Report TBAT ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
