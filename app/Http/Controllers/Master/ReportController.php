@@ -3529,7 +3529,7 @@ class ReportController extends Controller
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
 
-            $filter = $filter->get()->all();
+            $filter = $filter->all();
 
             return Datatables::of($filter)
             ->editColumn('philips', function ($item) {
@@ -4165,17 +4165,17 @@ class ReportController extends Controller
                     return 'Promo Market';
                 }
             })
-            ->editColumn('photo2', function ($item) {
-                $folderPath = explode('/', $item->photo2);
-                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                $files = File::allFiles($folder);
-                $images = '';
-                foreach ($files as $file)
-                {
-                    $images .= asset((string)$file)."\n";
-                }
-                    return $images;
-                })
+            // ->editColumn('photo2', function ($item) {
+            //     $folderPath = explode('/', $item->photo2);
+            //     $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+            //     $files = File::allFiles($folder);
+            //     $images = '';
+            //     foreach ($files as $file)
+            //     {
+            //         $images .= asset((string)$file)."\n";
+            //     }
+            //         return $images;
+            //     })
             ->rawColumns(['photo'])
             ->make(true);
 
