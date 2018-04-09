@@ -442,9 +442,11 @@ class UserController extends Controller
     {
        // return response()->json($request->all());
         
-        $oldUser = User::where('nik', $request['nik']);
-        if($oldUser->count() > 0){
-            return response()->json(['error'=>"NIK already exist!"]);
+        if (!empty($request['nik'])) {
+            $oldUser = User::where('nik', $request['nik']);
+            if($oldUser->count() > 0){
+                return response()->json(['error'=>"NIK already exist!"]);
+            }
         }
 
         $oldUser = User::where('email', $request['email']);
@@ -472,7 +474,7 @@ class UserController extends Controller
         $request['role_id'] = $role[0];
         $request['selectedRole'] = $role[1];
 
-//        return response()->json($request->all());
+       // return response()->json($request->all());
 
         $user = User::create(
             [
@@ -488,7 +490,7 @@ class UserController extends Controller
             ]
         );
 
-//        return response()->json($request->all());
+       // return response()->json($request->all());
 
         /* Insert user relation */
         if ($request['selectedRole'] == 'Supervisor' || $request['selectedRole'] == 'Supervisor Hybrid') {
@@ -1024,12 +1026,13 @@ class UserController extends Controller
         //     $s .= 'A';
         //         }
 
-        
-        $user = User::where('nik', $request->nik);
-        if($user->count() > 0){
-            $oldUser = User::find($id);
-            if($oldUser->nik != $request['nik']){
-                return response()->json(['error'=>"NIK already exist!"]);
+        if (!empty($request->nik)) {
+            $user = User::where('nik', $request->nik);
+            if($user->count() > 0){
+                $oldUser = User::find($id);
+                if($oldUser->nik != $request['nik']){
+                    return response()->json(['error'=>"NIK already exist!"]);
+                }
             }
         }
 

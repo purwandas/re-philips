@@ -672,7 +672,7 @@
 			}
 
 			if(!checkAdmin()){
-				$('#nik').attr('required', 'required');
+				// $('#nik').attr('required', 'required');
 			}
 
 			if(!checkPromoter()){
