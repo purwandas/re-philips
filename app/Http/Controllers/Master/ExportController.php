@@ -3654,19 +3654,23 @@ class ExportController extends Controller
 
                 $sheet->setCellValue('E1', 'Date');
                 $sheet->setCellValue('F1', ':');
-                $sheet->setCellValue('G1', $news->date);
+                $sheet->setCellValue('G1', @$news->date);
 
                 $sheet->setCellValue('E2', 'Sender');
                 $sheet->setCellValue('F2', ':');
-                $sheet->setCellValue('G2', $news->from);
+                $sheet->setCellValue('G2', @$news->from);
 
                 $sheet->setCellValue('E3', 'Subject');
                 $sheet->setCellValue('F3', ':');
-                $sheet->setCellValue('G3', $news->subject);
+                $sheet->setCellValue('G3', @$news->subject);
 
                 $sheet->setCellValue('E4', 'Content');
                 $sheet->setCellValue('F4', ':');
-                $sheet->setCellValue('G4', strip_tags($news->content));
+                $sheet->setCellValue('G4', strip_tags(@$news->content));
+
+                $sheet->cells('E1:G4', function ($cells) {
+                    $cells->setAlignment('left');
+                });
 
                 $sheet->setAutoFilter('A1:C1');
                 // $sheet->setHeight(5, 25);
@@ -3738,19 +3742,23 @@ class ExportController extends Controller
 
                 $sheet->setCellValue('E1', 'Date');
                 $sheet->setCellValue('F1', ':');
-                $sheet->setCellValue('G1', $pk->date);
+                $sheet->setCellValue('G1', @$pk->date);
 
                 $sheet->setCellValue('E2', 'Sender');
                 $sheet->setCellValue('F2', ':');
-                $sheet->setCellValue('G2', $pk->from);
+                $sheet->setCellValue('G2', @$pk->from);
 
                 $sheet->setCellValue('E3', 'Subject');
                 $sheet->setCellValue('F3', ':');
-                $sheet->setCellValue('G3', $pk->subject);
+                $sheet->setCellValue('G3', @$pk->subject);
 
                 $sheet->setCellValue('E4', 'Type');
                 $sheet->setCellValue('F4', ':');
-                $sheet->setCellValue('G4', $pk->type);
+                $sheet->setCellValue('G4', @$pk->type);
+
+                $sheet->cells('E1:G4', function ($cells) {
+                    $cells->setAlignment('left');
+                });
 
                 $sheet->setAutoFilter('A1:C1');
                 // $sheet->setHeight(5, 25);
