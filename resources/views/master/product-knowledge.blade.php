@@ -171,6 +171,53 @@
                 });
         });
 
+        $("#export").click( function(){
+
+        // alert($('#export').attr('data-id'));
+
+            if ($('#export').attr('disabled') != 'disabled') {
+
+                var newsId = $('#export').attr('data-id')
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-guideline-read',
+                    dataType: 'json',
+                    data: {id : newsId},
+                    global: false,
+                    async: false,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    }
+                });
+
+            }
+
+
+        });
+
     });
 
 </script>

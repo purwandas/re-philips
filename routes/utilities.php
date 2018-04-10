@@ -378,6 +378,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-posmactivity-all', ['uses'=>'Master\ExportController@exportPosmActivityAll']);
     Route::post('util/export-visitplan', ['uses'=>'Master\ExportController@exportVisitPlan']);
     Route::post('util/export-visitplan-all', ['uses'=>'Master\ExportController@exportVisitPlanAll']);
+    Route::post('util/export-news-read', ['uses'=>'Master\ExportController@exportNewsRead']);
+    Route::post('util/export-guideline-read', ['uses'=>'Master\ExportController@exportGuideLineRead']);
 
 
     /**
