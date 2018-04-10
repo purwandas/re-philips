@@ -6,8 +6,12 @@
     </div>
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px; word-wrap: break-word;">
         <span id="read-who-content"></span>
+
     </div>
     <div class="modal-footer" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
+        <span id="download-content"></span>
+        <a id="export" class="btn green-dark"><i class="fa fa-cloud-download"></i> DOWNLOAD </a>
+        &nbsp;
         <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
     </div>
 </div>

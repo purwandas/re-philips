@@ -944,6 +944,20 @@ class ExcelHelper
             ];
         });
     }
+
+    public function mapForExportNewsRead(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NIK' => @$item['user_nik'],
+                'NAME' => @$item['user_name'],
+                'ROLE' => @$item['user_role'],
+            ];
+        });
+    }
+
     public function mapForExportProduct(Array $data)
     {
         $collection = collect($data);
