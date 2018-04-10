@@ -93,6 +93,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/attendancereportspv', ['as'=> 'datatable.attendancereportspv','uses'=>'Master\ReportController@attendanceDataSpv']);
     Route::post('datatable/attendancereportdemo', ['as'=> 'datatable.attendancereportdemo','uses'=>'Master\ReportController@attendanceDataDemo']);
     Route::post('datatable/attendancereportothers', ['as'=> 'datatable.attendancereportothers','uses'=>'Master\ReportController@attendanceDataOthers']);
+
+    Route::post('data/attendanceDataC', ['as'=> 'data.attendanceDataC','uses'=>'Master\ReportController@attendanceDataC']);
+    Route::post('data/attendanceDataSpvC', ['as'=> 'data.attendanceDataSpvC','uses'=>'Master\ReportController@attendanceDataSpvC']);
+    Route::post('data/attendanceDataDemoC', ['as'=> 'data.attendanceDataDemoC','uses'=>'Master\ReportController@attendanceDataDemoC']);
+    Route::post('data/attendanceDataOthersC', ['as'=> 'data.attendanceDataOthersC','uses'=>'Master\ReportController@attendanceDataOthersC']);
+
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
     Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);

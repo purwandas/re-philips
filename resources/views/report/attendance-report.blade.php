@@ -98,11 +98,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="export" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
-                                                <a id="exportAll" class="btn green-dark" disabled >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                <a id="exportAll" class="btn green-dark" disabled>
+                                                    <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -171,11 +171,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="exportSpv" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportSpvIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
                                                 <a id="exportAllSpv" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                    <i id="exportAllSpvIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -244,11 +244,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="exportDemo" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportDemoIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
                                                 <a id="exportAllDemo" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                    <i id="exportAllDemoIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -299,11 +299,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="exportOthers" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportOthersIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
                                                 <a id="exportAllOthers" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                    <i id="exportAllOthersIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -439,6 +439,86 @@
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataSpvC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllSpv').removeAttr('disabled');
+                            }else{
+                                $('#exportAllSpv').attr('disabled','disabled');
+                            }
+
+                    dataAllSpv = results;
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataDemoC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllDemo').removeAttr('disabled');
+                            }else{
+                                $('#exportAllDemo').attr('disabled','disabled');
+                            }
+
+                    dataAllDemo = results;
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataOthersC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllOthers').removeAttr('disabled');
+                            }else{
+                                $('#exportAllOthers').attr('disabled','disabled');
+                            }
+
+                    dataAllOthers = results;
                 }
             });
 
@@ -825,22 +905,103 @@
             filters['searchMonthDemo'] = $('#filterMonthDemo').val();
         });
 
-        $("#filterButtonSpv").click( function(){
+        $("#filterButton").click( function(){
             // Set Table Content
             $('#dataContentSpv').removeClass('display-hide');
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                }
+            });
+        });
+
+        $("#filterButtonSpv").click( function(){
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataSpvC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllSpv').removeAttr('disabled');
+                            }else{
+                                $('#exportAllSpv').attr('disabled','disabled');
+                            }
+
+                }
+            });
+
         });
         $("#filterButtonDemo").click( function(){
             // Set Table Content
             $('#dataContentDemo').removeClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataDemoC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllDemo').removeAttr('disabled');
+                            }else{
+                                $('#exportAllDemo').attr('disabled','disabled');
+                            }
+                }
+            });
         });
         $("#filterButtonOthers").click( function(){
             // Set Table Content
             $('#dataContentOthers').removeClass('display-hide');
+
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataOthersC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllOthers').removeAttr('disabled');
+                            }else{
+                                $('#exportAllOthers').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#export").click( function(){
 
-            if ($('#export').attr('disabled') != 'disabled') {
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -849,11 +1010,17 @@
                     type: 'POST',
                     url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -873,6 +1040,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -883,7 +1056,10 @@
 
         $("#exportSpv").click( function(){
 
-            if ($('#exportSpv').attr('disabled') != 'disabled') {
+            var element = $("#exportSpv");
+            var icon = $("#exportSpvIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -895,8 +1071,14 @@
                     data: {data: data},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -916,6 +1098,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -926,7 +1114,10 @@
 
         $("#exportDemo").click( function(){
 
-            if ($('#exportDemo').attr('disabled') != 'disabled') {
+            var element = $("#exportDemo");
+            var icon = $("#exportDemoIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -938,8 +1129,14 @@
                     data: {data: data},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -959,6 +1156,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -969,7 +1172,10 @@
 
         $("#exportOthers").click( function(){
 
-            if ($('#exportOthers').attr('disabled') != 'disabled') {
+            var element = $("#exportOthers");
+            var icon = $("#exportOthersIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -981,8 +1187,14 @@
                     data: {data: data},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -1002,6 +1214,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -1011,27 +1229,42 @@
         });
 
         $("#exportAll").click( function(){
+            var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
-            // if ($('#exportAll').attr('disabled') != 'disabled') {
+                // Export data
+                exportFile = '';                
 
-            //     // Export data
-            //     exportFile = '';                
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
 
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: 'util/export-attendance-all',
-            //         dataType: 'json',
-            //         data: filters,
-            //         success: function (data) {
-            //             console.log(data);
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
 
-            //             window.location = data.url;
-            //         }
-            //     });
+            }
 
-            // }
-
-            console.log('belum dibuat pak');
+            // console.log('belum dibuat pak');
 
 
         });

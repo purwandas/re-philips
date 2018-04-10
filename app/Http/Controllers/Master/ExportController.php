@@ -1714,7 +1714,8 @@ class ExportController extends Controller
     public function exportAttendanceReport(Request $request){
 
         $filename = 'Philips Retail Report Attendance Report ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        $data = json_decode($request['data'], true);
 
         Excel::create($filename, function($excel) use ($data) {
 
@@ -1813,7 +1814,66 @@ class ExportController extends Controller
         foreach ($data as $key => $value) {
             $data->details = "sad";
         }
+        
+        // Generate Attendance Details
+        $minDate = "$year-$month-01";
+        $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
+        $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+        foreach ($data as $key => $value) {
+
+                $dataD = Attendance::
+                        select(DB::raw('count(*) as total_hk'))
+                        ->where('attendances.status', '!=', 'Off')
+                        ->where('attendances.status', '!=', 'Sakit')
+                        ->where('attendances.status', '!=', 'Izin')
+                        ->where('attendances.status', '!=', 'Pending Sakit')
+                        ->where('attendances.status', '!=', 'Pending Izin')
+                        ->where('attendances.status', '!=', 'Alpha')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$value->user_id)
+                        ->get()->all();
+                $hk = 0;
+                foreach ($dataD as $key => $value2) {
+                    $hk = $value2->total_hk;
+                }
+            $value['total_hk'] = $hk;
+
+                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+
+                    $dataDetail = Attendance::
+                        select('attendances.*')
+                        ->where('attendances.date','>=',$minDate)
+                        ->where('attendances.date','<=',$maxDate)
+                        ->where('attendances.user_id',$value->user_id)
+                        ->orderBy('id','asc')
+                        ->get()->all();
+
+                        $statusAttendance = '';
+                    foreach ($dataDetail as $key => $value2) {
+                        if ($key==0) {
+                            if (substr($value2->date,-2) > 1) {
+                                $joinDate = substr($value2->date, -2);
+                                $execOnce = false;
+                            }
+
+                            if (isset($joinDate)) {
+                                $statusAttendance .= '-';
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $statusAttendance .= ',-';
+                                }
+                            }else{
+                                $statusAttendance .= $value2->status;
+                            }
+                        }else{
+                            $statusAttendance .= ','.$value2->status;
+                        }
+                    }                    
+            $value['attendance_detail_excell'] = $statusAttendance;
+        }
+
         $data = $data->toArray();
+        // return $data;
 
         Excel::create($filename, function($excel) use ($data) {
 

@@ -4512,15 +4512,14 @@ class ReportController extends Controller
                         $date = explode('-',$value->date);
                         $dateAttendance[] = $date[2];
                     }
-                    // return $dateAttendance;
+                    // return $statusAttendance;
                     $report = '<table><tr>';
 
                     /* Repeat as much as max day in month */
-                    
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
                     for ($i=1; $i <= $totalDay ; $i++) {                         
-
-                        if (!empty(array_search((string)($i),$dateAttendance,true))) {
+                        
+                        if (!empty(array_search((string)($i),$dateAttendance))) {
                             $checkAttendance = array_search((string)($i),$dateAttendance);
                             foreach ($status as $key => $value) {
                                 if (isset($statusAttendance[$checkAttendance-1])) {
@@ -5439,6 +5438,267 @@ class ReportController extends Controller
                 })
             ->rawColumns(['attendance_details'])
             ->make(true);
+    }
+
+    public function attendanceDataC(Request $request){// Promoter
+        
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+       $month = Carbon::parse($request['searchMonth'])->format('m');
+       $year = Carbon::parse($request['searchMonth'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0)
+            ->limit(1);
+
+
+            // ->where('attendances.status', '!=', 'Off')
+            // ->whereIn('stores.id',[$request['byStore']]);    
+            // ->get();
+
+        /* If filter */
+        if($request['byStore']){
+            $data = $data->whereIn('stores.id',[$request['byStore']]);
+        }
+        if($request['byDistrict']){
+            $data = $data->whereIn('districts.id', [$request['byDistrict']]);
+        }
+        if($request['byArea']){
+            $data = $data->whereIn('areas.id', [$request['byArea']]);
+        }
+        if($request['byRegion']){
+            $data = $data->whereIn('regions.id', [$request['byRegion']]);
+        }
+        if($request['byEmployee']){
+            $data = $data->where('attendances.user_id', $request['byEmployee']);
+        }
+        if ($userRole == 'RSM') {
+            $regionIds = RsmRegion::where('user_id', $userId)
+                                ->pluck('rsm_regions.region_id');
+            $data = $data->whereIn('region_id', [$regionIds]);
+        }
+        if ($userRole == 'DM') {
+            $areaIds = DmArea::where('user_id', $userId)
+                                ->pluck('dm_areas.area_id');
+            $data = $data->whereIn('area_id', [$areaIds]);
+        }
+        if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            $storeIds = Store::where('user_id', $userId)
+                                ->pluck('stores.store_id');
+            $data = $data->whereIn('store_id', [$storeIds]);
+        }
+        $data = $data->get();
+
+        return $data;
+
+    }
+
+    public function attendanceDataSpvC(Request $request){ //SPV Promoter & HYBRID + SEE
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+       $month = Carbon::parse($request['searchMonthSpv'])->format('m');
+       $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('stores', 'attendances.user_id', '=', 'stores.user_id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0)
+            ->limit(1);
+            // ->where('attendances.status', '!=', 'Off')
+            // ->get();
+
+           /* If filter */
+            if($request['byStoreSpv']){
+                $data = $data->whereIn('stores.id',[$request['byStoreSpv']]);
+            }
+            if($request['byDistrictSpv']){
+                $data = $data->whereIn('districts.id', [$request['byDistrictSpv']]);
+            }
+            if($request['byAreaSpv']){
+                $data = $data->whereIn('areas.id', [$request['byAreaSpv']]);
+            }
+            if($request['byRegionSpv']){
+                $data = $data->whereIn('regions.id', [$request['byRegionSpv']]);
+            }
+            if($request['byEmployeeSpv']){
+                $data = $data->where('attendances.user_id', $request['byEmployeeSpv']);
+            }
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $data = $data->whereIn('region_id', [$regionIds]);
+            }
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $data = $data->whereIn('area_id', [$areaIds]);
+            }
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', [$storeIds]);
+            }
+        $data = $data->get();
+
+        return $data;
+
+    }
+
+    public function attendanceDataDemoC(Request $request){ //Spv Demo
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+                
+
+
+       $month = Carbon::parse($request['searchMonthDemo'])->format('m');
+       $year = Carbon::parse($request['searchMonthDemo'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('spv_demos', 'spv_demos.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'spv_demos.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0)
+            ->limit(1);
+
+           $filter = $data;
+
+           // return $filter->all();
+
+            /* If filter */
+            if($request['byStoreDemo']){
+                $filter = $filter->where('storeId', $request['byStoreDemo']);
+            }
+
+            if($request['byDistrictDemo']){
+                $filter = $filter->where('district_id', $request['byDistrictDemo']);
+            }
+
+            if($request['byAreaDemo']){
+                $filter = $filter->where('area_id', $request['byAreaDemo']);
+            }
+
+            if($request['byRegionDemo']){
+                $filter = $filter->where('region_id', $request['byRegionDemo']);
+            }
+
+            if($request['byEmployeeDemo']){
+                $filter = $filter->where('user_id', $request['byEmployeeDemo']);
+            }
+
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
+            }
+
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
+            }
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
+            }
+
+        $data = $data->get();
+
+        return $data;
+
+    }
+
+    public function attendanceDataOthersC(Request $request){ //Others
+
+       $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC', 'Supervisor', 'Supervisor Hybrid'];
+
+       $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+       $month = Carbon::parse($request['searchMonthSpv'])->format('m');
+       $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
+       $date1 = "$year-$month-01";
+       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
+       $data = Attendance::
+            join('stores', 'attendances.user_id', '=', 'stores.user_id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->whereNotIn('roles.role_group',$promoterGroup)
+            ->where('is_resign',0)
+            ->limit(1);
+
+           /* If filter */
+            
+            if($request['byEmployee']){
+                $data = $data->where('attendances.user_id', $request['byEmployee']);
+            }
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $data = $data->whereIn('region_id', [$regionIds]);
+            }
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $data = $data->whereIn('area_id', [$areaIds]);
+            }
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $data = $data->whereIn('store_id', [$storeIds]);
+            }
+        
+        $data = $data->get();
+
+        return $data;
+
     }
     
     public function visitPlanData(Request $request){
