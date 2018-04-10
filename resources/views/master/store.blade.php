@@ -471,6 +471,12 @@
                         console.log(data);
 
                         window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
                     }
                 });
 

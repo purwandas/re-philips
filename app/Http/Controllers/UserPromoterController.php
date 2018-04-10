@@ -286,10 +286,12 @@ class UserPromoterController extends Controller
      */
     public function store(Request $request)
     {
-//        return response()->json($request->all());
-        $oldUser = User::where('nik', $request->nik);
-        if($oldUser->count() > 0){
-            return response()->json(['error'=>"NIK already exist!"]);
+        // return response()->json($request->all());
+        if (!empty($request['nik'])) {
+            $oldUser = User::where('nik', $request->nik);
+            if($oldUser->count() > 0){
+                return response()->json(['error'=>"NIK already exist!"]);
+            }
         }
 
         $oldUser = User::where('email', $request->email);
@@ -475,11 +477,13 @@ class UserPromoterController extends Controller
     {
 
         // return response()->json($request['store_id']);
-        $user = User::where('nik', $request->nik);
-        if($user->count() > 0){
-            $oldUser = User::find($id);
-            if($oldUser->nik != $request['nik']){
-                return response()->json(['error'=>"NIK already exist!"]);
+        if (!empty($request->nik)) {
+            $user = User::where('nik', $request->nik);
+            if($user->count() > 0){
+                $oldUser = User::find($id);
+                if($oldUser->nik != $request['nik']){
+                    return response()->json(['error'=>"NIK already exist!"]);
+                }
             }
         }
 

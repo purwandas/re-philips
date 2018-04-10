@@ -436,7 +436,7 @@
                     type: 'POST',
                     url: 'util/export-sellout',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
                     beforeSend: function()
@@ -449,7 +449,7 @@
                         icon.attr('class', thisClass);
                         console.log(data);
                         
-                        // window.location = data.url;
+                        window.location = data.url;
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -466,6 +466,12 @@
                         // }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -500,6 +506,12 @@
 
                         window.location = data.url;
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
                     }
                 });
             }

@@ -437,7 +437,7 @@
                     type: 'POST',
                     url: 'util/export-sellin',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
                     beforeSend: function()
@@ -468,6 +468,12 @@
                         // }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -503,6 +509,12 @@
 
                         window.location = data.url;
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
                     }
                 });
             }
