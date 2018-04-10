@@ -47,6 +47,7 @@ use App\Reports\SummarySoh;
 use App\Reports\HistorySoh;
 use DB;
 use Auth;
+use App\VisitPlan;
 
 class ExportController extends Controller
 {
@@ -344,6 +345,124 @@ class ExportController extends Controller
                     $cells->setFontWeight('bold');
                 });
                 $sheet->setBorder('A1:AC1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    //
+    public function exportVisitPlan(Request $request){
+
+        $filename = 'Philips Retail Report Visit Plan ' . Carbon::now()->format('d-m-Y');
+        $data = json_decode($request['data'], true);
+        // $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Visit Plan');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Visit Plan Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('VISIT PLAN', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:L1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportVisitPlan($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:L1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:L1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    //
+    public function exportVisitPlanAll(Request $request){
+
+        $filename = 'Philips Retail Report Visit Plan ' . Carbon::now()->format('d-m-Y');
+        // $data = json_decode($request['data'], true);
+        // $data = $request->data;
+
+        $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->get();
+
+        $filter = $data;
+
+        /* If filter */
+        if($request['searchMonth']){
+            $month = Carbon::parse($request['searchMonth'])->format('m');
+            $year = Carbon::parse($request['searchMonth'])->format('Y');
+            // $filter = $data->where('month', $month)->where('year', $year);
+            $date1 = "$year-$month-01";
+            $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+        }
+
+
+        if($request['byNik']){
+            $filter = $filter->where('user_id', $request['byNik']);
+        }
+
+        if($request['byRole'] != ''){
+            $filter = $filter->where('user_role', $request['byRole']);
+        }
+
+        Excel::create($filename, function($excel) use ($filter) {
+
+            // Set the title
+            $excel->setTitle('Report Visit Plan');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Visit Plan Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('VISIT PLAN', function ($sheet) use ($filter) {
+                $sheet->setAutoFilter('A1:L1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportVisitPlanAll($filter->all()), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:L1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:L1', 'thin');
             });
 
 
