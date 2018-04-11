@@ -47,6 +47,11 @@ use App\Reports\SummarySoh;
 use App\Reports\HistorySoh;
 use DB;
 use Auth;
+use App\VisitPlan;
+use App\News;
+use App\NewsRead;
+use App\ProductKnowledge;
+use App\ProductKnowledgeRead;
 
 class ExportController extends Controller
 {
@@ -344,6 +349,124 @@ class ExportController extends Controller
                     $cells->setFontWeight('bold');
                 });
                 $sheet->setBorder('A1:AC1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    //
+    public function exportVisitPlan(Request $request){
+
+        $filename = 'Philips Retail Report Visit Plan ' . Carbon::now()->format('d-m-Y');
+        $data = json_decode($request['data'], true);
+        // $data = $request->data;
+
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Visit Plan');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Visit Plan Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('VISIT PLAN', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:L1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportVisitPlan($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:L1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:L1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    //
+    public function exportVisitPlanAll(Request $request){
+
+        $filename = 'Philips Retail Report Visit Plan ' . Carbon::now()->format('d-m-Y');
+        // $data = json_decode($request['data'], true);
+        // $data = $request->data;
+
+        $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->get();
+
+        $filter = $data;
+
+        /* If filter */
+        if($request['searchMonth']){
+            $month = Carbon::parse($request['searchMonth'])->format('m');
+            $year = Carbon::parse($request['searchMonth'])->format('Y');
+            // $filter = $data->where('month', $month)->where('year', $year);
+            $date1 = "$year-$month-01";
+            $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+        }
+
+
+        if($request['byNik']){
+            $filter = $filter->where('user_id', $request['byNik']);
+        }
+
+        if($request['byRole'] != ''){
+            $filter = $filter->where('user_role', $request['byRole']);
+        }
+
+        Excel::create($filename, function($excel) use ($filter) {
+
+            // Set the title
+            $excel->setTitle('Report Visit Plan');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Visit Plan Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('VISIT PLAN', function ($sheet) use ($filter) {
+                $sheet->setAutoFilter('A1:L1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportVisitPlanAll($filter->all()), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:L1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:L1', 'thin');
             });
 
 
@@ -3476,6 +3599,183 @@ class ExportController extends Controller
                     $cells->setFontWeight('bold');
                 });
                 $sheet->setBorder('A1:D1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportNewsRead(Request $request){
+
+        $filename = 'Philips Retail Report News Read ' . Carbon::now()->format('d-m-Y');
+        
+        // $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
+        //         ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+        //         ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
+
+        $news = News::where('news.deleted_at', null)
+                    ->where('news.id', $request['id'])
+                    ->join('users', 'news.user_id', '=', 'users.id')
+                    ->select('news.*', 'users.name as user_name')->first();
+
+        $data = NewsRead::where('news_id', $request['id'])
+                    ->join('users', 'news_reads.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'users.role_id')
+                    ->select('news_reads.*', 'users.name as user_name', 'users.nik as user_nik', 'roles.role_group as user_role')->get();
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data, $news) {
+
+            // Set the title
+            $excel->setTitle('News Read');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('News Read Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('News Read', function ($sheet) use ($data, $news) {
+
+                $sheet->setCellValue('D1', 'Space');
+                $sheet->cells('D1', function ($cells) {
+                    $cells->setFontColor('#FFFFFF');
+                });
+
+                $sheet->setCellValue('E1', 'Date');
+                $sheet->setCellValue('F1', ':');
+                $sheet->setCellValue('G1', @$news->date);
+
+                $sheet->setCellValue('E2', 'Sender');
+                $sheet->setCellValue('F2', ':');
+                $sheet->setCellValue('G2', @$news->from);
+
+                $sheet->setCellValue('E3', 'Subject');
+                $sheet->setCellValue('F3', ':');
+                $sheet->setCellValue('G3', @$news->subject);
+
+                $sheet->setCellValue('E4', 'Content');
+                $sheet->setCellValue('F4', ':');
+                $sheet->setCellValue('G4', strip_tags(@$news->content));
+
+                $sheet->cells('E1:G4', function ($cells) {
+                    $cells->setAlignment('left');
+                });
+
+                $sheet->setAutoFilter('A1:C1');
+                // $sheet->setHeight(5, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportNewsRead($data), null, 'A1', true, true);
+                // $sheet->row(1, function ($row) {
+                //     $row->setBackground('#82abde');
+                // });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->cells('E1:E5', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportGuideLineRead(Request $request){
+
+        $filename = 'Philips Retail Report Guideline Read ' . Carbon::now()->format('d-m-Y');
+        
+        // $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
+        //         ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
+        //         ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
+
+        $pk = ProductKnowledge::where('product_knowledges.deleted_at', null)
+                    ->join('users', 'product_knowledges.user_id', '=', 'users.id')
+                    ->select('product_knowledges.*', 'users.name as user_name')->first();
+
+        $data = ProductKnowledgeRead::where('productknowledge_id', $request['id'])
+                    ->join('users', 'product_knowledge_reads.user_id', '=', 'users.id')
+                    ->join('roles', 'roles.id', '=', 'users.role_id')
+                    ->select('product_knowledge_reads.*', 'users.name as user_name', 'users.nik as user_nik', 'roles.role_group as user_role')->get();
+
+        $data = $data->toArray();
+        
+        Excel::create($filename, function($excel) use ($data, $pk) {
+
+            // Set the title
+            $excel->setTitle('Guideline Read');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Guideline Read Data');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Guideline Read', function ($sheet) use ($data, $pk) {
+
+                $sheet->setCellValue('D1', 'Space');
+                $sheet->cells('D1', function ($cells) {
+                    $cells->setFontColor('#FFFFFF');
+                });
+
+                $sheet->setCellValue('E1', 'Date');
+                $sheet->setCellValue('F1', ':');
+                $sheet->setCellValue('G1', @$pk->date);
+
+                $sheet->setCellValue('E2', 'Sender');
+                $sheet->setCellValue('F2', ':');
+                $sheet->setCellValue('G2', @$pk->from);
+
+                $sheet->setCellValue('E3', 'Subject');
+                $sheet->setCellValue('F3', ':');
+                $sheet->setCellValue('G3', @$pk->subject);
+
+                $sheet->setCellValue('E4', 'Type');
+                $sheet->setCellValue('F4', ':');
+                $sheet->setCellValue('G4', @$pk->type);
+
+                $sheet->cells('E1:G4', function ($cells) {
+                    $cells->setAlignment('left');
+                });
+
+                $sheet->setAutoFilter('A1:C1');
+                // $sheet->setHeight(5, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportNewsRead($data), null, 'A1', true, true);
+                // $sheet->row(1, function ($row) {
+                //     $row->setBackground('#82abde');
+                // });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setBackground('#82abde');
+                });
+                $sheet->cells('A1:C1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->cells('E1:E5', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:C1', 'thin');
             });
 
 

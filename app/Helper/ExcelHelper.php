@@ -96,6 +96,50 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportVisitPlan(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NAME' => @$item['user_name'],
+                'NIK' => @$item['user_nik'],
+                'ROLE' => @$item['user_role'],
+                'STORE NAME' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeId'],
+                'DATE' => @$item['date'],
+                'CHECK IN TIME' => @$item['check_in'],
+                'CHECK OUT TIME' => @$item['check_out'],
+                'CHECK IN LOCATION' => @$item['check_in_location'],
+                'CHECK OUT LOCATION' => @$item['check_out_location'],
+                'STATUS' => @$item['visit_status'],
+            ];
+        });
+    }
+
+    public function mapForExportVisitPlanAll(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NAME' => @$item['user_name'],
+                'NIK' => @$item['user_nik'],
+                'ROLE' => @$item['user_role'],
+                'STORE NAME' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['storeId'],
+                'DATE' => @$item['date'],
+                'CHECK IN TIME' => @$item['check_in'],
+                'CHECK OUT TIME' => @$item['check_out'],
+                'CHECK IN LOCATION' => @$item['check_in_location'],
+                'CHECK OUT LOCATION' => @$item['check_out_location'],
+                'STATUS' => (@$item['visit_status'] == 0) ? 'Not Visited' : 'Visited' ,
+            ];
+        });
+    }
+
     public function mapForExportSales(Array $data)
     {
         $collection = collect($data);
@@ -900,6 +944,20 @@ class ExcelHelper
             ];
         });
     }
+
+    public function mapForExportNewsRead(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NIK' => @$item['user_nik'],
+                'NAME' => @$item['user_name'],
+                'ROLE' => @$item['user_role'],
+            ];
+        });
+    }
+
     public function mapForExportProduct(Array $data)
     {
         $collection = collect($data);

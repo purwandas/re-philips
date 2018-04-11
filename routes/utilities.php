@@ -198,6 +198,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/displaysharereport', ['as'=> 'data.displaysharereport','uses'=>'Master\ReportController@displayShareDataAll']);
     Route::post('data/posmactivityreport', ['as'=> 'data.posmactivityreport','uses'=>'Master\ReportController@posmActivityDataAll']);
     Route::post('data/maintenancerequestreport', ['as'=> 'data.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestDataAll']);
+    Route::post('data/visitplanreportC', ['as'=> 'data.visitplanreportC','uses'=>'Master\ReportController@visitPlanDataAllCheck']);
 
 
     /**
@@ -375,6 +376,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-displayshare-all', ['uses'=>'Master\ExportController@exportDisplayShareAll']);
     Route::post('util/export-posm-all', ['uses'=>'Master\ExportController@exportPosmAll']);
     Route::post('util/export-posmactivity-all', ['uses'=>'Master\ExportController@exportPosmActivityAll']);
+    Route::post('util/export-visitplan', ['uses'=>'Master\ExportController@exportVisitPlan']);
+    Route::post('util/export-visitplan-all', ['uses'=>'Master\ExportController@exportVisitPlanAll']);
+    Route::post('util/export-news-read', ['uses'=>'Master\ExportController@exportNewsRead']);
+    Route::post('util/export-guideline-read', ['uses'=>'Master\ExportController@exportGuideLineRead']);
 
 
     /**

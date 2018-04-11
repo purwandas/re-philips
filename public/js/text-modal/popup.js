@@ -16,9 +16,17 @@ $(document).on("click", ".open-read-who-modal", function () {
     var newsId = $(this).data('id');
     var total_read = $(this).data('total-read');
 
+    $('#export').attr("data-id", newsId);
+    $('#export').removeAttr("disabled");
+
+    content.innerHTML = '';
+
     if(total_read == 0){
-        content.innerHTML = "";
+        // content.innerHTML = "";
         content.innerHTML += '<div class="row" style="margin-top: 30px;"><div class="col-md-12" style="text-align: center">No data available</div></div>';
+
+        $('#export').removeAttr("data-id");
+        $('#export').attr("disabled", "disabled");
 
         return;
     }
@@ -64,7 +72,7 @@ $(document).on("click", ".open-read-who-modal", function () {
             // var gapPersen = modalHeight/windowHeight*100;
             // var gap = windowHeight - modalHeight;
             // $("#reader").append("<b>Window: </b>"+windowHeight+"->> <b>Modal: </b>"+modalHeight+"->> <b>Gap: </b>"+gapPersen);
-            $("#read-who-modal").css("top", "25%");
+            $("#read-who-modal").css("top", "30%");
                 // $("#read-who-modal").css({
                 //     'max-height': 'calc(100% - 100px)',
                 //     'position': 'fixed',
