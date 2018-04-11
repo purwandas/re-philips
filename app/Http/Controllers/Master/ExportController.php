@@ -1908,7 +1908,7 @@ class ExportController extends Controller
                             $status .= ','.$value2->status;
                         }
                     }
-                }else if ($param == 2) {
+                }else{
                     $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
                     foreach ($dataDetail as $key => $value2) {
                         $statusAttendance[] = $value2->status;
@@ -1938,10 +1938,6 @@ class ExportController extends Controller
                             }
                         }
                     }
-                }else if ($param == 3) {
-                    # code...
-                }else if ($param == 4) {
-                    # code...
                 }
 
             $value['attendance_detail_excell'] = $status;
