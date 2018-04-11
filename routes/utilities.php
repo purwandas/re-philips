@@ -94,10 +94,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('datatable/attendancereportdemo', ['as'=> 'datatable.attendancereportdemo','uses'=>'Master\ReportController@attendanceDataDemo']);
     Route::post('datatable/attendancereportothers', ['as'=> 'datatable.attendancereportothers','uses'=>'Master\ReportController@attendanceDataOthers']);
 
-    Route::post('data/attendanceDataC', ['as'=> 'data.attendanceDataC','uses'=>'Master\ReportController@attendanceDataC']);
-    Route::post('data/attendanceDataSpvC', ['as'=> 'data.attendanceDataSpvC','uses'=>'Master\ReportController@attendanceDataSpvC']);
-    Route::post('data/attendanceDataDemoC', ['as'=> 'data.attendanceDataDemoC','uses'=>'Master\ReportController@attendanceDataDemoC']);
-    Route::post('data/attendanceDataOthersC', ['as'=> 'data.attendanceDataOthersC','uses'=>'Master\ReportController@attendanceDataOthersC']);
+    
 
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
@@ -192,6 +189,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/sellinreportC', ['as'=> 'data.sellinreportC','uses'=>'Master\ReportController@sellInDataAllCheck']);
     Route::post('data/selloutreport', ['as'=> 'data.selloutreport','uses'=>'Master\ReportController@sellOutDataAll']);
     Route::post('data/selloutreportC', ['as'=> 'data.selloutreportC','uses'=>'Master\ReportController@sellOutDataAllCheck']);
+    Route::post('data/attendanceDataC', ['as'=> 'data.attendanceDataC','uses'=>'Master\ReportController@attendanceDataC']);
+    Route::post('data/attendanceDataSpvC', ['as'=> 'data.attendanceDataSpvC','uses'=>'Master\ReportController@attendanceDataSpvC']);
+    Route::post('data/attendanceDataDemoC', ['as'=> 'data.attendanceDataDemoC','uses'=>'Master\ReportController@attendanceDataDemoC']);
+    Route::post('data/attendanceDataOthersC', ['as'=> 'data.attendanceDataOthersC','uses'=>'Master\ReportController@attendanceDataOthersC']);
+    
     Route::post('data/retdistributorreport', ['as'=> 'data.retdistributorreport','uses'=>'Master\ReportController@retDistributorDataAll']);
     Route::post('data/retconsumentreport', ['as'=> 'data.retconsumentreport','uses'=>'Master\ReportController@retConsumentDataAll']);
     Route::post('data/freeproductreport', ['as'=> 'data.freeproductreport','uses'=>'Master\ReportController@freeproductDataAll']);
@@ -310,7 +312,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-promoactivity', ['uses'=>'Master\ExportController@exportPromoActivity']);
     Route::post('util/export-posmactivity', ['uses'=>'Master\ExportController@exportPosmActivity']);
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
-    Route::post('util/export-attendance-all', ['uses'=>'Master\ExportController@exportAttendanceReportAll']);
+    Route::post('util/export-attendance-all/{param}', ['uses'=>'Master\ExportController@exportAttendanceReportAll']);
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
     Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);

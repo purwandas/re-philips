@@ -4934,28 +4934,37 @@ class ReportController extends Controller
                         ->orderBy('id','asc')
                         ->get()->all();
 
-                        $statusAttendance = '';
+                        $status = '';
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
                     foreach ($dataDetail as $key => $value) {
-                        if ($key==0) {
-                            if (substr($value->date,-2) > 1) {
-                                $joinDate = substr($value->date, -2);
-                                $execOnce = false;
-                            }
+                        $statusAttendance[] = $value->status;
+                        $idAttendance[] = $value->id;
+                        $date = explode('-',$value->date);
+                        $dateAttendance[] = $date[2];
+                    }
+                    // return $statusAttendance;
 
-                            if (isset($joinDate)) {
-                                $statusAttendance .= '-';
-                                for ($jd=1; $jd < $joinDate; $jd++) { 
-                                    $statusAttendance .= ',-';
-                                }
+                    /* Repeat as much as max day in month */
+                    
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=0; $i < $totalDay ; $i++) {                         
+                        if ($i==0) {
+                            if (!empty(array_search((string)($i+1),$dateAttendance))) {
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+                                $status .= $statusAttendance[$checkAttendance];
                             }else{
-                                $statusAttendance .= $value->status;
+                                $status .= 'Alpha';
                             }
                         }else{
-                            $statusAttendance .= ','.$value->status;
+                            if (!empty(array_search((string)($i+1),$dateAttendance))) {
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+                                $status .= ','.$statusAttendance[$checkAttendance];
+                            }else{
+                                $status .= ',Alpha';
+                            }
                         }
                     }
-
-                    return $statusAttendance;
+                    return $status;
                 })
             ->rawColumns(['attendance_details'])
             ->make(true);
@@ -4984,12 +4993,10 @@ class ReportController extends Controller
             ->join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
-            // , 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
             // ->where('attendances.status', '!=', 'Off')
-            // ->get();
 
            $filter = $data;
 
@@ -4997,7 +5004,7 @@ class ReportController extends Controller
 
             /* If filter */
             if($request['byStoreDemo']){
-                $filter = $filter->where('storeId', $request['byStoreDemo']);
+                $filter = $filter->where('stores.store_id', $request['byStoreDemo']);
             }
 
             if($request['byDistrictDemo']){
@@ -5461,7 +5468,7 @@ class ReportController extends Controller
             ->join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0)
             ->limit(1);
@@ -5527,7 +5534,7 @@ class ReportController extends Controller
             ->join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0)
             ->limit(1);
@@ -5593,7 +5600,7 @@ class ReportController extends Controller
             ->join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0)
             ->limit(1);
@@ -5604,7 +5611,7 @@ class ReportController extends Controller
 
             /* If filter */
             if($request['byStoreDemo']){
-                $filter = $filter->where('storeId', $request['byStoreDemo']);
+                $filter = $filter->where('stores.store_id', $request['byStoreDemo']);
             }
 
             if($request['byDistrictDemo']){
@@ -5668,7 +5675,7 @@ class ReportController extends Controller
             ->join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->whereNotIn('roles.role_group',$promoterGroup)
             ->where('is_resign',0)

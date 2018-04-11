@@ -1754,7 +1754,7 @@ class ExportController extends Controller
 
     }
 
-    public function exportAttendanceReportAll(Request $request){
+    public function exportAttendanceReportAll(Request $request, $param){
 
         $filename = 'Philips Retail Report Attendance Report ' . Carbon::now()->format('d-m-Y');
         
@@ -1767,7 +1767,46 @@ class ExportController extends Controller
        $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
        $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
        
-       $data = Attendance::
+       if ($param == 1) { //Promoter
+           $data = Attendance::
+            join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0);
+       }else if ($param == 2) { //Spv
+           $data = Attendance::
+            join('stores', 'attendances.user_id', '=', 'stores.user_id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0);
+       }else if ($param == 3) { //Demonstrator
+           $data = Attendance::
+            join('spv_demos', 'spv_demos.user_id', '=', 'attendances.user_id')
+            ->join('stores', 'spv_demos.store_id', '=', 'stores.id')
+            ->join('districts', 'stores.district_id', '=', 'districts.id')
+            ->join('areas', 'districts.area_id', '=', 'areas.id')
+            ->join('regions', 'areas.region_id', '=', 'regions.id')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('roles','roles.id','users.role_id')
+            ->groupBy('attendances.user_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
+            ->where('is_resign',0);
+       }else if ($param == 4) { //Others
+           $data = Attendance::
             join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
             ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
             ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -1778,6 +1817,8 @@ class ExportController extends Controller
             ->groupBy('attendances.user_id')
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+       }
+       
 
         /* If filter */
         if($request['byStore']){
@@ -1811,10 +1852,7 @@ class ExportController extends Controller
             $data = $data->whereIn('store_id', [$storeIds]);
         }
         $data = $data->get();
-        foreach ($data as $key => $value) {
-            $data->details = "sad";
-        }
-        
+
         // Generate Attendance Details
         $minDate = "$year-$month-01";
         $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
@@ -1849,7 +1887,8 @@ class ExportController extends Controller
                         ->orderBy('id','asc')
                         ->get()->all();
 
-                        $statusAttendance = '';
+                        $status = '';
+                if ($param == 1) {
                     foreach ($dataDetail as $key => $value2) {
                         if ($key==0) {
                             if (substr($value2->date,-2) > 1) {
@@ -1858,22 +1897,58 @@ class ExportController extends Controller
                             }
 
                             if (isset($joinDate)) {
-                                $statusAttendance .= '-';
+                                $status .= '-';
                                 for ($jd=1; $jd < $joinDate; $jd++) { 
-                                    $statusAttendance .= ',-';
+                                    $status .= ',-';
                                 }
                             }else{
-                                $statusAttendance .= $value2->status;
+                                $status .= $value2->status;
                             }
                         }else{
-                            $statusAttendance .= ','.$value2->status;
+                            $status .= ','.$value2->status;
                         }
-                    }                    
-            $value['attendance_detail_excell'] = $statusAttendance;
+                    }
+                }else if ($param == 2) {
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    foreach ($dataDetail as $key => $value2) {
+                        $statusAttendance[] = $value2->status;
+                        $idAttendance[] = $value2->id;
+                        $date = explode('-',$value2->date);
+                        $dateAttendance[] = $date[2];
+                    }
+                    // return $statusAttendance;
+
+                    /* Repeat as much as max day in month */
+                    
+                    $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    for ($i=0; $i < $totalDay ; $i++) {                         
+                        if ($i==0) {
+                            if (!empty(array_search((string)($i+1),$dateAttendance))) {
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+                                $status .= $statusAttendance[$checkAttendance];
+                            }else{
+                                $status .= 'Alpha';
+                            }
+                        }else{
+                            if (!empty(array_search((string)($i+1),$dateAttendance))) {
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+                                $status .= ','.$statusAttendance[$checkAttendance];
+                            }else{
+                                $status .= ',Alpha';
+                            }
+                        }
+                    }
+                }else if ($param == 3) {
+                    # code...
+                }else if ($param == 4) {
+                    # code...
+                }
+
+            $value['attendance_detail_excell'] = $status;
         }
 
+
         $data = $data->toArray();
-        // return $data;
 
         Excel::create($filename, function($excel) use ($data) {
 

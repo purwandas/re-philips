@@ -94,7 +94,7 @@
                                         </div>
                                         <hr>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" id="dataContent">
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="export" class="btn green-dark" >
@@ -457,8 +457,6 @@
                             }else{
                                 $('#exportAll').attr('disabled','disabled');
                             }
-
-                    dataAll = results;
                 }
             });
 
@@ -478,7 +476,6 @@
                                 $('#exportAllSpv').attr('disabled','disabled');
                             }
 
-                    dataAllSpv = results;
                 }
             });
 
@@ -497,8 +494,6 @@
                             }else{
                                 $('#exportAllDemo').attr('disabled','disabled');
                             }
-
-                    dataAllDemo = results;
                 }
             });
 
@@ -516,9 +511,7 @@
                                 $('#exportAllOthers').removeAttr('disabled');
                             }else{
                                 $('#exportAllOthers').attr('disabled','disabled');
-                            }
-
-                    dataAllOthers = results;
+                            }                    
                 }
             });
 
@@ -891,23 +884,105 @@
             // Set to Month now
             $('#filterMonth').val(moment().format('MMMM YYYY'));
             filters['searchMonth'] = $('#filterMonth').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#resetButtonSpv").click( function(){
             // Set to Month now
             $('#filterMonthSpv').val(moment().format('MMMM YYYY'));
             filters['searchMonthSpv'] = $('#filterMonthSpv').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataSpvC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllSpv').removeAttr('disabled');
+                            }else{
+                                $('#exportAllSpv').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#resetButtonDemo").click( function(){
             // Set to Month now
             $('#filterMonthDemo').val(moment().format('MMMM YYYY'));
             filters['searchMonthDemo'] = $('#filterMonthDemo').val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataDemoC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllDemo').removeAttr('disabled');
+                            }else{
+                                $('#exportAllDemo').attr('disabled','disabled');
+                            }
+                }
+            });
+        });
+
+        $("#resetButtonOthers").click( function(){
+            // Set to Month now
+            $('#filterMonthOthers').val(moment().format('MMMM YYYY'));
+            filters['searchMonthOthers'] = $('#filterMonthOthers').val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataOthersC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllOthers').removeAttr('disabled');
+                            }else{
+                                $('#exportAllOthers').attr('disabled','disabled');
+                            }
+                }
+            });
         });
 
         $("#filterButton").click( function(){
-            // Set Table Content
-            $('#dataContentSpv').removeClass('display-hide');
+            $('#dataContent').removeClass('display-hide');
+            $('#dataContentSpv').addClass('display-hide');
+            $('#dataContentDemo').addClass('display-hide');
+            $('#dataContentOthers').addClass('display-hide');
             $.ajax({
                 type: 'POST',
                 url: 'data/attendanceDataC',
@@ -929,6 +1004,12 @@
         });
 
         $("#filterButtonSpv").click( function(){
+            
+            $('#dataContentSpv').removeClass('display-hide');
+            $('#dataContent').addClass('display-hide');
+            $('#dataContentDemo').addClass('display-hide');
+            $('#dataContentOthers').addClass('display-hide');
+
             $.ajax({
                 type: 'POST',
                 url: 'data/attendanceDataSpvC',
@@ -952,6 +1033,9 @@
         $("#filterButtonDemo").click( function(){
             // Set Table Content
             $('#dataContentDemo').removeClass('display-hide');
+            $('#dataContent').addClass('display-hide');
+            $('#dataContentSpv').addClass('display-hide');
+            $('#dataContentOthers').addClass('display-hide');
 
             $.ajax({
                 type: 'POST',
@@ -974,7 +1058,9 @@
         $("#filterButtonOthers").click( function(){
             // Set Table Content
             $('#dataContentOthers').removeClass('display-hide');
-
+            $('#dataContent').addClass('display-hide');
+            $('#dataContentSpv').addClass('display-hide');
+            $('#dataContentDemo').addClass('display-hide');
 
             $.ajax({
                 type: 'POST',
@@ -1066,9 +1152,9 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-spv',
+                    url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
                     beforeSend: function()
@@ -1124,9 +1210,9 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-demo',
+                    url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
                     beforeSend: function()
@@ -1182,9 +1268,9 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-others',
+                    url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
                     beforeSend: function()
@@ -1239,7 +1325,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-all',
+                    url: 'util/export-attendance-all/1',
                     dataType: 'json',
                     data: filters,
                     beforeSend: function()
@@ -1269,6 +1355,127 @@
 
         });
 
+        $("#exportAllSpv").click( function(){
+            var element = $("#exportAllSpv");
+            var icon = $("#exportAllSpvIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
+                // Export data
+                exportFile = '';                
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/2',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+            // console.log('belum dibuat pak');
+
+
+        });
+
+        $("#exportAllDemo").click( function(){
+            var element = $("#exportAllDemo");
+            var icon = $("#exportAllDemoIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';                
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/3',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+            // console.log('belum dibuat pak');
+
+
+        });
+
+        $("#exportAllOthers").click( function(){
+            var element = $("#exportAllOthers");
+            var icon = $("#exportAllOthersIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';                
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/4',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+            // console.log('belum dibuat pak');
+
+
+        });
     </script>
 @endsection
