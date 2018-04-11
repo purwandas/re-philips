@@ -5759,8 +5759,8 @@ class ReportController extends Controller
                 $filter = $filter->where('user_id', $request['byNik']);
             }
 
-            if($request['byRole'] != ''){
-                $filter = $filter->where('roles.role_group', $request['byRole']);
+            if($request['byRole']){
+                $filter = $filter->where('user_role', $request['byRole']);
             }
             
             // if ($userRole == 'RSM') {
@@ -5794,6 +5794,68 @@ class ReportController extends Controller
                 
             })
             ->make(true);
+
+    }
+
+    public function visitPlanDataAllCheck(Request $request){
+
+
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+            $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+
+            if($request['byNik']){
+                $filter = $filter->where('user_id', $request['byNik']);
+            }
+
+            if($request['byRole'] != ''){
+                $filter = $filter->where('roles.role_group', $request['byRole']);
+            }
+            
+            // if ($userRole == 'RSM') {
+            //     $region = RsmRegion::where('user_id', $userId)->get();
+            //     foreach ($region as $key => $value) {
+            //         $filter = $data->where('region_id', $value->region_id);
+            //     }
+            // }
+
+            // if ($userRole == 'DM') {
+            //     $area = DmArea::where('user_id', $userId)->get();
+            //     foreach ($area as $key => $value) {
+            //         $filter = $data->where('area_id', $value->area_id);
+            //     }
+            // }
+            
+            // if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+            //     $store = EmployeeStore::where('user_id', $userId)->get();
+            //     foreach ($store as $key => $value) {
+            //         $filter = $data->where('store_id', $value->store_id);
+            //     }
+            // }
+
+            return $filter->all();
 
     }
 

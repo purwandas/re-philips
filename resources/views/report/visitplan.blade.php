@@ -60,7 +60,7 @@
                 <br>
 
                 <div class="btn-group">
-                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerReset(paramReset)">
+                    <a href="javascript:;" class="btn red-pink" id="resetButton" onclick="triggerResetReport(paramReset)">
                         <i class="fa fa-refresh"></i> Reset </a>
                     <a href="javascript:;" class="btn blue-hoki"  id="filterButton" onclick="filteringReport(paramFilter)">
                         <i class="fa fa-filter"></i> Filter </a>
@@ -76,11 +76,11 @@
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                         </div>
                         <div class="actions" style="text-align: left; padding-right: 10px;">
                             <a id="exportAll" class="btn green-dark" disabled="disabled">
-                                <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                <i id="exportIconAll" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                         </div>
                     </div>
 
@@ -149,15 +149,36 @@
 
         
 
-        var paramFilter = ['visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order];
+        var paramFilter = ['visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order, '#export'];
 
-        var paramReset = [filterId, 'visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order, '#export', '#filterMonth'];
 
         $(document).ready(function () {
 
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Get data district to var data
+            $.ajax({
+                type: 'POST',
+                url: 'data/visitplanreportC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
                 }
             });
 
@@ -220,7 +241,7 @@
             });
 
             $('#filterRole').on('select2:select', function () {
-                self.selected('role', $('#filterRole').val());
+                self.selected('byRole', $('#filterRole').val());
             });
 
 
@@ -267,6 +288,122 @@
 
             // Set Table Content
             // $('#dataContent').removeClass('display-hide');
+
+        });
+
+        $("#export").click( function(){
+
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-visitplan',
+                    dataType: 'json',
+                    data: {data: JSON.stringify(data)},
+                    global: false,
+                    async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+                        
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+            var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-visitplan-all',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
+                    }
+                });
+            }
+            // if ($('#export').attr('disabled') != 'disabled') {
+
+            //     // Export data
+            //     exportFile = '';
+
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: 'util/export-sellout-all',
+            //         dataType: 'json',
+            //         data: filters,
+            //         success: function (data) {
+
+            //             console.log(data);
+
+            //             window.location = data.url;
+
+            //         }
+            //     });
+
+            // }
 
         });
 
