@@ -310,6 +310,13 @@ class StoreController extends Controller
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
         // return response()->json($request->all());
+
+        $exist = Store::where('store_name_1', $request['store_name_1'])->where('no_telp_toko', $request['no_telp_toko'])->where('district_id', $request['district_id'])->first();
+
+        if($exist){
+            return response()->json(['status' => false, 'message' => 'Data store sudah pernah diinput, silahkan cek kembali.']);
+        }        
+
                 try {
                     $storeID = $this->traitGetStoreId();
                     DB::transaction(function () use ($request, $storeID, $user) {
