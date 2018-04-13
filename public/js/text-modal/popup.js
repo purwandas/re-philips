@@ -225,14 +225,15 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
     var title_list = document.getElementById('title-list');
     var content = document.getElementById('content');
     title_modal.innerHTML = $(this).data('title');
-    title_list.innerHTML = "Employee : "+$(this).data('employee-name')+" ("+$(this).data('employee-nik')+")";
+    title_list.innerHTML = "Employee : "+$(this).data('employee-name')+" ("+$(this).data('employee-nik')+")"+
+            "<i id='loadingIcon' class='fa fa-spinner fa-spin' style='float:right;'></i>";
 
     var getDataUrl = $(this).data('url');
     var attendanceId = $(this).data('id');
     content.innerHTML = "";
-    console.log("url: "+getDataUrl+'/'+attendanceId);
+    // console.log("url: "+getDataUrl+'/'+attendanceId);
     $.get(getDataUrl + '/' + attendanceId, function (data) {
-            console.log("data: "+data);
+            // console.log("data: "+data);
         if(data) {
             $.each(data, function() {
 
@@ -294,9 +295,16 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
 
             });
         }
+    })
+    .done(function(){ 
+        $('#loadingIcon').removeClass('fa fa-spinner fa-spin');
+    })
+    .fail(function(){
+        $('#loadingIcon').removeClass('fa fa-spinner fa-spin');
+        alert("Error while loading Store Data");
     });
     $.get(getDataUrl + 'place/' + attendanceId, function (data) {
-            console.log("data place: "+data);
+            // console.log("data place: "+data);
         if(data) {
             $.each(data, function() {
 
@@ -348,6 +356,13 @@ $(document).on("click", ".open-attendance-detail-modal", function () {
 
             });
         }
+    })
+    .done(function(){ 
+        $('#loadingIcon').removeClass('fa fa-spinner fa-spin');
+    })
+    .fail(function(){
+        $('#loadingIcon').removeClass('fa fa-spinner fa-spin');
+        alert("Error while loading Place Data");
     });
 
 });
