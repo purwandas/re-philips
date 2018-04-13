@@ -94,15 +94,15 @@
                                         </div>
                                         <hr>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" id="dataContent">
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="export" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
-                                                <a id="exportAll" class="btn green-dark" disabled >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                <a id="exportAll" class="btn green-dark" disabled>
+                                                    <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -171,11 +171,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="exportSpv" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportSpvIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
                                                 <a id="exportAllSpv" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                    <i id="exportAllSpvIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -244,11 +244,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="exportDemo" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportDemoIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
                                                 <a id="exportAllDemo" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                    <i id="exportAllDemoIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -299,11 +299,11 @@
                                         <div class="portlet-title col-md-12" style="margin-bottom: 15px;padding-right: 0px;">
                                             <div class="actions" style="float: right;">
                                                 <a id="exportOthers" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                                                    <i id="exportOthersIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                                             </div>
                                             <div class="actions" style="float: right; padding-right: 10px;">
                                                 <a id="exportAllOthers" class="btn green-dark" >
-                                                    <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                                                    <i id="exportAllOthersIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                                             </div>
                                         </div>
 
@@ -439,6 +439,79 @@
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataSpvC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllSpv').removeAttr('disabled');
+                            }else{
+                                $('#exportAllSpv').attr('disabled','disabled');
+                            }
+
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataDemoC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllDemo').removeAttr('disabled');
+                            }else{
+                                $('#exportAllDemo').attr('disabled','disabled');
+                            }
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataOthersC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllOthers').removeAttr('disabled');
+                            }else{
+                                $('#exportAllOthers').attr('disabled','disabled');
+                            }                    
                 }
             });
 
@@ -811,36 +884,210 @@
             // Set to Month now
             $('#filterMonth').val(moment().format('MMMM YYYY'));
             filters['searchMonth'] = $('#filterMonth').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#resetButtonSpv").click( function(){
             // Set to Month now
             $('#filterMonthSpv').val(moment().format('MMMM YYYY'));
             filters['searchMonthSpv'] = $('#filterMonthSpv').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataSpvC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllSpv').removeAttr('disabled');
+                            }else{
+                                $('#exportAllSpv').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#resetButtonDemo").click( function(){
             // Set to Month now
             $('#filterMonthDemo').val(moment().format('MMMM YYYY'));
             filters['searchMonthDemo'] = $('#filterMonthDemo').val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataDemoC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllDemo').removeAttr('disabled');
+                            }else{
+                                $('#exportAllDemo').attr('disabled','disabled');
+                            }
+                }
+            });
+        });
+
+        $("#resetButtonOthers").click( function(){
+            // Set to Month now
+            $('#filterMonthOthers').val(moment().format('MMMM YYYY'));
+            filters['searchMonthOthers'] = $('#filterMonthOthers').val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataOthersC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllOthers').removeAttr('disabled');
+                            }else{
+                                $('#exportAllOthers').attr('disabled','disabled');
+                            }
+                }
+            });
+        });
+
+        $("#filterButton").click( function(){
+            $('#dataContent').removeClass('display-hide');
+            $('#dataContentSpv').addClass('display-hide');
+            $('#dataContentDemo').addClass('display-hide');
+            $('#dataContentOthers').addClass('display-hide');
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#filterButtonSpv").click( function(){
-            // Set Table Content
+            
             $('#dataContentSpv').removeClass('display-hide');
+            $('#dataContent').addClass('display-hide');
+            $('#dataContentDemo').addClass('display-hide');
+            $('#dataContentOthers').addClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataSpvC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllSpv').removeAttr('disabled');
+                            }else{
+                                $('#exportAllSpv').attr('disabled','disabled');
+                            }
+
+                }
+            });
+
         });
         $("#filterButtonDemo").click( function(){
             // Set Table Content
             $('#dataContentDemo').removeClass('display-hide');
+            $('#dataContent').addClass('display-hide');
+            $('#dataContentSpv').addClass('display-hide');
+            $('#dataContentOthers').addClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataDemoC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllDemo').removeAttr('disabled');
+                            }else{
+                                $('#exportAllDemo').attr('disabled','disabled');
+                            }
+                }
+            });
         });
         $("#filterButtonOthers").click( function(){
             // Set Table Content
             $('#dataContentOthers').removeClass('display-hide');
+            $('#dataContent').addClass('display-hide');
+            $('#dataContentSpv').addClass('display-hide');
+            $('#dataContentDemo').addClass('display-hide');
+
+            $.ajax({
+                type: 'POST',
+                url: 'data/attendanceDataOthersC',
+                dataType: 'json',
+                data: filters,
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAllOthers').removeAttr('disabled');
+                            }else{
+                                $('#exportAllOthers').attr('disabled','disabled');
+                            }
+
+                }
+            });
         });
 
         $("#export").click( function(){
 
-            if ($('#export').attr('disabled') != 'disabled') {
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -849,11 +1096,17 @@
                     type: 'POST',
                     url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -873,6 +1126,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -883,20 +1142,29 @@
 
         $("#exportSpv").click( function(){
 
-            if ($('#exportSpv').attr('disabled') != 'disabled') {
+            var element = $("#exportSpv");
+            var icon = $("#exportSpvIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-spv',
+                    url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -916,6 +1184,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -926,20 +1200,29 @@
 
         $("#exportDemo").click( function(){
 
-            if ($('#exportDemo').attr('disabled') != 'disabled') {
+            var element = $("#exportDemo");
+            var icon = $("#exportDemoIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-demo',
+                    url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -959,6 +1242,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -969,20 +1258,29 @@
 
         $("#exportOthers").click( function(){
 
-            if ($('#exportOthers').attr('disabled') != 'disabled') {
+            var element = $("#exportOthers");
+            var icon = $("#exportOthersIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
 
                 $.ajax({
                     type: 'POST',
-                    url: 'util/export-attendance-others',
+                    url: 'util/export-attendance',
                     dataType: 'json',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     global: false,
                     async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
-
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
                         console.log(data);
 
                         window.location = data.url;
@@ -1002,6 +1300,12 @@
                         }, 1000);
 
 
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 
@@ -1011,31 +1315,167 @@
         });
 
         $("#exportAll").click( function(){
+            var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
-            // if ($('#exportAll').attr('disabled') != 'disabled') {
+                // Export data
+                exportFile = '';                
 
-            //     // Export data
-            //     exportFile = '';                
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/1',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
 
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: 'util/export-attendance-all',
-            //         dataType: 'json',
-            //         data: filters,
-            //         success: function (data) {
-            //             console.log(data);
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
 
-            //             window.location = data.url;
-            //         }
-            //     });
+            }
 
-            // }
-
-            console.log('belum dibuat pak');
+            // console.log('belum dibuat pak');
 
 
         });
 
+        $("#exportAllSpv").click( function(){
+            var element = $("#exportAllSpv");
+            var icon = $("#exportAllSpvIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
 
+                // Export data
+                exportFile = '';                
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/2',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+            // console.log('belum dibuat pak');
+
+
+        });
+
+        $("#exportAllDemo").click( function(){
+            var element = $("#exportAllDemo");
+            var icon = $("#exportAllDemoIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';                
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/3',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+            // console.log('belum dibuat pak');
+
+
+        });
+
+        $("#exportAllOthers").click( function(){
+            var element = $("#exportAllOthers");
+            var icon = $("#exportAllOthersIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';                
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-attendance-all/4',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+            // console.log('belum dibuat pak');
+
+
+        });
     </script>
 @endsection
