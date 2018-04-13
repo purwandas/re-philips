@@ -23,6 +23,7 @@ use App\SpvDemo;
 use App\TrainerArea;
 use App\Traits\PromoterTrait;
 use DB;
+use App\SalesmanDedicate;
 
 class SOHController extends Controller
 {
@@ -103,10 +104,44 @@ class SOHController extends Controller
                                             ->where('id', $data['product_id'])->first();
 
                                 /* Price */
+                                // $realPrice = 0;
+                                // $price = Price::where('product_id', $product->id)
+                                //             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                //             ->where('sell_type', 'Sell In')->first();
+
+                                // if($price){
+                                //     $realPrice = $price->price;
+                                // }
+
+                                /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                            ->where('sell_type', 'Sell In')->first();
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -166,6 +201,7 @@ class SOHController extends Controller
                                     $subChannel = '';
                                 }
 
+
                                 SummarySOH::create([
                                     'soh_detail_id' => $detail->id,
                                     'region_id' => $store->district->area->region->id,
@@ -177,8 +213,8 @@ class SOHController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    'channel' => $store->subChannel->channel->name,
-                                    'sub_channel' => $store->subChannel->name,
+                                    'channel' => $channel,
+                                    'sub_channel' => $subChannel,
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
@@ -286,10 +322,44 @@ class SOHController extends Controller
                                             ->where('id', $detail->product_id)->first();
 
                                 /* Price */
+                                // $realPrice = 0;
+                                // $price = Price::where('product_id', $product->id)
+                                //             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                //             ->where('sell_type', 'Sell In')->first();
+
+                                // if($price){
+                                //     $realPrice = $price->price;
+                                // }
+
+                                /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                            ->where('sell_type', 'Sell In')->first();
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -337,6 +407,18 @@ class SOHController extends Controller
                                     }
                                 }
 
+                                    if (isset($store->subChannel->channel->name)){
+                                        $channel = $store->subChannel->channel->name;
+                                    }else{
+                                        $channel = '';
+                                    }
+
+                                    if (isset($store->subChannel->name)){
+                                        $subChannel = $store->subChannel->name;
+                                    }else{
+                                        $subChannel = '';
+                                    }
+
                                 SummarySOH::create([
                                     'soh_detail_id' => $detail->id,
                                     'region_id' => $store->district->area->region->id,
@@ -348,8 +430,8 @@ class SOHController extends Controller
                                     'distributor_code' => $distributor_code,
                                     'distributor_name' => $distributor_name,
                                     'region' => $store->district->area->region->name,
-                                    'channel' => $store->subChannel->channel->name,
-                                    'sub_channel' => $store->subChannel->name,
+                                    'channel' => $channel,
+                                    'sub_channel' => $subChannel,
                                     'area' => $store->district->area->name,
                                     'district' => $store->district->name,
                                     'store_name_1' => $store->store_name_1,
