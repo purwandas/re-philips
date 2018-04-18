@@ -98,6 +98,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
+    
     Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);
     Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
     Route::post('datatable/salesactivityreport', ['as'=> 'datatable.salesactivityreport','uses'=>'Master\ReportController@salesActivityData']);
@@ -208,6 +209,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/posmactivityreport', ['as'=> 'data.posmactivityreport','uses'=>'Master\ReportController@posmActivityDataAll']);
     Route::post('data/maintenancerequestreport', ['as'=> 'data.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestDataAll']);
     Route::post('data/visitplanreportC', ['as'=> 'data.visitplanreportC','uses'=>'Master\ReportController@visitPlanDataAllCheck']);
+    Route::post('data/salesmanreportAll', ['as'=> 'data.salesmanreportAll','uses'=>'Master\ReportController@salesmanDataAll']);
+    Route::post('data/salesmanreportAllC', ['as'=> 'data.salesmanreportAllC','uses'=>'Master\ReportController@salesmanDataAllCheck']);
 
 
     /**
@@ -316,6 +319,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
     Route::post('util/export-attendance-all/{param}', ['uses'=>'Master\ExportController@exportAttendanceReportAll']);
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
+    Route::post('util/export-salesman-all', ['uses'=>'Master\ExportController@exportSalesmanAll']);
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
     Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
