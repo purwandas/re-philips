@@ -172,7 +172,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
     Route::post('data/feedbackCategory', ['as'=> 'data.feedbackCategory','uses'=>'Master\FeedbackCategoryController@getDataWithFilters']);
     Route::post('data/feedbackQuestion', ['as'=> 'data.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
-    Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
+    Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackAnswerController@getDataWithFilters']);
+    Route::post('data/feedbackAnswerC', ['as'=> 'data.feedbackAnswerC','uses'=>'Master\FeedbackAnswerController@getDataWithFiltersCheck']);
     Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
     Route::post('data/groupcompetitorC', ['as'=> 'data.groupcompetitorC','uses'=>'Master\GroupCompetitorController@getDataWithFiltersCheck']);
 
@@ -388,6 +389,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-visitplan-all', ['uses'=>'Master\ExportController@exportVisitPlanAll']);
     Route::post('util/export-news-read', ['uses'=>'Master\ExportController@exportNewsRead']);
     Route::post('util/export-guideline-read', ['uses'=>'Master\ExportController@exportGuideLineRead']);
+    Route::post('util/export-feedbackanswer', ['uses'=>'Master\ExportController@exportFeedbackAnswer']);
+    Route::post('util/export-feedbackanswer-all', ['uses'=>'Master\ExportController@exportFeedbackAnswerAll']);
 
 
     /**

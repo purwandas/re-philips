@@ -73,6 +73,14 @@
                     <i class="fa fa-map-o font-blue"></i>
                     <span class="caption-subject font-blue bold uppercase">Feedback Answer</span>
                 </div>
+                <div class="actions" style="text-align: left">
+                            <a id="export" class="btn green-dark" >
+                                <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                        </div>
+                        <div class="actions" style="text-align: left; padding-right: 10px;">
+                            <a id="exportAll" class="btn green-dark" >
+                                <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                        </div>
             </div>
             <div class="portlet-body" style="padding: 15px;">
                 <!-- MAIN CONTENT -->
@@ -137,6 +145,8 @@
      *
      */
 
+        var dataAll = {};
+
         var filterId = ['#filterAssessor', '#filterPromoter'];
         var url = 'datatable/feedbackAnswer';
         var order = [ [0, 'desc'] ];
@@ -154,8 +164,11 @@
                 {data: 'answer', name: 'answer'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},              
             ];
-        var paramFilter = ['feedbackAnswerTable', $('#feedbackAnswerTable'), url, tableColumns, columnDefs, order];
-        var paramReset = [filterId, 'feedbackAnswerTable', $('#feedbackAnswerTable'), url, tableColumns, columnDefs, order];
+
+        var exportButton = '#export';
+
+        var paramFilter = ['feedbackAnswerTable', $('#feedbackAnswerTable'), url, tableColumns, columnDefs, order, exportButton];
+        var paramReset = [filterId, 'feedbackAnswerTable', $('#feedbackAnswerTable'), url, tableColumns, columnDefs, order, exportButton];
 
 
     $(document).ready(function () {
@@ -166,6 +179,27 @@
             }
         });
 
+        // Get data district to var data
+        $.ajax({
+            type: 'POST',
+            url: 'data/feedbackAnswerC',
+            data: filters,
+            dataType: 'json',
+            global: false,
+            async: false,
+            success: function (results) {
+                var count = results.length;
+
+                        if(count > 0){
+                            $('#exportAll').removeAttr('disabled');
+                        }else{
+                            $('#exportAll').attr('disabled','disabled');
+                        }
+
+                dataAll = results;
+            }
+        });
+
         // Set data for Data Table
         var table = $('#feedbackAnswerTable').dataTable({
             "processing": true,
@@ -173,22 +207,24 @@
             "ajax": {
                 url: "{{ route('datatable.feedbackAnswer') }}",
                 type: 'POST',
+                dataSrc: function (res) {
+                        var count = res.data.length;
+                        console.log(count);
+
+                        if(count > 0){
+                            $('#export').removeAttr('disabled');
+                        }else{
+                            $('#export').attr('disabled','disabled');
+                        }
+
+                        this.data = res.data;
+                        return res.data;
+                    },
             },
             "rowId": "id",
-            "columns": [
-                {data: 'id', name: 'id'},
-                {data: 'assessor_name', name: 'assessor_name'},
-                {data: 'promoter_name', name: 'promoter_name'},
-                {data: 'feedback_category', name: 'feedback_category'},
-                {data: 'feedback_question', name: 'feedback_question'},
-                {data: 'answer', name: 'answer'},
-                {data: 'action', name: 'action', searchable: false, sortable: false},
-            ],
-            "columnDefs": [
-                {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [2,3,5,6]},
-            ],
-            "order": [ [0, 'desc'] ],
+            "columns": tableColumns,
+            "columnDefs": columnDefs,
+            "order": order,
         });
 
 
@@ -227,6 +263,28 @@
                             url:  'feedbackAnswer/' + id,
                             success: function (data) {
                                 $("#"+id).remove();
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'data/feedbackAnswerC',
+                                    data: filters,
+                                    dataType: 'json',
+                                    global: false,
+                                    async: false,
+                                    success: function (results) {
+                                        var count = results.length;
+
+                                                if(count > 0){
+                                                    $('#exportAll').removeAttr('disabled');
+                                                    $('#export').removeAttr('disabled');
+                                                }else{
+                                                    $('#exportAll').attr('disabled','disabled');
+                                                    $('#export').attr('disabled','disabled');
+                                                }
+
+                                        dataAll = results;
+                                    }
+                                });
                             },
                             error: function (data) {
                                 console.log('Error:', data);
@@ -374,6 +432,120 @@
 
 
         }
+
+    $("#export").click( function(){
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-feedbackanswer',
+                    dataType: 'json',
+                    data: {data: JSON.stringify(data)},
+                    global: false,
+                    async: false,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+
+        });
+
+    $("#exportAll").click( function(){
+            var element = $("#export");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-feedbackanswer-all',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
+                    }
+                });
+
+            }
+
+
+        });
 
 </script>
 @endsection

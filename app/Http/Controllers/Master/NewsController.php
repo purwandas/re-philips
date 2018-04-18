@@ -37,7 +37,7 @@ class NewsController extends Controller
 
         $data = News::where('news.deleted_at', null)
                     ->where('from', '<>', 'notification')
-        			->join('users', 'news.user_id', '=', 'users.id')
+                    ->join('users', 'news.user_id', '=', 'users.id')
                     ->select('news.*', 'users.name as user_name')->get();
 
         return $this->makeTable($data);
@@ -92,11 +92,14 @@ class NewsController extends Controller
                     }else if($item->target_type == 'Promoter'){
 
                         $data = explode(',' , $item->target_detail);
-                        foreach ($data as $dataSplit) { 
+                        $data2 = array_unique($data);
+                        // $result = implode(" ",$data2);
+                        
+                        foreach ($data2 as $dataSplit) { 
 
                             $user = User::find(trim($dataSplit));
-                            $result .= $user->name;
-                            if($dataSplit != end($data)){
+                            if($user) $result .= $user->name;
+                            if($dataSplit != end($data2)){
                                 $result .= ", ";
                             }
 
@@ -322,7 +325,7 @@ class NewsController extends Controller
         }
 
         $news = News::find($id);
-    	$news->update($request->all());        
+        $news->update($request->all());        
 
         return response()->json(
             [

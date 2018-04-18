@@ -25,15 +25,17 @@ class SuggestionOrderController extends Controller
 {
     use ApmTrait;
     use StringTrait;
-
+    
     public function mailTes()
     {   
-        $data['email'] = "teserahaaja@gmail.com";
+        $data['email'] = "allandayanda@gmail.com";//"kholil.ibnu@gmail.com";
         $data['store'] = "XCY";
         Mail::send('mail.tes', $data, function($message) use ($data){
             $message->to($data['email']);
             $message->subject('Suggestion Order (SO) Toko '.$data['store']);
         });
+        
+        return response()->json($data['email']);
     }
 
     public function oos(Request $request){
@@ -79,6 +81,7 @@ class SuggestionOrderController extends Controller
         $data['data'] = $content['data'];
         $data['date'] = $this->convertDateTime(Carbon::now());
         $data['email'] = [$content['owner'],$spvMail];
+        // return response()->json($data);
         Mail::send('mail.suggestion-order', $data, function($message) use ($data){
             $message->to($data['email']);
             $message->subject('Suggestion Order (SO) Toko '.$data['store']);
@@ -166,6 +169,7 @@ class SuggestionOrderController extends Controller
                        // $products->push($test);
 
                        // continue;
+
 
                         if ($poNeededQty > 0) {
 
