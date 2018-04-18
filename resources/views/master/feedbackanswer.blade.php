@@ -492,7 +492,7 @@
         });
 
     $("#exportAll").click( function(){
-            var element = $("#export");
+            var element = $("#exportAll");
             var icon = $("#exportIcon");
             if (element.attr('disabled') != 'disabled') {
                 var thisClass = icon.attr('class');
