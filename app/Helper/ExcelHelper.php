@@ -738,6 +738,22 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportFeedbackAnswer(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'NO.' => @$item['id'],
+                'ASSESSOR' => @$item['assessor_name'],
+                'PROMOTER' => @$item['promoter_name'],
+                'CATEGORY' => @$item['feedback_category'],
+                'QUESTION' => @$item['feedback_question'],
+                'SCORE' => @$item['answer'],                
+            ];
+        });
+    }
+
     public function mapForExportDistrict(Array $data)
     {
         $collection = collect($data);

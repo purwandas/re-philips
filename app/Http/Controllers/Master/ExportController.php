@@ -52,6 +52,7 @@ use App\News;
 use App\NewsRead;
 use App\ProductKnowledge;
 use App\ProductKnowledgeRead;
+use App\FeedbackAnswer;
 
 class ExportController extends Controller
 {
@@ -2350,6 +2351,108 @@ class ExportController extends Controller
                     $cells->setFontWeight('bold');
                 });
                 $sheet->setBorder('A1:C1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+
+    public function exportFeedbackAnswer(Request $request){
+
+        $filename = 'Philips Retail Report Feedback Answer ' . Carbon::now()->format('d-m-Y');
+        $data = json_decode($request['data'], true);
+        
+        Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Feedback Answer');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Feedback Answer Report');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Report Answer Report', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:F1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportFeedbackAnswer($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:F1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:F1', 'thin');
+            });
+
+
+        })->store('xlsx', public_path('exports/excel'));
+
+        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+
+    }
+
+    public function exportFeedbackAnswerAll(Request $request){
+
+        $filename = 'Philips Retail Report Feedback Answer ' . Carbon::now()->format('d-m-Y');
+        
+        $data = FeedbackAnswer::where('feedback_answers.deleted_at', null)
+                    ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'assessors.id')
+                    ->join('users as promoters', 'feedback_answers.promoter_id', '=', 'promoters.id')
+                    ->join('feedback_questions', 'feedback_answers.feedbackQuestion_id', '=', 'feedback_questions.id')
+                    ->join('feedback_categories', 'feedback_questions.feedbackCategory_id', '=', 'feedback_categories.id')
+                    ->select('feedback_answers.*', 'assessors.name as assessor_name', 'promoters.name as promoter_name', 'feedback_questions.question as feedback_question', 'feedback_categories.name as feedback_category')->get();
+
+        $filter = $data;
+
+        /* If filter */
+            if($request['byAssesssor']){
+                $filter = $data->where('assessor_id', $request['byAssesssor']);
+            }
+
+            if($request['byPromoter']){
+                $filter = $data->where('promoter_id', $request['byPromoter']);
+            }
+        
+        Excel::create($filename, function($excel) use ($filter) {
+
+            // Set the title
+            $excel->setTitle('Report Feedback Answer');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Feedback Answer Report');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('Report Answer Report', function ($sheet) use ($filter) {
+                $sheet->setAutoFilter('A1:F1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportFeedbackAnswer($filter->all()), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:F1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:F1', 'thin');
             });
 
 
