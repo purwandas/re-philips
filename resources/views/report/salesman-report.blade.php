@@ -435,7 +435,7 @@
                         icon.attr('class', thisClass);
                         console.log(data);
 
-                        window.location = data.url;
+                        // window.location = data.url;
 
                         // setTimeout(function () {
                         //     $.ajax({
