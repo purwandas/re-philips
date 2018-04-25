@@ -71,7 +71,7 @@ class ExportController extends Controller
         $data = json_decode($request['data'], true);
         // $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Sell Thru');
@@ -102,9 +102,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -323,7 +323,7 @@ class ExportController extends Controller
             $filter->all();
             $data = $filter->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Sell Thru');
@@ -354,9 +354,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -367,7 +367,7 @@ class ExportController extends Controller
         $data = json_decode($request['data'], true);
         // $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Visit Plan');
@@ -398,9 +398,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -441,7 +441,7 @@ class ExportController extends Controller
             $filter = $filter->where('user_role', $request['byRole']);
         }
 
-        Excel::create($filename, function($excel) use ($filter) {
+        $excel = Excel::create($filename, function($excel) use ($filter) {
 
             // Set the title
             $excel->setTitle('Report Visit Plan');
@@ -472,9 +472,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -484,7 +484,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Sell Out');
@@ -515,9 +515,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -741,7 +741,7 @@ class ExportController extends Controller
             $filter->all();
             $data = $filter->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Sell Out');
@@ -772,9 +772,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -784,7 +784,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Ret. Consument');
@@ -815,9 +815,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -827,7 +827,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Ret. Consument');
@@ -858,9 +858,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -870,7 +870,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Ret. Distributor');
@@ -901,9 +901,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -913,7 +913,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Ret. Distributor');
@@ -944,9 +944,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -956,7 +956,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Free Product');
@@ -987,9 +987,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -999,7 +999,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Free Product');
@@ -1030,9 +1030,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1042,7 +1042,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report TBAT');
@@ -1073,9 +1073,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1085,7 +1085,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report TBAT');
@@ -1116,9 +1116,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1127,7 +1127,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report SOH ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report SOH');
@@ -1158,9 +1158,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1379,7 +1379,7 @@ class ExportController extends Controller
 
         $data = $filter->all();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report SOH');
@@ -1410,9 +1410,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1421,7 +1421,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report SOS ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report SOS');
@@ -1452,9 +1452,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1463,7 +1463,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Display Share ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Display Share');
@@ -1494,9 +1494,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1505,7 +1505,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Display Share ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Display Share');
@@ -1536,9 +1536,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1547,7 +1547,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Maintenance Request ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Maintenance Request');
@@ -1578,9 +1578,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1589,7 +1589,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Competitor Activity ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Competitor Activity');
@@ -1620,9 +1620,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1631,7 +1631,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Competitor Activity ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Competitor Activity');
@@ -1662,9 +1662,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1673,7 +1673,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Promo Activity ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Promo Activity');
@@ -1704,9 +1704,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1715,7 +1715,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Promo Activity ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Promo Activity');
@@ -1746,9 +1746,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1757,7 +1757,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report POSM Activity ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report POSM Activity');
@@ -1788,9 +1788,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1799,7 +1799,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report POSM Activity ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report POSM Activity');
@@ -1830,9 +1830,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -1842,7 +1842,7 @@ class ExportController extends Controller
         // $data = $request->data;
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Attendance');
@@ -1873,9 +1873,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2071,7 +2071,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Attendance');
@@ -2102,9 +2102,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2113,7 +2113,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Achievement Report ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Achievement');
@@ -2144,9 +2144,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     public function deleteExport(Request $request){
@@ -2167,7 +2167,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Salesman Sales ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Salesman');
@@ -2198,9 +2198,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2392,7 +2392,7 @@ class ExportController extends Controller
 
         }
 
-        Excel::create($filename, function($excel) use ($dataExcel) {
+        $excel = Excel::create($filename, function($excel) use ($dataExcel) {
 
             // Set the title
             $excel->setTitle('Report Salesman');
@@ -2423,9 +2423,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2434,7 +2434,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Salesman Achievement Report ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Salesman Achievement');
@@ -2465,9 +2465,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2477,7 +2477,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Area ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Area');
@@ -2508,9 +2508,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2549,7 +2549,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Area');
@@ -2580,9 +2580,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2592,7 +2592,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Feedback Answer ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report Feedback Answer');
@@ -2623,9 +2623,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2651,7 +2651,7 @@ class ExportController extends Controller
                 $filter = $data->where('promoter_id', $request['byPromoter']);
             }
 
-        Excel::create($filename, function($excel) use ($filter) {
+        $excel = Excel::create($filename, function($excel) use ($filter) {
 
             // Set the title
             $excel->setTitle('Report Feedback Answer');
@@ -2682,9 +2682,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2799,7 +2799,8 @@ class ExportController extends Controller
             });
 
 
-        })->strings('xlsx');
+        })->string('xlsx');
+
         return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
     }
 
@@ -2809,7 +2810,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Store');
@@ -2840,9 +2841,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -2853,7 +2854,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Store');
@@ -2884,9 +2885,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -2944,7 +2945,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Store');
@@ -2975,9 +2976,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -2988,7 +2989,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Channel');
@@ -3019,9 +3020,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3035,7 +3036,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Channel');
@@ -3066,9 +3067,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3079,7 +3080,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Subchannel');
@@ -3110,9 +3111,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3127,7 +3128,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Subchannel');
@@ -3158,9 +3159,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3169,7 +3170,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Distributor ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Distributor');
@@ -3200,9 +3201,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3214,7 +3215,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Distributor');
@@ -3245,9 +3246,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3258,7 +3259,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Place');
@@ -3289,9 +3290,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3303,7 +3304,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Place');
@@ -3334,9 +3335,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3347,7 +3348,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Leadtime');
@@ -3378,9 +3379,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3391,7 +3392,7 @@ class ExportController extends Controller
         $data = Leadtime::join('areas', 'areas.id', '=', 'leadtimes.area_id')
                     ->select('leadtimes.*', 'areas.name as area_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Leadtime');
@@ -3422,9 +3423,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3438,7 +3439,7 @@ class ExportController extends Controller
         $area = Area::join('regions', 'regions.id', '=', 'areas.region_id')
                 ->select('areas.id', 'areas.name', 'regions.name as region_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data, $area) {
+        $excel = Excel::create($filename, function($excel) use ($data, $area) {
 
             // Set the title
             $excel->setTitle('Master Data Leadtime');
@@ -3485,9 +3486,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3496,7 +3497,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Timegone ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Timegone');
@@ -3527,9 +3528,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3539,7 +3540,7 @@ class ExportController extends Controller
 
         $data = TimeGone::get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Timegone');
@@ -3570,9 +3571,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3582,7 +3583,7 @@ class ExportController extends Controller
 
         $data = TimeGone::get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Timegone');
@@ -3616,9 +3617,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3627,7 +3628,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data User Promoter ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data User Promoter');
@@ -3658,9 +3659,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3712,7 +3713,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data User Promoter');
@@ -3743,9 +3744,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3754,7 +3755,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data User Non Promoter ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data User Non Promoter');
@@ -3785,9 +3786,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3844,7 +3845,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data User Non Promoter');
@@ -3875,9 +3876,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3888,7 +3889,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Group');
@@ -3919,9 +3920,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -3935,7 +3936,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Group');
@@ -3966,9 +3967,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -3979,7 +3980,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Category');
@@ -4010,9 +4011,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4026,7 +4027,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Category');
@@ -4057,9 +4058,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4083,7 +4084,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data, $news) {
+        $excel = Excel::create($filename, function($excel) use ($data, $news) {
 
             // Set the title
             $excel->setTitle('News Read');
@@ -4146,9 +4147,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4171,7 +4172,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data, $pk) {
+        $excel = Excel::create($filename, function($excel) use ($data, $pk) {
 
             // Set the title
             $excel->setTitle('Guideline Read');
@@ -4234,9 +4235,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4247,7 +4248,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Product');
@@ -4278,9 +4279,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4296,7 +4297,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Product');
@@ -4327,9 +4328,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4340,7 +4341,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Price');
@@ -4379,9 +4380,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4395,7 +4396,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Price');
@@ -4434,9 +4435,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4450,7 +4451,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Price');
@@ -4488,9 +4489,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4501,7 +4502,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Target');
@@ -4532,9 +4533,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4546,7 +4547,7 @@ class ExportController extends Controller
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
                     ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Target');
@@ -4577,9 +4578,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4591,7 +4592,7 @@ class ExportController extends Controller
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
                     ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Target');
@@ -4625,9 +4626,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4638,7 +4639,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Product Focus');
@@ -4669,9 +4670,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4684,7 +4685,7 @@ class ExportController extends Controller
 
         $data = $data->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Product Focus');
@@ -4715,9 +4716,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4726,7 +4727,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data Product Promo Tracking ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Product Promo Tracking');
@@ -4757,9 +4758,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4770,7 +4771,7 @@ class ExportController extends Controller
         $data = ProductPromos::join('products', 'product_promos.product_id', '=', 'products.id')
                     ->select('product_promos.*', 'products.name as product_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Product Promo Tracking');
@@ -4801,9 +4802,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4820,7 +4821,7 @@ class ExportController extends Controller
                     ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
                     ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data, $products) {
+        $excel = Excel::create($filename, function($excel) use ($data, $products) {
 
             // Set the title
             $excel->setTitle('Master Data Product Promo Tracking');
@@ -4867,9 +4868,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4890,7 +4891,7 @@ class ExportController extends Controller
 
         // return $products;
 
-        Excel::create($filename, function($excel) use ($data, $products) {
+        $excel = Excel::create($filename, function($excel) use ($data, $products) {
 
             // Set the title
             $excel->setTitle('Master Data Product Focus');
@@ -4939,9 +4940,9 @@ class ExportController extends Controller
 
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -4952,7 +4953,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Salesman Target');
@@ -4983,9 +4984,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -4996,7 +4997,7 @@ class ExportController extends Controller
         $data = SalesmanTarget::join('users', 'salesman_targets.user_id', '=', 'users.id')
                     ->select('salesman_targets.*', 'users.name as salesman_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Salesman Target');
@@ -5027,9 +5028,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5040,7 +5041,7 @@ class ExportController extends Controller
         $data = SalesmanTarget::join('users', 'salesman_targets.user_id', '=', 'users.id')
                     ->select('salesman_targets.*', 'users.name as salesman_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Salesman Target');
@@ -5074,9 +5075,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5087,7 +5088,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Salesman Product Focus');
@@ -5118,9 +5119,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5130,7 +5131,7 @@ class ExportController extends Controller
 
         $data = SalesmanProductFocuses::join('products', 'salesman_product_focuses.product_id', '=', 'products.id')->select('salesman_product_focuses.*', 'products.name as product_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Salesman Product Focus');
@@ -5161,9 +5162,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5179,7 +5180,7 @@ class ExportController extends Controller
                     ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
                     ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data, $products) {
+        $excel = Excel::create($filename, function($excel) use ($data, $products) {
 
             // Set the title
             $excel->setTitle('Master Data Salesman Product Focus');
@@ -5226,9 +5227,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5239,7 +5240,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data POSM');
@@ -5270,9 +5271,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5284,7 +5285,7 @@ class ExportController extends Controller
             ->select('posms.*', 'groups.name as group_name')->get()->toArray();
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data POSM');
@@ -5315,9 +5316,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5328,7 +5329,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Group Competitor');
@@ -5359,9 +5360,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5373,7 +5374,7 @@ class ExportController extends Controller
                     ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
                     ->select('group_competitors.*', 'groups.id as group_id', 'groups.name as group_name')->get()->toArray();
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Group Competitor');
@@ -5404,9 +5405,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5417,7 +5418,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data News');
@@ -5448,9 +5449,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5461,7 +5462,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Guidelines(Product Knowledge)');
@@ -5492,9 +5493,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5505,7 +5506,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Faq');
@@ -5536,9 +5537,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5549,7 +5550,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Quiz');
@@ -5580,9 +5581,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5593,7 +5594,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Fanspage');
@@ -5624,9 +5625,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
     //
@@ -5637,7 +5638,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data Message To Admin');
@@ -5668,9 +5669,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5681,7 +5682,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Konfigurasi Promoter');
@@ -5712,9 +5713,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5725,7 +5726,7 @@ class ExportController extends Controller
 
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Konfigurasi Store');
@@ -5756,9 +5757,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5767,7 +5768,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report APM ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report APM');
@@ -5798,9 +5799,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5820,7 +5821,7 @@ class ExportController extends Controller
                     ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get()->toArray();
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report APM');
@@ -5851,9 +5852,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 
@@ -5873,7 +5874,7 @@ class ExportController extends Controller
                     ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get()->toArray();
 
 
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Report APM');
@@ -5904,9 +5905,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
     }
 }

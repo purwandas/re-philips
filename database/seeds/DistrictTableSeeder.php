@@ -13,7 +13,7 @@ class DistrictTableSeeder extends Seeder
     {
       $faker = Faker\Factory::create('id_ID');
 
-      for($i = 0; $i < 1000; $i++) {
+      for($i = 0; $i < 10000; $i++) {
         App\District::create([
           'area_id'=> rand(1, 99),
           'name' => $faker->city,
