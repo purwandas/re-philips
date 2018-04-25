@@ -44,8 +44,12 @@
                         <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                 </div>
                 <div class="actions" style="text-align: left; padding-right: 10px;">
-                    <a id="exportAll" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                    <a onclick="event.preventDefault();document.getElementById('exportAll-form').submit();" class="btn green-dark">
+                      <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL)
+                    </a>
+                    <form id="exportAll-form" action="{{ url('util/export-area-all') }}" method="POST" style="display: none;">
+                      {{ csrf_field() }}
+                    </form>
                 </div>
             </div>
 

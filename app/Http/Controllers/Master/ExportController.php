@@ -109,9 +109,9 @@ class ExportController extends Controller
     }
 
     public function exportSellInAll(Request $request){
-        
+
         $filename = 'Philips Retail Report Sell Thru ' . Carbon::now()->format('d-m-Y');
-        
+
             // Check data summary atau history
             $monthNow = Carbon::now()->format('m');
             $yearNow = Carbon::now()->format('Y');
@@ -126,7 +126,7 @@ class ExportController extends Controller
                 $yearRequest = $date[0];
                 // return "apa2";
             }
-            
+
             $userRole = Auth::user()->role->role_group;
             $userId = Auth::user()->id;
 
@@ -155,7 +155,7 @@ class ExportController extends Controller
                 }
 
                 $data = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"));
-                
+
                 $filter = $data;
 
                 if($request['byRegion']){
@@ -265,7 +265,7 @@ class ExportController extends Controller
 
                 }
 
-                $filter = $historyData;            
+                $filter = $historyData;
 
                 /* If filter */
                 if($request['searchMonth']){
@@ -524,7 +524,7 @@ class ExportController extends Controller
     public function exportSellOutAll(Request $request){
 
         $filename = 'Philips Retail Report Sell Out ' . Carbon::now()->format('d-m-Y');
-        
+
         // Check data summary atau history
         $monthNow = Carbon::now()->format('m');
         $yearNow = Carbon::now()->format('Y');
@@ -544,7 +544,7 @@ class ExportController extends Controller
             // return "apa3";
         }
 
-        
+
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
@@ -572,7 +572,7 @@ class ExportController extends Controller
             }
 
             $data = SummarySellOut::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_outs.*, LEFT(date, 10) as date"));
-            
+
             $filter = $data;
 
             if($request['byRegion']){
@@ -694,7 +694,7 @@ class ExportController extends Controller
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             }
-            
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1186,7 +1186,7 @@ class ExportController extends Controller
             $yearRequest = $yearNow;
             // return "apa3";
         }
-        
+
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
@@ -1215,7 +1215,7 @@ class ExportController extends Controller
 
             $filter = SummarySoh::select(DB::raw("summary_sohs.*, LEFT(date, 10) as date"))->whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'");
 
-            /* If filter */           
+            /* If filter */
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1333,7 +1333,7 @@ class ExportController extends Controller
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             }
-            
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1667,7 +1667,7 @@ class ExportController extends Controller
         return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
 
     }
-    
+
     public function exportPromoActivity(Request $request){
 
         $filename = 'Philips Retail Report Promo Activity ' . Carbon::now()->format('d-m-Y');
@@ -1882,7 +1882,7 @@ class ExportController extends Controller
     public function exportAttendanceReportAll(Request $request, $param){
 
         $filename = 'Philips Retail Report Attendance Report ' . Carbon::now()->format('d-m-Y');
-        
+
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
@@ -1891,7 +1891,7 @@ class ExportController extends Controller
        $date1 = "$year-$month-01";
        $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
        $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-       
+
        if ($param == 1) { //Promoter
            $data = Attendance::
             join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
@@ -1943,7 +1943,7 @@ class ExportController extends Controller
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
        }
-       
+
 
         /* If filter */
         if($request['byStore']){
@@ -2023,7 +2023,7 @@ class ExportController extends Controller
 
                             if (isset($joinDate)) {
                                 $status .= '-';
-                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                for ($jd=1; $jd < $joinDate; $jd++) {
                                     $status .= ',-';
                                 }
                             }else{
@@ -2044,9 +2044,9 @@ class ExportController extends Controller
                     // return $statusAttendance;
 
                     /* Repeat as much as max day in month */
-                    
+
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-                    for ($i=0; $i < $totalDay ; $i++) {                         
+                    for ($i=0; $i < $totalDay ; $i++) {
                         if ($i==0) {
                             if (!empty(array_search((string)($i+1),$dateAttendance))) {
                                 $checkAttendance = array_search((string)($i),$dateAttendance);
@@ -2207,7 +2207,7 @@ class ExportController extends Controller
     public function exportSalesmanAll(Request $request){
 
         $filename = 'Philips Retail Report Salesman Sales ' . Carbon::now()->format('d-m-Y');
-        
+
         // Check data summary atau history
         $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
@@ -2248,8 +2248,8 @@ class ExportController extends Controller
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }            
-            
+            }
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -2347,8 +2347,8 @@ class ExportController extends Controller
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }            
-            
+            }
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -2476,7 +2476,7 @@ class ExportController extends Controller
 
         $filename = 'Philips Retail Master Data Area ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -2517,10 +2517,10 @@ class ExportController extends Controller
     public function exportAreaAll(){
 
         $filename = 'Philips Retail Master Data Area ' . Carbon::now()->format('d-m-Y');
-        
+
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
-        
+
         $data = Area::join('regions', 'areas.region_id', '=', 'regions.id')
                 ->select('areas.*', 'regions.name as region_name')
                 ->get();
@@ -2538,7 +2538,7 @@ class ExportController extends Controller
                         ->pluck('dm_areas.area_id');
             $data = $data->whereIn('id', $area);
         }
-            
+
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('user_id', $userId)
                         ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -2548,7 +2548,7 @@ class ExportController extends Controller
         }
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -2591,7 +2591,7 @@ class ExportController extends Controller
 
         $filename = 'Philips Retail Report Feedback Answer ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -2632,7 +2632,7 @@ class ExportController extends Controller
     public function exportFeedbackAnswerAll(Request $request){
 
         $filename = 'Philips Retail Report Feedback Answer ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = FeedbackAnswer::where('feedback_answers.deleted_at', null)
                     ->join('users as assessors', 'feedback_answers.assessor_id', '=', 'assessors.id')
                     ->join('users as promoters', 'feedback_answers.promoter_id', '=', 'promoters.id')
@@ -2650,7 +2650,7 @@ class ExportController extends Controller
             if($request['byPromoter']){
                 $filter = $data->where('promoter_id', $request['byPromoter']);
             }
-        
+
         Excel::create($filename, function($excel) use ($filter) {
 
             // Set the title
@@ -2694,9 +2694,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data District ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
 
-
-        
-        Excel::create($filename, function($excel) use ($data) {
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data District');
@@ -2727,10 +2725,9 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
+        })->string('xlsx');
 
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
-
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
     }
 
     public function exportDistrictAll(){
@@ -2738,7 +2735,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data District ' . Carbon::now()->format('d-m-Y');
 
         $userRole = Auth::user()->role->role_group;
-        $userId = Auth::user()->id;       
+        $userId = Auth::user()->id;
 
         $data = District::join('areas', 'districts.area_id', '=', 'areas.id')
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
@@ -2760,7 +2757,7 @@ class ExportController extends Controller
                         ->pluck('districts.id');
             $data = $data->whereIn('id', $area);
         }
-            
+
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('user_id', $userId)
                         ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -2770,8 +2767,8 @@ class ExportController extends Controller
         }
 
         $data = $data->toArray();
-        
-        Excel::create($filename, function($excel) use ($data) {
+
+        $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
             $excel->setTitle('Master Data District');
@@ -2802,15 +2799,13 @@ class ExportController extends Controller
             });
 
 
-        })->store('xlsx', public_path('exports/excel'));
-
-        return response()->json(['url' => 'exports/excel/'.$filename.'.xlsx', 'file' => $filename]);
-
+        })->strings('xlsx');
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
     }
 
     //
     public function exportStore(Request $request){
-        
+
         $filename = 'Philips Retail Master Data Store ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
 
@@ -2857,7 +2852,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -2902,7 +2897,7 @@ class ExportController extends Controller
         // GET DATA
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
-        
+
         $data = Store::filter($filters)
                     ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
                     ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
@@ -2938,7 +2933,7 @@ class ExportController extends Controller
                         ->pluck('stores.id');
             $data = $data->whereIn('id', $area);
         }
-            
+
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('user_id', $userId)
                         ->pluck('stores.id');
@@ -2948,7 +2943,7 @@ class ExportController extends Controller
         // return response()->json($data);
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -2992,7 +2987,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3039,7 +3034,7 @@ class ExportController extends Controller
                 ->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3083,7 +3078,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3124,14 +3119,14 @@ class ExportController extends Controller
     public function exportSubchannelAll(){
 
         $filename = 'Philips Retail Master Data Subchannel ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = SubChannel::join('channels', 'sub_channels.channel_id', '=', 'channels.id')
                 ->join('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                 ->select('sub_channels.*', 'channels.name as channel_name', 'global_channels.name as globalchannel_name')
                 ->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3173,7 +3168,7 @@ class ExportController extends Controller
 
         $filename = 'Philips Retail Master Data Distributor ' . Carbon::now()->format('d-m-Y');
         $data = $request->data;
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3214,7 +3209,7 @@ class ExportController extends Controller
     public function exportDistributorAll(){
 
         $filename = 'Philips Retail Master Data Distributor ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Distributor::get();
 
         $data = $data->toArray();
@@ -3262,7 +3257,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3303,7 +3298,7 @@ class ExportController extends Controller
     public function exportPlaceAll(){
 
         $filename = 'Philips Retail Master Data Place ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Place::get();
 
         $data = $data->toArray();
@@ -3351,7 +3346,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3392,10 +3387,10 @@ class ExportController extends Controller
     public function exportLeadtimeAll(){
 
         $filename = 'Philips Retail Master Data Leadtime ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Leadtime::join('areas', 'areas.id', '=', 'leadtimes.area_id')
                     ->select('leadtimes.*', 'areas.name as area_name')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3436,13 +3431,13 @@ class ExportController extends Controller
     public function exportLeadtimeTemplate(){
 
         $filename = 'Philips Retail Master Data Leadtime ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Leadtime::join('areas', 'areas.id', '=', 'leadtimes.area_id')
                     ->select('leadtimes.*', 'areas.name as area_name')->get()->toArray();
 
         $area = Area::join('regions', 'regions.id', '=', 'areas.region_id')
                 ->select('areas.id', 'areas.name', 'regions.name as region_name')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data, $area) {
 
             // Set the title
@@ -3541,9 +3536,9 @@ class ExportController extends Controller
     public function exportTimegoneAll(){
 
         $filename = 'Philips Retail Master Data Timegone ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = TimeGone::get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3584,9 +3579,9 @@ class ExportController extends Controller
     public function exportTimegoneTemplate(){
 
         $filename = 'Philips Retail Master Data Timegone ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = TimeGone::get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3631,7 +3626,7 @@ class ExportController extends Controller
 
         $filename = 'Philips Retail Master Data User Promoter ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3669,12 +3664,12 @@ class ExportController extends Controller
 
     }
 
-    public function exportUserPromoterAll(UserFilters $filters){ 
-        
+    public function exportUserPromoterAll(UserFilters $filters){
+
         $filename = 'Philips Retail Master Data User Promoter ' . Carbon::now()->format('d-m-Y');
 
         $userRole = Auth::user()->role->role_group;
-        $userId = Auth::user()->id; 
+        $userId = Auth::user()->id;
 
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
 
@@ -3706,7 +3701,7 @@ class ExportController extends Controller
                         ->pluck('users.id');
             $data = $data->whereIn('id', $area);
         }
-            
+
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('stores.user_id', $userId)
                         ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
@@ -3716,7 +3711,7 @@ class ExportController extends Controller
         }
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3758,7 +3753,7 @@ class ExportController extends Controller
 
         $filename = 'Philips Retail Master Data User Non Promoter ' . Carbon::now()->format('d-m-Y');
         $data = json_decode($request['data'], true);
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3801,7 +3796,7 @@ class ExportController extends Controller
         $filename = 'Philips Retail Master Data User Non Promoter ' . Carbon::now()->format('d-m-Y');
 
         $userRole = Auth::user()->role->role_group;
-        $userId = Auth::user()->id;       
+        $userId = Auth::user()->id;
 
         $roles = ['Promoter','Promoter Additional','Promoter Event','Demonstrator MCC','Demonstrator DA','ACT','PPE','BDT','Salesman Explorer','SMD','SMD Coordinator','HIC','HIE','SMD Additional','ASC'];
 
@@ -3838,7 +3833,7 @@ class ExportController extends Controller
                         ->pluck('users.id');
             $data = $data->whereIn('id', $area);
         }
-            
+
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('stores.user_id', $userId)
                         ->join('employee_stores', 'stores.id', '=', 'employee_stores.store_id')
@@ -3848,7 +3843,7 @@ class ExportController extends Controller
         }
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3892,7 +3887,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3933,13 +3928,13 @@ class ExportController extends Controller
     public function exportGroupAll(){
 
         $filename = 'Philips Retail Master Data Group ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Group::join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
                 ->select('groups.*', 'group_products.name as groupproduct_name')
                 ->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -3983,7 +3978,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4024,13 +4019,13 @@ class ExportController extends Controller
     public function exportCategoryAll(){
 
         $filename = 'Philips Retail Master Data Category ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
                 ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
                 ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4071,7 +4066,7 @@ class ExportController extends Controller
     public function exportNewsRead(Request $request){
 
         $filename = 'Philips Retail Report News Read ' . Carbon::now()->format('d-m-Y');
-        
+
         // $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
         //         ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
         //         ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
@@ -4087,7 +4082,7 @@ class ExportController extends Controller
                     ->select('news_reads.*', 'users.name as user_name', 'users.nik as user_nik', 'roles.role_group as user_role')->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data, $news) {
 
             // Set the title
@@ -4160,7 +4155,7 @@ class ExportController extends Controller
     public function exportGuideLineRead(Request $request){
 
         $filename = 'Philips Retail Report Guideline Read ' . Carbon::now()->format('d-m-Y');
-        
+
         // $data = Category::filter($filters)->join('groups', 'categories.group_id', '=', 'groups.id')
         //         ->join('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
         //         ->select('categories.*', 'groups.name as group_name', 'group_products.name as groupproduct_name')->get();
@@ -4175,7 +4170,7 @@ class ExportController extends Controller
                     ->select('product_knowledge_reads.*', 'users.name as user_name', 'users.nik as user_nik', 'roles.role_group as user_role')->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data, $pk) {
 
             // Set the title
@@ -4251,7 +4246,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4292,7 +4287,7 @@ class ExportController extends Controller
     public function exportProductAll(){
 
         $filename = 'Philips Retail Master Data Product ' . Carbon::now()->format('d-m-Y');
-        
+
     $data = Product::join('categories', 'products.category_id', '=', 'categories.id')
                 ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
                 ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
@@ -4300,7 +4295,7 @@ class ExportController extends Controller
                 ->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4344,7 +4339,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4393,13 +4388,13 @@ class ExportController extends Controller
     public function exportPriceAll(PriceFilters $filters){
 
         $filename = 'Philips Retail Master Data Price ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Price::filter($filters)->join('products', 'prices.product_id', '=', 'products.id')
                     ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
                     ->select('prices.*', 'products.name as product_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'), 'global_channels.name as globalchannel_name')->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4448,7 +4443,7 @@ class ExportController extends Controller
     public function exportPriceTemplate(PriceFilters $filters){
 
         $filename = 'Philips Retail Master Data Price ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Price::filter($filters)->join('products', 'prices.product_id', '=', 'products.id')
                     ->join('global_channels', 'prices.globalchannel_id', '=', 'global_channels.id')
                     ->select('prices.*', 'products.name as product_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'), 'global_channels.name as globalchannel_name')->get();
@@ -4505,7 +4500,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4544,13 +4539,13 @@ class ExportController extends Controller
     }
 
     public function exportTargetAll(TargetFilters $filters){
-        
+
         $filename = 'Philips Retail Master Data Target ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Target::filter($filters)->join('users', 'targets.user_id', '=', 'users.id')
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
                     ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4589,13 +4584,13 @@ class ExportController extends Controller
     }
 
     public function exportTargetTemplate(TargetFilters $filters){
-        
+
         $filename = 'Philips Retail Master Data Target ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Target::filter($filters)->join('users', 'targets.user_id', '=', 'users.id')
                     ->join('stores', 'targets.store_id', '=', 'stores.id')
                     ->select('targets.*', 'users.name as promoter_name', 'stores.store_name_1', 'stores.store_name_2')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4642,7 +4637,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4683,12 +4678,12 @@ class ExportController extends Controller
     public function exportProductFocusAll(){
 
         $filename = 'Philips Retail Master Data Product Focus ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = ProductFocuses::join('products', 'product_focuses.product_id', '=', 'products.id')
                 ->select('product_focuses.*', 'products.name as product_name')->get();
 
         $data = $data->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4815,7 +4810,7 @@ class ExportController extends Controller
     public function exportProductPromoTemplate(){
 
         $filename = 'Philips Retail Master Data Product Promo Tracking ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = ProductPromos::join('products', 'product_promos.product_id', '=', 'products.id')
                     ->select('product_promos.*', 'products.name as product_name')->get()->toArray();
 
@@ -4881,7 +4876,7 @@ class ExportController extends Controller
     public function exportProductFocusTemplate(){
 
         $filename = 'Philips Retail Master Data Product Focus ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = ProductFocuses::join('products', 'product_focuses.product_id', '=', 'products.id')
                 ->select('product_focuses.*', 'products.name as product_name')->get();
 
@@ -4894,7 +4889,7 @@ class ExportController extends Controller
                     ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get()->toArray();
 
         // return $products;
-        
+
         Excel::create($filename, function($excel) use ($data, $products) {
 
             // Set the title
@@ -4941,7 +4936,7 @@ class ExportController extends Controller
                 });
             });
 
-            
+
 
 
         })->store('xlsx', public_path('exports/excel'));
@@ -4956,7 +4951,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -4997,10 +4992,10 @@ class ExportController extends Controller
     public function exportSalesmanTargetAll(){
 
         $filename = 'Philips Retail Master Data Salesman Target ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = SalesmanTarget::join('users', 'salesman_targets.user_id', '=', 'users.id')
                     ->select('salesman_targets.*', 'users.name as salesman_name')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5041,10 +5036,10 @@ class ExportController extends Controller
     public function exportSalesmanTargetTemplate(){
 
         $filename = 'Philips Retail Master Data Salesman Target ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = SalesmanTarget::join('users', 'salesman_targets.user_id', '=', 'users.id')
                     ->select('salesman_targets.*', 'users.name as salesman_name')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5091,7 +5086,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5132,9 +5127,9 @@ class ExportController extends Controller
     public function exportSalesmanProductFocusAll(){
 
         $filename = 'Philips Retail Master Data Salesman Product Focus ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = SalesmanProductFocuses::join('products', 'salesman_product_focuses.product_id', '=', 'products.id')->select('salesman_product_focuses.*', 'products.name as product_name')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5175,7 +5170,7 @@ class ExportController extends Controller
     public function exportSalesmanProductFocusTemplate(Request $request){
 
         $filename = 'Philips Retail Master Data Salesman Product Focus ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = SalesmanProductFocuses::join('products', 'salesman_product_focuses.product_id', '=', 'products.id')->select('salesman_product_focuses.*', 'products.name as product_name')->get()->toArray();
 
         $products = Product::where('products.deleted_at', null)
@@ -5183,7 +5178,7 @@ class ExportController extends Controller
                     ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
                     ->leftJoin('group_products', 'groups.groupproduct_id', '=', 'group_products.id')
                     ->select('products.*', 'categories.name as category_name', 'groups.name as group_name', 'group_products.name as groupproduct_name', DB::raw('CONCAT(products.model, "/", products.variants) AS product_model'))->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data, $products) {
 
             // Set the title
@@ -5243,7 +5238,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5284,11 +5279,11 @@ class ExportController extends Controller
     public function exportPosmAll(){
 
         $filename = 'Philips Retail Master Data POSM ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = Posm::join('groups', 'posms.group_id', '=', 'groups.id')
             ->select('posms.*', 'groups.name as group_name')->get()->toArray();
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5332,7 +5327,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5373,11 +5368,11 @@ class ExportController extends Controller
     public function exportGroupCompetitorAll(){
 
         $filename = 'Philips Retail Master Data Group Competitor ' . Carbon::now()->format('d-m-Y');
-        
+
         $data = GroupCompetitor::join('groupcompetitor_groups', 'group_competitors.id', '=', 'groupcompetitor_groups.groupcompetitor_id')
                     ->join('groups', 'groupcompetitor_groups.group_id', '=', 'groups.id')
                     ->select('group_competitors.*', 'groups.id as group_id', 'groups.name as group_name')->get()->toArray();
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5421,7 +5416,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5465,7 +5460,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5509,7 +5504,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5553,7 +5548,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5597,7 +5592,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5641,7 +5636,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5685,7 +5680,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5729,7 +5724,7 @@ class ExportController extends Controller
         $data = $request->data;
 
 
-        
+
         Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
@@ -5821,7 +5816,7 @@ class ExportController extends Controller
                     ->join('products', 'apms.product_id', '=', 'products.id')
                     ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
                     ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
-                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                     ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get()->toArray();
 
 
@@ -5874,7 +5869,7 @@ class ExportController extends Controller
                     ->join('products', 'apms.product_id', '=', 'products.id')
                     ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
                     ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
-                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')                    
+                    ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
                     ->select('apms.*', 'stores.store_name_1 as store_name', 'stores.store_id as re_store_id', 'products.name as product_name', 'districts.name as district', 'areas.name as area', 'regions.name as region', 'global_channels.name as global_channel', 'channels.name as channel', 'sub_channels.name as sub_channel')->get()->toArray();
 
 
