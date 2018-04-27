@@ -2897,7 +2897,7 @@ class ExportController extends Controller
         // GET DATA
         $userRole = Auth::user()->role;
         $userId = Auth::user()->id;
-
+        
         $data = Store::filter($filters)
                     ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
                     ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
@@ -2933,7 +2933,7 @@ class ExportController extends Controller
                         ->pluck('stores.id');
             $data = $data->whereIn('id', $area);
         }
-
+            
         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
             $store = Store::where('user_id', $userId)
                         ->pluck('stores.id');
@@ -2943,7 +2943,7 @@ class ExportController extends Controller
         // return response()->json($data);
 
         $data = $data->toArray();
-
+        
         $excel = Excel::create($filename, function($excel) use ($data) {
 
             // Set the title
