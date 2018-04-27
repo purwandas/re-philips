@@ -348,9 +348,12 @@
                     async: false,
                     success: function (data) {
 
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         setTimeout(function () {
                             $.ajax({
@@ -389,9 +392,12 @@
                     data: filters,
                     success: function (data) {
 
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                     }
                 });
