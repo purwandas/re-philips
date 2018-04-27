@@ -44,8 +44,10 @@
                         <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                 </div>
                 <div class="actions" style="text-align: left; padding-right: 10px;">
-                    <a id="exportAll" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                    <!-- <a onclick="event.preventDefault();document.getElementById('exportAll-form').submit();" class="btn green-dark"> -->
+                    <a id="exportAll" class="btn green-dark">
+                      <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL)
+                    </a>
                 </div>
             </div>
 
@@ -246,10 +248,12 @@
                     global: false,
                     async: false,
                     success: function (data) {
-
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -275,26 +279,28 @@
         });
 
         $("#exportAll").click( function(){
-
+        
             if ($('#exportAll').attr('disabled') != 'disabled') {
-
+        
                 // Export data
                 exportFile = '';
-
+        
                 $.ajax({
                     type: 'POST',
                     url: 'util/export-district-all',
                     dataType: 'json',
                     success: function (data) {
-
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
                     }
                 });
-
+        
             }
-
+        
         });
 
     });
