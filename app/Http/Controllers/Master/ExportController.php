@@ -773,9 +773,8 @@ class ExportController extends Controller
 
 
         })->string('xlsx');
-
+        
         return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
-
     }
 
     public function exportRetConsument(Request $request){
@@ -2725,7 +2724,7 @@ class ExportController extends Controller
             });
 
 
-        })->string('xlsx');
+        })->string('xlsx')->remember(10);
 
         return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
     }
