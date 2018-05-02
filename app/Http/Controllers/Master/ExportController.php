@@ -426,10 +426,18 @@ class ExportController extends Controller
             $date1 = "$year-$month-01";
             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+        }else if($request['searchDate']){
+            $date1 = $request['searchDate'];
+            $date2 = $date1;
+            // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+        }else{
+            $month = Carbon::now()->format('m');
+            $year = Carbon::now()->format('Y');
+            $date1 = "$year-$month-01";
+            $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
         }
-
+        $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
 
         if($request['byNik']){
             $filter = $filter->where('user_id', $request['byNik']);
@@ -2000,7 +2008,7 @@ class ExportController extends Controller
                 }
             $value['total_hk'] = $hk;
 
-                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+                    $statusA = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
 
                     $dataDetail = Attendance::
                         select('attendances.*')
@@ -2012,23 +2020,106 @@ class ExportController extends Controller
 
                         $status = '';
                 if ($param == 1) {
-                    foreach ($dataDetail as $key => $value2) {
-                        if ($key==0) {
-                            if (substr($value2->date,-2) > 1) {
-                                $joinDate = substr($value2->date, -2);
-                                $execOnce = false;
-                            }
+                    // foreach ($dataDetail as $key => $value2) {
+                    //     if ($key==0) {
+                    //         if (substr($value2->date,-2) > 1) {
+                    //             $joinDate = substr($value2->date, -2);
+                    //             $execOnce = false;
+                    //         }
 
-                            if (isset($joinDate)) {
-                                $status .= '-';
-                                for ($jd=1; $jd < $joinDate; $jd++) { 
-                                    $status .= ',-';
+                    //         if (isset($joinDate)) {
+                    //             $status .= '-';
+                    //             for ($jd=1; $jd < $joinDate; $jd++) { 
+                    //                 $status .= ',-';
+                    //             }
+                    //         }else{
+                    //             $status .= $value2->status;
+                    //         }
+                    //     }else{
+                    //         $status .= ','.$value2->status;
+                    //     }
+                    // }
+                    if ($value->user_role == 'Salesman Explorer') {
+                        $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                        foreach ($dataDetail as $key => $value2) {
+                            $statusAttendance[] = $value2->status;
+                            $date = explode('-',$value2->date);
+                            $dateAttendance[] = $date[2];
+                        }
+
+                        /* Repeat as much as max day in month */
+                        $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                        for ($i=1; $i <= $totalDay ; $i++) {                         
+                            
+                            if (!empty(array_search((string)($i),$dateAttendance))) {
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+                                foreach ($statusA as $key => $value2) {
+                                    if (isset($statusAttendance[$checkAttendance-1])) {
+                                        if ($value2 == $statusAttendance[$checkAttendance-1]) {
+                                            $status .= ','.$value2;
+                                            break;
+                                        }
+                                    }
                                 }
                             }else{
-                                $status .= $value2->status;
+                                $status .= ', Alpha';
                             }
-                        }else{
-                            $status .= ','.$value2->status;
+                        }
+                    }else{
+                        $dateAttendance = [];
+                        foreach ($dataDetail as $key => $value2) {
+                            $statusAttendance[] = $value2->status;
+                            $idAttendance[] = $value2->id;
+                            $dateAttendance[] = $value2->date;
+
+                            if ($key == 0) {
+                                if (substr($value2->date,-2) > 1) {
+                                    $joinDate = substr($value2->date, -2);//tanggal dia masuk, tanggal berapa
+                                    $execOnce = false;
+                                }
+                            }
+                        }
+
+                        /* Repeat as much as max day in month */
+                        
+                        // return $startNumber;
+                        $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                        if (isset($joinDate)) {
+                            $totalDay -= ($joinDate-1);
+                        }
+                        for ($i=1; $i <= $totalDay ; $i++) { 
+
+                            $index = 0;
+                            foreach ($statusA as $key => $value2) {
+                                // $index = $key;
+                                if (isset($statusAttendance[$i-1])) {
+                                    if ($value2 == $statusAttendance[$i-1]) {
+                                        $index = $key;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            $dateNow = Carbon::now()->format('Y-m-d');
+                            $dateNow = explode('-', $dateNow);
+                            $dateI = date("$year-$month-$i");
+                            $dateI = explode('-', $dateI);
+
+
+                            // if ($dateI[2] > $dateNow[2]) {
+                            $indexz = $i;
+                                if (isset($joinDate)) {
+                                    $indexz = $i + $joinDate - 1;
+                                }
+                            
+                            if (isset($joinDate) && $execOnce==false) {
+                                for ($jd=1; $jd < $joinDate; $jd++) { 
+                                    $status .= ',Alpha';
+                                }
+                                $execOnce = true;
+                            }
+
+                            $status .= ",".$statusA[$index];
                         }
                     }
                 }else{
@@ -2039,7 +2130,6 @@ class ExportController extends Controller
                         $date = explode('-',$value2->date);
                         $dateAttendance[] = $date[2];
                     }
-                    // return $statusAttendance;
 
                     /* Repeat as much as max day in month */
                     
