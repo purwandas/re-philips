@@ -62,6 +62,13 @@ class FeedbackAnswerController extends Controller
         return $data;
     }
 
+    public function getDataWithFiltersCheck(FeedbackAnswerFilters $filters){
+        $data = FeedbackAnswer::filter($filters)->limit(1)->get();
+
+        return response()->json($data);
+    }
+
+
     // Datatable template
     public function makeTable($data){
 

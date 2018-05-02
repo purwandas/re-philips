@@ -449,9 +449,12 @@
 
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -505,9 +508,12 @@
 
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                     },
                     error: function(xhr, textStatus, errorThrown){

@@ -385,9 +385,9 @@ class AchievementController extends Controller
 
             // return Carbon::now()->format('d');
 
-        // $this->generateSellInMonth();
-        // $this->generateSellOutMonth();
-        return $this->generateSOHMonth($param);
+        $this->generateSellInMonth($param);
+        $this->generateSellOutMonth($param);
+        $this->generateSOHMonth($param);
 
     }
 

@@ -98,6 +98,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('datatable/visitplan', ['as'=> 'datatable.visitplan','uses'=>'Master\ReportController@visitPlanData']);
     Route::post('datatable/salesmanreport', ['as'=> 'datatable.salesmanreport','uses'=>'Master\ReportController@salesmanData']);
+    
     Route::post('datatable/achievementreport', ['as'=> 'datatable.achievementreport','uses'=>'Master\AchievementController@achievementData']);
     Route::post('datatable/salesmanachievementreport', ['as'=> 'datatable.salesmanachievementreport','uses'=>'Master\AchievementController@salesmanAchievementData']);
     Route::post('datatable/salesactivityreport', ['as'=> 'datatable.salesactivityreport','uses'=>'Master\ReportController@salesActivityData']);
@@ -172,7 +173,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/category', ['as'=> 'data.category','uses'=>'Master\CategoryController@getDataWithFilters']);
     Route::post('data/feedbackCategory', ['as'=> 'data.feedbackCategory','uses'=>'Master\FeedbackCategoryController@getDataWithFilters']);
     Route::post('data/feedbackQuestion', ['as'=> 'data.feedbackQuestion','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
-    Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackQuestionController@getDataWithFilters']);
+    Route::post('data/feedbackAnswer', ['as'=> 'data.feedbackAnswer','uses'=>'Master\FeedbackAnswerController@getDataWithFilters']);
+    Route::post('data/feedbackAnswerC', ['as'=> 'data.feedbackAnswerC','uses'=>'Master\FeedbackAnswerController@getDataWithFiltersCheck']);
     Route::post('data/groupcompetitor', ['as'=> 'data.groupcompetitor','uses'=>'Master\GroupCompetitorController@getDataWithFilters']);
     Route::post('data/groupcompetitorC', ['as'=> 'data.groupcompetitorC','uses'=>'Master\GroupCompetitorController@getDataWithFiltersCheck']);
 
@@ -207,6 +209,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('data/posmactivityreport', ['as'=> 'data.posmactivityreport','uses'=>'Master\ReportController@posmActivityDataAll']);
     Route::post('data/maintenancerequestreport', ['as'=> 'data.maintenancerequestreport','uses'=>'Master\ReportController@maintenanceRequestDataAll']);
     Route::post('data/visitplanreportC', ['as'=> 'data.visitplanreportC','uses'=>'Master\ReportController@visitPlanDataAllCheck']);
+    Route::post('data/salesmanreportAll', ['as'=> 'data.salesmanreportAll','uses'=>'Master\ReportController@salesmanDataAll']);
+    Route::post('data/salesmanreportAllC', ['as'=> 'data.salesmanreportAllC','uses'=>'Master\ReportController@salesmanDataAllCheck']);
 
 
     /**
@@ -315,6 +319,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-attendance', ['uses'=>'Master\ExportController@exportAttendanceReport']);
     Route::post('util/export-attendance-all/{param}', ['uses'=>'Master\ExportController@exportAttendanceReportAll']);
     Route::post('util/export-salesman', ['uses'=>'Master\ExportController@exportSalesman']);
+    Route::post('util/export-salesman-all', ['uses'=>'Master\ExportController@exportSalesmanAll']);
     Route::post('util/export-achievement', ['uses'=>'Master\ExportController@exportAchievementReport']);
     Route::post('util/export-salesman-achievement', ['uses'=>'Master\ExportController@exportSalesmanAchievementReport']);
     Route::post('util/export-delete', ['uses'=>'Master\ExportController@deleteExport']);
@@ -388,6 +393,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-visitplan-all', ['uses'=>'Master\ExportController@exportVisitPlanAll']);
     Route::post('util/export-news-read', ['uses'=>'Master\ExportController@exportNewsRead']);
     Route::post('util/export-guideline-read', ['uses'=>'Master\ExportController@exportGuideLineRead']);
+    Route::post('util/export-feedbackanswer', ['uses'=>'Master\ExportController@exportFeedbackAnswer']);
+    Route::post('util/export-feedbackanswer-all', ['uses'=>'Master\ExportController@exportFeedbackAnswerAll']);
 
 
     /**

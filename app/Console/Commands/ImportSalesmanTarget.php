@@ -65,7 +65,7 @@ class ImportSalesmanTarget extends Command
                 $targetOldSales = $target->target_sales;
                 $targetOldSalesPf = $target->target_sales_pf;
 
-                // if(($targetOldCall != $detail['target_call']) || ($targetOldActiveOutlet != $detail['target_active_outlet']) || ($targetOldEffectiveCall != $detail['target_effective_call']) || ($targetOldSales != $detail['target_sales']) || ($targetOldSalesPf != $detail['target_sales_pf'])){
+                if(($targetOldCall != $detail['target_call']) || ($targetOldActiveOutlet != $detail['target_active_outlet']) || ($targetOldEffectiveCall != $detail['target_effective_call']) || ($targetOldSales != $detail['target_sales']) || ($targetOldSalesPf != $detail['target_sales_pf'])){
                     try {
 
                         DB::transaction(function () use ($target, $detail, $targetOldCall, $targetOldActiveOutlet, $targetOldEffectiveCall, $targetOldSales, $targetOldSalesPf) {
@@ -100,7 +100,7 @@ class ImportSalesmanTarget extends Command
                         // DO NOTHING
                     } 
 
-                // }
+                }
 
             }else{ // INSERT
 
