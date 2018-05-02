@@ -116,25 +116,39 @@ class KonfigController extends Controller
                 return $item->user->join_date;
             })
             ->addColumn('region', function ($item) {
+                if($item->store->district != null)
                 return $item->store->district->area->region->name;
+                return '-';
             })
             ->addColumn('area', function ($item) {
+                if($item->store->district != null)
                 return $item->store->district->area->name;
+                return '-';
             })
             ->addColumn('district', function ($item) {
+                if($item->store->district != null)
                 return $item->store->district->name;
+                return '-';
             })
             ->addColumn('store_id_gen', function ($item) {
+                if($item->store != null)
                 return $item->store->store_id;
+                return '-';
             })
             ->addColumn('store_name_1', function ($item) {
+                if($item->store != null)
                 return $item->store->store_name_1;
+                return '-';
             })
             ->addColumn('store_name_2', function ($item) {
+                if($item->store != null)
                 return $item->store->store_name_2;
+                return '-';
             })
             ->addColumn('classification', function ($item) {
+                if($item->store->classification != null)
                 return $item->store->classification->classification;
+                return '-';
             })
             ->addColumn('global_channel', function ($item) {
                 if($item->store->subchannel_id != null) return $item->store->subChannel->channel->globalChannel->name;

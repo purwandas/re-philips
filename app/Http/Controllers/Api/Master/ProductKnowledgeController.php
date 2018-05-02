@@ -10,6 +10,7 @@ use DB;
 use JWTAuth;
 use Auth;
 use App\Store;
+use App\SpvDemo;
 
 class ProductKnowledgeController extends Controller
 {
@@ -32,10 +33,30 @@ class ProductKnowledgeController extends Controller
 			$isPromoter = 1;
 		}
 
+        // Jika spv
+        $isSpv = 0;
+        if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid') $isSpv = 1;
+
         if($isPromoter == 1){
 
 		    $storeIds = $user->employeeStores()->pluck('store_id'); // Get Store ID
 		    $areaIds = Store::whereIn('id', $storeIds)->pluck('district_id'); // Get District ID
+
+        }
+
+
+
+        if($isSpv == 1){
+
+            $storeIds = Store::where('user_id', $user->id)->pluck('id');
+
+            // Check if spv demo
+            $storeDemo = SpvDemo::where('user_id', $user->id);
+            if($storeDemo->count() > 0){
+                $storeIds = $storeDemo->pluck('store_id');
+            }
+
+            $areaIds = Store::whereIn('id', $storeIds)->pluck('district_id');
 
         }
 
@@ -44,7 +65,7 @@ class ProductKnowledgeController extends Controller
     				->get();
 
         // If user was in promoter group
-        if($isPromoter == 1) {
+        if($isPromoter == 1 || $isSpv == 1) {
 
             /* INIT Data Area to be filtered */
             $dataArea = ProductKnowledge::where('target_type', 'Area')->get();

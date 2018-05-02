@@ -84,11 +84,11 @@ class GenerateSummary extends Command
         $this->generateSellInMonth($this->argument('param'));
         $this->info('Summary Sell In / Thru has been generated :*');
 
-        $this->generateSellOutMonth($this->argument('param'));
-        $this->info('Summary Sell Out has been generated :D');
+        // $this->generateSellOutMonth($this->argument('param'));
+        // $this->info('Summary Sell Out has been generated :D');
 
-        $this->generateSOHMonth($this->argument('param'));
-        $this->info('Summary SOH has been generated :3');
+        // $this->generateSOHMonth($this->argument('param'));
+        // $this->info('Summary SOH has been generated :3');
         
     }
 
@@ -589,10 +589,15 @@ class GenerateSummary extends Command
                     }
 
                 }else{
-                    $price = Price::where('product_id', $product->id)
+                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                        $price = Price::where('product_id', $product->id)
                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                         ->where('sell_type', 'Sell In')
                         ->first();
+                    }else{
+                        continue;
+                    }
+                    
                 }
 
                 if($price){

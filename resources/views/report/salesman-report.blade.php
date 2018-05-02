@@ -141,6 +141,8 @@
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
+
+        var dataAll = {};
         /*
          *
          *
@@ -179,13 +181,35 @@
 
         var paramFilter = ['salesmanReport', $('#salesmanReport'), url, tableColumns, columnDefs, order, exportButton];
 
-        var paramReset = [filterId, 'salesmanReport', $('#salesmanReport'), url, tableColumns, columnDefs, order];
+        var paramReset = [filterId, 'salesmanReport', $('#salesmanReport'), url, tableColumns, columnDefs, order, exportButton];
 
         $(document).ready(function () {
 
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+
+            // Get data district to var data
+            $.ajax({
+                type: 'POST',
+                url: 'data/salesmanreportAllC',
+                data: filters,
+                dataType: 'json',
+                global: false,
+                async: false,
+                success: function (results) {
+                    var count = results.length;
+
+                            if(count > 0){
+                                $('#exportAll').removeAttr('disabled');
+                            }else{
+                                $('#exportAll').attr('disabled','disabled');
+                            }
+
+                    dataAll = results;
                 }
             });
 
@@ -363,21 +387,77 @@
 
                         window.location = data.url;
 
-                        setTimeout(function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'util/export-delete',
-                                dataType: 'json',
-                                data: {data: data.url},
-                                global: false,
-                                async: false,
-                                success: function (data) {
-                                    console.log(data);
-                                }
-                            });
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
 
 
+                    }
+                });
+
+            }
+
+
+        });
+
+        $("#exportAll").click( function(){
+            var element = $("#exportAll");
+            var icon = $("#exportIcon");
+            if (element.attr('disabled') != 'disabled') {
+                var thisClass = icon.attr('class');
+
+                // Export data
+                exportFile = '';
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'util/export-salesman-all',
+                    dataType: 'json',
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
+
+                        // window.location = data.url;
+
+                        // setTimeout(function () {
+                        //     $.ajax({
+                        //         type: 'POST',
+                        //         url: 'util/export-delete',
+                        //         dataType: 'json',
+                        //         data: {data: data.url},
+                        //         global: false,
+                        //         async: false,
+                        //         success: function (data) {
+                        //             console.log(data);
+                        //         }
+                        //     });
+                        // }, 1000);
+
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                       alert('Export request failed');
                     }
                 });
 

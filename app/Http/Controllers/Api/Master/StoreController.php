@@ -28,25 +28,27 @@ class StoreController extends Controller
     use StoreTrait;
 
     public function all(){
-    	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
+        $data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
-    	
-    	return response()->json($data);
+        
+        return response()->json($data);
     }
 
     public function nearby(Request $request)
     {
         $content = json_decode($request->getContent(), true);
-        $distance = 250;
+        $distance = 1000;
 
         $user = JWTAuth::parseToken()->authenticate();
         $storeIds = EmployeeStore::where('user_id', $user->id)->pluck('store_id');
 
         // Check Target
         // $storeIdTarget = Target::where('user_id', $user->id)->pluck('store_id');
+        
+        // return response()->json($storeIds);
 
-    	$data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
+        $data = Store::join('districts', 'stores.district_id', '=', 'districts.id')
                     ->where('latitude', '!=', null)
                     ->where('longitude', '!=', null)
                     ->whereNotIn('stores.id', $storeIds)
@@ -96,7 +98,7 @@ class StoreController extends Controller
 
         }
 
-    	return response()->json($data);
+        return response()->json($data);
 
     }
 
@@ -115,7 +117,7 @@ class StoreController extends Controller
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
 
-    	return response()->json($data);
+        return response()->json($data);
 
     }
 
@@ -254,7 +256,7 @@ class StoreController extends Controller
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
 
-    	return response()->json($data);
+        return response()->json($data);
 
     }
 
@@ -285,7 +287,7 @@ class StoreController extends Controller
                 'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
         }
 
-    	return response()->json($data);
+        return response()->json($data);
 
     }
 
@@ -302,7 +304,7 @@ class StoreController extends Controller
                 ->select('stores.id', 'stores.store_id', 'stores.store_name_1', 'stores.store_name_2', 'stores.longitude',
                 'stores.latitude', 'stores.address', 'districts.name as district_name')->get();
 
-    	return response()->json($data);
+        return response()->json($data);
 
     }
 
@@ -310,6 +312,13 @@ class StoreController extends Controller
         $content = json_decode($request->getContent(),true);
         $user = JWTAuth::parseToken()->authenticate();
         // return response()->json($request->all());
+
+        $exist = Store::where('store_name_1', $request['store_name_1'])->where('no_telp_toko', $request['no_telp_toko'])->where('district_id', $request['district_id'])->first();
+
+        if($exist){
+            return response()->json(['status' => false, 'message' => 'Data store sudah pernah diinput, silahkan cek kembali.']);
+        }        
+
                 try {
                     $storeID = $this->traitGetStoreId();
                     DB::transaction(function () use ($request, $storeID, $user) {
