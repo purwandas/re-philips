@@ -62,6 +62,9 @@
                     <div class="col-md-4">
                         <input type="text" id="filterMonth" class="form-control" placeholder="Month">
                     </div>
+                    <div class="col-md-4">
+                        <input type="text" id="filterDate" class="form-control" placeholder="Date">
+                    </div>
                 </div>
 
                 <br>
@@ -313,14 +316,31 @@
             $('#filterMonth').val(moment().format('MMMM YYYY'));
             filters['searchMonth'] = $('#filterMonth').val();
 
+            // Filter Date
+            $('#filterDate').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+
         }
 
         // On Change Search Date
 		$(document).ready(function() {
 
             $('#filterMonth').change(function(){
-				filters['searchMonth'] = this.value;
-				console.log(filters);
+                filters['searchMonth'] = this.value;
+                console.log(filters);
+                $('#filterDate').val('');
+                delete filters['searchDate'];
+            });
+
+            $('#filterDate').change(function(){
+                filters['searchDate'] = this.value;
+                console.log(filters);
+                $('#filterMonth').val('');
+                delete filters['searchMonth'];
             });
 
         });
@@ -333,6 +353,8 @@
             // Set to Month now
             $('#filterMonth').val(moment().format('MMMM YYYY'));
             filters['searchMonth'] = $('#filterMonth').val();
+            $('#filterDate').val('');
+            delete filters['searchDate'];
 
         });
 
