@@ -210,7 +210,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             /* If filter */
             if($request['searchMonth']){
@@ -309,7 +309,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
             // return response()->json("kampret");
@@ -460,7 +460,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -474,7 +474,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             if ($userRole == 'RSM') {
                 $region = RsmRegion::where('user_id', $userId)
@@ -558,7 +558,7 @@ class ReportController extends Controller
             // })
             // ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
             // return response()->json("kampret");
@@ -686,7 +686,7 @@ class ReportController extends Controller
             // return Datatables::of($filter->all())
             // ->make(true);
 
-        }
+        // }
 
     }
 
@@ -700,7 +700,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             if ($userRole == 'RSM') {
                 $region = RsmRegion::where('user_id', $userId)
@@ -735,11 +735,18 @@ class ReportController extends Controller
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else if($request['searchDate']){
+
+                
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                
+                $filter = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"))->get();
             }
 
             return $filter->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
             // return response()->json("kampret");
@@ -819,7 +826,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
 
     }
 
@@ -845,7 +852,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             /* If filter */
             if($request['searchMonth']){
@@ -944,7 +951,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -1091,7 +1098,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -1119,7 +1126,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             /* If filter */
             if($request['searchMonth']){
@@ -1235,7 +1242,7 @@ class ReportController extends Controller
             // })
             // ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -1358,7 +1365,7 @@ class ReportController extends Controller
             // return Datatables::of($filter->all())
             // ->make(true);
 
-        }
+        // }
 
     }
 
@@ -1373,7 +1380,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
 
@@ -1410,6 +1417,13 @@ class ReportController extends Controller
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
                 $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else if($request['searchDate']){
+
+                
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                
+                $filter = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"))->get();
             }
 
             if($request['byRegion']){
@@ -1434,8 +1448,10 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
+            
+            return $filter->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -1556,7 +1572,7 @@ class ReportController extends Controller
                 $filter = $filter->whereIn('store_id', $storeIds);
             }
 
-        }
+        // }
 
         return $filter->all();
 
@@ -1573,7 +1589,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             $filter = SummaryRetConsument::select(DB::raw("summary_ret_consuments.*, LEFT(date, 10) as date"));
 
@@ -1642,7 +1658,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -1759,7 +1775,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -1774,7 +1790,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
             $filter = SummaryRetConsument::select(DB::raw("summary_ret_consuments.*, LEFT(date, 10) as date"));
@@ -1811,7 +1827,7 @@ class ReportController extends Controller
 
             return $filter->get()->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -1887,7 +1903,7 @@ class ReportController extends Controller
 
             return $filter->all();        
 
-        }
+        // }
 
     }
     
@@ -1902,7 +1918,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
             if ($userRole == 'RSM') {
@@ -1975,7 +1991,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -2093,7 +2109,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -2108,7 +2124,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
             if ($userRole == 'RSM') {
@@ -2148,7 +2164,7 @@ class ReportController extends Controller
             return $filter->all();
 
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -2223,7 +2239,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
 
     }
 
@@ -2237,7 +2253,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
 
@@ -2322,7 +2338,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -2450,7 +2466,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -2464,7 +2480,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
 
@@ -2506,7 +2522,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -2586,7 +2602,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
 
     }
 
@@ -2600,7 +2616,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
             if ($userRole == 'RSM') {
@@ -2673,7 +2689,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -2791,7 +2807,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
         
     }
 
@@ -2805,7 +2821,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
             if ($userRole == 'RSM') {
@@ -2845,7 +2861,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -2921,7 +2937,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
         
     }
 
@@ -2949,7 +2965,7 @@ class ReportController extends Controller
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             /* If filter */
             if($request['searchMonth']){
@@ -3030,7 +3046,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -3147,7 +3163,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -3162,7 +3178,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
 
             if ($userRole == 'RSM') {
@@ -3202,7 +3218,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -3277,7 +3293,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
 
     }
 
@@ -3468,7 +3484,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
  
             if ($userRole == 'RSM') {
@@ -3540,7 +3556,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -3655,7 +3671,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -3669,7 +3685,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
  
             if ($userRole == 'RSM') {
@@ -3708,7 +3724,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -3780,7 +3796,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
 
     }
 
@@ -4518,7 +4534,6 @@ class ReportController extends Controller
                     /* Repeat as much as max day in month */
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
                     for ($i=1; $i <= $totalDay ; $i++) {                         
-                        
                         if (!empty(array_search((string)($i),$dateAttendance))) {
                             $checkAttendance = array_search((string)($i),$dateAttendance);
                             foreach ($status as $key => $value) {
@@ -5236,21 +5251,17 @@ class ReportController extends Controller
        $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
-       $month = Carbon::parse($request['searchMonthSpv'])->format('m');
-       $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
+       $month = Carbon::parse($request['searchMonthOthers'])->format('m');
+       $year = Carbon::parse($request['searchMonthOthers'])->format('Y');
        $date1 = "$year-$month-01";
        $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
        $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
        
        $data = Attendance::
-            join('stores', 'attendances.user_id', '=', 'stores.user_id')
-            ->join('districts', 'stores.district_id', '=', 'districts.id')
-            ->join('areas', 'districts.area_id', '=', 'areas.id')
-            ->join('regions', 'areas.region_id', '=', 'regions.id')
-            ->join('users', 'attendances.user_id', '=', 'users.id')
+            join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->whereNotIn('roles.role_group',$promoterGroup)
             ->where('is_resign',0);
@@ -5258,26 +5269,13 @@ class ReportController extends Controller
             // ->get();
 
            /* If filter */
-            
-            if($request['byEmployee']){
-                $data = $data->where('attendances.user_id', $request['byEmployee']);
-            }
-            if ($userRole == 'RSM') {
-                $regionIds = RsmRegion::where('user_id', $userId)
-                                    ->pluck('rsm_regions.region_id');
-                $data = $data->whereIn('region_id', [$regionIds]);
-            }
-            if ($userRole == 'DM') {
-                $areaIds = DmArea::where('user_id', $userId)
-                                    ->pluck('dm_areas.area_id');
-                $data = $data->whereIn('area_id', [$areaIds]);
-            }
-            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $storeIds = Store::where('user_id', $userId)
-                                    ->pluck('stores.store_id');
-                $data = $data->whereIn('store_id', [$storeIds]);
+            // return response()->json($data->get());
+            if($request['byEmployeeOthers']){
+                $data = $data->where('attendances.user_id', $request['byEmployeeOthers']);
             }
             $data = $data->get();
+
+            // return response()->json($data);
 
                 $filter = $data;
 
@@ -5686,14 +5684,10 @@ class ReportController extends Controller
        $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
        
        $data = Attendance::
-            join('stores', 'attendances.user_id', '=', 'stores.user_id')
-            ->join('districts', 'stores.district_id', '=', 'districts.id')
-            ->join('areas', 'districts.area_id', '=', 'areas.id')
-            ->join('regions', 'areas.region_id', '=', 'regions.id')
-            ->join('users', 'attendances.user_id', '=', 'users.id')
+            join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->whereNotIn('roles.role_group',$promoterGroup)
             ->where('is_resign',0)
@@ -5704,21 +5698,6 @@ class ReportController extends Controller
             if($request['byEmployee']){
                 $data = $data->where('attendances.user_id', $request['byEmployee']);
             }
-            if ($userRole == 'RSM') {
-                $regionIds = RsmRegion::where('user_id', $userId)
-                                    ->pluck('rsm_regions.region_id');
-                $data = $data->whereIn('region_id', [$regionIds]);
-            }
-            if ($userRole == 'DM') {
-                $areaIds = DmArea::where('user_id', $userId)
-                                    ->pluck('dm_areas.area_id');
-                $data = $data->whereIn('area_id', [$areaIds]);
-            }
-            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $storeIds = Store::where('user_id', $userId)
-                                    ->pluck('stores.store_id');
-                $data = $data->whereIn('store_id', [$storeIds]);
-            }
         
         $data = $data->get();
 
@@ -5727,22 +5706,29 @@ class ReportController extends Controller
     }
     
     public function visitPlanData(Request $request){
-
+        $monthNow = Carbon::now()->format('m');
+        $yearNow = Carbon::now()->format('Y');
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
-            $data = VisitPlan::
-                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
-                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
-                    ->join('roles','roles.id','users.role_id')
-                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
-                    ->get();
-
-            $filter = $data;
-
-            /* If filter */
+        /* If filter */
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
                 $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -5750,8 +5736,9 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-            }else if($request['searchDate']){
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
                 $date1 = $request['searchDate'];
                 $date2 = $date1;
                 // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
@@ -5763,9 +5750,17 @@ class ReportController extends Controller
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
 
-            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")
+                    ->get();
 
+            $filter = $data;
 
+            /* If filter */
             if($request['byNik']){
                 $filter = $filter->where('user_id', $request['byNik']);
             }
@@ -5810,21 +5805,29 @@ class ReportController extends Controller
 
     public function visitPlanDataAllCheck(Request $request){
 
+        $monthNow = Carbon::now()->format('m');
+        $yearNow = Carbon::now()->format('Y');
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
-            $data = VisitPlan::
-                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
-                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
-                    ->join('roles','roles.id','users.role_id')
-                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
-                    ->get();
-
-            $filter = $data;
-
-            /* If filter */
+        /* If filter */
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
                 $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -5832,17 +5835,38 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
 
+            $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")
+                    ->limit(1)
+                    ->get();
 
+            $filter = $data;
+
+            /* If filter */
             if($request['byNik']){
                 $filter = $filter->where('user_id', $request['byNik']);
             }
 
-            if($request['byRole'] != ''){
-                $filter = $filter->where('roles.role_group', $request['byRole']);
+            if($request['byRole']){
+                $filter = $filter->where('user_role', $request['byRole']);
             }
             
             // if ($userRole == 'RSM') {
@@ -5873,28 +5897,14 @@ class ReportController extends Controller
     public function salesmanData(Request $request){
 
         // Check data summary atau history
-        // $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
-        // $monthNow = Carbon::now()->format('m');
-        // $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
-        // $yearNow = Carbon::now()->format('Y');
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
-        if($request['searchMonth']){
-            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
-            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
-        }else
-        if($request['searchDate']){
-            $date = explode('-', $request['searchDate']);
-            $monthRequest = $date[1];
-            $yearRequest = $date[0];
-        }else{
-            $monthRequest = $monthNow;
-            $yearRequest = $yearNow;
-        }
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             if ($userRole == 'RSM') {
                 $regionIds = RsmRegion::where('user_id', $userId)->pluck('region_id');
@@ -5924,19 +5934,9 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }else if($request['searchDate']){
-                $date1 = $request['searchDate'];
-                $date2 = $date1;
-                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }else{
-                $month = Carbon::now()->format('m');
-                $year = Carbon::now()->format('Y');
-                $date1 = "$year-$month-01";
-                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             }
-            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
@@ -5973,7 +5973,7 @@ class ReportController extends Controller
             })
             ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -6086,7 +6086,7 @@ class ReportController extends Controller
             return Datatables::of($filter->all())
             ->make(true);
 
-        }
+        // }
 
     }
 
@@ -6100,7 +6100,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             if ($userRole == 'RSM') {
                 $regionIds = RsmRegion::where('user_id', $userId)->pluck('region_id');
@@ -6160,7 +6160,7 @@ class ReportController extends Controller
             return $filter->all();
 
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -6272,7 +6272,7 @@ class ReportController extends Controller
 
             return $filter->all();
 
-        }
+        // }
 
     }
 
@@ -6286,7 +6286,7 @@ class ReportController extends Controller
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
-        if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
             if ($userRole == 'RSM') {
                 $regionIds = RsmRegion::where('user_id', $userId)->pluck('region_id');
@@ -6357,7 +6357,7 @@ class ReportController extends Controller
             // })
             // ->make(true);
 
-        }else{ // Fetch data from history
+        // }else{ // Fetch data from history
 
             $historyData = new Collection();
 
@@ -6472,7 +6472,7 @@ class ReportController extends Controller
             // return Datatables::of($filter->all())
             // ->make(true);
 
-        }
+        // }
 
     }
 
