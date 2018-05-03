@@ -1929,6 +1929,22 @@ class ExportController extends Controller
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
+
+            if($request['byStore']){
+                $data = $data->whereIn('stores.id',[$request['byStore']]);
+            }
+            if($request['byDistrict']){
+                $data = $data->whereIn('districts.id', [$request['byDistrict']]);
+            }
+            if($request['byArea']){
+                $data = $data->whereIn('areas.id', [$request['byArea']]);
+            }
+            if($request['byRegion']){
+                $data = $data->whereIn('regions.id', [$request['byRegion']]);
+            }
+            if($request['byEmployee']){
+                $data = $data->where('attendances.user_id', $request['byEmployee']);
+            }
        }else if ($param == 2) { //Spv
             $month = Carbon::parse($request['searchMonthSpv'])->format('m');
            $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
@@ -1946,6 +1962,22 @@ class ExportController extends Controller
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
+
+            if($request['byStoreSpv']){
+                $data = $data->whereIn('stores.id',[$request['byStoreSpv']]);
+            }
+            if($request['byDistrictSpv']){
+                $data = $data->whereIn('districts.id', [$request['byDistrictSpv']]);
+            }
+            if($request['byAreaSpv']){
+                $data = $data->whereIn('areas.id', [$request['byAreaSpv']]);
+            }
+            if($request['byRegionSpv']){
+                $data = $data->whereIn('regions.id', [$request['byRegionSpv']]);
+            }
+            if($request['byEmployeeSpv']){
+                $data = $data->where('attendances.user_id', $request['byEmployeeSpv']);
+            }
        }else if ($param == 3) { //Demonstrator
             $month = Carbon::parse($request['searchMonthDemo'])->format('m');
            $year = Carbon::parse($request['searchMonthDemo'])->format('Y');
@@ -1964,6 +1996,22 @@ class ExportController extends Controller
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
+
+            if($request['byStoreDemo']){
+                $data = $data->whereIn('stores.id',[$request['byStoreDemo']]);
+            }
+            if($request['byDistrictDemo']){
+                $data = $data->whereIn('districts.id', [$request['byDistrictDemo']]);
+            }
+            if($request['byAreaDemo']){
+                $data = $data->whereIn('areas.id', [$request['byAreaDemo']]);
+            }
+            if($request['byRegionDemo']){
+                $data = $data->whereIn('regions.id', [$request['byRegionDemo']]);
+            }
+            if($request['byEmployeeDemo']){
+                $data = $data->where('attendances.user_id', $request['byEmployeeDemo']);
+            }
        }else if ($param == 4) { //Others
             $month = Carbon::parse($request['searchMonthOthers'])->format('m');
            $year = Carbon::parse($request['searchMonthOthers'])->format('Y');
@@ -1979,25 +2027,14 @@ class ExportController extends Controller
             ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
             ->whereNotIn('roles.role_group',$promoterGroup)
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
+
+            
+            if($request['byEmployeeOthers']){
+                $data = $data->where('attendances.user_id', $request['byEmployeeOthers']);
+            }
        }
 
 
-        /* If filter */
-        if($request['byStore']){
-            $data = $data->whereIn('stores.id',[$request['byStore']]);
-        }
-        if($request['byDistrict']){
-            $data = $data->whereIn('districts.id', [$request['byDistrict']]);
-        }
-        if($request['byArea']){
-            $data = $data->whereIn('areas.id', [$request['byArea']]);
-        }
-        if($request['byRegion']){
-            $data = $data->whereIn('regions.id', [$request['byRegion']]);
-        }
-        if($request['byEmployee']){
-            $data = $data->where('attendances.user_id', $request['byEmployee']);
-        }
         if ($userRole == 'RSM') {
             $regionIds = RsmRegion::where('user_id', $userId)
                                 ->pluck('rsm_regions.region_id');
