@@ -55,6 +55,9 @@
                     <div class="col-md-4">
                         <input type="text" id="filterMonth" class="form-control" placeholder="Month">
                     </div>
+                    <div class="col-md-4">
+                        <input type="text" id="filterDate" class="form-control" placeholder="Date">
+                    </div>
                 </div>
 
                 <br>
@@ -258,8 +261,20 @@
             });
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
+
+            // Filter Date
+            $('#filterDate').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+            
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
 
         }
 
@@ -267,8 +282,17 @@
 		$(document).ready(function() {
 
             $('#filterMonth').change(function(){
-				filters['searchMonth'] = this.value;
-				console.log(filters);
+                filters['searchMonth'] = this.value;
+                console.log(filters);
+                $('#filterDate').val('');
+                delete filters['searchDate'];
+            });
+
+            $('#filterDate').change(function(){
+                filters['searchDate'] = this.value;
+                console.log(filters);
+                $('#filterMonth').val('');
+                delete filters['searchMonth'];
             });
 
         });
@@ -279,8 +303,10 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
+            $('#filterMonth').val('');
+            delete filters['searchMonth'];
 
         });
 
@@ -314,11 +340,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+                        
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-                        
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -369,11 +404,20 @@
                     },
                     success: function (data) {
 
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                     },
                     error: function(xhr, textStatus, errorThrown){

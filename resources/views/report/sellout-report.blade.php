@@ -312,11 +312,11 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    if(obj.store_name_2 != null){
+                        if(obj.store_name_2 != null){
                             return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
                         return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
-	                })
+                    })
                 }
             }));
             $('#filterStore').on('select2:select', function () {
@@ -324,15 +324,15 @@
             });
 
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['promoterGroup'] = 1;
-	            return filterData('employee', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.nik + " - " + obj.name}
-	                })
-	            }
-	        }));
+                filters['promoterGroup'] = 1;
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.nik + " - " + obj.name}
+                    })
+                }
+            }));
             $('#filterEmployee').on('select2:select', function () {
                 self.selected('byEmployee', $('#filterEmployee').val());
             });
@@ -350,8 +350,8 @@
             });
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
 
             // Filter Date
             $('#filterDate').datetimepicker({
@@ -360,6 +360,10 @@
                 minView: "2",
                 autoclose: true,
             });
+            
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
 
         }
 
@@ -388,10 +392,15 @@
             // $('#dataContent').addClass('display-hide');
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
-            $('#filterDate').val('');
-            delete filters['searchDate'];
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterDate').val('');
+            // delete filters['searchDate'];
+            
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
+            $('#filterMonth').val('');
+            delete filters['searchMonth'];
 
         });
 
@@ -445,11 +454,19 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+                        
+                        // window.location = data.url;
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-                        
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -500,11 +517,19 @@
                     },
                     success: function (data) {
 
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                     },
                     error: function(xhr, textStatus, errorThrown){

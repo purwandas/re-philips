@@ -40,6 +40,7 @@ use App\TimeGone;
 use App\Apm;
 use App\Attendance;
 use App\Reports\SalesmanSummarySales;
+use App\Reports\HistorySalesmanSales;
 use App\Reports\SummarySellIn;
 use App\Reports\HistorySellIn;
 use App\Reports\SummarySellOut;
@@ -411,16 +412,21 @@ class ExportController extends Controller
         // $data = json_decode($request['data'], true);
         // $data = $request->data;
 
-        $data = VisitPlan::
-                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
-                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
-                    ->join('roles','roles.id','users.role_id')
-                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
-                    ->get();
+         // Check data summary atau history
+            $monthNow = Carbon::now()->format('m');
+            $yearNow = Carbon::now()->format('Y');
+            if($request['searchMonth']){
+                $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+                $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+                // return "apa";
+            }else
+            if($request['searchDate']){
+                $date = explode('-', $request['searchDate']);
+                $monthRequest = $date[1];
+                $yearRequest = $date[0];
+                // return "apa2";
+            }
 
-        $filter = $data;
-
-        /* If filter */
         if($request['searchMonth']){
             $month = Carbon::parse($request['searchMonth'])->format('m');
             $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -428,11 +434,29 @@ class ExportController extends Controller
             $date1 = "$year-$month-01";
             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+        }else if($request['searchDate']){
+            $date1 = $request['searchDate'];
+            $date2 = $date1;
+            // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+        }else{
+            $month = Carbon::now()->format('m');
+            $year = Carbon::now()->format('Y');
+            $date1 = "$year-$month-01";
+            $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
         }
 
+         $data = VisitPlan::
+                    join('stores', 'visit_plans.store_id', '=', 'stores.id')
+                    ->join('users', 'visit_plans.user_id', '=', 'users.id')
+                    ->join('roles','roles.id','users.role_id')
+                    ->select('visit_plans.*', 'users.nik as user_nik', 'users.name as user_name',  'roles.role_group as user_role', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeId')
+                    ->where('date','>=',$date1)->where('date','<=',$date2)
+                    ->get();
 
+        $filter = $data;
+
+        /* If filter */
         if($request['byNik']){
             $filter = $filter->where('user_id', $request['byNik']);
         }
@@ -1885,13 +1909,14 @@ class ExportController extends Controller
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
-       $month = Carbon::parse($request['searchMonth'])->format('m');
-       $year = Carbon::parse($request['searchMonth'])->format('Y');
-       $date1 = "$year-$month-01";
-       $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-       $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+       
 
        if ($param == 1) { //Promoter
+            $month = Carbon::parse($request['searchMonth'])->format('m');
+           $year = Carbon::parse($request['searchMonth'])->format('Y');
+           $date1 = "$year-$month-01";
+           $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+           $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
            $data = Attendance::
             join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
             ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
@@ -1905,6 +1930,11 @@ class ExportController extends Controller
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
        }else if ($param == 2) { //Spv
+            $month = Carbon::parse($request['searchMonthSpv'])->format('m');
+           $year = Carbon::parse($request['searchMonthSpv'])->format('Y');
+           $date1 = "$year-$month-01";
+           $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+           $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
            $data = Attendance::
             join('stores', 'attendances.user_id', '=', 'stores.user_id')
             ->join('districts', 'stores.district_id', '=', 'districts.id')
@@ -1917,6 +1947,11 @@ class ExportController extends Controller
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
        }else if ($param == 3) { //Demonstrator
+            $month = Carbon::parse($request['searchMonthDemo'])->format('m');
+           $year = Carbon::parse($request['searchMonthDemo'])->format('Y');
+           $date1 = "$year-$month-01";
+           $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+           $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
            $data = Attendance::
             join('spv_demos', 'spv_demos.user_id', '=', 'attendances.user_id')
             ->join('stores', 'spv_demos.store_id', '=', 'stores.id')
@@ -1930,16 +1965,19 @@ class ExportController extends Controller
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2)
             ->where('is_resign',0);
        }else if ($param == 4) { //Others
+            $month = Carbon::parse($request['searchMonthOthers'])->format('m');
+           $year = Carbon::parse($request['searchMonthOthers'])->format('Y');
+           $date1 = "$year-$month-01";
+           $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+           $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            $promoterGroup = ['Promoter', 'Promoter Additional', 'Promoter Event', 'Demonstrator MCC', 'Demonstrator DA', 'ACT' , 'PPE', 'BDT', 'Salesman Explorer', 'SMD', 'SMD Coordinator', 'HIC', 'HIE', 'SMD Additional', 'ASC', 'Supervisor', 'Supervisor Hybrid'];
+
            $data = Attendance::
-            join('employee_stores', 'employee_stores.user_id', '=', 'attendances.user_id')
-            ->join('stores', 'employee_stores.store_id', '=', 'stores.id')
-            ->join('districts', 'stores.district_id', '=', 'districts.id')
-            ->join('areas', 'districts.area_id', '=', 'areas.id')
-            ->join('regions', 'areas.region_id', '=', 'regions.id')
-            ->join('users', 'attendances.user_id', '=', 'users.id')
+            join('users', 'attendances.user_id', '=', 'users.id')
             ->join('roles','roles.id','users.role_id')
             ->groupBy('attendances.user_id')
-            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role', 'stores.id as store_id', 'stores.id as storeId', 'districts.id as district_id', 'areas.id as area_id', 'regions.id as region_id')
+            ->select('attendances.*', 'users.nik as user_nik', 'users.name as user_name', 'roles.role_group as user_role')
+            ->whereNotIn('roles.role_group',$promoterGroup)
             ->where('attendances.date','>=',(string)$date1)->where('attendances.date','<=',(string)$date2);
        }
 
@@ -1981,6 +2019,7 @@ class ExportController extends Controller
         $minDate = "$year-$month-01";
         $maxDate = date('Y-m-d', strtotime('+1 month', strtotime($minDate)));
         $maxDate = date('Y-m-d', strtotime('-1 day', strtotime($maxDate)));
+        $statusA = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off', 'Pending Off'];
         foreach ($data as $key => $value) {
 
                 $dataD = Attendance::
@@ -2001,7 +2040,7 @@ class ExportController extends Controller
                 }
             $value['total_hk'] = $hk;
 
-                    $status = ['Alpha','Masuk',     'Sakit',    'Izin',     'Pending Sakit','Pending Izin', 'Off'];
+                    
 
                     $dataDetail = Attendance::
                         select('attendances.*')
@@ -2013,48 +2052,186 @@ class ExportController extends Controller
 
                         $status = '';
                 if ($param == 1) {
-                    foreach ($dataDetail as $key => $value2) {
-                        if ($key==0) {
-                            if (substr($value2->date,-2) > 1) {
-                                $joinDate = substr($value2->date, -2);
-                                $execOnce = false;
-                            }
+                    // foreach ($dataDetail as $key => $value2) {
+                    //     if ($key==0) {
+                    //         if (substr($value2->date,-2) > 1) {
+                    //             $joinDate = substr($value2->date, -2);
+                    //             $execOnce = false;
+                    //         }
 
-                            if (isset($joinDate)) {
-                                $status .= '-';
-                                for ($jd=1; $jd < $joinDate; $jd++) {
-                                    $status .= ',-';
+                    //         if (isset($joinDate)) {
+                    //             $status .= '-';
+                    //             for ($jd=1; $jd < $joinDate; $jd++) { 
+                    //                 $status .= ',-';
+                    //             }
+                    //         }else{
+                    //             $status .= $value2->status;
+                    //         }
+                    //     }else{
+                    //         $status .= ','.$value2->status;
+                    //     }
+                    // }
+                    // if ($value->user_role == 'Salesman Explorer') {
+                    //     $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    //     $statusAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    //     foreach ($dataDetail as $key => $value2) {
+                    //         $statusAttendance[] = $value2->status;
+                    //         $date = explode('-',$value2->date);
+                    //         $dateAttendance[] = $date[2];
+                    //     }
+
+                    //     /* Repeat as much as max day in month */
+                    //     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    //     for ($i=1; $i <= $totalDay ; $i++) {                         
+                            
+                    //         if (!empty(array_search((string)($i),$dateAttendance))) {
+                    //             $checkAttendance = array_search((string)($i),$dateAttendance);
+                    //             foreach ($statusA as $key => $value2) {
+                    //                 if (isset($statusAttendance[$checkAttendance])) {
+                    //                     if ($value2 == $statusAttendance[$checkAttendance]) {
+                    //                         $status .= ','.$value2;
+                    //                         break;
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }else{
+                    //             $status .= ', Alpha';
+                    //         }
+                    //     }
+                    // }else{
+                    //     $dateAttendance = [];
+                    //     foreach ($dataDetail as $key => $value2) {
+                    //         $statusAttendance[] = $value2->status;
+                    //         $idAttendance[] = $value2->id;
+                    //         $dateAttendance[] = $value2->date;
+
+                    //         if ($key == 0) {
+                    //             if (substr($value2->date,-2) > 1) {
+                    //                 $joinDate = substr($value2->date, -2);//tanggal dia masuk, tanggal berapa
+                    //                 $execOnce = false;
+                    //             }
+                    //         }
+                    //     }
+
+                    //     /* Repeat as much as max day in month */
+                        
+                    //     // return $startNumber;
+                    //     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                    //     if (isset($joinDate)) {
+                    //         $totalDay -= ($joinDate-1);
+                    //     }
+                    //     for ($i=1; $i <= $totalDay ; $i++) { 
+
+                    //         $index = 0;
+                    //         foreach ($statusA as $key => $value2) {
+                    //             // $index = $key;
+                    //             if (isset($statusAttendance[$i-1])) {
+                    //                 if ($value2 == $statusAttendance[$i-1]) {
+                    //                     $index = $key;
+                    //                     break;
+                    //                 }
+                    //             }
+                    //         }
+
+
+                    //         if (isset($joinDate)) {
+                    //             $status .= '-';
+                    //             for ($jd=1; $jd < $joinDate; $jd++) {
+                    //                 $status .= ',-';
+                    //             }
+                    //             $execOnce = true;
+                    //         }
+
+                    //         $status .= ",".$statusA[$index];
+                    //     }
+                    // }
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    $statusAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                        foreach ($dataDetail as $key => $value2) {
+                            $statusAttendance[] = $value2->status;
+                            $date = explode('-',$value2->date);
+                            $dateAttendance[] = $date[2];
+                            // $status .= ",$date[2]-".$value2->status;
+                        }
+
+                        /* Repeat as much as max day in month */
+                        $commas = '';
+                        $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                        for ($i=1; $i <= $totalDay ; $i++) {                         
+                            if (!empty(array_search((string)($i),$dateAttendance))) {
+
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+
+                                foreach ($statusA as $key => $value2) {
+                                    if (isset($statusAttendance[$checkAttendance])) {
+                                        if ($value2 == $statusAttendance[$checkAttendance]) {
+                                            $status .= $commas.$value2;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }else{
+                                $status .= $commas.'Alpha';
+                            }
+                            $commas = ',';
+                        }
+                }else 
+                if ($param == 4) {
+                    $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    $statusAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                        foreach ($dataDetail as $key => $value2) {
+                            $statusAttendance[] = $value2->status;
+                                    // $status .= ','.$value2->status;
+                            $date = explode('-',$value2->date);
+                            $dateAttendance[] = $date[2];
+                        }
+
+                        /* Repeat as much as max day in month */
+                        $commas = '';
+                        $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                        for ($i=1; $i <= $totalDay ; $i++) {                         
+                            if (!empty(array_search((string)($i),$dateAttendance))) {
+
+                                $checkAttendance = array_search((string)($i),$dateAttendance);
+                                // $status .= ','.$checkAttendance;
+                                foreach ($statusA as $key => $value2) {
+                                    if (isset($statusAttendance[$checkAttendance])) {
+                                        if ($value2 == $statusAttendance[$checkAttendance]) {
+                                            $status .= $commas.$value2;
+                                            break;
+                                        }
+                                    }
                                 }
                             }else{
-                                $status .= $value2->status;
+                                $status .= $commas.'Alpha';
                             }
-                        }else{
-                            $status .= ','.$value2->status;
+                            $commas = ',';
                         }
-                    }
+                
                 }else{
                     $dateAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
+                    $statusAttendance = ['z'];//handling karna (array ke) 0 pasti dianggap empty
                     foreach ($dataDetail as $key => $value2) {
                         $statusAttendance[] = $value2->status;
                         $idAttendance[] = $value2->id;
                         $date = explode('-',$value2->date);
                         $dateAttendance[] = $date[2];
                     }
-                    // return $statusAttendance;
 
                     /* Repeat as much as max day in month */
 
                     $totalDay = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-                    for ($i=0; $i < $totalDay ; $i++) {
-                        if ($i==0) {
-                            if (!empty(array_search((string)($i+1),$dateAttendance))) {
+                    for ($i=1; $i <= $totalDay ; $i++) {
+                        if ($i==1) {
+                            if (!empty(array_search((string)($i),$dateAttendance))) {
                                 $checkAttendance = array_search((string)($i),$dateAttendance);
                                 $status .= $statusAttendance[$checkAttendance];
                             }else{
                                 $status .= 'Alpha';
                             }
                         }else{
-                            if (!empty(array_search((string)($i+1),$dateAttendance))) {
+                            if (!empty(array_search((string)($i),$dateAttendance))) {
                                 $checkAttendance = array_search((string)($i),$dateAttendance);
                                 $status .= ','.$statusAttendance[$checkAttendance];
                             }else{
@@ -2208,10 +2385,18 @@ class ExportController extends Controller
         $filename = 'Philips Retail Report Salesman Sales ' . Carbon::now()->format('d-m-Y');
 
         // Check data summary atau history
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
@@ -2245,9 +2430,21 @@ class ExportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
+
+            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+
 
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);

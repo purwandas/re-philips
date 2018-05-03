@@ -346,8 +346,8 @@
             });
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
 
             // Filter Date
             $('#filterDate').datetimepicker({
@@ -356,6 +356,11 @@
                 minView: "2",
                 autoclose: true,
             });
+            
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
+
 
         }
 
@@ -383,11 +388,11 @@
             // Hide Table Content
             // $('#dataContent').addClass('display-hide');
 
-            // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
-            $('#filterDate').val('');
-            delete filters['searchDate'];
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
+            $('#filterMonth').val('');
+            delete filters['searchMonth'];
 
         });
 
@@ -444,11 +449,20 @@
                     },
                     success: function (data) {
 
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -493,11 +507,20 @@
                     },
                     success: function (data) {
 
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                     }
                 });

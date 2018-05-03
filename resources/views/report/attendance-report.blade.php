@@ -1105,11 +1105,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         setTimeout(function () {
                             $.ajax({
@@ -1163,11 +1172,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         setTimeout(function () {
                             $.ajax({
@@ -1221,11 +1239,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         setTimeout(function () {
                             $.ajax({
@@ -1279,11 +1306,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         setTimeout(function () {
                             $.ajax({
@@ -1334,11 +1370,19 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
                     },
                     error: function(xhr, textStatus, errorThrown){
                         element.removeAttr('disabled');
@@ -1375,11 +1419,19 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
                     },
                     error: function(xhr, textStatus, errorThrown){
                         element.removeAttr('disabled');
@@ -1416,11 +1468,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
                     },
                     error: function(xhr, textStatus, errorThrown){
                         element.removeAttr('disabled');
@@ -1457,11 +1518,20 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
-                        console.log(data);
-
-                        window.location = data.url;
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
                     },
                     error: function(xhr, textStatus, errorThrown){
                         element.removeAttr('disabled');
