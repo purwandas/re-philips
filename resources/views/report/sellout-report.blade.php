@@ -79,18 +79,19 @@
                 <br><br>
 
                 
-                    <!-- MAIN CONTENT -->
+                <!-- MAIN CONTENT -->
+                <div id="dataContent" class="display-hide">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-file-text-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Sell Out</span>
                         </div>
 
-                        <div class="actions" style="text-align: left">
+                        <div class="actions" style="text-align: left;float:right;">
                             <a id="export" class="btn green-dark" >
                                 <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                         </div>
-                        <div class="actions" style="text-align: left; padding-right: 10px;">
+                        <div class="actions" style="text-align: left; padding-right: 10px;float:right;    margin-bottom: 10px;">
                             <a id="exportAll" class="btn green-dark" >
                                 <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                         </div>
@@ -136,7 +137,7 @@
                         </table>
 
                     </div>
-
+                </div>
                 <!-- END MAIN CONTENT -->
 
             </div>
@@ -206,56 +207,56 @@
             });
 
             // Get data district to var data
-            $.ajax({
-                type: 'POST',
-                url: 'data/selloutreportC',
-                dataType: 'json',
-                data: filters,
-                global: false,
-                async: false,
-                success: function (results) {
-                    var count = results.length;
+            // $.ajax({
+            //     type: 'POST',
+            //     url: 'data/selloutreportC',
+            //     dataType: 'json',
+            //     data: filters,
+            //     global: false,
+            //     async: false,
+            //     success: function (results) {
+            //         var count = results.length;
 
-                            if(count > 0){
-                                $('#exportAll').removeAttr('disabled');
-                            }else{
-                                $('#exportAll').attr('disabled','disabled');
-                            }
+            //                 if(count > 0){
+            //                     $('#exportAll').removeAttr('disabled');
+            //                 }else{
+            //                     $('#exportAll').attr('disabled','disabled');
+            //                 }
 
-                    dataAll = results;
-                }
-            });
+            //         dataAll = results;
+            //     }
+            // });
 
             initSelect2();
             initDateTimePicker();
 
             // Set data for Data Table
-            var table = $('#sellOutReport').dataTable({
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
-                    url: "{{ route('datatable.selloutreport') }}",
-                    type: 'POST',
-                    data: filters,
-                    dataType: 'json',
-                    dataSrc: function (res) {
-                        var count = res.data.length;
+            // var table = $('#sellOutReport').dataTable({
+            //     "processing": true,
+            //     "serverSide": true,
+            //     "ajax": {
+            //         url: "{{ route('datatable.selloutreport') }}",
+            //         type: 'POST',
+            //         data: filters,
+            //         dataType: 'json',
+            //         dataSrc: function (res) {
+            //             var count = res.data.length;
 
-                        if(count > 0){
-                            $('#export').removeAttr('disabled');
-                        }else{
-                            $('#export').attr('disabled','disabled');
-                        }
+            //             if(count > 0){
+            //                 $('#export').removeAttr('disabled');
+            //             }else{
+            //                 $('#export').attr('disabled','disabled');
+            //             }
 
-                        this.data = res.data;
-                        return res.data;
-                    },
-                },
-                "rowId": "id",
-                "columns": tableColumns,
-                "columnDefs": columnDefs,
-                "order": order,
-            });
+            //             this.data = res.data;
+            //             return res.data;
+            //         },
+            //     },
+            //     "rowId": "id",
+            //     "columns": tableColumns,
+            //     "columnDefs": columnDefs,
+            //     "order": order,
+            // });
 
             
 
@@ -389,7 +390,7 @@
         $("#resetButton").click( function(){
 
             // Hide Table Content
-            // $('#dataContent').addClass('display-hide');
+            $('#dataContent').addClass('display-hide');
 
             // Set to Month now
             // $('#filterMonth').val(moment().format('MMMM YYYY'));
@@ -407,7 +408,7 @@
         $("#filterButton").click( function(){
 
              // Set Table Content
-            // $('#dataContent').removeClass('display-hide');
+            $('#dataContent').removeClass('display-hide');
 
             $.ajax({
                 type: 'POST',

@@ -467,39 +467,28 @@ class ReportController extends Controller
     public function sellInDataAll(Request $request, SellinFilters $filters){
 
         // Check data summary atau history
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)
-                            ->pluck('rsm_regions.region_id');
-                    $data = SummarySellIn::where('region_id', $region)->get();
-            }
-
-            elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)
-                            ->pluck('dm_areas.area_id');
-                    $data = SummarySellIn::where('area_id', $area)->get();
-            }
-
-            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)
-                            ->pluck('stores.store_id');
-                    $data = SummarySellIn::wherein('store_id', $store)->get();
-            }
-            else{
-                $data = SummarySellIn::all();
-            }
-
-            $filter = $data->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"));
-
-            /* If filter */
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
                 $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -507,9 +496,53 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
+
+            $data = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"));
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $filter = $filter->where('region_id', $region);
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $filter = $filter->where('area_id', $area);
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $filter = $filter->wherein('store_id', $store);
+            }
+
+            // $filter = $data->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"));
+
+            // /* If filter */
+            // if($request['searchMonth']){
+            //     $month = Carbon::parse($request['searchMonth'])->format('m');
+            //     $year = Carbon::parse($request['searchMonth'])->format('Y');
+            //     // $filter = $data->where('month', $month)->where('year', $year);
+            //     $date1 = "$year-$month-01";
+            //     $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            //     $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
 
             return $filter->all();
 
@@ -702,29 +735,6 @@ class ReportController extends Controller
         $userId = Auth::user()->id;
         // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-            if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)
-                            ->pluck('rsm_regions.region_id');
-                    $data = SummarySellIn::where('region_id', $region)->limit(1)->get();
-            }
-
-            elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)
-                            ->pluck('dm_areas.area_id');
-                    $data = SummarySellIn::where('area_id', $area)->limit(1)->get();
-            }
-
-            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)
-                            ->pluck('stores.store_id');
-                    $data = SummarySellIn::wherein('store_id', $store)->limit(1)->get();
-            }
-            else{
-                $data = SummarySellIn::limit(1)->get();
-            }
-
-            $filter = $data;
-
             /* If filter */
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
@@ -734,16 +744,34 @@ class ReportController extends Controller
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             }else if($request['searchDate']){
-
                 
                 $date1 = $request['searchDate'];
                 $date2 = $date1;
-                
-                $filter = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"))->get();
+            
             }
 
+            $filter = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"));
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $filter = $filter->where('region_id', $region);
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $filter = $filter->where('area_id', $area);
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $filter = $filter->wherein('store_id', $store);
+            }
+
+            $filter = $filter->limit(1)->get();
             return $filter->all();
 
         // }else{ // Fetch data from history
@@ -1372,40 +1400,28 @@ class ReportController extends Controller
     public function sellOutDataAllCheck(Request $request, SellOutFilters $filters){
 
         // Check data summary atau history
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
-
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
         
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
 
-
-
-            if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)
-                            ->pluck('rsm_regions.region_id');
-                    $data = SummarySellOut::limit(1)->where('region_id', $region)->get();
-            }
-
-            elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)
-                            ->pluck('dm_areas.area_id');
-                    $data = SummarySellOut::limit(1)->where('area_id', $area)->get();
-            }
-
-            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)
-                            ->pluck('stores.store_id');
-                    $data = SummarySellOut::limit(1)->wherein('store_id', $store)->get();
-            }
-            else{
-                $data = SummarySellOut::limit(1)->get();
-            }
-
-            $filter = $data;            
 
             // /* If filter */
             if($request['searchMonth']){
@@ -1416,15 +1432,12 @@ class ReportController extends Controller
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             }else if($request['searchDate']){
-
-                
                 $date1 = $request['searchDate'];
                 $date2 = $date1;
-                
-                $filter = SummarySellIn::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_ins.*, LEFT(date, 10) as date"))->get();
             }
+
+            $filter = SummarySellOut::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_outs.*, LEFT(date, 10) as date"))->get();
 
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
@@ -1447,6 +1460,24 @@ class ReportController extends Controller
 
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $filter = $filter->where('region_id', $region);
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $filter = $filter->where('area_id', $area);
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $filter = $filter->wherein('store_id', $store);
             }
             
             return $filter->all();
@@ -3170,40 +3201,28 @@ class ReportController extends Controller
     public function sohDataAll(Request $request, SohFilters $filters){
 
         // Check data summary atau history
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
         // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
-
-
-            if ($userRole == 'RSM') {
-                $region = RsmRegion::where('user_id', $userId)
-                            ->pluck('rsm_regions.region_id');
-                    $data = SummarySoh::where('region_id', $region)->get();
-            }
-
-            elseif ($userRole == 'DM') {
-                $area = DmArea::where('user_id', $userId)
-                            ->pluck('dm_areas.area_id');
-                    $data = SummarySoh::where('area_id', $area)->get();
-            }
-
-            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
-                $store = Store::where('user_id', $userId)
-                            ->pluck('stores.store_id');
-                    $data = SummarySoh::wherein('store_id', $store)->get();
-            }
-            else{
-                $data = SummarySoh::all();
-            }
-
-
-            $filter = $data;
 
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
@@ -3212,8 +3231,38 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            }
 
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            $filter = SummarySoh::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sohs.*, LEFT(date, 10) as date"))->get();
+
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $filter = $filter->where('region_id', $region);
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $filter = $filter->where('area_id', $area);
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $filter = $filter->wherein('store_id', $store);
             }
 
             return $filter->all();
