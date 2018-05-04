@@ -3065,7 +3065,7 @@ class ReportController extends Controller
                     $filter = $filter->wherein('store_id', $store);
             }
 
-            return Datatables::of($filter->get()->all())
+            return Datatables::of($filter)
             ->editColumn('quantity', function ($item) {
                return number_format($item->quantity);
             })
