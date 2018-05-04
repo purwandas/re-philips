@@ -866,6 +866,7 @@
 
             $('#filterMonthSpv').change(function(){
                 filters['searchMonthSpv'] = this.value;
+                console.log(filters);
             });
 
             $('#filterMonthDemo').change(function(){

@@ -41,22 +41,44 @@ class EditSohController extends Controller
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
+        $monthNow = Carbon::now()->format('m');
+            $yearNow = Carbon::now()->format('Y');
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            }
+
         $data = Soh::
                     where('sohs.deleted_at', null)
                     ->where('soh_details.deleted_at', null)
         			->join('soh_details', 'sohs.id', '=', 'soh_details.soh_id')
                     ->join('stores', 'sohs.store_id', '=', 'stores.id')
-                    
                     ->join('districts', 'stores.district_id', '=', 'districts.id')
                     ->join('areas', 'districts.area_id', '=', 'areas.id')
-                    ->join('regions', 'areas.region_id', '=', 'regions.id')
-
-                    
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')                    
                     ->join('users', 'sohs.user_id', '=', 'users.id')
                     ->join('products', 'soh_details.product_id', '=', 'products.id')
                     ->select('sohs.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'soh_details.id as id', 'soh_details.quantity as quantity', 'products.name as product',
                         'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
+                    ->where('date','>=',$date1)->where('date','<=',$date2)
                     ->get();
+                
 
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
                 $store = Store::where('user_id', $userId)
@@ -67,16 +89,6 @@ class EditSohController extends Controller
             $filter = $data;
 
             /* If filter */
-            if($request['searchMonth']){
-                $month = Carbon::parse($request['searchMonth'])->format('m');
-                $year = Carbon::parse($request['searchMonth'])->format('Y');
-                // $filter = $data->where('month', $month)->where('year', $year);
-                $date1 = "$year-$month-01";
-                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }

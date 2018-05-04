@@ -4752,6 +4752,7 @@ class ReportController extends Controller
        $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
        $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
        
+       // return response()->json($month);
        $data = Attendance::
             join('stores', 'attendances.user_id', '=', 'stores.user_id')
             ->join('districts', 'stores.district_id', '=', 'districts.id')
