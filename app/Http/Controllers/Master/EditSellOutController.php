@@ -40,6 +40,29 @@ class EditSellOutController extends Controller
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
 
+        $monthNow = Carbon::now()->format('m');
+            $yearNow = Carbon::now()->format('Y');
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            }
+
         $data = SellOut::
                     where('sell_outs.deleted_at', null)
                     ->where('sell_out_details.deleted_at', null)
@@ -54,6 +77,7 @@ class EditSellOutController extends Controller
                     ->join('products', 'sell_out_details.product_id', '=', 'products.id')
                     ->select('sell_outs.*', 'users.name as user_name', 'users.nik as user_nik', 'stores.store_id as store_id', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.dedicate as dedicate', 'sell_out_details.id as id', 'sell_out_details.quantity as quantity', 'products.name as product', 'sell_out_details.irisan as irisan',
                          'stores.id as storeId', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id')
+                    ->where('date','>=',$date1)->where('date','<=',$date2)
                     ->get();
 
             if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
@@ -65,16 +89,6 @@ class EditSellOutController extends Controller
             $filter = $data;
 
             /* If filter */
-            if($request['searchMonth']){
-                $month = Carbon::parse($request['searchMonth'])->format('m');
-                $year = Carbon::parse($request['searchMonth'])->format('Y');
-                // $filter = $data->where('month', $month)->where('year', $year);
-                $date1 = "$year-$month-01";
-                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }

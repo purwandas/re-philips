@@ -1439,6 +1439,7 @@ class ReportController extends Controller
 
             $filter = SummarySellOut::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_outs.*, LEFT(date, 10) as date"));
 
+
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
             }
@@ -1481,6 +1482,7 @@ class ReportController extends Controller
             }
             
             return $filter->limit(1)->get();
+
 
         // }else{ // Fetch data from history
 
@@ -5809,6 +5811,7 @@ class ReportController extends Controller
                     ->get();
 
             $filter = $data;
+
 
             /* If filter */
             if($request['byNik']){
