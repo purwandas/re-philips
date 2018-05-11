@@ -68,11 +68,19 @@
 
                 <br><br>
 
-                    <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-file-text-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Visit PLan</span>
+                        </div>
+                    </div>
+
+                    <!-- MAIN CONTENT -->
+                    <div class="portlet-title">
+                        <div class="btn-group">
+                            <a id="set-visitplan" class="btn green" data-toggle="modal" href="#visitplan"><i
+                                class="fa fa-cog"></i> Upload Visit Plan </a>
+
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >

@@ -25,7 +25,7 @@
                           <label class="col-sm-3 control-label">Current Timegone</label>
                           <div class="col-sm-8">
                             <a id="exportTemplate" class="btn green-dark" >
-                            <i class="fa fa-cloud-download"></i> DOWNLOAD DATA </a>
+                            <i id="exportTemplateIcon" class="fa fa-cloud-download"></i> DOWNLOAD DATA </a>
                           </div>
                         </div> 
 

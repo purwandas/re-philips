@@ -1569,10 +1569,10 @@ trait ActualTrait {
 //            ]);
 
             /* Add Summary from User */
-            $summaryData = SummarySellIn::where('user_id', $userId)->where('storeId', $storeId)->get();
+            $summaryData = SummarySellIn::where('user_id', $userId)->where('storeId', $storeId)->whereYear('date', Carbon::now()->format('Y'))->whereMonth('date', Carbon::now()->format('m'))->get();
 
             if ($sellType == 'Sell Out') {
-                $summaryData = SummarySellOut::where('user_id', $userId)->where('storeId', $storeId)->get();
+                $summaryData = SummarySellOut::where('user_id', $userId)->where('storeId', $storeId)->whereYear('date', Carbon::now()->format('Y'))->whereMonth('date', Carbon::now()->format('m'))->get();
             }
 
             if ($summaryData) {
@@ -1806,7 +1806,7 @@ trait ActualTrait {
             ]);
 
             /* Add Summary from User */
-            $summaryData = SalesmanSummarySales::where('user_id', $userId)->get();
+            $summaryData = SalesmanSummarySales::where('user_id', $userId)->whereYear('date', Carbon::now()->format('Y'))->whereMonth('date', Carbon::now()->format('m'))->get();
 
             if ($summaryData) {
 

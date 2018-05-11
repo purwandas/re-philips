@@ -231,4 +231,8 @@ class ImportController extends Controller
 
         return response()->json(['url' => url('/targetsalesman')]);
     }
+
+    public function importVisitPlan(Request $request){
+        
+    }
 }

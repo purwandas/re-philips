@@ -199,7 +199,7 @@
 
         var paramReset = [filterId, 'sellInReport', $('#sellInReport'), url, tableColumns, columnDefs, order, exportButton, '#filterMonth'];
 
-        $(document).ready(function () {
+        $(document).ready(function () {            
 
             $.ajaxSetup({
                 headers: {
@@ -353,7 +353,7 @@
 
             // Set to Month now
             $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // filters['searchMonth'] = $('#filterMonth').val();
 
             // Filter Date
             $('#filterDate').datetimepicker({
@@ -362,6 +362,10 @@
                 minView: "2",
                 autoclose: true,
             });
+
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
 
         }
 
