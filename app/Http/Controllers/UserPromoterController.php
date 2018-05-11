@@ -306,9 +306,10 @@ class UserPromoterController extends Controller
             'role_id' => 'required',
             'join_date' => 'required',
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+            ]);        
 
         // return response()->json($request);
+
         $request['password'] = bcrypt($request['password']);
 
         $role = explode('`',$request['role_id']);
@@ -411,7 +412,7 @@ class UserPromoterController extends Controller
                     ]);
         }
 
-        if($request['selectedRole'] == 'Salesman Explorer'){
+        if($request['selectedRole'] == 'Salesman Explorer' || $request['selectedRole'] == 'SMD'){
             if (isset($request['salesman_dedicate'])) {
                 SalesmanDedicate::create([
                     'user_id' => $user->id,
@@ -453,7 +454,7 @@ class UserPromoterController extends Controller
 
         if($data){
 
-            if ($data->role_group == 'Salesman Explorer') {
+            if ($data->role_group == 'Salesman Explorer' || $data->role_group == 'SMD') {
                 $salesmanDedicate = SalesmanDedicate::where('user_id',$data->id)
                     ->first();
                 // $salesmanDedicate = $data->id;
@@ -461,7 +462,7 @@ class UserPromoterController extends Controller
 
         }
 
-        // return response()->json($data);  
+        // return response()->json($salesmanDedicate);  
 
         return view('master.form.userpromoter-form', compact('data','salesmanDedicate'));
     }
@@ -589,7 +590,7 @@ class UserPromoterController extends Controller
 
         /* Insert user relation */
 
-            if($request['selectedRole'] == 'Salesman Explorer'){
+            if($request['selectedRole'] == 'Salesman Explorer' || $request['selectedRole'] == 'SMD'){
                 if (isset($request['salesman_dedicate'])) {
                     $salesmanDedicate = SalesmanDedicate::where('user_id',$user->id);
                     if ($salesmanDedicate->count() >0) {
