@@ -45,7 +45,7 @@ class AttendanceController extends Controller
 
         // Response if header was not set (command -> init:attendance)
         // if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'DM' || $user->role->role_group == 'Trainer' || $user->role->role_group == 'RSM' || $user->role->role_group == 'Salesman Explorer'){
-        
+
         // if($promoter == 0){
 
             if(!$attendanceHeader) {
@@ -98,7 +98,7 @@ class AttendanceController extends Controller
                 $distance = Geotools::distance()->setFrom($coordStore)->setTo($coordNow)->flat();
 
                 // Check distance if above 350 meter(s)
-                if ($distance > 350) {
+                if ($distance > 1000) {
                     return response()->json(['status' => false, 'message' => 'Jarak anda terlalu jauh dari tempat absensi'], 200);
                 }
 
@@ -243,7 +243,7 @@ class AttendanceController extends Controller
                 return response()->json(['status' => false, 'message' => 'Gagal melakukan absensi'], 500);
             }
 
-            if($user->role == 'Salesman Explorer' || $user->role == 'Supervisor' || $user->role == 'Supervisor Hybrid') {
+            if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'SMD' || $user->role->role_group == 'SMD Coordinator' || $user->role->role_group == 'SMD Additional') {
 
                 /* Set Visit Status */
                 $visit = VisitPlan::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', Carbon::now()->format('Y-m-d'))->first();
