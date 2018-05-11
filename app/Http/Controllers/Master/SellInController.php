@@ -234,7 +234,7 @@ class SellInController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'Salesman Explorer') {
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -247,6 +247,7 @@ class SellInController extends Controller
 
                                         if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
                                         if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MR';
 
                                         $price = Price::where('product_id', $product->id)
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
@@ -524,7 +525,7 @@ class SellInController extends Controller
 
                             /* Price */
                             $realPrice = 0;
-                            if($user->role->role_group == 'Salesman Explorer') {
+                            if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
                                 if (isset($store->subChannel->channel->globalChannel->id)) {
                                     $price = Price::where('product_id', $product->id)
                                         ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -537,6 +538,7 @@ class SellInController extends Controller
 
                                     if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
                                     if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                    if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MR';
 
                                     $price = Price::where('product_id', $product->id)
                                         ->join('global_channels','global_channels.id','prices.globalchannel_id')
