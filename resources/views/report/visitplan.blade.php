@@ -81,8 +81,8 @@
                     <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="btn-group">
-                            <a id="set-visitplan" class="btn green" data-toggle="modal" href="#visitplan"><i
-                                class="fa fa-cog"></i> Upload Visit Plan </a>
+                            <a id="upload" class="btn btn-primary" data-toggle="modal" href="#upload-visitplan"><i
+                                class="fa fa-cloud-upload"></i> Upload Visit Plan </a>
 
                         </div>
                         <div class="actions" style="text-align: left">
@@ -121,6 +121,8 @@
 
                 <!-- END MAIN CONTENT -->
 
+                @include('partial.modal.upload-visitplan-modal')
+
             </div>
             <!-- END EXAMPLE TABLE PORTLET-->
         </div>
@@ -132,6 +134,7 @@
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/upload-modal/upload-visitplan-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
@@ -456,6 +459,19 @@
             //     });
 
             // }
+
+        });
+
+        $("#exportTemplate").click( function(){
+
+            exportFile = '';
+
+            var url = "{{ asset('template/TEMPLATE VISITPLAN.xlsx') }}";
+
+            // return;
+
+            window.location = url;
+
 
         });
 

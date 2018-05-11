@@ -60,7 +60,6 @@ use App\Reports\HistoryEmployeeStore;
 use App\Reports\HistoryFreeProduct;
 use App\Reports\HistoryRetConsument;
 use App\Reports\HistoryRetDistributor;
-use App\Reports\HistorySalesmanSales;
 use App\Reports\HistorySalesmanTargetActual;
 use App\Reports\HistorySellIn;
 use App\Reports\HistorySellOut;
@@ -6152,6 +6151,69 @@ class ExportController extends Controller
 
 
         })->string('xlsx');
+
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
+
+    }
+
+    public function exportVisitPlanTemplate(){
+
+        // $filename = 'Upload Visit Plan ' . Carbon::now()->format('d-m-Y');
+
+        // $excel = Excel::create($filename, function($excel){
+
+        //     // Set the title
+        //     $excel->setTitle('Visit Plan');
+
+        //     // Chain the setters
+        //     $excel->setCreator('Philips')
+        //           ->setCompany('Philips');
+
+        //     // Call them separately
+        //     $excel->setDescription('Visit Plan');
+
+        //     // $excel->getDefaultStyle()
+        //     //     ->getAlignment()
+        //     //     ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+        //     //     ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+        //     $excel->sheet('VISIT PLAN', function($sheet){
+
+        //         // $sheet->setAutoSize(false);
+
+        //         // $sheet->setAutoFilter('A2:F2');
+
+        //         $sheet->loadView('excel.visitplan');
+
+        //         // $sheet->cells('A1:F2', function ($cells) {
+        //         //     $cells->setFontWeight('bold');
+        //         // });
+
+        //         // Font family
+        //         // $sheet->setFontFamily('Comic Sans MS');
+
+        //         // Set font with ->setStyle()`
+        //         $sheet->setStyle(array(
+        //             'font' => array(
+        //                 'name'      =>  'Calibri',
+        //                 'size'      =>  8,
+        //             )
+        //         ));
+
+        //         // $sheet->cells('A1:R1', function ($cells) {
+        //         //     $cells->setStyle(array(
+        //         //         'font' => array(
+        //         //             'name'      =>  'Calibri',
+        //         //             'size'      =>  10,
+        //         //             'bold'      =>  true
+        //         //         )
+        //         //     ));
+        //         // });
+
+        //     });
+
+
+        // })->string('xlsx');
 
         return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
 
