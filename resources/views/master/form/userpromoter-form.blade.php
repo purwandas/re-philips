@@ -135,6 +135,9 @@
 												<option value="Traditional Retail"
 												{{ ( @$salesmanDedicate->dedicate == 'Traditional Retail' ) ? 'selected' : '' }}
 												>Traditional Retail</option>
+												<option value="Modern Retail"
+												{{ ( @$salesmanDedicate->dedicate == 'Modern Retail' ) ? 'selected' : '' }}
+												>Modern Retail</option>
 												<option value="Mother Care & Child"
 												{{ ( @$salesmanDedicate->dedicate == 'Mother Care & Child' ) ? 'selected' : '' }}
 												>Mother Care & Child</option>
@@ -462,6 +465,7 @@
 		$(document).ready(function () {
 
 			var x = unescape("{{ @$salesmanDedicate->dedicate }}");
+			console.log("Salesman Dedicate: "+x);
 
 			// $( "#statusCheck2" ).prop( "checked", true );
 			// var temp = "{{ @$data }}";
@@ -504,16 +508,19 @@
 	        $('#store').select2(setOptions('{{ route("data.store") }}', 'Store', function (params) {            
 	        	var role = $('#selectedRole').val();
 	        	role = role.split('`');
-	            if(role[1] != 'Salesman Explorer')
+	        	console.log('Role: '+role[1]);
+	            if(role[1] != 'Salesman Explorer' && role[1] != 'SMD')
 	            {
             		if (role[1] == 'Demonstrator DA') {
-	        			console.log('DA Multi');
 	        			delete filters['byDedicatePromoter'];
 	        			filters['byDedicates'] = ['DA', 'HYBRID'];
 	        		}else{
 	        			delete filters['byDedicates'];
 	        			filters['byDedicatePromoter'] = $('#dedicate').val();
 	        		}
+	        	}else{
+	        		console.log('SMD?');
+	        		delete filters['byDedicatePromoter'];
 	        	}
 	            return filterData('store', params.term);
 	        }, function (data, params) {
@@ -534,7 +541,7 @@
 	         	if (role[1] == 'Supervisor' || role[1] == 'Supervisor Hybrid') {
 		        	filters['bySpv'] = $('#penampungUserId').val();
 		        }
-		        if(role[1] != 'Salesman Explorer')
+		        if(role[1] != 'Salesman Explorer' && role[1] != 'SMD')
 		        {
 	        		if (role[1] == 'Demonstrator DA') {
 	        			console.log('DA Multi');
@@ -645,15 +652,17 @@
 			if(checkPromoter()){
 				$('#statusCheck').attr('required', 'required');
 
-				if(role[1] == 'Salesman Explorer'){
+				if(role[1] == 'Salesman Explorer' || role[1] == 'SMD'){
 					$('input[type=radio][name=status][value=mobile]').prop('checked', true);
 					status = 'mobile';
 				    $('#multipleStoreContent').removeClass('display-hide');
 				    $('#statusContentSalesman').removeClass('display-hide');
 				    $('#storeContent').removeClass('display-hide');
 		            // $('#stores').attr('required', 'required');
+		            $('#salesman_dedicate').prop('required',true);
 					$('#dedicate').prop('required',false);
 				}else{
+					$('#salesman_dedicate').prop('required',false);
 					if(role[1] != 'Demonstrator DA'){
 						$('#statusContent').removeClass('display-hide');
 						$('#storeContent').removeClass('display-hide');
