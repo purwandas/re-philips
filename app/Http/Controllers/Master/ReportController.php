@@ -949,9 +949,9 @@ class ReportController extends Controller
                     $filter = $filter->wherein('store_id', $store);
             }
 
-            $filter = $filter->get();
+            // $filter = $filter;
 
-            return Datatables::of($filter->all())
+            return Datatables::of($filter)
             ->editColumn('quantity', function ($item) {
                return number_format($item->quantity);
             })
@@ -1223,8 +1223,8 @@ class ReportController extends Controller
                     $filter = $filter->wherein('store_id', $store);
             }
 
-            $filter = $filter->get();
-            return $filter->all();
+            // $filter = $filter->get();
+            return $filter;
 
             // if($request['byRegion']){
             //     $filter = $filter->where('region_id', $request['byRegion']);
@@ -1437,7 +1437,8 @@ class ReportController extends Controller
                 $date2 = $date1;
             }
 
-            $filter = SummarySellOut::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_outs.*, LEFT(date, 10) as date"))->get();
+            $filter = SummarySellOut::whereRaw("DATE(date) >= '$date1'")->whereRaw("DATE(date) <= '$date2'")->select(DB::raw("summary_sell_outs.*, LEFT(date, 10) as date"));
+
 
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
@@ -1480,7 +1481,8 @@ class ReportController extends Controller
                     $filter = $filter->wherein('store_id', $store);
             }
             
-            return $filter->all();
+            return $filter->limit(1)->get();
+
 
         // }else{ // Fetch data from history
 
@@ -5809,6 +5811,7 @@ class ReportController extends Controller
                     ->get();
 
             $filter = $data;
+
 
             /* If filter */
             if($request['byNik']){

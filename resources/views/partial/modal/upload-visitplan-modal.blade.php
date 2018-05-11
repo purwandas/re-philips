@@ -1,15 +1,17 @@
 <!-- BEGIN MODAL POPUP -->
-<div id="upload-timegone" class="modal container fade" tabindex="false" data-width="760" role="dialog" data-backdrop="static">
+<div id="upload-visitplan" class="modal container fade" tabindex="false" data-width="760" role="dialog" data-backdrop="static">
 
-  <div id="loading_element">
+    <div id="loading_element">
 
     <div class="modal-header" style="margin-top: 30px;margin-left: 30px;margin-right: 30px;">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><b>UPLOAD EXCEL FOR TIMEGONE</b> </h4>
+        <h4 class="modal-title"><b>UPLOAD EXCEL FOR VISIT PLAN</b> </h4>
     </div>
+    
+
     <div class="modal-body" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">
-        
-        <form id="form_upload" class="form-horizontal" action="{{ url('import-timegone') }}" method="POST">                
+
+        <form id="form_upload" class="form-horizontal" action="{{ url('import-visitplan') }}" method="POST">                
                     {{ csrf_field() }}
                     @if (!empty($data))
                       {{ method_field('PATCH') }}
@@ -21,11 +23,12 @@
                             <button class="close" data-close="alert"></button> Your form validation is successful! </div>                    
                         <br><br>
 
+
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">Current Timegone</label>
+                          <label class="col-sm-3 control-label">Template</label>
                           <div class="col-sm-8">
                             <a id="exportTemplate" class="btn green-dark" >
-                            <i id="exportTemplateIcon" class="fa fa-cloud-download"></i> DOWNLOAD DATA </a>
+                            <i class="fa fa-cloud-download"></i> DOWNLOAD TEMPLATE </a>
                           </div>
                         </div> 
 
@@ -51,7 +54,6 @@
 
                     </div>
                 </form>
-
 
     </div>
     <div class="modal-footer" style="margin-bottom: 30px;margin-left: 30px;margin-right: 30px;">

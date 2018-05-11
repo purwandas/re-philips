@@ -45,7 +45,8 @@ class AttendanceController extends Controller
 
         // Response if header was not set (command -> init:attendance)
         // if($user->role->role_group == 'Supervisor' || $user->role->role_group == 'Supervisor Hybrid' || $user->role->role_group == 'DM' || $user->role->role_group == 'Trainer' || $user->role->role_group == 'RSM' || $user->role->role_group == 'Salesman Explorer'){
-        if($promoter == 0){
+        
+        // if($promoter == 0){
 
             if(!$attendanceHeader) {
                 $attendanceHeader = Attendance::create([
@@ -55,13 +56,13 @@ class AttendanceController extends Controller
                 ]);
             }
 
-        }else{
+        // }else{
 
-            if(!$attendanceHeader) {
-                return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 200);
-            }
+        //     if(!$attendanceHeader) {
+        //         return response()->json(['status' => false, 'message' => 'Tidak menemukan data absensi anda, silahkan hubungi administrator'], 200);
+        //     }
 
-        }
+        // }
 
 
         // Count Attendance Details
