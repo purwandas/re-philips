@@ -63,6 +63,9 @@
                 <div class="col-md-4">
                     <input type="text" id="filterMonth" class="form-control" placeholder="Month">
                 </div>
+                <div class="col-md-4">
+                    <input type="text" id="filterDate" class="form-control" placeholder="Date">
+                </div>
             </div>
 
             <br>
@@ -75,41 +78,42 @@
             </div>
 
             <br><br>
-
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-edit font-blue"></i>
-                    <span class="caption-subject font-blue bold uppercase">Sell Thru</span>
+            <div id="dataContent" class="display-hide">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-edit font-blue"></i>
+                        <span class="caption-subject font-blue bold uppercase">Sell Thru</span>
+                    </div>
                 </div>
-            </div>
-            <div class="portlet-body" style="padding: 15px;">
-                <!-- MAIN CONTENT -->
+                <div class="portlet-body" style="padding: 15px;">
+                    <!-- MAIN CONTENT -->
 
-                <div class="row">
+                    <div class="row">
 
-                    <table class="table table-striped table-hover table-bordered" id="sellInTable" style="white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th> No. </th>
-                                <th> Date </th>
-                                <th> User Name </th>
-                                <th> User NIK </th>
-                                <th> Store Name 1 </th>
-                                <th> Customer Code </th>
-                                <th> Store ID </th>
-                                <th> Product </th>
-                                <th> Quantity </th>
-                                <th> Irisan </th>
-                                <th> Action </th>
-                            </tr>
-                        </thead>
-                    </table>
+                        <table class="table table-striped table-hover table-bordered" id="sellInTable" style="white-space: nowrap;">
+                            <thead>
+                                <tr>
+                                    <th> No. </th>
+                                    <th> Date </th>
+                                    <th> User Name </th>
+                                    <th> User NIK </th>
+                                    <th> Store Name 1 </th>
+                                    <th> Customer Code </th>
+                                    <th> Store ID </th>
+                                    <th> Product </th>
+                                    <th> Quantity </th>
+                                    <th> Irisan </th>
+                                    <th> Action </th>
+                                </tr>
+                            </thead>
+                        </table>
 
+                    </div>
+
+                    @include('partial.modal.editsellin-modal')
+
+                    <!-- END MAIN CONTENT -->
                 </div>
-
-                @include('partial.modal.editsellin-modal')
-
-                <!-- END MAIN CONTENT -->
             </div>
         </div>
         <!-- END EXAMPLE TABLE PORTLET-->
@@ -167,34 +171,34 @@
             }
         });        
 
-        // Set data for Data Table
-        var table = $('#sellInTable').dataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                url: "{{ route('datatable.editsellin') }}",
-                type: 'POST',
-            },
-            "rowId": "id",
-            "columns": [
-                {data: 'id', name: 'id'},
-                        {data: 'date', name: 'date'},
-                        {data: 'user_name', name: 'user_name'},
-                        {data: 'user_nik', name: 'user_nik'},
-                        {data: 'store_name_1', name: 'store_name_1'},
-                        {data: 'store_name_2', name: 'store_name_2'},
-                        {data: 'store_id', name: 'store_id'},
-                        {data: 'product', name: 'product'},
-                        {data: 'quantity', name: 'quantity'},
-                        {data: 'irisan', name: 'irisan'},
-                        {data: 'action', name: 'action', searchable: false, sortable: false},
-            ],
-            "columnDefs": [
-                {"className": "dt-center", "targets": [0]},
-                {"className": "dt-center", "targets": [9]},
-            ],
-            "order": [ [0, 'desc'] ],
-        });
+        // // Set data for Data Table
+        // var table = $('#sellInTable').dataTable({
+        //     "processing": true,
+        //     "serverSide": true,
+        //     "ajax": {
+        //         url: "{{ route('datatable.editsellin') }}",
+        //         type: 'POST',
+        //     },
+        //     "rowId": "id",
+        //     "columns": [
+        //         {data: 'id', name: 'id'},
+        //                 {data: 'date', name: 'date'},
+        //                 {data: 'user_name', name: 'user_name'},
+        //                 {data: 'user_nik', name: 'user_nik'},
+        //                 {data: 'store_name_1', name: 'store_name_1'},
+        //                 {data: 'store_name_2', name: 'store_name_2'},
+        //                 {data: 'store_id', name: 'store_id'},
+        //                 {data: 'product', name: 'product'},
+        //                 {data: 'quantity', name: 'quantity'},
+        //                 {data: 'irisan', name: 'irisan'},
+        //                 {data: 'action', name: 'action', searchable: false, sortable: false},
+        //     ],
+        //     "columnDefs": [
+        //         {"className": "dt-center", "targets": [0]},
+        //         {"className": "dt-center", "targets": [9]},
+        //     ],
+        //     "order": [ [0, 'desc'] ],
+        // });
 
 
         // Delete data with sweet alert
@@ -363,8 +367,20 @@
             });
 
             // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // $('#filterMonth').val(moment().format('MMMM YYYY'));
+            // filters['searchMonth'] = $('#filterMonth').val();
+
+            // Filter Date
+            $('#filterDate').datetimepicker({
+                format: "yyyy-mm-dd",
+                startView: "2",
+                minView: "2",
+                autoclose: true,
+            });
+            
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
 
         }
 
@@ -374,6 +390,15 @@
             $('#filterMonth').change(function(){
                 filters['searchMonth'] = this.value;
                 console.log(filters);
+                $('#filterDate').val('');
+                delete filters['searchDate'];
+            });
+
+            $('#filterDate').change(function(){
+                filters['searchDate'] = this.value;
+                console.log(filters);
+                $('#filterMonth').val('');
+                delete filters['searchMonth'];
             });
 
         });
@@ -381,18 +406,20 @@
         $("#resetButton").click( function(){
 
             // Hide Table Content
-            // $('#dataContent').addClass('display-hide');
+            $('#dataContent').addClass('display-hide');
 
-            // Set to Month now
-            $('#filterMonth').val(moment().format('MMMM YYYY'));
-            filters['searchMonth'] = $('#filterMonth').val();
+            // Set to Date now
+            $('#filterDate').val(moment().format('YYYY-MM-DD'));
+            filters['searchDate'] = $('#filterDate').val();
+            $('#filterMonth').val('');
+            delete filters['searchMonth'];
 
         });
 
         $("#filterButton").click( function(){
 
             // Set Table Content
-            // $('#dataContent').removeClass('display-hide');
+            $('#dataContent').removeClass('display-hide');
 
         });
 

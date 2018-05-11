@@ -383,6 +383,9 @@
                         document.body.appendChild(a);
                         a.click();
                         a.remove();
+                        // console.log(data);
+
+                        // window.location = data.url;
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -475,6 +478,7 @@
                         icon.attr('class', 'fa fa-spinner fa-spin');
                     },
                     success: function (data) {
+                        
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
                         var a = document.createElement("a");
@@ -483,6 +487,9 @@
                         document.body.appendChild(a);
                         a.click();
                         a.remove();
+                        // console.log(data);
+
+                        // window.location = data.url;
                     },
                     error: function(xhr, textStatus, errorThrown){
                         element.removeAttr('disabled');
