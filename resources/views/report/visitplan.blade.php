@@ -165,7 +165,7 @@
 
         var paramFilter = ['visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order, '#export'];
 
-        var paramReset = [filterId, 'visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order, '#export', '#filterMonth'];
+        var paramReset = [filterId, 'visitPlan', $('#visitPlan'), url, tableColumns, columnDefs, order, '#export', '#filterMonth', '#filterDate'];
 
         $(document).ready(function () {
 
