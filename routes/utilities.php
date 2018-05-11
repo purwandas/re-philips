@@ -395,6 +395,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('util/export-guideline-read', ['uses'=>'Master\ExportController@exportGuideLineRead']);
     Route::post('util/export-feedbackanswer', ['uses'=>'Master\ExportController@exportFeedbackAnswer']);
     Route::post('util/export-feedbackanswer-all', ['uses'=>'Master\ExportController@exportFeedbackAnswerAll']);
+    Route::post('util/export-visitplan-template', ['uses'=>'Master\ExportController@exportVisitPlanTemplate']);
 
 
     /**
