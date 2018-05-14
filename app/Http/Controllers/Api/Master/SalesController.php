@@ -561,7 +561,7 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'Salesman Explorer') {
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -809,6 +809,7 @@ class SalesController extends Controller
 
             // Check sell out header
             $sellOutHeader = SellOut::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', date('Y-m-d'))->first();
+            // return response()->json($sellOutHeader);
 
             if ($sellOutHeader) { // If header exist (update and/or create detail)
 
@@ -1163,10 +1164,34 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell Out')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell Out')
+                                        ->first();
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
