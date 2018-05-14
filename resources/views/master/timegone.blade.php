@@ -46,11 +46,11 @@
                 </div>
                 <div class="actions" style="text-align: left">
                     <a id="export" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
+                        <i id="exportIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (SELECTED) </a>
                 </div>
                 <div class="actions" style="text-align: left; padding-right: 10px;">
                     <a id="exportAll" class="btn green-dark" >
-                        <i class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
+                        <i id="exportAllIcon" class="fa fa-cloud-download"></i> DOWNLOAD TO EXCEL (ALL) </a>
                 </div>
             </div>
 
@@ -237,6 +237,9 @@
 
     $("#export").click( function(){
 
+        var element = $("#export");
+        var icon = $("#exportIcon");
+        var thisClass = icon.attr('class');
         if ($('#export').attr('disabled') != 'disabled') {
 
             // Export data
@@ -249,28 +252,56 @@
                 data: {data: data},
                 global: false,
                 async: false,
-                success: function (data) {
+                // success: function (data) {
 
-                    console.log(data);
+                //     console.log(data);
 
-                    window.location = data.url;
+                //     window.location = data.url;
 
-                    // setTimeout(function () {
-                    //     $.ajax({
-                    //         type: 'POST',
-                    //         url: 'util/export-delete',
-                    //         dataType: 'json',
-                    //         data: {data: data.url},
-                    //         global: false,
-                    //         async: false,
-                    //         success: function (data) {
-                    //             console.log(data);
-                    //         }
-                    //     });
-                    // }, 1000);
+                //     // setTimeout(function () {
+                //     //     $.ajax({
+                //     //         type: 'POST',
+                //     //         url: 'util/export-delete',
+                //     //         dataType: 'json',
+                //     //         data: {data: data.url},
+                //     //         global: false,
+                //     //         async: false,
+                //     //         success: function (data) {
+                //     //             console.log(data);
+                //     //         }
+                //     //     });
+                //     // }, 1000);
 
 
-                }
+                // }
+                beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
+                    }
             });
 
         }
@@ -280,6 +311,9 @@
 
     $("#exportAll").click( function(){
 
+        var element = $("#exportAll");
+        var icon = $("#exportAllIcon");
+        var thisClass = icon.attr('class');
         if ($('#export').attr('disabled') != 'disabled') {
 
             // Export data
@@ -289,13 +323,41 @@
                 type: 'POST',
                 url: 'util/export-timegone-all',
                 dataType: 'json',
-                success: function (data) {
+                beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
 
-                    console.log(data);
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
 
-                    window.location = data.url;
+                        // window.location = data.url;
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
-                }
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
+                    }
+                // success: function (data) {
+
+                //     console.log(data);
+
+                //     window.location = data.url;
+
+                // }
             });
 
         }
@@ -304,7 +366,10 @@
     });
 
     $("#exportTemplate").click( function(){
-
+        
+        var element = $("#exportTemplate");
+        var icon = $("#exportTemplateIcon");
+        var thisClass = icon.attr('class');
         if ($('#export').attr('disabled') != 'disabled') {
 
             // Export data
@@ -314,13 +379,41 @@
                 type: 'POST',
                 url: 'util/export-timegone-template',
                 dataType: 'json',
-                success: function (data) {
+                // success: function (data) {
 
-                    console.log(data);
+                //     console.log(data);
 
-                    window.location = data.url;
+                //     window.location = data.url;
 
-                }
+                // }
+                beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
+                    success: function (data) {
+
+                        // element.removeAttr('disabled');
+                        // icon.attr('class', thisClass);
+                        // console.log(data);
+
+                        // window.location = data.url;
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(errorThrown);
+                        alert('Export request failed');
+                    }
             });
 
         }

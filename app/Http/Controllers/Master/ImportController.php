@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
 use Artisan;
+use App\VisitPlan;
 
 class ImportController extends Controller
 {
@@ -230,5 +231,98 @@ class ImportController extends Controller
         Artisan::call("import:targetsalesman", ['file' => $file_uploaded]);
 
         return response()->json(['url' => url('/targetsalesman')]);
+    }
+
+    public function importVisitPlan(Request $request){
+
+        // return $request->upload_file->getRealPath();
+
+        // $file = $request->upload_file;
+        // $date = Carbon::now()->format('m').Carbon::now()->format('Y');
+
+        // $file_origin = $this->getUploadPathNameFileForImport($request->upload_file, 'visitplan', $date);
+
+        // $path = explode('/', $file_origin);
+        // $count = count($path);
+        // $folder = "visitplan/";
+        // $file_name = $path[$count - 1];
+
+        // $file_uploaded = $this->uploadFileForImport($request->upload_file, $folder, $file_name);
+
+        // $dataFile = Excel::selectSheetsByIndex(0)->load($file_uploaded)->first();
+
+        // return $dataFile;
+
+
+        if($request->hasFile('upload_file')){
+
+            Excel::filter('chunk')->selectSheetsByIndex(0)->load($request->file('upload_file')->getRealPath())->chunk(10, function ($reader) {
+
+                $columnCount = $reader->first()->keys()->count();
+
+                $columnHeaders = $reader->first()->keys()->toArray();
+
+                // foreach ($reader->toArray() as $data) {
+                //     VisitPlan::create([
+                //             'user_id' => $data[$columnHeaders[2]],
+                //             'store_id' => $data[$columnHeaders[5]],
+                //             'date' => Carbon::now(),
+                //             'check_out_location' => $data[$columnHeaders[7]],                           
+                //         ]);
+                // }
+
+                // for($i=0;$i<$columnCount;$i++){
+                //     VisitPlan::create([
+                //             'user_id' => 1,
+                //             'store_id' => 1,
+                //             'date' => Carbon::now(),                            
+                //         ]);
+                // }
+
+                foreach ($reader->toArray() as $data) {
+                    for($i=6;$i<$columnCount;$i++){
+                        if($data[$columnHeaders[$i]] == 1){
+
+                            $dateExplode = explode('_', $columnHeaders[$i]);
+
+                            // $date = Carbon::parse(str_replace('_', '-', $columnHeaders[$i]));
+                            $date = Carbon::create($dateExplode[0], $dateExplode[1], $dateExplode[2]);
+
+                            $cekVisit = VisitPlan::where('user_id', $data['id_promoter'])
+                                                    ->where('store_id', $data['id_store'])
+                                                    ->where('date', $date)
+                                                    ->first();
+
+                            if(!$cekVisit){
+                                VisitPlan::create([
+                                    'user_id' => $data['id_promoter'],
+                                    'store_id' => $data['id_store'],
+                                    'date' => $date,
+                                    ]);
+                            }
+
+                        }
+                    }
+                }
+            });
+
+            
+            // Excel::filter('chunk')->selectSheetsByIndex(0)->load($request->file('upload_file')->getRealPath())->chunk(100, function ($reader) {
+
+            //     foreach ($reader as $data) {
+            //         VisitPlan::create([
+            //                 'user_id' => 1,
+            //                 'store_id' => 1,
+            //                 'date' => Carbon::now(),                            
+            //             ]);
+            //     }
+
+            //     // return response()->json(['url' => $reader->toArray()]);
+
+            // });
+
+        }
+
+        return response()->json(['url' => url('/visitplan')]);
     }
 }

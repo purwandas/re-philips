@@ -71,11 +71,19 @@
 
                 <br><br>
 
-                    <!-- MAIN CONTENT -->
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-file-text-o font-blue"></i>
                             <span class="caption-subject font-blue bold uppercase">Visit PLan</span>
+                        </div>
+                    </div>
+
+                    <!-- MAIN CONTENT -->
+                    <div class="portlet-title">
+                        <div class="btn-group">
+                            <a id="upload" class="btn btn-primary" data-toggle="modal" href="#upload-visitplan"><i
+                                class="fa fa-cloud-upload"></i> Upload Visit Plan </a>
+
                         </div>
                         <div class="actions" style="text-align: left">
                             <a id="export" class="btn green-dark" >
@@ -113,6 +121,8 @@
 
                 <!-- END MAIN CONTENT -->
 
+                @include('partial.modal.upload-visitplan-modal')
+
             </div>
             <!-- END EXAMPLE TABLE PORTLET-->
         </div>
@@ -124,6 +134,7 @@
     <!-- BEGIN SELECT2 SCRIPTS -->
     <script src="{{ asset('js/handler/select2-handler.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/handler/datetimepicker-handler.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/upload-modal/upload-visitplan-handler.js') }}" type="text/javascript"></script>
     <!-- END SELECT2 SCRIPTS -->
 
     <script>
@@ -448,6 +459,19 @@
             //     });
 
             // }
+
+        });
+
+        $("#exportTemplate").click( function(){
+
+            exportFile = '';
+
+            var url = "{{ asset('template/TEMPLATE VISITPLAN.xlsx') }}";
+
+            // return;
+
+            window.location = url;
+
 
         });
 

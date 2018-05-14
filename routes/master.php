@@ -341,6 +341,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('import-target', 'Master\ImportController@importTarget');
         Route::post('import-salesman-target', 'Master\ImportController@importSalesmanTarget');
         Route::post('import-apm', 'Master\ImportController@importApm');
+        Route::post('import-visitplan', 'Master\ImportController@importVisitPlan');
 
         /** APM **/
         Route::get('apm', 'Master\ApmController@index');
