@@ -80,7 +80,12 @@ function triggerResetReport (arrayOfData) {
 
     this.filters = {};
     if(typeof arrayOfData[8] !== 'undefined') {
-        this.filters['searchMonth'] = $(arrayOfData[8]).val();
+        delete this.filters['searchMonth'];
+        this.filters['searchMonth'] = moment().format('YYYY-MM-DD');
+    }
+    if(typeof arrayOfData[9] !== 'undefined') {
+        delete this.filters['searchMonth'];
+        this.filters['searchDate'] = moment().format('YYYY-MM-DD');
     }
 
     console.log(this.filters);
@@ -193,6 +198,7 @@ function filteringReport(arrayOfData) {
             "columns": tableColumns,
             "columnDefs": columnDefs,
             "order": order,
+            
         })
     })
 }
