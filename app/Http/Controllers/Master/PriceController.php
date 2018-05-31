@@ -118,14 +118,16 @@ class PriceController extends Controller
             'product_id' => 'required',
             'globalchannel_id' => 'required',
             'sell_type' => 'required',
-            'price' => 'required|numeric'
+            'price' => 'required|numeric',
+            'release_date' => 'required',
             ]);
 
 //        return $this->changeSellInSummary($request['product_id'], $request['globalchannel_id'], $request['price']);
 
         $price = Price::where('product_id', $request['product_id'])
                     ->where('globalchannel_id', $request['globalchannel_id'])
-                    ->where('sell_type', $request['sell_type']);
+                    ->where('sell_type', $request['sell_type'])
+                    ->whereDate('release_date', Carbon::parse($request['release_date']));
 
         if($price->count() > 0){
             $price->update(['price'=>$request->price]);
@@ -135,7 +137,7 @@ class PriceController extends Controller
             $summary['globalchannel_id'] = $request['globalchannel_id'];
             $summary['sell_type'] = $request['sell_type'];
             $summary['price'] = $request['price'];
-            $this->changeSummary($summary, 'change');
+            // $this->changeSummary($summary, 'change');
 
         }else{
             $price = Price::create($request->all());
@@ -145,7 +147,7 @@ class PriceController extends Controller
             $summary['globalchannel_id'] = $price->globalchannel_id;
             $summary['sell_type'] = $request['sell_type'];
             $summary['price'] = $price->price;
-            $this->changeSummary($summary, 'change');
+            // $this->changeSummary($summary, 'change');
         }
 
         return response()->json(['url' => url('/price')]);
@@ -196,6 +198,7 @@ class PriceController extends Controller
         $priceCount = Price::where('product_id', $request['product_id'])
                     ->where('globalchannel_id', $request['globalchannel_id'])
                     ->where('sell_type', $request['sell_type'])
+                    ->whereDate('release_date', Carbon::parse($request['release_date']))
                     ->where('id', '<>', $id)
                     ->count();
 
@@ -210,7 +213,7 @@ class PriceController extends Controller
         $summary['globalchannel_id'] = $request['globalchannel_id'];
         $summary['sell_type'] = $request['sell_type'];
         $summary['price'] = $request['price'];
-        $this->changeSummary($summary, 'change');
+        // $this->changeSummary($summary, 'change');
 
         return response()->json(
             ['url' => url('/price'), 'method' => $request->_method]);
@@ -231,7 +234,7 @@ class PriceController extends Controller
         $summary['globalchannel_id'] = $price->globalchannel_id;
         $summary['sell_type'] = $price['sell_type'];
         $summary['price'] = $price->price;
-        $this->changeSummary($summary, 'delete');
+        // $this->changeSummary($summary, 'delete');
 
         $price->delete();
 

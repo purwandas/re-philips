@@ -4,8 +4,76 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3bd6169a82cfd0edd607912ec5f08a3a",
+    "content-hash": "9b72899e0e8f7ca1d74228ea800fd8c7",
     "packages": [
+        {
+            "name": "box/spout",
+            "version": "v2.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/box/spout.git",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/box/spout/zipball/3681a3421a868ab9a65da156c554f756541f452b",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xmlreader": "*",
+                "ext-zip": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.0"
+            },
+            "suggest": {
+                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
+                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Box\\Spout\\": "src/Spout"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Adrien Loison",
+                    "email": "adrien@box.com"
+                }
+            ],
+            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
+            "homepage": "https://www.github.com/box/spout",
+            "keywords": [
+                "OOXML",
+                "csv",
+                "excel",
+                "memory",
+                "odf",
+                "ods",
+                "office",
+                "open",
+                "php",
+                "read",
+                "scale",
+                "spreadsheet",
+                "stream",
+                "write",
+                "xlsx"
+            ],
+            "time": "2017-09-25T19:44:35+00:00"
+        },
         {
             "name": "cache/adapter-common",
             "version": "1.0.0",
@@ -1387,6 +1455,73 @@
             "time": "2017-08-12T15:52:38+00:00"
         },
         {
+            "name": "league/csv",
+            "version": "9.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/csv.git",
+                "reference": "9c8ad06fb5d747c149875beb6133566c00eaa481"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/csv/zipball/9c8ad06fb5d747c149875beb6133566c00eaa481",
+                "reference": "9c8ad06fb5d747c149875beb6133566c00eaa481",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.0.10"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "phpstan/phpstan": "^0.9.2",
+                "phpstan/phpstan-phpunit": "^0.9.4",
+                "phpstan/phpstan-strict-rules": "^0.9.0",
+                "phpunit/phpunit": "^6.0"
+            },
+            "suggest": {
+                "ext-iconv": "Needed to ease transcoding CSV using iconv stream filters"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Csv\\": "src"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://github.com/nyamsprod/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Csv data manipulation made easy in PHP",
+            "homepage": "http://csv.thephpleague.com",
+            "keywords": [
+                "csv",
+                "export",
+                "filter",
+                "import",
+                "read",
+                "write"
+            ],
+            "time": "2018-05-01T18:32:48+00:00"
+        },
+        {
             "name": "league/flysystem",
             "version": "1.0.44",
             "source": {
@@ -2416,6 +2551,53 @@
                 "uuid"
             ],
             "time": "2018-01-20T00:28:24+00:00"
+        },
+        {
+            "name": "rap2hpoutre/fast-excel",
+            "version": "v0.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rap2hpoutre/fast-excel.git",
+                "reference": "d15f71f583f39b1d7ff9351d8a19e4658a90bd65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rap2hpoutre/fast-excel/zipball/d15f71f583f39b1d7ff9351d8a19e4658a90bd65",
+                "reference": "d15f71f583f39b1d7ff9351d8a19e4658a90bd65",
+                "shasum": ""
+            },
+            "require": {
+                "box/spout": "^2.7",
+                "illuminate/database": "5.3.* || 5.4.* || 5.5.* || 5.6.*",
+                "illuminate/support": "5.3.* || 5.4.* || 5.5.* || 5.6.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rap2hpoutre\\FastExcel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "rap2h",
+                    "email": "raphaelht@gmail.com"
+                }
+            ],
+            "keywords": [
+                "csv",
+                "excel",
+                "laravel",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2018-05-28T10:52:14+00:00"
         },
         {
             "name": "react/event-loop",
@@ -3856,6 +4038,56 @@
             "time": "2017-06-07T21:32:02+00:00"
         },
         {
+            "name": "usmanhalalit/laracsv",
+            "version": "1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/usmanhalalit/laracsv.git",
+                "reference": "f0c5e573643df739297d474111d89e8aa40a7460"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/usmanhalalit/laracsv/zipball/f0c5e573643df739297d474111d89e8aa40a7460",
+                "reference": "f0c5e573643df739297d474111d89e8aa40a7460",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": ">=5.2",
+                "league/csv": ">=8.2",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.6",
+                "phpunit/phpunit": "5.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laracsv\\": "src/Laracsv/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muhammad Usman",
+                    "email": "hi@usman.it",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel package to easily generate CSV files from Eloquent model.",
+            "homepage": "https://github.com/usmanhalalit/laracsv",
+            "keywords": [
+                "csv",
+                "eloquent",
+                "export",
+                "laravel"
+            ],
+            "time": "2017-05-17T07:57:45+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v2.4.0",
             "source": {
@@ -3904,6 +4136,58 @@
                 "environment"
             ],
             "time": "2016-09-01T10:05:43+00:00"
+        },
+        {
+            "name": "volosyuk/simple-eloquent",
+            "version": "5.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andreyvolosyuk/simple-eloquent.git",
+                "reference": "7355e114d4c83371dc16d744a58c05cd673b6240"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andreyvolosyuk/simple-eloquent/zipball/7355e114d4c83371dc16d744a58c05cd673b6240",
+                "reference": "7355e114d4c83371dc16d744a58c05cd673b6240",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.4.*",
+                "illuminate/pagination": "5.4.*",
+                "illuminate/support": "5.4.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.5.x-dev",
+                    "dev-five_four": "5.4.x-dev",
+                    "dev-five_three": "5.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Volosyuk\\SimpleEloquent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrey Volosyuk",
+                    "email": "valasiuk.andrei@gmail.com"
+                }
+            ],
+            "description": "Adaptation of eloquent for retrieving its attributes",
+            "keywords": [
+                "eloquent",
+                "laravel"
+            ],
+            "time": "2018-03-22T18:43:12+00:00"
         },
         {
             "name": "willdurand/geocoder",
@@ -5515,7 +5799,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "usmanhalalit/laracsv": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

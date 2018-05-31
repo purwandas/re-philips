@@ -183,11 +183,11 @@
                 success: function (results) {
                     var count = results.length;
 
-                            if(count > 0){
-                                $('#exportAll').removeAttr('disabled');
-                            }else{
-                                $('#exportAll').attr('disabled','disabled');
-                            }
+                            // if(count > 0){
+                            //     $('#exportAll').removeAttr('disabled');
+                            // }else{
+                            //     $('#exportAll').attr('disabled','disabled');
+                            // }
 
                     dataAll = results;
                 }
@@ -208,11 +208,11 @@
                     dataSrc: function (res) {
                         var count = res.data.length;
 
-                        if(count > 0){
-                            $('#export').removeAttr('disabled');
-                        }else{
-                            $('#export').attr('disabled','disabled');
-                        }
+                        // if(count > 0){
+                        //     $('#export').removeAttr('disabled');
+                        // }else{
+                        //     $('#export').attr('disabled','disabled');
+                        // }
 
                         this.data = res.data;
                         return res.data;
@@ -371,11 +371,11 @@
                 success: function (results) {
                     var count = results.length;
 
-                            if(count > 0){
-                                $('#exportAll').removeAttr('disabled');
-                            }else{
-                                $('#exportAll').attr('disabled','disabled');
-                            }
+                            // if(count > 0){
+                            //     $('#exportAll').removeAttr('disabled');
+                            // }else{
+                            //     $('#exportAll').attr('disabled','disabled');
+                            // }
 
                     dataAll = results;
                 }
@@ -384,8 +384,13 @@
         });
 
         $("#export").click( function(){
+            
+            var element = $("#export");
+            var icon = $("#exportIcon");
 
             if ($('#export').attr('disabled') != 'disabled') {
+                
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -399,9 +404,17 @@
                     async: false,
                     success: function (data) {
 
-                        console.log(data);
+                        // console.log(data);
 
-                        window.location = data.url;
+                        // window.location = data.url;
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -427,8 +440,13 @@
         });
 
         $("#exportAll").click( function(){
+            
+             var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
 
             if ($('#export').attr('disabled') != 'disabled') {
+                
+                var thisClass = icon.attr('class');
 
                 $.ajax({
                     type: 'POST',
@@ -449,14 +467,25 @@
                     type: 'POST',
                     url: 'util/export-posmactivity-all',
                     dataType: 'json',
-                    data: {data: dataAll},
-                    global: false,
-                    async: false,
+                    data: filters,
+                    beforeSend: function()
+                    {   
+                        element.attr('disabled', 'disabled');
+                        icon.attr('class', 'fa fa-spinner fa-spin');
+                    },
                     success: function (data) {
 
-                        console.log(data);
+                        // console.log(data);
 
-                        window.location = data.url;
+                        // window.location = data.url;
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({

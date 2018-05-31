@@ -11,7 +11,7 @@ class SohDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'soh_id', 'product_id', 'quantity'
+        'soh_id', 'product_id', 'quantity', 'price'
     ];
 
     /**

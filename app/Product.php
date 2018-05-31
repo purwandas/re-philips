@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
+use Carbon\Carbon;
 
 class Product extends Model
 {
@@ -71,6 +72,14 @@ class Product extends Model
         return $this->hasMany('App\PromoActivityDetail', 'product_id');
     }
 
+    public function prices(){
+        return $this->hasMany('App\Price', 'product_id');   
+    }
+
+    public function pfs(){
+        return $this->hasMany('App\ProductFocuses', 'product_id');   
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query
@@ -81,4 +90,24 @@ class Product extends Model
     {
         return $filters->apply($query);
     }
+
+     /**
+     *
+     * Eager load attribute
+     *
+     **/
+
+    public function getPriceAttribute($globalChannel, $sellType, $date){
+        // return $sellType;
+        return $this->prices()->where('globalchannel_id', $globalChannel)->where('sell_type', $sellType)->whereDate('release_date', '<=', Carbon::parse($date))->orderBy('release_date', 'DESC')->first();
+
+        // return $this->prices()->get();
+
+        // return $this->prices()->where('globalchannel_id', $globalChannelId)->first();        
+    }
+
+    public function getPfAttribute(){
+        return $this->pfs()->get();
+    }
+
 }

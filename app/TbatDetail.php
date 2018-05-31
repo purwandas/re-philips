@@ -11,7 +11,7 @@ class TbatDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'tbat_id', 'product_id', 'quantity'
+        'tbat_id', 'product_id', 'quantity', 'price'
     ];
 
     /**

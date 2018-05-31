@@ -858,6 +858,218 @@ class ReportController extends Controller
 
     }
 
+    public function sellOutDataAlternatif(Request $request, SellOutFilters $filters){
+
+        // $data2 = SellOutDetail::filter($filters)->with('sellOut.store.district.area.region', 'sellOut.user', 'product.category.group');
+
+        $data = SellOutDetail::filter($filters)
+                ->leftJoin('sell_outs', 'sell_out_details.sellout_id', '=', 'sell_outs.id')
+                ->leftJoin('stores', 'sell_outs.store_id', '=', 'stores.id')            
+                ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                // ->leftJoin('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
+                // ->leftJoin('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
+                ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')
+                ->leftJoin('areas', 'districts.area_id', '=', 'areas.id')
+                // ->leftJoin('dm_areas', 'dm_areas.area_id', '=', 'areas.id')
+                // ->leftJoin('users as dm', 'dm_areas.user_id', '=', 'dm.id')
+                // ->leftJoin('trainer_areas', 'trainer_areas.area_id', '=', 'areas.id')
+                // ->leftJoin('users as trainer', 'trainer_areas.user_id', '=', 'trainer.id')
+                ->leftJoin('regions', 'areas.region_id', '=', 'regions.id')
+                ->leftJoin('users', 'sell_outs.user_id', '=', 'users.id')
+                ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                ->leftJoin('products', 'sell_out_details.product_id', '=', 'products.id')
+                ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+                ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                ->select('sell_out_details.id','sell_outs.week', 'channels.name as channel', 'sub_channels.name as sub_channel', 'regions.name as region', 'areas.name as area', 'districts.name as district', 'stores.store_name_1', 'stores.store_name_2', 'stores.store_id', 'users.nik', 'users.name as promoter_name', 'sell_outs.date', 'products.model', 'groups.name as group', 'categories.name as category', 'products.name as product_name', 'sell_out_details.quantity', 'sell_out_details.amount as unit_price', DB::raw('(sell_out_details.amount * sell_out_details.quantity) as value'), 'sell_out_details.irisan', 'roles.role_group as role');
+
+        // $data = SellOutDetail::filter($filters)->with('sellOut.store', 'sellOut.user', 'product');
+
+        // return $data->get();
+
+        return Datatables::of($data)
+            ->editColumn('distributor_code', function ($item) {
+               return '-';
+               // return $item->sellOut->store->distributorCode;
+            })
+            ->editColumn('distributor_name', function ($item) {
+               return '-';
+               // return $item->sellOut->store->distributorName;
+            })
+            ->editColumn('value_pf_mr', function ($item) {
+                return '-';
+               // return ($item->product->pf->where('type', 'MR')->first()) ? $data->amount : 0;
+            })
+            ->editColumn('value_pf_tr', function ($item) {
+                return '-';
+               // return ($item->product->pf->where('type', 'TR')->first()) ? $data->amount : 0;
+            })
+            ->editColumn('value_pf_ppe', function ($item) {
+                return '-';
+               // return ($item->product->pf->where('type', 'PPE')->first()) ? $data->amount : 0;
+            })
+            ->editColumn('spv_name', function ($item) {
+                return '-';
+            })
+            ->editColumn('dm_name', function ($item) {
+               return '-';
+               // return $item->sellOut->store->dmName;
+            })
+            ->editColumn('trainer_name', function ($item) {
+               return '-';
+               // return $item->sellOut->store->trainerName;
+            })
+            ->make(true);
+    }
+
+    public function sellOutDataNew(Request $request, SellOutFilters $filters){
+
+        $data = SellOutDetail::filter($filters)->with('sellOut.store.district.area.region', 'sellOut.user', 'product.category.group');
+
+        // $data = SellOutDetail::filter($filters)->with('sellOut.store', 'sellOut.user', 'product');
+
+        // return $data->get();
+
+        return Datatables::of($data)
+            ->editColumn('week', function ($item) {
+               // return '-';
+               return $item->sellOut->week;
+            })
+            ->editColumn('distributor_code', function ($item) {
+               // return '-';
+               return $item->sellOut->store->distributorCode;
+            })
+            ->editColumn('distributor_name', function ($item) {
+               // return '-';
+               return $item->sellOut->store->distributorName;
+            })
+            ->editColumn('region', function ($item) {
+               // return '-';
+               return $item->sellOut->store->regionName;
+            })
+            ->editColumn('channel', function ($item) {
+               // return '-';
+               return $item->sellOut->store->channelName;
+            })
+            ->editColumn('sub_channel', function ($item) {
+               // return '-';
+               return $item->sellOut->store->subChannelName;
+            })
+            ->editColumn('area', function ($item) {
+               // return '-';
+               return $item->sellOut->store->areaName;
+            })
+            ->editColumn('district', function ($item) {
+               // return '-';
+               return $item->sellOut->store->districtName;
+            })
+            ->editColumn('store_name_1', function ($item) {
+               // return '-';
+               return $item->sellOut->store->store_name_1;
+            })
+            ->editColumn('store_name_2', function ($item) {
+               // return '-';
+               return ($item->sellOut->store->store_name_2) ? $item->sellOut->store->store_name_2 : '';
+            })
+            ->editColumn('store_id', function ($item) {
+               // return '-';
+               return $item->sellOut->store->store_id . ' --- ' . $item->sellOut->store->id;
+            })
+            ->editColumn('nik', function ($item) {
+               // return '-';
+               return $item->sellOut->user->nik;
+            })
+            ->editColumn('promoter_name', function ($item) {
+               // return '-';
+               return $item->sellOut->user->name;
+            })
+            ->editColumn('date', function ($item) {
+               // return '-';
+               return $item->sellOut->date;
+            })
+            ->editColumn('model', function ($item) {
+               // return '-';
+               return $item->product->model;
+            })
+            ->editColumn('group', function ($item) {
+               // return '-';
+               return $item->product->category->group->name;
+            })
+            ->editColumn('category', function ($item) {
+               // return '-';
+               return $item->product->category->name;
+            })
+            ->editColumn('product_name', function ($item) {
+               // return '-';
+               return $item->product->name;
+            })
+            ->editColumn('quantity', function ($item) {
+               // return '-';
+               return $item->quantity;
+            })
+            ->editColumn('unit_price', function ($item) {
+               // return $item->product->price->where('sell_type', 'Sell Out')->where('globalchannel_id', $item->sellOut->store->globalChannelId)->first()->price;
+
+                // $price = 0;
+
+                // if($item->sellOut->user->role->role_group == 'Salesman Explorer' || $item->sellOut->user->role->role_group == 'SMD'){
+                //     if($item->sellOut->store->globalChannelId != ''){
+                //         $price = $item->product->price->where('sell_type', 'Sell Out')->where('globalchannel_id', $item->sellOut->store->globalChannelId)->first()->price;
+                //     }else{
+                //         $price = $item->product->price->where('sell_type', 'Sell Out')->where('globalchannel_id', $item->sellOut->user->dedicate)->first()->price;
+                //     }
+                // }
+                // $price = $item->product->price->where('sell_type', 'Sell Out')->where('globalchannel_id', $item->sellOut->store->globalChannelId)->first()->price;
+
+                // return '-';
+               return number_format($item->amount);
+            })
+            ->editColumn('value', function ($item) {
+               // return '-';
+               // return number_format($item->amount);
+                return $item->amount * $item->quantity;
+            })
+            ->editColumn('value_pf_mr', function ($item) {
+               return ($item->product->pf->where('type', 'MR')->first()) ? $item->amount * $item->quantity : 0;
+            })
+            ->editColumn('value_pf_tr', function ($item) {
+               return ($item->product->pf->where('type', 'TR')->first()) ? $item->amount * $item->quantity : 0;
+            })
+            ->editColumn('value_pf_ppe', function ($item) {
+               return ($item->product->pf->where('type', 'PPE')->first()) ? $item->amount * $item->quantity : 0;
+            })
+            ->editColumn('irisan', function ($item) {
+                // return '-';
+               if($item->irisan == 0){
+                    return '-';
+               }else{
+                    return 'Irisan';
+               }
+            })
+            ->editColumn('role', function ($item) {
+               // return '-';
+               return $item->sellOut->user->role->role_group;
+            })
+            ->editColumn('spv_name', function ($item) {
+                // return '-';
+               if($item->sellOut->user->role->role_group == 'Demonstrator DA'){
+                    return $item->sellOut->store->spvDemo;
+               }else{
+                    return $item->sellOut->store->spvPromoter;
+               }
+            })
+            ->editColumn('dm_name', function ($item) {
+               // return '-';
+               return $item->sellOut->store->dmName;
+            })
+            ->editColumn('trainer_name', function ($item) {
+               // return '-';
+               return $item->sellOut->store->trainerName;
+            })
+            ->make(true);
+    }
+
     public function sellOutData(Request $request, SellOutFilters $filters){
         $monthNow = Carbon::now()->format('m');
         $yearNow = Carbon::now()->format('Y');
@@ -1482,7 +1694,6 @@ class ReportController extends Controller
             }
             
             return $filter->limit(1)->get();
-
 
         // }else{ // Fetch data from history
 
@@ -3528,10 +3739,26 @@ class ReportController extends Controller
     public function displayShareData(Request $request, DisplayShareFilters $filters){
 
         // Check data summary atau history
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        // $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        // $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
@@ -3562,6 +3789,18 @@ class ReportController extends Controller
             $filter = $data;
 
             /* If filter */
+            // if($request['searchMonth']){
+            //     $month = Carbon::parse($request['searchMonth'])->format('m');
+            //     $year = Carbon::parse($request['searchMonth'])->format('Y');
+            //     // $filter = $data->where('month', $month)->where('year', $year);
+            //     $date1 = "$year-$month-01";
+            //     $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            //     $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
+            
+            /* If filter */
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
                 $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -3569,9 +3808,21 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
+            
+            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
@@ -3729,10 +3980,26 @@ class ReportController extends Controller
     public function displayShareDataAll(Request $request, DisplayShareFilters $filters){
 
         // Check data summary atau history
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        // $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        // $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
@@ -3762,6 +4029,18 @@ class ReportController extends Controller
 
             $filter = $data;
 
+            // if($request['searchMonth']){
+            //     $month = Carbon::parse($request['searchMonth'])->format('m');
+            //     $year = Carbon::parse($request['searchMonth'])->format('Y');
+            //     // $filter = $data->where('month', $month)->where('year', $year);
+            //     $date1 = "$year-$month-01";
+            //     $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            //     $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
+            
+            /* If filter */
             if($request['searchMonth']){
                 $month = Carbon::parse($request['searchMonth'])->format('m');
                 $year = Carbon::parse($request['searchMonth'])->format('Y');
@@ -3769,9 +4048,21 @@ class ReportController extends Controller
                 $date1 = "$year-$month-01";
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
-
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
+            
+            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
 
             return $filter->all();
 
@@ -3928,15 +4219,19 @@ class ReportController extends Controller
 
             return Datatables::of($filter->all())
             ->editColumn('photo', function ($item) {
-                // $folderPath = explode('/', $item->photo);
-                // $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
-                // $files = File::allFiles($folder);
+                $folderPath = explode('/', $item->photo);
+                $folder = $folderPath[5].'/'.$folderPath[6].'/'.$folderPath[7];
+                if(!File::exists($folder)) return '<b>DATA FOTO TIDAK DITEMUKAN!</b>';
+                $files = File::allFiles($folder);
                     $images = '';
-                // foreach ($files as $file)
-                // {
-                //     $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
+                foreach ($files as $file)
+                {
+                    $images .= "<img src='".asset((string)$file)."' height='100px' onError='this.onerror=null;this.src='".asset('image/missing.png')."';'>\n";
+                    // $images .= "<img src='".asset((string)$file)."' height='100px'>\n";
                 // }
-                    $images .= "<img src='".$item->photo."' height='100px'>\n";
+                    // $images .= "<img src='".$item->photo."' height='100px'>\n";
+                    
+                }
                     return $images;
                 })
             ->editColumn('report', function ($item) {
@@ -4141,13 +4436,51 @@ class ReportController extends Controller
 
     public function promoActivityData(Request $request){
 
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        // $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        // $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
+        
+         /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            }
 
             $data = PromoActivity::
                     join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
@@ -4157,22 +4490,24 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'promo_activities.user_id', '=', 'users.id')
                     ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
+                    ->whereRaw("DATE(promo_activities.date) >= '$date1'")
+                    ->whereRaw("DATE(promo_activities.date) <= '$date2'")
                     ->select('promo_activities.*', 'promo_activity_details.promo as promo', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants', 'stores.id as storeId')
                     ->get();
 
             $filter = $data;
 
-            /* If filter */
-            if($request['searchMonth']){
-                $month = Carbon::parse($request['searchMonth'])->format('m');
-                $year = Carbon::parse($request['searchMonth'])->format('Y');
-                // $filter = $data->where('month', $month)->where('year', $year);
-                $date1 = "$year-$month-01";
-                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            // /* If filter */
+            // if($request['searchMonth']){
+            //     $month = Carbon::parse($request['searchMonth'])->format('m');
+            //     $year = Carbon::parse($request['searchMonth'])->format('Y');
+            //     // $filter = $data->where('month', $month)->where('year', $year);
+            //     $date1 = "$year-$month-01";
+            //     $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            //     $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
 
             if($request['byStore']){
                 $store = Store::where('stores.id', $request['byStore'])
@@ -4253,16 +4588,140 @@ class ReportController extends Controller
             ->make(true);
 
     }
+    
+    // public function promoActivityDataAll(Request $request){
+        
+    //     return $request->all();
+
+    //     $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+    //     $monthNow = Carbon::now()->format('m');
+    //     $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+    //     $yearNow = Carbon::now()->format('Y');
+
+    //     $userRole = Auth::user()->role->role_group;
+    //     $userId = Auth::user()->id;
+
+    //         $data = PromoActivity::
+    //                 join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
+    //                 ->join('stores', 'promo_activities.store_id', '=', 'stores.id')
+    //                 ->join('districts', 'stores.district_id', '=', 'districts.id')
+    //                 ->join('areas', 'districts.area_id', '=', 'areas.id')
+    //                 ->join('regions', 'areas.region_id', '=', 'regions.id')
+    //                 ->join('users', 'promo_activities.user_id', '=', 'users.id')
+    //                 ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
+    //                 ->select('promo_activities.*', 'promo_activity_details.promo as promo', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants', 'stores.id as storeId')
+    //                 ->get();
+
+    //         $filter = $data;
+
+    //         /* If filter */
+    //         if($request['searchMonth']){
+    //             $month = Carbon::parse($request['searchMonth'])->format('m');
+    //             $year = Carbon::parse($request['searchMonth'])->format('Y');
+    //             // $filter = $data->where('month', $month)->where('year', $year);
+    //             $date1 = "$year-$month-01";
+    //             $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+    //             $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+    //             $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+    //         }
+
+    //         if($request['byStore']){
+    //             $store = Store::where('stores.id', $request['byStore'])
+    //                             ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+    //                             ->pluck('storeses.id');
+    //             $filter = $filter->whereIn('storeId', $store);
+    //         }
+
+    //         if($request['byDistrict']){
+    //             $filter = $filter->where('district_id', $request['byDistrict']);
+    //         }
+
+    //         if($request['byArea']){
+    //             $filter = $filter->where('area_id', $request['byArea']);
+    //         }
+
+    //         if($request['byRegion']){
+    //             $filter = $filter->where('region_id', $request['byRegion']);
+    //         }
+
+    //         if($request['byEmployee']){
+    //             $filter = $filter->where('user_id', $request['byEmployee']);
+    //         }
+
+    //         if($request['byProduct']){
+    //             $filter = $filter->where('product_id', $request['byProduct']);
+    //         }
+
+    //         if ($userRole == 'RSM') {
+    //             $regionIds = RsmRegion::where('user_id', $userId)
+    //                                 ->pluck('rsm_regions.region_id');
+    //             $filter = $filter->whereIn('region_id', $regionIds);
+    //         }
+
+    //         if ($userRole == 'DM') {
+    //             $areaIds = DmArea::where('user_id', $userId)
+    //                                 ->pluck('dm_areas.area_id');
+    //             $filter = $filter->whereIn('area_id', $areaIds);
+    //         }
+
+    //         if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+    //             $storeIds = Store::where('user_id', $userId)
+    //                                 ->pluck('stores.store_id');
+    //             $filter = $filter->whereIn('store_id', $storeIds);
+    //         }
+
+    //         return $filter->all();
+
+    // }
 
     public function promoActivityDataAll(Request $request){
 
-        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+         // $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
         $monthNow = Carbon::now()->format('m');
-        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        // $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
         $yearNow = Carbon::now()->format('Y');
+        
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
 
         $userRole = Auth::user()->role->role_group;
         $userId = Auth::user()->id;
+        
+        /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            }
 
             $data = PromoActivity::
                     join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
@@ -4272,20 +4731,22 @@ class ReportController extends Controller
                     ->join('regions', 'areas.region_id', '=', 'regions.id')
                     ->join('users', 'promo_activities.user_id', '=', 'users.id')
                     ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
+                    ->whereRaw("DATE(promo_activities.date) >= '$date1'")
+                    ->whereRaw("DATE(promo_activities.date) <= '$date2'")
                     ->select('promo_activities.*', 'promo_activity_details.promo as promo', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants', 'stores.id as storeId');
 
             $filter = $data;
 
-            if($request['searchMonth']){
-                $month = Carbon::parse($request['searchMonth'])->format('m');
-                $year = Carbon::parse($request['searchMonth'])->format('Y');
-                // $filter = $data->where('month', $month)->where('year', $year);
-                $date1 = "$year-$month-01";
-                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
-                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            // if($request['searchMonth']){
+            //     $month = Carbon::parse($request['searchMonth'])->format('m');
+            //     $year = Carbon::parse($request['searchMonth'])->format('Y');
+            //     // $filter = $data->where('month', $month)->where('year', $year);
+            //     $date1 = "$year-$month-01";
+            //     $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            //     $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
 
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
-            }
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
 
             return $filter->get();
 
@@ -6013,8 +6474,21 @@ class ReportController extends Controller
                 $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
                 $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
             }
+            
+            // $filter = $filter->where('date','>=', $date1 . ' 00:00:00')->where('date','<=', $date1 . ' 00:00:00');
+            
+            // return response()->json($date1.'%');
 
-                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // if($request['searchDate']){
+            //     $filter = $filter->where('date','like','%2018%');
+            // }else{
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
+                
+                
+                // return response()->json($filter->all());
+                
+            $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
             
             if($request['byRegion']){
                 $filter = $filter->where('region_id', $request['byRegion']);
@@ -6033,13 +6507,14 @@ class ReportController extends Controller
                                 ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
                                 ->pluck('storeses.id');
                 $filter = $filter->whereIn('storeId', $store);
+                // $filter = $filter->where('storeId', 4658);
             }
 
             if($request['byEmployee']){
                 $filter = $filter->where('user_id', $request['byEmployee']);
             }
 
-            return Datatables::of($filter->all())
+            return Datatables::of($filter)
             ->editColumn('quantity', function ($item) {
                return number_format($item->quantity);
             })

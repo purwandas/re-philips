@@ -171,6 +171,48 @@ class SalesController extends Controller
                                     'irisan' => $content['irisan']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($sellInHeader->user->role->role_group == 'Salesman Explorer' || $sellInHeader->user->role->role_group == 'SMD'){
+
+                                    if($sellInHeader->store->globalChannelId == ''){
+
+                                        if($sellInHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($sellInHeader->user->dedicate, 'Sell In', $sellInHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($sellInHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($sellInHeader->store->globalChannelId, 'Sell In', $sellInHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // SellInDetail::where('id', $detail->id)->first()->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE sell_in_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -524,7 +566,7 @@ class SalesController extends Controller
 
                                 }
 
-                            } else { // If data didn't exist -> create
+                            } else { // If data didn't exist -> create                                
 
                                 // DETAILS
                                 $detail = SellInDetail::create([
@@ -533,6 +575,63 @@ class SalesController extends Controller
                                         'quantity' => $data['quantity'],
                                         'irisan' => $content['irisan']
                                     ]);
+
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // SellInDetail::where('id', $detail->id)->first()->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE sell_in_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
+                                // $product = $detail->product->name;
+                                // $g_channel_store = $transaction->store->globalChannelId;
+                                // $g_channel_dedicate = $transaction->user->dedicate;
+
+                                // $detail->forceDelete();
+                                // $transaction->forceDelete();
+
+                                // return response()->json($transaction->store->globalChannelId);
+
+                                // return response()->json($detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date));
+
+                                // return response()->json($detail->product->getPriceAttribute($transaction->date)->where('globalchannel_id', $transaction->store->globalChannelId)->where('sell_type', 'Sell In'));
+
+                                // return response()->json(['type' => 'SELL IN', 'product' => $product, 'g_channel_store' => $g_channel_store, 'g_channel_dedicate' => $g_channel_dedicate,'price' => $priceForDetail]);
 
                                 /** Insert Summary **/
 
@@ -879,6 +978,48 @@ class SalesController extends Controller
                                     'irisan' => $content['irisan'],
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($sellOutHeader->user->role->role_group == 'Salesman Explorer' || $sellOutHeader->user->role->role_group == 'SMD'){
+
+                                    if($sellOutHeader->store->globalChannelId == ''){
+
+                                        if($sellOutHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($sellOutHeader->user->dedicate, 'Sell Out', $sellOutHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($sellOutHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($sellOutHeader->store->globalChannelId, 'Sell Out', $sellOutHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE sell_out_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -1144,6 +1285,49 @@ class SalesController extends Controller
                                         'irisan' => $content['irisan'],
                                     ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell Out', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell Out', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE sell_out_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -1384,6 +1568,48 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($retDistributorHeader->user->role->role_group == 'Salesman Explorer' || $retDistributorHeader->user->role->role_group == 'SMD'){
+
+                                    if($retDistributorHeader->store->globalChannelId == ''){
+
+                                        if($retDistributorHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($retDistributorHeader->user->dedicate, 'Sell In', $retDistributorHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($retDistributorHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($retDistributorHeader->store->globalChannelId, 'Sell In', $retDistributorHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE ret_distributor_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -1568,6 +1794,48 @@ class SalesController extends Controller
                                         'product_id' => $data['product_id'],
                                         'quantity' => $data['quantity']
                                     ]);
+
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE ret_distributor_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
 
                                 /** Insert Summary **/
 
@@ -1755,6 +2023,48 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($retConsumentHeader->user->role->role_group == 'Salesman Explorer' || $retConsumentHeader->user->role->role_group == 'SMD'){
+
+                                    if($retConsumentHeader->store->globalChannelId == ''){
+
+                                        if($retConsumentHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($retConsumentHeader->user->dedicate, 'Sell In', $retConsumentHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($retConsumentHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($retConsumentHeader->store->globalChannelId, 'Sell In', $retConsumentHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE ret_consument_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -1939,6 +2249,48 @@ class SalesController extends Controller
                                         'product_id' => $data['product_id'],
                                         'quantity' => $data['quantity']
                                     ]);
+
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE ret_consument_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
 
                                 /** Insert Summary **/
 
@@ -2126,6 +2478,48 @@ class SalesController extends Controller
                                     'quantity' => $data['quantity']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($freeProductHeader->user->role->role_group == 'Salesman Explorer' || $freeProductHeader->user->role->role_group == 'SMD'){
+
+                                    if($freeProductHeader->store->globalChannelId == ''){
+
+                                        if($freeProductHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($freeProductHeader->user->dedicate, 'Sell In', $freeProductHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($freeProductHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($freeProductHeader->store->globalChannelId, 'Sell In', $freeProductHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE free_product_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -2310,6 +2704,48 @@ class SalesController extends Controller
                                         'product_id' => $data['product_id'],
                                         'quantity' => $data['quantity']
                                     ]);
+
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE free_product_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
 
                                 /** Insert Summary **/
 
@@ -2496,6 +2932,48 @@ class SalesController extends Controller
                                     'product_id' => $data['product_id'],
                                     'quantity' => $data['quantity']
                                 ]);
+
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($tbatHeader->user->role->role_group == 'Salesman Explorer' || $tbatHeader->user->role->role_group == 'SMD'){
+
+                                    if($tbatHeader->store->globalChannelId == ''){
+
+                                        if($tbatHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($tbatHeader->user->dedicate, 'Sell In', $tbatHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($tbatHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($tbatHeader->store->globalChannelId, 'Sell In', $tbatHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE tbat_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
 
                                 /** Insert Summary **/
 
@@ -2704,6 +3182,48 @@ class SalesController extends Controller
                                         'product_id' => $data['product_id'],
                                         'quantity' => $data['quantity']
                                     ]);
+
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE tbat_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
 
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
