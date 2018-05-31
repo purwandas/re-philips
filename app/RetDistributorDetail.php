@@ -11,7 +11,7 @@ class RetDistributorDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'retdistributor_id', 'product_id', 'quantity'
+        'retdistributor_id', 'product_id', 'quantity', 'price'
     ];
 
     /**

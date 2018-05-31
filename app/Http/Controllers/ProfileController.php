@@ -11,6 +11,10 @@ use Auth;
 use File;
 use Illuminate\Support\Collection;
 use Artisan;
+use Carbon\Carbon;
+use App\SellOut;
+use App\SellOutDetail;
+use DB;
 
 class ProfileController extends Controller
 {
@@ -100,7 +104,78 @@ class ProfileController extends Controller
 
     public function sellin(){
 
-        return $this->getProductTotalCurrent(3388, 1);
+        // $data = SellOutDetail::limit(100)->get();
+        // $a = 0;
+
+        // return $data;
+
+        // foreach ($data as $item) {
+        //     $detail = SellOutDetail::where('id', $item->id);
+        //     // return $detail;
+        //     $detail->update(['amount' => $detail->first()->quantity * $detail->first()->price]);            
+        // }
+
+        // SellOutDetail::limit(10)->chunk(5, function($data) use ($a){
+        //     foreach ($data as $item) {
+        //         // $detail = SellOutDetail::where('id', $item->id);
+        //         // $detail->update(['amount' => $detail->first()->quantity * $detail->first()->price]);
+        //         $a += 1;
+        //     }
+        // });
+
+        // $data->update(['amount' => 199]);
+
+        // User::where('id', 1)->update([]);
+
+        // return $a;
+
+        // GET
+
+        // $sellOut = SellOutDetail::whereHas('sellOut', function($query){
+        //                 return $query->whereYear('date', Carbon::now()->format('Y'))->whereMonth('date', Carbon::now()->format('n'));
+        //             })->get()->sum('amount2');
+
+        // $sellOut = SellOutDetail::get()->sum('amount2');
+
+        // SELECT SUM
+
+        // $sellOut = SellOutDetail::whereHas('sellOut', function($query){
+        //                 return $query->whereYear('date', Carbon::now()->format('Y'))->whereMonth('date', 5);
+                    // })->select(DB::raw('SUM(quantity * amount) as summary'))->first();
+
+        $sellOut = SellOutDetail::select(DB::raw('SUM(quantity * amount) as summary'))->first();
+
+        return $sellOut;
+
+        // TES UPDATE
+
+        $price = 10;
+
+        SellOutDetail::where('created_at', '!=', null)->update(['amount' => 10]);
+
+        return 'OK';
+
+        // $dt = Carbon::parse('2018-5-21');
+
+        // return $dt->weekOfMonth;
+
+        // return $this->getProductTotalCurrent(3388, 1);
+
+        // TES SELL OUT RAW
+        $data = SellOutDetail::with('sellOut.store', 'sellOut.user', 'product')->limit(10);
+
+        return $data;
+
+        // return $data->sellOut->store->spvDemo;
+
+        return $data->sellOut->store->trainer;
+        return $data->sellOut->store->distributorName;
+
+        return ($data->product->pf->where('type', 'MR')->first()) ? $data->amount : 0;
+        return ($data->product->pf->where('type', 'TR')->first()) ? $data->amount : 0;
+        return ($data->product->pf->where('type', 'PPE')->first()) ? $data->amount : 0;
+
+        // return $data->product->price->where('globalchannel_id', '');
 
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Filters\SellinFilters;
+use App\Filters\SellOutFilters;
 use App\Filters\StoreFilters;
 use App\Filters\UserFilters;
 use App\Filters\PriceFilters;
@@ -26,6 +27,8 @@ use App\Place;
 use App\User;
 use App\Group;
 use App\Category;
+use App\PromoActivity;
+use App\PosmActivity;
 use App\Product;
 use App\Price;
 use App\ProductFocuses;
@@ -40,8 +43,8 @@ use App\TimeGone;
 use App\Apm;
 use App\Attendance;
 use App\Reports\SalesmanSummarySales;
-use App\Reports\HistorySalesmanSales;
 use App\Reports\SummarySellIn;
+use App\Reports\SummaryDisplayShare;
 // use App\Reports\HistorySellIn;
 use App\Reports\SummarySellOut;
 // use App\Reports\HistorySellOut;
@@ -60,6 +63,7 @@ use App\Reports\HistoryEmployeeStore;
 use App\Reports\HistoryFreeProduct;
 use App\Reports\HistoryRetConsument;
 use App\Reports\HistoryRetDistributor;
+use App\Reports\HistorySalesmanSales;
 use App\Reports\HistorySalesmanTargetActual;
 use App\Reports\HistorySellIn;
 use App\Reports\HistorySellOut;
@@ -67,9 +71,14 @@ use App\Reports\HistorySoh;
 use App\Reports\HistorySos;
 use App\Reports\HistoryTargetActual;
 use App\Reports\HistoryTbat;
+use App\SellOutDetail;
+use Rap2hpoutre\FastExcel\FastExcel;
+use App\Traits\ReportTrait;
 
 class ExportController extends Controller
 {
+    use ReportTrait;
+
     protected $excelHelper;
 
     public function __construct(ExcelHelper $excelHelper)
@@ -557,6 +566,135 @@ class ExportController extends Controller
 
     }
 
+    public function exportSellOutAllCsv(Request $request, SellOutFilters $filters){
+
+        $users = User::get(); // All users
+        $csvExporter = new \Laracsv\Export();
+        $csv = $csvExporter->build($users, ['email', 'name'])->getCsv();
+
+        return response()->json(['file' => (string) $csv]);
+
+    }
+
+    public function exportSellOutAllNew(Request $request, SellOutFilters $filters){
+
+        $filename = 'Philips Retail Report Sell Out ' . Carbon::now()->format('d-m-Y');
+
+        // $data = SellOutDetail::filter($filters)->with('sellOut.store.district.area.region', 'sellOut.user', 'product.category.group')->get();
+
+        $data = SellOutDetail::filter($filters)
+                ->leftJoin('sell_outs', 'sell_out_details.sellout_id', '=', 'sell_outs.id')
+                ->leftJoin('stores', 'sell_outs.store_id', '=', 'stores.id')
+                // ->leftJoin('spv_demos', 'spv_demos.store_id', '=', 'stores.id')
+                // ->leftJoin('users as spv_demo', 'spv_demos.user_id', '=', 'spv_demo.id')
+                // ->leftJoin('users as spv', 'stores.user_id', '=', 'spv.id')
+                // ->leftJoin('store_distributors', 'store_distributors.store_id', '=', 'stores.id')
+                // ->leftJoin('distributors', 'store_distributors.distributor_id', '=', 'distributors.id')
+                ->leftJoin('sub_channels', 'stores.subchannel_id', '=', 'sub_channels.id')
+                ->leftJoin('channels', 'sub_channels.channel_id', '=', 'channels.id')
+                ->leftJoin('global_channels', 'channels.globalchannel_id', '=', 'global_channels.id')
+                ->leftJoin('districts', 'stores.district_id', '=', 'districts.id')
+                ->leftJoin('areas', 'districts.area_id', '=', 'areas.id')
+                // ->leftJoin('dm_areas', 'dm_areas.area_id', '=', 'areas.id')
+                // ->leftJoin('users as dm', 'dm_areas.user_id', '=', 'dm.id')
+                // ->leftJoin('trainer_areas', 'trainer_areas.area_id', '=', 'areas.id')
+                // ->leftJoin('users as trainer', 'trainer_areas.user_id', '=', 'trainer.id')
+                ->leftJoin('regions', 'areas.region_id', '=', 'regions.id')
+                ->leftJoin('users', 'sell_outs.user_id', '=', 'users.id')
+                ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                ->leftJoin('products', 'sell_out_details.product_id', '=', 'products.id')
+                ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+                ->leftJoin('groups', 'categories.group_id', '=', 'groups.id')
+                ->groupBy('sell_out_details.id')
+                // ->select('sell_out_details.id','sell_outs.week', 'distributors.code as distributor_code', 'distributors.name as distributor_name', 'channels.name as channel', 'sub_channels.name as sub_channel', 'regions.name as region', 'areas.name as area', 'districts.name as district', 'stores.store_name_1', 'stores.store_name_2', 'stores.store_id', 'users.nik', 'users.name as promoter_name', 'sell_outs.date', 'products.model', 'groups.name as group', 'categories.name as category', 'products.name as product_name', 'sell_out_details.quantity', 'sell_out_details.amount as unit_price', DB::raw('(sell_out_details.amount * sell_out_details.quantity) as value'), 'sell_out_details.irisan', 'roles.role_group as role', 'dm.name as dm_name', 'trainer.name as trainer_name', 'spv.name as spv_name', 'spv_demo.name as spv_demo_name')->get();
+                ->select('sell_out_details.id','sell_outs.week', 'channels.name as channel', 'sub_channels.name as sub_channel', 'regions.name as region', 'areas.name as area', 'districts.name as district', 'stores.store_name_1', 'stores.store_name_2', 'stores.store_id', 'users.nik', 'users.name as promoter_name', 'sell_outs.date', 'products.model', 'groups.name as group', 'categories.name as category', 'products.name as product_name', 'sell_out_details.quantity', 'sell_out_details.amount as unit_price', DB::raw('(sell_out_details.amount * sell_out_details.quantity) as value'), 'sell_out_details.irisan', 'roles.role_group as role', 'stores.id as storeId')->get();
+
+                // return $data;
+
+                // $list = collect($data);
+
+                // return $list;
+
+                $filename = 'apalah.xlsx';
+                $excel = (new FastExcel($data))->export('exports/excel/'.$filename, function ($item){
+                    return [
+                        'WEEK' => ($item->week) ? $item->week : '',
+                        'DISTRIBUTOR CODE' => $this->getDistributorCode($item->storeId),
+                        'DISTRIBUTOR NAME' => ($item->distributorName) ? $item->distributorName : '',
+                        'REGION' => ($item->region) ? $item->region : '',
+                        'CHANNEL' => ($item->channel) ? $item->channel : '',
+                        // 'CHANNEL' => $item->channel,
+                        // 'SUB CHANNEL' => $item->sub_channel,
+                        // 'AREA' => $item->area,
+                        // 'DISTRICT' => $item->district,
+                        // 'STORE NAME 1' => $item->store_name_1,
+                        // 'CUSTOMER CODE' => $item->store_name_2,
+                        // 'STORE ID' => $item->store_id,
+                        // 'NIK' => $item->nik,
+                        // 'PROMOTER NAME' => $item->promoter_name,
+                        // 'DATE' => $item->date,
+                        // 'MODEL' => $item->model,
+                        // 'GROUP' => $item->group,
+                        // 'CATEGORY' => html_entity_decode($item->category),
+                        // 'PRODUCT NAME' => html_entity_decode($item->product_name),
+                        // 'QUANTITY' => $item->quantity,
+                        // 'UNIT PRICE' => number_format($item->unit_price),
+                        // 'VALUE' => number_format($item->unit_price * $item->quantity),
+                        // 'VALUE PF MR' => 0,//number_format($item->value_pf_mr),
+                        // 'VALUE PF TR' => 0,//number_format($item->value_pf_tr),
+                        // 'VALUE PF PPE' => 0,//number_format($item->value_pf_ppe),
+                        // 'IRISAN' => ($item->irisan == 0) ? '-' : ($item->irisan == null) ? '-' : 'Irisan',
+                        // 'ROLE' => $item->role,
+                        // 'SPV NAME' => $item->spv_name,
+                        // 'DM NAME' => $item->dm_name,
+                        // 'TRAINER NAME' => $item->trainer_name,
+                    ];
+                });
+
+                // return response()->json(['name' => public_path('file.xlsx')]);
+
+                // return response()->json(['name' => $filename, 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
+
+                return response()->json(['url' => 'exports/excel/'.$filename]);
+
+        // return $data->simple()->get();
+
+        $excel = Excel::create($filename, function($excel) use ($data) {
+
+            // Set the title
+            $excel->setTitle('Report Sell Out');
+
+            // Chain the setters
+            $excel->setCreator('Philips')
+                  ->setCompany('Philips');
+
+            // Call them separately
+            $excel->setDescription('Sell Out Data Reporting');
+
+            $excel->getDefaultStyle()
+                ->getAlignment()
+                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            $excel->sheet('SELL OUT', function ($sheet) use ($data) {
+                $sheet->setAutoFilter('A1:AC1');
+                $sheet->setHeight(1, 25);
+                $sheet->fromModel($this->excelHelper->mapForExportSalesAll($data), null, 'A1', true, true);
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#82abde');
+                });
+                $sheet->cells('A1:AC1', function ($cells) {
+                    $cells->setFontWeight('bold');
+                });
+                $sheet->setBorder('A1:AC1', 'thin');
+            });
+
+
+        })->string('xlsx');
+        
+        return response()->json(['name' => $filename.'.xlsx', 'file' => 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'.base64_encode($excel)]);
+    }
+
     public function exportSellOutAll(Request $request){
 
         $filename = 'Philips Retail Report Sell Out ' . Carbon::now()->format('d-m-Y');
@@ -776,6 +914,8 @@ class ExportController extends Controller
 
             $filter->all();
             $data = $filter->toArray();
+
+            return $data;
 
         $excel = Excel::create($filename, function($excel) use ($data) {
 
@@ -1538,7 +1678,55 @@ class ExportController extends Controller
     public function exportDisplayShareAll(Request $request){
 
         $filename = 'Philips Retail Report Display Share ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+        // if(($monthRequest == $monthNow) && ($yearRequest == $yearNow)) {
+
+ 
+            if ($userRole == 'RSM') {
+                $region = RsmRegion::where('user_id', $userId)
+                            ->pluck('rsm_regions.region_id');
+                    $data = SummaryDisplayShare::where('region_id', $region)->get();
+            }
+
+            elseif ($userRole == 'DM') {
+                $area = DmArea::where('user_id', $userId)
+                            ->pluck('dm_areas.area_id');
+                    $data = SummaryDisplayShare::where('area_id', $area)->get();
+            }
+
+            elseif (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $store = Store::where('user_id', $userId)
+                            ->pluck('stores.store_id');
+                    $data = SummaryDisplayShare::wherein('store_id', $store)->get();
+            }
+            else{
+                $data = SummaryDisplayShare::all();
+            }          
+
+            $filter = $data;
+
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            // return $filter->all();
+            
+            $data = $filter->toArray();
 
         $excel = Excel::create($filename, function($excel) use ($data) {
 
@@ -1748,7 +1936,126 @@ class ExportController extends Controller
     public function exportPromoActivityAll(Request $request){
 
         $filename = 'Philips Retail Report Promo Activity ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        
+        $monthNow = Carbon::now()->format('m');
+        $yearNow = Carbon::now()->format('Y');
+        if($request['searchMonth']){
+            $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+            $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+            // return "apa";
+        }else
+        if($request['searchDate']){
+            $date = explode('-', $request['searchDate']);
+            $monthRequest = $date[1];
+            $yearRequest = $date[0];
+            // return "apa2";
+        }else{
+            $monthRequest = $monthNow;
+            $yearRequest = $yearNow;
+            // return "apa3";
+        }
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+        
+        /* If filter */
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else
+            if($request['searchDate']){
+                $date1 = $request['searchDate'];
+                $date2 = $date1;
+                // $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }else{
+                $month = Carbon::now()->format('m');
+                $year = Carbon::now()->format('Y');
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+            }
+
+            $data = PromoActivity::
+                    join('promo_activity_details', 'promo_activity_details.promoactivity_id', '=', 'promo_activities.id')
+                    ->join('stores', 'promo_activities.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'promo_activities.user_id', '=', 'users.id')
+                    ->join('products', 'promo_activity_details.product_id', '=', 'products.id')
+                    ->whereRaw("DATE(promo_activities.date) >= '$date1'")
+                    ->whereRaw("DATE(promo_activities.date) <= '$date2'")
+                    ->select('promo_activities.*', 'promo_activity_details.promo as promo', 'promo_activity_details.product_id', 'promo_activities.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'products.model as product_model', 'products.name as product_name', 'products.variants as product_variants', 'stores.id as storeId')
+                    ->get();
+
+            $filter = $data;
+
+            /* If filter */
+            // if($request['searchMonth']){
+            //     $month = Carbon::parse($request['searchMonth'])->format('m');
+            //     $year = Carbon::parse($request['searchMonth'])->format('Y');
+            //     // $filter = $data->where('month', $month)->where('year', $year);
+            //     $date1 = "$year-$month-01";
+            //     $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+            //     $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+            //     $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            // }
+
+            if($request['byStore']){
+                $store = Store::where('stores.id', $request['byStore'])
+                                ->join('stores as storeses', 'stores.store_id', '=', 'storeses.store_id')
+                                ->pluck('storeses.id');
+                $filter = $filter->whereIn('storeId', $store);
+            }
+
+            if($request['byDistrict']){
+                $filter = $filter->where('district_id', $request['byDistrict']);
+            }
+
+            if($request['byArea']){
+                $filter = $filter->where('area_id', $request['byArea']);
+            }
+
+            if($request['byRegion']){
+                $filter = $filter->where('region_id', $request['byRegion']);
+            }
+
+            if($request['byEmployee']){
+                $filter = $filter->where('user_id', $request['byEmployee']);
+            }
+
+            if($request['byProduct']){
+                $filter = $filter->where('product_id', $request['byProduct']);
+            }
+
+            if ($userRole == 'RSM') {
+                $regionIds = RsmRegion::where('user_id', $userId)
+                                    ->pluck('rsm_regions.region_id');
+                $filter = $filter->whereIn('region_id', $regionIds);
+            }
+
+            if ($userRole == 'DM') {
+                $areaIds = DmArea::where('user_id', $userId)
+                                    ->pluck('dm_areas.area_id');
+                $filter = $filter->whereIn('area_id', $areaIds);
+            }
+
+            if (($userRole == 'Supervisor') or ($userRole == 'Supervisor Hybrid')) {
+                $storeIds = Store::where('user_id', $userId)
+                                    ->pluck('stores.store_id');
+                $filter = $filter->whereIn('store_id', $storeIds);
+            }
+            
+            // $filter = $filter->get();
+            // $filter->all();
+            $data = $filter->toArray();
 
         $excel = Excel::create($filename, function($excel) use ($data) {
 
@@ -1832,7 +2139,41 @@ class ExportController extends Controller
     public function exportPosmActivityAll(Request $request){
 
         $filename = 'Philips Retail Report POSM Activity ' . Carbon::now()->format('d-m-Y');
-        $data = $request->data;
+        // $data = $request->data;
+        
+        $monthRequest = Carbon::parse($request['searchMonth'])->format('m');
+        $monthNow = Carbon::now()->format('m');
+        $yearRequest = Carbon::parse($request['searchMonth'])->format('Y');
+        $yearNow = Carbon::now()->format('Y');
+
+        $userRole = Auth::user()->role->role_group;
+        $userId = Auth::user()->id;
+
+            $data = PosmActivity::
+                    join('posm_activity_details', 'posm_activity_details.posmactivity_id', '=', 'posm_activities.id')
+                    ->join('stores', 'posm_activities.store_id', '=', 'stores.id')
+                    ->join('districts', 'stores.district_id', '=', 'districts.id')
+                    ->join('areas', 'districts.area_id', '=', 'areas.id')
+                    ->join('regions', 'areas.region_id', '=', 'regions.id')
+                    ->join('users', 'posm_activities.user_id', '=', 'users.id')
+                    ->join('posms', 'posm_activity_details.posm_id', '=', 'posms.id')
+                    ->join('groups', 'posms.group_id', '=', 'groups.id')
+                    ->select('posm_activities.*', 'posm_activity_details.photo as photo2', 'regions.id as region_id', 'areas.id as area_id', 'districts.id as district_id', 'regions.name as region_name', 'areas.name as area_name', 'districts.name as district_name', 'stores.store_name_1 as store_name_1', 'stores.store_name_2 as store_name_2', 'stores.store_id as storeid', 'users.name as user_name', 'posms.name as posm_name', 'groups.name as group_product', 'posm_activity_details.quantity', 'posm_activity_details.photo', 'stores.id as storeId');
+
+            $filter = $data;
+
+            if($request['searchMonth']){
+                $month = Carbon::parse($request['searchMonth'])->format('m');
+                $year = Carbon::parse($request['searchMonth'])->format('Y');
+                // $filter = $data->where('month', $month)->where('year', $year);
+                $date1 = "$year-$month-01";
+                $date2 = date('Y-m-d', strtotime('+1 month', strtotime($date1)));
+                $date2 = date('Y-m-d', strtotime('-1 day', strtotime($date2)));
+
+                $filter = $filter->where('date','>=',$date1)->where('date','<=',$date2);
+            }
+
+            $data = $filter->get()->toArray();
 
         $excel = Excel::create($filename, function($excel) use ($data) {
 

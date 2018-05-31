@@ -11,7 +11,7 @@ class SellInDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'sellin_id', 'product_id', 'quantity', 'irisan'
+        'sellin_id', 'product_id', 'quantity', 'irisan', 'price'
     ];
 
     /**

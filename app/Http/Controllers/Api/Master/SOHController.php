@@ -85,6 +85,48 @@ class SOHController extends Controller
                                     'quantity' => $data['quantity']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($sohHeader->user->role->role_group == 'Salesman Explorer' || $sohHeader->user->role->role_group == 'SMD'){
+
+                                    if($sohHeader->store->globalChannelId == ''){
+
+                                        if($sohHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($sohHeader->user->dedicate, 'Sell In', $sohHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($sohHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($sohHeader->store->globalChannelId, 'Sell In', $sohHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE soh_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /** Insert Summary **/
 
                                 /* Store */
@@ -115,7 +157,7 @@ class SOHController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'Salesman Explorer') {
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -305,6 +347,48 @@ class SOHController extends Controller
                                     'quantity' => $data['quantity']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // $detail->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE soh_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /* Store */
                                 $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
                                             ->where('id', $transaction->store_id)->first();
@@ -333,7 +417,7 @@ class SOHController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'Salesman Explorer') {
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)

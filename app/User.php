@@ -169,4 +169,16 @@ class User extends Authenticatable
         return $filters->apply($query);
     }
 
+    public function getDedicateAttribute(){
+        if($this->attributes['role_id'] == null) return '';
+        if($this->role->role_group == 'Salesman Explorer' || $this->role->role_group == 'SMD'){
+            if($this->salesmanDedicates()->first()){
+                if($this->salesmanDedicates()->first()->dedicate == 'Modern Retail') return 1;
+                if($this->salesmanDedicates()->first()->dedicate == 'Traditional Retail') return 2;
+                if($this->salesmanDedicates()->first()->dedicate == 'Mother Care & Child') return 3;
+            }      
+        }
+        return '';
+    }
+
 }

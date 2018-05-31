@@ -218,6 +218,45 @@ class ExcelHelper
         });
     }
 
+    public function mapForExportSalesAllNew(Array $data)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($item) {
+            return [
+                'WEEK' => @$item['week'],
+                'DISTRIBUTOR CODE' => @$item['distributor_code'],
+                'DISTRIBUTOR NAME' => @$item['distributor_name'],
+                'REGION' => @$item['region'],
+                'CHANNEL' => @$item['channel'],
+                'SUB CHANNEL' => @$item['sub_channel'],
+                'AREA' => @$item['area'],
+                'DISTRICT' => @$item['district'],
+                'STORE NAME 1' => @$item['store_name_1'],
+                'CUSTOMER CODE' => @$item['store_name_2'],
+                'STORE ID' => @$item['store_id'],
+                'NIK' => @$item['nik'],
+                'PROMOTER NAME' => @$item['promoter_name'],
+                'DATE' => @$item['date'],
+                'MODEL' => @$item['model'],
+                'GROUP' => @$item['group'],
+                'CATEGORY' => html_entity_decode(@$item['category']),
+                'PRODUCT NAME' => html_entity_decode(@$item['product_name']),
+                'QUANTITY' => @$item['quantity'],
+                'UNIT PRICE' => number_format(@$item['unit_price']),
+                'VALUE' => number_format(@$item['unit_price'] * @$item['quantity']),
+                'VALUE PF MR' => number_format(@$item['value_pf_mr']),
+                'VALUE PF TR' => number_format(@$item['value_pf_tr']),
+                'VALUE PF PPE' => number_format(@$item['value_pf_ppe']),
+                'IRISAN' => (@$item['irisan'] == 0) ? '-' : (@$item['irisan'] == null) ? '-' : 'Irisan',
+                'ROLE' => @$item['role'],
+                'SPV NAME' => @$item['spv_name'],
+                'DM NAME' => @$item['dm_name'],
+                'TRAINER NAME' => @$item['trainer_name'],
+            ];
+        });
+    }
+
     public function mapForExportApm(Array $data)
     {
         $collection = collect($data);
@@ -1018,6 +1057,7 @@ class ExcelHelper
                 'GLOBAL CHANNEL' => @$item['globalchannel_name'],
                 'SELL TYPE' => @$item['sell_type'],
                 'PRICE' => @$item['price'],
+                'RELEASE DATE' => @$item['release_date'],
             ];
         });
     }
