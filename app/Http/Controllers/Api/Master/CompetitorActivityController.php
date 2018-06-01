@@ -187,8 +187,10 @@ class CompetitorActivityController extends Controller
 
     public function competitorWithDate(Request $request){
 
+        // return response()->json(str_replace('"', '', $request->date));
+
         $user = JWTAuth::parseToken()->authenticate();
-        $date = Carbon::parse($request->date);
+        $date = Carbon::parse(str_replace('"', '', $request->date));
 
         if($this->getReject($user->id)){
             return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
