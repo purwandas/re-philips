@@ -244,7 +244,7 @@ class SellOutController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'SMD') {
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -257,7 +257,7 @@ class SellOutController extends Controller
 
                                         if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
                                         if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
-                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MR';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
 
                                         $price = Price::where('product_id', $product->id)
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
@@ -267,10 +267,17 @@ class SellOutController extends Controller
                                     }
 
                                 }else{
-                                    $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                        ->where('sell_type', 'Sell Out')
-                                        ->first();
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }
                                 }
 
                                 if($price){

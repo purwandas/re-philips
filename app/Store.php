@@ -131,70 +131,70 @@ class Store extends Model
 
     }
 
-    public function getDistributorNameAttribute(){
+    // public function getNamaDistributorAttribute(){
 
-        return ($this->storeDistributors->count() > 0) ? $this->storeDistributors()->first()->distributor->name : '';
+    //     return ($this->storeDistributors->count() > 0) ? $this->storeDistributors()->first()->distributor->name : '';
 
-        // if($this->storeDistributors()->count() > 0) return implode(', ', $this->storeDistributors()->with('distributor')->get()->pluck('distributor.name')->toArray());
+    //     // if($this->storeDistributors()->count() > 0) return implode(', ', $this->storeDistributors()->with('distributor')->get()->pluck('distributor.name')->toArray());
 
-        // return '';
-    }
+    //     // return '';
+    // }
 
-    public function getDistributorCodeAttribute(){
+    // public function getKodeDistributorAttribute(){
 
-        return ($this->storeDistributors->count() > 0) ? $this->storeDistributors()->first()->distributor->code : '';
+    //     return ($this->storeDistributors->count() > 0) ? $this->storeDistributors()->first()->distributor->code : '';
 
-        // if($this->storeDistributors()->count() > 0) return implode(', ', $this->storeDistributors()->with('distributor')->get()->pluck('distributor.code')->toArray());
+    //     // if($this->storeDistributors()->count() > 0) return implode(', ', $this->storeDistributors()->with('distributor')->get()->pluck('distributor.code')->toArray());
 
-        // return '';
-    }
+    //     // return '';
+    // }
 
-    public function getSpvDemoAttribute(){
-        return $this->spvDemo->user->name;
-    }
+    // public function getSpvDemoAttribute(){
+    //     return $this->spvDemo->user->name;
+    // }
 
-    public function getSpvPromoterAttribute(){
-        return $this->user->name;
-    }
+    // public function getSpvPromoterAttribute(){
+    //     return $this->user->name;
+    // }
 
-    public function getDmNameAttribute(){
+    // public function getNamaDmAttribute(){
 
-        // return implode(', ', $this->district->area->dmAreas()->with('user')->get()->pluck('user.name')->toArray());
+    //     // return implode(', ', $this->district->area->dmAreas()->with('user')->get()->pluck('user.name')->toArray());
 
-        return ($this->district->area->dmAreas()->count() > 0) ? $this->district->area->dmAreas()->first()->user->name : '';
+    //     return ($this->district->area->dmAreas()->count() > 0) ? $this->district->area->dmAreas()->first()->user->name : '';
 
-    }
+    // }
 
-    public function getTrainerNameAttribute(){
+    // public function getNamaTrainerAttribute(){
 
-        // return implode(', ', $this->district->area->trainerAreas()->with('user')->get()->pluck('user.name')->toArray());
+    //     // return implode(', ', $this->district->area->trainerAreas()->with('user')->get()->pluck('user.name')->toArray());
 
-        return ($this->district->area->trainerAreas()->count() > 0) ? $this->district->area->trainerAreas()->first()->user->name : '';
+    //     return ($this->district->area->trainerAreas()->count() > 0) ? $this->district->area->trainerAreas()->first()->user->name : '';
 
-    }
+    // }
 
-    public function getRegionNameAttribute(){
-        return ($this->attributes['district_id']) ? $this->district->area->region->name : '';
-    }
+    // public function getNamaRegionAttribute(){
+    //     return ($this->attributes['district_id']) ? $this->district->area->region->name : '';
+    // }
 
-    public function getAreaNameAttribute(){
-        return ($this->attributes['district_id']) ? $this->district->area->name : '';
-    }
+    // public function getNamaAreaAttribute(){
+    //     return ($this->attributes['district_id']) ? $this->district->area->name : '';
+    // }
 
-    public function getDistrictNameAttribute(){
-        return ($this->attributes['district_id']) ? $this->district->name : '';
-    }
+    // public function getNamaDistrikAttribute(){
+    //     return ($this->attributes['district_id']) ? $this->district->name : '';
+    // }
 
-    public function getGlobalChannelNameAttribute(){
-        return ($this->attributes['subchannel_id']) ? $this->subChannel->channel->globalChannel->name : '';
-    }
+    // public function getNamaGlobalChannelAttribute(){
+    //     return ($this->attributes['subchannel_id']) ? $this->subChannel->channel->globalChannel->name : '';
+    // }
 
-    public function getChannelNameAttribute(){
-        return ($this->attributes['subchannel_id']) ? $this->subChannel->channel->name : '';
-    }
+    // public function getNamaChannelAttribute(){
+    //     return ($this->attributes['subchannel_id']) ? $this->subChannel->channel->name : '';
+    // }
 
-    public function getSubChannelNameAttribute(){
-        return ($this->attributes['subchannel_id']) ? $this->subChannel->name : '';
-    }
+    // public function getNamaSubChannelAttribute(){
+    //     return ($this->attributes['subchannel_id']) ? $this->subChannel->name : '';
+    // }
 
 }

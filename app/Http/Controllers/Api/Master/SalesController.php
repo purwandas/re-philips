@@ -256,10 +256,17 @@ class SalesController extends Controller
                                     }
 
                                 }else{
-                                    $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                        ->where('sell_type', 'Sell In')
-                                        ->first();
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
                                 }
 
                                 if($price){
@@ -682,10 +689,17 @@ class SalesController extends Controller
                                     }
 
                                 }else{
-                                    $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                        ->where('sell_type', 'Sell In')
-                                        ->first();
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
                                 }
 
                                 if($price){
@@ -1040,7 +1054,7 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'SMD') {
+                                if($user->role->role_group == 'SMD' || $user->role->role_group == 'Salesman Explorer') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -1063,10 +1077,17 @@ class SalesController extends Controller
                                     }
 
                                 }else{
-                                    $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                        ->where('sell_type', 'Sell Out')
-                                        ->first();
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }
                                 }
 
                                 if($price){
@@ -1348,7 +1369,7 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                if($user->role->role_group == 'SMD') {
+                                if($user->role->role_group == 'SMD' || $user->role->role_group == 'Salesman Explorer') {
                                     if (isset($store->subChannel->channel->globalChannel->id)) {
                                         $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
@@ -1371,10 +1392,17 @@ class SalesController extends Controller
                                     }
 
                                 }else{
-                                    $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                        ->where('sell_type', 'Sell Out')
-                                        ->first();
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell Out')
+                                            ->first();
+                                    }
                                 }
 
                                 if($price){
@@ -1630,10 +1658,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -1857,10 +1916,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -2085,10 +2175,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -2312,10 +2433,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -2540,10 +2692,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -2767,10 +2950,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
                                             ->where('sell_type', 'Sell In')
                                             ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -3010,9 +3224,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                            ->where('sell_type', 'Sell In')->first();
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -3261,9 +3507,41 @@ class SalesController extends Controller
 
                                 /* Price */
                                 $realPrice = 0;
-                                $price = Price::where('product_id', $product->id)
+                                if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                    if (isset($store->subChannel->channel->globalChannel->id)) {
+                                        $price = Price::where('product_id', $product->id)
                                             ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                            ->where('sell_type', 'Sell In')->first();
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                        $newDedicate = '';
+
+                                        if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                        $price = Price::where('product_id', $product->id)
+                                            ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                            ->where('global_channels.name',$newDedicate)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+
+                                }else{
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
+                                }
 
                                 if($price){
                                     $realPrice = $price->price;
@@ -3386,6 +3664,875 @@ class SalesController extends Controller
                 return response()->json(['status' => true, 'id_transaksi' => $tbatHeaderAfter->id, 'message' => 'Data berhasil di input']);
 
             }
+
+        }
+
+    }
+
+    public function sellInWithDate(Request $request){
+
+        // Decode buat inputan raw body
+        $content = json_decode($request->getContent(), true);
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if($this->getReject($user->id)){
+            return response()->json(['status' => false, 'message' => 'Tidak bisa melakukan transaksi karena absen anda di reject oleh supervisor. '], 200);
+        }
+
+        if(!isset($content['irisan'])) { // Set Default Irisan if doesn't exist
+            $content['irisan'] = 0;
+        }else{
+            if($content['irisan'] == null){
+                $content['irisan'] = 0;
+            }
+        }
+
+        $date = Carbon::parse($content['date']);
+
+        // MAIN METHOD
+
+        // Check sell in(Sell Thru) header
+        $sellInHeader = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $date)->first();
+
+        if ($sellInHeader) { // If header exist (update and/or create detail)
+
+            try {
+                DB::transaction(function () use ($content, $sellInHeader, $user, $date) {
+
+                    $arInsert = [];
+
+                    foreach ($content['data'] as $data) {
+
+                        if(in_array($data['product_id'], $arInsert)){
+                            continue;
+                        }else{
+                            array_push($arInsert, $data['product_id']);
+                        }
+
+                        $sellInDetail = SellInDetail::where('sellin_id', $sellInHeader->id)
+                                        ->where('product_id', $data['product_id'])
+                                        ->where('irisan', $content['irisan'])
+                                        ->first();
+
+                        if ($sellInDetail) { // If data exist -> update
+
+                            $sellInDetail->update([
+                                'quantity' => $sellInDetail->quantity + $data['quantity']
+                            ]);
+
+                            /** Update Summary **/
+
+                            if($user->role->role_group != 'Salesman Explorer') {
+
+                                $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
+
+                                $value_old = $summary->value;
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['week'] = $sellInHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
+
+                                $this->changeActual($summary_ta, 'change');
+
+                            }else{ // SEE (Salesman Explorer)
+
+                                $summary = SalesmanSummarySales::where('sellin_detail_id', $sellInDetail->id)->first();
+
+                                $value_old = $summary->value; // Buat reset actual salesman
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf > 0) ? $value_pf = $value : $value_pf = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf' => $value_pf
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['pf'] = $summary->value_pf;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+
+                                $this->changeActualSalesman($summary_ta, 'change');
+
+                            }
+
+                        } else { // If data didn't exist -> create
+
+                            $detail = SellInDetail::create([
+                                'sellin_id' => $sellInHeader->id,
+                                'product_id' => $data['product_id'],
+                                'quantity' => $data['quantity'],
+                                'irisan' => $content['irisan']
+                            ]);
+
+                            // UPDATE PRICE NEW METHOD
+
+                            $priceForDetail = 0;                                
+
+                            // BY DEDICATE - GLOBAL CHANNEL
+                            if($sellInHeader->user->role->role_group == 'Salesman Explorer' || $sellInHeader->user->role->role_group == 'SMD'){
+
+                                if($sellInHeader->store->globalChannelId == ''){
+
+                                    if($sellInHeader->user->dedicate != ''){
+
+                                        $cekPrice = $detail->product->getPriceAttribute($sellInHeader->user->dedicate, 'Sell In', $sellInHeader->date);
+
+                                        if($cekPrice){
+                                            $priceForDetail = $cekPrice->price;
+                                        }    
+
+                                    }
+
+                                }
+
+                            }
+
+                            // BY STORE - GLOBAL CHANNEL
+
+                            if($sellInHeader->store->globalChannelId != ''){
+
+                                $cekPrice = $detail->product->getPriceAttribute($sellInHeader->store->globalChannelId, 'Sell In', $sellInHeader->date);
+
+                                if($cekPrice){
+                                    $priceForDetail = $cekPrice->price;
+                                }
+
+                            }
+
+                            // UPDATE SALES PRICE IN DETAIL
+
+                            // SellInDetail::where('id', $detail->id)->first()->update(['price' => $priceForDetail]);
+                            DB::statement('UPDATE sell_in_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                            // --------------------------------------------
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $sellInHeader->store_id)->first();
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                            $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                            if(count($spvDemoName) > 0){
+                                $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                            }
+
+                            $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $data['product_id'])->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                if (isset($store->subChannel->channel->globalChannel->id)) {
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }else{
+                                    $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                    $newDedicate = '';
+
+                                    if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                    if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+                                    if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
+
+                                    $price = Price::where('product_id', $product->id)
+                                        ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                        ->where('global_channels.name',$newDedicate)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }
+
+                            }else{
+                                if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }else{
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', '')
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }
+                            }
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $sellInHeader->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $data['quantity'];
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $data['quantity'];
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $data['quantity'];
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            if($user->role->role_group != 'Salesman Explorer') {
+                                if (isset($store->subChannel->channel->name)){
+                                    $channel = $store->subChannel->channel->name;
+                                }else{
+                                    $channel = '';
+                                }
+
+                                if (isset($store->subChannel->name)){
+                                    $subChannel = $store->subChannel->name;
+                                }else{
+                                    $subChannel = '';
+                                }
+
+                                $summary = SummarySellIn::create([
+                                    'sellin_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $sellInHeader->store_id,
+                                    'user_id' => $sellInHeader->user_id,
+                                    'week' => $sellInHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $channel,
+                                    'sub_channel' => $subChannel,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $customerCode,
+                                    'store_id' => $store->store_id,
+                                    'dedicate' => $store->dedicate,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $sellInHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_id' => $product->id,
+                                    'product_name' => $product->name,
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $data['quantity'],
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
+                                    'spv_name' => $spvName,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['week'] = $sellInHeader->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
+
+                                $this->changeActual($summary_ta, 'change');
+
+                            }else{ // Buat SEE (Salesman Explorer)
+
+                                $value_pf = 0;
+
+                                $productFocus = SalesmanProductFocuses::where('product_id', $product->id)->first();
+
+                                if($productFocus){
+                                    $value_pf = $realPrice * $detail->quantity;
+                                }
+
+                                if (isset($store->subChannel->channel->name)){
+                                    $channel = $store->subChannel->channel->name;
+                                }else{
+                                    $channel = '';
+                                }
+
+                                if (isset($store->subChannel->name)){
+                                    $subChannel = $store->subChannel->name;
+                                }else{
+                                    $subChannel = '';
+                                }
+
+
+                                $summary = SalesmanSummarySales::create([
+                                    'sellin_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $sellInHeader->store_id,
+                                    'user_id' => $sellInHeader->user_id,
+                                    'week' => $sellInHeader->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $channel,
+                                    'sub_channel' => $subChannel,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $customerCode,
+                                    'store_id' => $store->store_id,
+                                    'dedicate' => $store->dedicate,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $sellInHeader->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $detail->quantity,
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $detail->quantity,
+                                    'value_pf' => $value_pf,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $sellInHeader->user_id;
+                                $summary_ta['store_id'] = $sellInHeader->store_id;
+                                $summary_ta['pf'] = $summary->value_pf;
+                                $summary_ta['value'] = $summary->value;
+
+                                $this->changeActualSalesman($summary_ta, 'change');
+
+                            }
+
+                        }
+
+                    }
+
+                });
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+            }
+
+            return response()->json(['status' => true, 'id_transaksi' => $sellInHeader->id, 'message' => 'Data berhasil di input']);
+
+        } else { // If header didn't exist (create header & detail)
+
+            try {
+                DB::transaction(function () use ($content, $user, $date) {
+
+                    // HEADER
+                    $transaction = SellIn::create([
+                                        'user_id' => $user->id,
+                                        'store_id' => $content['id'],
+                                        'week' => $date->weekOfMonth,
+                                        'date' => $date
+                                    ]);
+
+                    $arInsert = [];
+
+                    foreach ($content['data'] as $data) {
+
+                        if(in_array($data['product_id'], $arInsert)){
+                            continue;
+                        }else{
+                            array_push($arInsert, $data['product_id']);
+                        }
+
+                        $sellInDetail = SellInDetail::where('sellin_id', $transaction->id)
+                                        ->where('product_id', $data['product_id'])
+                                        ->where('irisan', $content['irisan'])
+                                        ->first();
+
+                        if ($sellInDetail) { // If data exist -> update
+
+                            $sellInDetail->update([
+                                'quantity' => $sellInDetail->quantity + $data['quantity']
+                            ]);
+
+                            /** Update Summary **/
+
+                            if($user->role->role_group != 'Salesman Explorer') {
+
+                                $summary = SummarySellIn::where('sellin_detail_id', $sellInDetail->id)->first();
+
+                                $value_old = $summary->value;
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf_mr > 0) ? $value_pf_mr = $value : $value_pf_mr = 0;
+                                ($summary->value_pf_tr > 0) ? $value_pf_tr = $value : $value_pf_tr = 0;
+                                ($summary->value_pf_ppe > 0) ? $value_pf_ppe = $value : $value_pf_ppe = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['week'] = $transaction->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
+
+                                $this->changeActual($summary_ta, 'change');
+
+                            }else{ // SEE (Salesman Explorer)
+
+                                $summary = SalesmanSummarySales::where('sellin_detail_id', $sellInDetail->id)->first();
+
+                                $value_old = $summary->value; // Buat reset actual salesman
+
+                                $value = ($summary->quantity + $data['quantity']) * $summary->unit_price;
+
+                                ($summary->value_pf > 0) ? $value_pf = $value : $value_pf = 0;
+
+                                $summary->update([
+                                    'quantity' => $summary->quantity + $data['quantity'],
+                                    'value' => $value,
+                                    'value_pf' => $value_pf
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['pf'] = $summary->value_pf;
+                                $summary_ta['value_old'] = $value_old;
+                                $summary_ta['value'] = $summary->value;
+
+                                $this->changeActualSalesman($summary_ta, 'change');
+
+                            }
+
+                        } else { // If data didn't exist -> create                                
+
+                            // DETAILS
+                            $detail = SellInDetail::create([
+                                    'sellin_id' => $transaction->id,
+                                    'product_id' => $data['product_id'],
+                                    'quantity' => $data['quantity'],
+                                    'irisan' => $content['irisan']
+                                ]);
+
+                            // UPDATE PRICE NEW METHOD
+
+                            $priceForDetail = 0;                                
+
+                            // BY DEDICATE - GLOBAL CHANNEL
+                            if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                if($transaction->store->globalChannelId == ''){
+
+                                    if($transaction->user->dedicate != ''){
+
+                                        $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                        if($cekPrice){
+                                            $priceForDetail = $cekPrice->price;
+                                        }    
+
+                                    }
+
+                                }
+
+                            }
+
+                            // BY STORE - GLOBAL CHANNEL
+
+                            if($transaction->store->globalChannelId != ''){
+
+                                $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                if($cekPrice){
+                                    $priceForDetail = $cekPrice->price;
+                                }
+
+                            }
+
+                            // UPDATE SALES PRICE IN DETAIL
+
+                            // SellInDetail::where('id', $detail->id)->first()->update(['price' => $priceForDetail]);
+                            DB::statement('UPDATE sell_in_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                            // --------------------------------------------
+
+                            // $product = $detail->product->name;
+                            // $g_channel_store = $transaction->store->globalChannelId;
+                            // $g_channel_dedicate = $transaction->user->dedicate;
+
+                            // $detail->forceDelete();
+                            // $transaction->forceDelete();
+
+                            // return response()->json($transaction->store->globalChannelId);
+
+                            // return response()->json($detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date));
+
+                            // return response()->json($detail->product->getPriceAttribute($transaction->date)->where('globalchannel_id', $transaction->store->globalChannelId)->where('sell_type', 'Sell In'));
+
+                            // return response()->json(['type' => 'SELL IN', 'product' => $product, 'g_channel_store' => $g_channel_store, 'g_channel_dedicate' => $g_channel_dedicate,'price' => $priceForDetail]);
+
+                            /** Insert Summary **/
+
+                            /* Store */
+                            $store = Store::with('district.area.region', 'subChannel.channel.globalChannel', 'user')
+                                        ->where('id', $transaction->store_id)->first();
+                            $spvName = (isset($store->user->name)) ? $store->user->name : '';
+
+                                $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                                if(count($spvDemoName) > 0){
+                                    $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                                }
+
+                                $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
+                            // $spvDemoName = SpvDemo::where('user_id', $user->id)->first();
+                            //     if(count($spvDemoName) > 0){
+                            //         $spvName = (isset($spvDemoName->user->name)) ? $spvDemoName->user->name : '';
+                            //     }
+
+                            // $customerCode = (isset($store->store_name_2)) ? $store->store_name_2 : '';
+
+                            /* Product */
+                            $product = Product::with('category.group.groupProduct')
+                                        ->where('id', $detail->product_id)->first();
+
+                            /* Price */
+                            $realPrice = 0;
+                            if($user->role->role_group == 'Salesman Explorer' || $user->role->role_group == 'SMD') {
+                                if (isset($store->subChannel->channel->globalChannel->id)) {
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }else{
+                                    $dedicate = SalesmanDedicate::where('user_id',$user->id)->first();
+
+                                    $newDedicate = '';
+
+                                    if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
+                                    if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
+
+                                    $price = Price::where('product_id', $product->id)
+                                        ->join('global_channels','global_channels.id','prices.globalchannel_id')
+                                        ->where('global_channels.name',$newDedicate)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }
+
+                            }else{
+                                if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }else{
+                                    $price = Price::where('product_id', $product->id)
+                                        ->where('globalchannel_id', '')
+                                        ->where('sell_type', 'Sell In')
+                                        ->first();
+                                }
+                            }
+
+                            if($price){
+                                $realPrice = $price->price;
+                            }
+
+                            /* Distributor */
+                            $distIds = StoreDistributor::where('store_id', $transaction->store_id)->pluck('distributor_id');
+                            $dist = Distributor::whereIn('id', $distIds)->get();
+
+                            $distributor_code = '';
+                            $distributor_name = '';
+                            foreach ($dist as $distDetail) {
+                                $distributor_code .= $distDetail->code;
+                                $distributor_name .= $distDetail->name;
+
+                                if ($distDetail->id != $dist->last()->id) {
+                                    $distributor_code .= ', ';
+                                    $distributor_name .= ', ';
+                                }
+                            }
+
+                            /* Value - Product Focus */
+                            $value_pf_mr = 0;
+                            $value_pf_tr = 0;
+                            $value_pf_ppe = 0;
+
+                            $productFocus = ProductFocuses::where('product_id', $product->id)->get();
+                            foreach ($productFocus as $productFocusDetail) {
+                                if ($productFocusDetail->type == 'Modern Retail') {
+                                    $value_pf_mr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'Traditional Retail') {
+                                    $value_pf_tr = $realPrice * $detail->quantity;
+                                } else if ($productFocusDetail->type == 'PPE') {
+                                    $value_pf_ppe = $realPrice * $detail->quantity;
+                                }
+                            }
+
+                            /* DM */
+                            $dmIds = DmArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $dm = User::whereIn('id', $dmIds)->get();
+
+                            $dm_name = '';
+                            foreach ($dm as $dmDetail) {
+                                $dm_name .= $dmDetail->name;
+
+                                if ($dmDetail->id != $dm->last()->id) {
+                                    $dm_name .= ', ';
+                                }
+                            }
+
+                            /* Trainer */
+                            $trIds = TrainerArea::where('area_id', $store->district->area->id)->pluck('user_id');
+                            $tr = User::whereIn('id', $trIds)->get();
+
+                            $trainer_name = '';
+                            foreach ($tr as $trDetail) {
+                                $trainer_name .= $trDetail->name;
+
+                                if ($trDetail->id != $tr->last()->id) {
+                                    $trainer_name .= ', ';
+                                }
+                            }
+
+                            if($user->role->role_group != 'Salesman Explorer') {
+                                if (isset($store->subChannel->channel->name)){
+                                    $channel = $store->subChannel->channel->name;
+                                }else{
+                                    $channel = '';
+                                }
+
+                                if (isset($store->subChannel->name)){
+                                    $subChannel = $store->subChannel->name;
+                                }else{
+                                    $subChannel = '';
+                                }
+
+                                $summary = SummarySellIn::create([
+                                    'sellin_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $transaction->store_id,
+                                    'user_id' => $transaction->user_id,
+                                    'week' => $transaction->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $channel,
+                                    'sub_channel' => $subChannel,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $customerCode,
+                                    'store_id' => $store->store_id,
+                                    'dedicate' => $store->dedicate,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $transaction->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_id' => $product->id,
+                                    'product_name' => $product->name,
+                                    'quantity' => $detail->quantity,
+                                    'irisan' => $content['irisan'],
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $detail->quantity,
+                                    'value_pf_mr' => $value_pf_mr,
+                                    'value_pf_tr' => $value_pf_tr,
+                                    'value_pf_ppe' => $value_pf_ppe,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
+                                    'spv_name' => $spvName,
+                                    'dm_name' => $dm_name,
+                                    'trainer_name' => $trainer_name,
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['week'] = $transaction->week;
+                                $summary_ta['pf'] = $summary->value_pf_mr + $summary->value_pf_tr + $summary->value_pf_ppe;
+                                $summary_ta['value'] = $summary->value;
+                                $summary_ta['group'] = $summary->group;
+                                $summary_ta['sell_type'] = 'Sell In';
+                                $summary_ta['irisan'] = $summary->irisan;
+
+                                // return $summary_ta;
+
+                                $this->changeActual($summary_ta, 'change');
+
+                            }else{ // Buat SEE (Salesman Explorer)
+
+                                $value_pf = 0;
+
+                                $productFocus = SalesmanProductFocuses::where('product_id', $product->id)->first();
+
+                                if($productFocus){
+                                    $value_pf = $realPrice * $detail->quantity;
+                                }
+
+                                if (isset($store->subChannel->channel->name)){
+                                    $channel = $store->subChannel->channel->name;
+                                }else{
+                                    $channel = '';
+                                }
+
+                                if (isset($store->subChannel->name)){
+                                    $subChannel = $store->subChannel->name;
+                                }else{
+                                    $subChannel = '';
+                                }
+
+                                $summary = SalesmanSummarySales::create([
+                                    'sellin_detail_id' => $detail->id,
+                                    'region_id' => $store->district->area->region->id,
+                                    'area_id' => $store->district->area->id,
+                                    'district_id' => $store->district->id,
+                                    'storeId' => $transaction->store_id,
+                                    'user_id' => $transaction->user_id,
+                                    'week' => $transaction->week,
+                                    'distributor_code' => $distributor_code,
+                                    'distributor_name' => $distributor_name,
+                                    'region' => $store->district->area->region->name,
+                                    'channel' => $channel,
+                                    'sub_channel' => $subChannel,
+                                    'area' => $store->district->area->name,
+                                    'district' => $store->district->name,
+                                    'store_name_1' => $store->store_name_1,
+                                    'store_name_2' => $customerCode,
+                                    'store_id' => $store->store_id,
+                                    'dedicate' => $store->dedicate,
+                                    'nik' => $user->nik,
+                                    'promoter_name' => $user->name,
+                                    'date' => $transaction->date,
+                                    'model' => $product->model . '/' . $product->variants,
+                                    'group' => $product->category->group->groupProduct->name,
+                                    'category' => $product->category->name,
+                                    'product_name' => $product->name,
+                                    'quantity' => $detail->quantity,
+                                    'unit_price' => $realPrice,
+                                    'value' => $realPrice * $detail->quantity,
+                                    'value_pf' => $value_pf,
+                                    'role' => $user->role->role,
+                                    'role_id' => $user->role->id,
+                                    'role_group' => $user->role->role_group,
+                                ]);
+
+                                // Actual Summary
+                                $summary_ta['user_id'] = $transaction->user_id;
+                                $summary_ta['store_id'] = $transaction->store_id;
+                                $summary_ta['pf'] = $summary->value_pf;
+                                $summary_ta['value'] = $summary->value;
+
+                                $this->changeActualSalesman($summary_ta, 'change');
+
+                            }
+
+                        }
+
+                    }
+
+                });
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'message' => 'Gagal melakukan transaksi'], 500);
+            }
+
+            // Check sell in(Sell Thru) header after insert
+            $sellInHeaderAfter = SellIn::where('user_id', $user->id)->where('store_id', $content['id'])->where('date', $date)->first();
+
+            return response()->json(['status' => true, 'id_transaksi' => $sellInHeaderAfter->id, 'message' => 'Data berhasil di input']);
 
         }
 
