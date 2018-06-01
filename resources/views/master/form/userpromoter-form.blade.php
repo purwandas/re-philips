@@ -467,16 +467,6 @@
 			var x = unescape("{{ @$salesmanDedicate->dedicate }}");
 			console.log("Salesman Dedicate: "+x);
 
-			// $( "#statusCheck2" ).prop( "checked", true );
-			// var temp = "{{ @$data }}";
-			
-			// if(temp === ""){
-				// console.log('asd');
-				// $('input:radio[name=status]:nth(0)').attr('checked',true);
-				// document.getElementById('statusCheck').checked = true;
-			// }
-			// console.log("{{ @$data }}");
-
 			$.ajaxSetup({
 	        	headers: {
 	            	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
