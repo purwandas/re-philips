@@ -80,6 +80,11 @@ class Product extends Model
         return $this->hasMany('App\ProductFocuses', 'product_id');   
     }
 
+    public function productHistories()
+    {
+        return $this->hasMany('App\ProductHistory', 'product_id');
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query
