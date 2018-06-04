@@ -180,7 +180,10 @@ var FormValidation = function () {
                         dataType: 'json',                        
                         processData: false,
                         contentType: false,
-                        success: function (data) {                            
+                        success: function (data) {   
+
+                            // console.log(data);
+                            // return;                         
                             
                             var titleMsg;
                             var textMsg;
