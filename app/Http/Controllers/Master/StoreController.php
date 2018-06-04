@@ -21,6 +21,7 @@ use App\EmployeeStore;
 use App\User;
 use App\RsmRegion;
 use App\DmArea;
+use App\StoreHistory;
 
 class StoreController extends Controller
 {
@@ -510,7 +511,6 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $this->validate($request, [
             'store_name_1' => 'required|string|max:255',
             'store_name_2' => 'max:255',
@@ -518,7 +518,7 @@ class StoreController extends Controller
             'photo_file' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $store = Store::find($id);
+        $store = Store::where('id', $id)->first();
         $oldPhoto = "";
         
         if($store->photo != null && $request->photo_file != null) {
@@ -537,7 +537,21 @@ class StoreController extends Controller
             $storeDist->delete();
         }
 
-        $store->update($request->all());
+        /* CREATE HISTORY AFTER UPDATE */
+
+        $history = $store;
+        $history['store_re_id'] = $store->store_id;
+        $history['store_id'] = $store->id;
+
+        StoreHistory::create($history->toArray());
+
+        // ------>
+
+        // UPDATING
+
+        Store::where('id', $id)->first()->update($request->all());
+
+        // $store->update($request->all());
 
         if($request->photo_file != null){
             /* Upload updated image */
@@ -557,7 +571,7 @@ class StoreController extends Controller
                     'distributor_id' => $distributorId,
                 ]);
             }
-        }
+        }        
 
         return response()->json(
             ['url' => url('/store'), 'method' => $request->_method]);

@@ -16,7 +16,7 @@ class StoreHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'storeId', 'store_id', 'store_name_1', 'store_name_2', 'dedicate', 'longitude', 'latitude', 'channel', 'subchannel_id', 'district_id', 'user_id', 'address', 'classification_id', 'no_telp_toko', 'no_telp_pemilik_toko', 'kepemilikan_toko', 'lokasi_toko','tipe_transaksi_2','tipe_transaksi', 'kondisi_toko', 'photo'
+        'store_id', 'store_re_id', 'store_name_1', 'store_name_2', 'dedicate', 'longitude', 'latitude', 'channel', 'subchannel_id', 'district_id', 'user_id', 'address', 'classification_id', 'no_telp_toko', 'no_telp_pemilik_toko', 'kepemilikan_toko', 'lokasi_toko','tipe_transaksi_2','tipe_transaksi', 'kondisi_toko', 'photo'
     ];
 
     /* Metode tambahan untuk model Branch Sport. */
@@ -28,7 +28,7 @@ class StoreHistory extends Model
 
     public function store()
     {
-        return $this->belongsTo('App\Store', 'id', 'storeId');
+        return $this->belongsTo('App\Store', 'store_id');
     }
 
     public function subChannel()

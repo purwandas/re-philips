@@ -355,10 +355,11 @@
 
         $.get(getDataUrl + '/' + id, function (data) {
 
-                    $('#model').val(data.model); 
-                    $('#name').val(data.name);
-                    $('#variants').val(data.variants);
+                    $('#model').val(data.model);                     
+                    $('#variants').val(data.variants);                    
                     setSelect2IfPatchModal($("#category"), data.category_id, data.category.name);
+
+                    $('#name').val(data.name);
 
         })
 

@@ -47,6 +47,11 @@ class Store extends Model
         return $this->belongsTo('App\User', 'user_id');
     }
 
+    public function storeHistories()
+    {
+        return $this->hasMany('App\StoreHistory', 'store_id');
+    }
+
     public function employeeStores()
     {
         return $this->hasMany('App\EmployeeStore', 'store_id');
