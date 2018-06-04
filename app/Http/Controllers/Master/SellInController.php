@@ -214,6 +214,48 @@ class SellInController extends Controller
                                     'irisan' => $content['irisan']
                                 ]);
 
+                                // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($sellInHeader->user->role->role_group == 'Salesman Explorer' || $sellInHeader->user->role->role_group == 'SMD'){
+
+                                    if($sellInHeader->store->globalChannelId == ''){
+
+                                        if($sellInHeader->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($sellInHeader->user->dedicate, 'Sell In', $sellInHeader->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($sellInHeader->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($sellInHeader->store->globalChannelId, 'Sell In', $sellInHeader->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // SellInDetail::where('id', $detail->id)->first()->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE sell_in_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
+
                                 /* Insert Summary */
 
                                 /* Store */
@@ -247,7 +289,7 @@ class SellInController extends Controller
 
                                         if($dedicate->dedicate == 'Traditional Retail') $newDedicate = 'TR';
                                         if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MCC';
-                                        if($dedicate->dedicate == 'Mother Care & Child') $newDedicate = 'MR';
+                                        if($dedicate->dedicate == 'Modern Retail') $newDedicate = 'MR';
 
                                         $price = Price::where('product_id', $product->id)
                                             ->join('global_channels','global_channels.id','prices.globalchannel_id')
@@ -257,10 +299,17 @@ class SellInController extends Controller
                                     }
 
                                 }else{
-                                    $price = Price::where('product_id', $product->id)
-                                        ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
-                                        ->where('sell_type', 'Sell In')
-                                        ->first();
+                                    if($store->subchannel_id != null || $store->subchannel_id != ''){
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', $store->subChannel->channel->globalChannel->id)
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }else{
+                                        $price = Price::where('product_id', $product->id)
+                                            ->where('globalchannel_id', '')
+                                            ->where('sell_type', 'Sell In')
+                                            ->first();
+                                    }
                                 }
 
                                 if($price){
@@ -497,6 +546,48 @@ class SellInController extends Controller
                                     'quantity' => $data['quantity'],
                                     'irisan' => $content['irisan']
                                 ]);
+
+                            // UPDATE PRICE NEW METHOD
+
+                                $priceForDetail = 0;                                
+
+                                // BY DEDICATE - GLOBAL CHANNEL
+                                if($transaction->user->role->role_group == 'Salesman Explorer' || $transaction->user->role->role_group == 'SMD'){
+
+                                    if($transaction->store->globalChannelId == ''){
+
+                                        if($transaction->user->dedicate != ''){
+
+                                            $cekPrice = $detail->product->getPriceAttribute($transaction->user->dedicate, 'Sell In', $transaction->date);
+
+                                            if($cekPrice){
+                                                $priceForDetail = $cekPrice->price;
+                                            }    
+
+                                        }
+
+                                    }
+
+                                }
+
+                                // BY STORE - GLOBAL CHANNEL
+
+                                if($transaction->store->globalChannelId != ''){
+
+                                    $cekPrice = $detail->product->getPriceAttribute($transaction->store->globalChannelId, 'Sell In', $transaction->date);
+
+                                    if($cekPrice){
+                                        $priceForDetail = $cekPrice->price;
+                                    }
+
+                                }
+
+                                // UPDATE SALES PRICE IN DETAIL
+
+                                // SellInDetail::where('id', $detail->id)->first()->update(['price' => $priceForDetail]);
+                                DB::statement('UPDATE sell_in_details SET price = ? WHERE id = ?', [$priceForDetail, $detail->id]);
+
+                                // --------------------------------------------
 
                             /* Insert Summary */
 

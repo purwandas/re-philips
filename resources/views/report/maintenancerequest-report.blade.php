@@ -280,11 +280,11 @@
             }, function (data, params) {
                 return {
                     results: $.map(data, function (obj) {
-	                    if(obj.store_name_2 != null){
+                        if(obj.store_name_2 != null){
                             return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1 + " (" + obj.store_name_2 + ")"}
                         }
                         return {id: obj.id, text: obj.store_id + " - " + obj.store_name_1}
-	                })
+                    })
                 }
             }));
             $('#filterStore').on('select2:select', function () {
@@ -292,15 +292,15 @@
             });
 
             $('#filterEmployee').select2(setOptions('{{ route("data.employee") }}', 'Promoter', function (params) {
-	        	filters['promoterGroup'] = 1;
-	            return filterData('employee', params.term);
-	        }, function (data, params) {
-	            return {
-	                results: $.map(data, function (obj) {
-	                    return {id: obj.id, text: obj.nik + " - " + obj.name}
-	                })
-	            }
-	        }));
+                filters['promoterGroup'] = 1;
+                return filterData('employee', params.term);
+            }, function (data, params) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return {id: obj.id, text: obj.nik + " - " + obj.name}
+                    })
+                }
+            }));
             $('#filterEmployee').on('select2:select', function () {
                 self.selected('byEmployee', $('#filterEmployee').val());
             });
@@ -378,8 +378,13 @@
         });
 
         $("#export").click( function(){
+            
+            var element = $("#export");
+            var icon = $("#exportIcon");
 
             if ($('#export').attr('disabled') != 'disabled') {
+                
+                var thisClass = icon.attr('class');
 
                 // Export data
                 exportFile = '';
@@ -393,9 +398,18 @@
                     async: false,
                     success: function (data) {
 
-                        console.log(data);
+                        // console.log(data);
 
-                        window.location = data.url;
+                        // window.location = data.url;
+                        
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({
@@ -421,10 +435,14 @@
         });
 
         $("#exportAll").click( function(){
+            
+            var element = $("#exportAll");
+            var icon = $("#exportAllIcon");
 
             if ($('#export').attr('disabled') != 'disabled') {
 
-
+                var thisClass = icon.attr('class');
+                
                 $.ajax({
                     type: 'POST',
                     url: 'data/maintenancerequestreport',
@@ -449,9 +467,17 @@
                     async: false,
                     success: function (data) {
 
-                        console.log(data);
+                        // console.log(data);
 
-                        window.location = data.url;
+                        // window.location = data.url;
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        var a = document.createElement("a");
+                        a.href = data.file; 
+                        a.download = data.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
 
                         // setTimeout(function () {
                         //     $.ajax({

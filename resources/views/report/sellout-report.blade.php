@@ -518,11 +518,13 @@
                     },
                     success: function (data) {
 
-                        // element.removeAttr('disabled');
-                        // icon.attr('class', thisClass);
-                        // console.log(data);
+                        element.removeAttr('disabled');
+                        icon.attr('class', thisClass);
+                        console.log(data);
 
                         // window.location = data.url;
+                        return;
+
                         element.removeAttr('disabled');
                         icon.attr('class', thisClass);
                         var a = document.createElement("a");

@@ -11,7 +11,7 @@ class RetConsumentDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'retconsument_id', 'product_id', 'quantity'
+        'retconsument_id', 'product_id', 'quantity', 'price'
     ];
 
     /**

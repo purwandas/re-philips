@@ -11,7 +11,7 @@ class FreeProductDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'freeproduct_id', 'product_id', 'quantity'
+        'freeproduct_id', 'product_id', 'quantity', 'price'
     ];
 
     /**

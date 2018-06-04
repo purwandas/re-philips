@@ -82,6 +82,16 @@
                           </div>
                         </div>
 
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">Release Date</label>
+                          <div class="col-sm-8">
+                            <div class="input-icon right">
+                              <i class="fa"></i>
+                              <input type="text" id="release_date" name="release_date" class="form-control" placeholder="Release Date" />
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="form-group" style="padding-top: 15pt;">
                           <div class="col-sm-8 col-sm-offset-3">
                             <button type="submit" class="btn btn-primary green">Save</button>

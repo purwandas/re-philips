@@ -54,4 +54,11 @@ class SellOutFilters extends QueryFilters
         });
     }
 
+    // Ordering by date
+    public function searchDate($value) {
+       return $this->builder->whereHas('sellOut', function ($query) use ($value) {
+            return $query->whereDate('sell_outs.date', '=', Carbon::parse($value));
+        });
+    }
+
 }

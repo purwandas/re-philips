@@ -86,6 +86,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/sales-by-spv/{param}', 'Api\Master\SalesHistoryController@getDataUser');
     Route::get('/sales-by-spv2/{param}', 'Api\Master\SalesHistoryController@getDataUser2');
 
+    // -- TRANSACTION WITH DATE
+    Route::post('/sellin-with-date', 'Api\Master\SalesController@sellInWithDate'); // SELL THRU (IN)
+    Route::post('/soh-with-date', 'Api\Master\SOHController@sohWithDate'); // SOH
+    Route::post('/competitoractivity-with-date', 'Api\Master\CompetitorActivityController@competitorWithDate'); // SOH
+
 	/**
      * Attendance Module(s)
      */

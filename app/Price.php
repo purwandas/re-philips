@@ -11,7 +11,7 @@ class Price extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id', 'globalchannel_id', 'sell_type', 'price'
+        'product_id', 'globalchannel_id', 'sell_type', 'price', 'release_date'
     ];
 
     /**
@@ -48,4 +48,5 @@ class Price extends Model
     {
         return $filters->apply($query);
     }
+
 }

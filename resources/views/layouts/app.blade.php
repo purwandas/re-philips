@@ -450,11 +450,13 @@
             
         </script>
 
-    @yield('additional-scripts')
-
-    <!-- BEGIN TEXT MODAL SCRIPTS -->
+        <!-- BEGIN TEXT MODAL SCRIPTS -->
     <script src="{{ asset('js/text-modal/saleshistory-popup.js') }}" type="text/javascript"></script>
     <!-- END TEXT MODAL SCRIPTS -->
+
+    @yield('additional-scripts')
+
+    
 
     @yield('additional-styles')
 

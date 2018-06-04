@@ -100,6 +100,7 @@
                                 <th> Global Channel </th>
                                 <th> Sell Type</th>
                                 <th> Price </th>
+                                <th> Release Date </th>
                                 <th> Options </th>
                             </tr>
                         </thead>
@@ -152,6 +153,7 @@
                 {data: 'globalchannel_name', name: 'globalchannel_name'},
                 {data: 'sell_type', name: 'sell_type'},
                 {data: 'price', name: 'price'},
+                {data: 'release_date', name: 'release_date'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},            
             ];
         var paramFilter = ['priceTable', $('#priceTable'), url, tableColumns, columnDefs, order, '#export'];
@@ -163,6 +165,14 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        // Filter Date
+        $('#release_date').datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: "2",
+            minView: "2",
+            autoclose: true,
         });
 
         // Get data district to var data
@@ -214,6 +224,7 @@
                 {data: 'globalchannel_name', name: 'globalchannel_name'},
                 {data: 'sell_type', name: 'sell_type'},
                 {data: 'price', name: 'price'},
+                {data: 'release_date', name: 'release_date'},
                 {data: 'action', name: 'action', searchable: false, sortable: false},
             ],
             "columnDefs": [
@@ -412,6 +423,9 @@
         select2Reset($("#product"));
         select2Reset($("#globalchannel"));
         select2Reset($("#sell_type"));
+            
+        // Set to Date now
+        $('#release_date').val(moment().format('YYYY-MM-DD'));
 
         // Set action url form for add
         var postDataUrl = "{{ url('price') }}";
@@ -451,6 +465,9 @@
                     setSelect2IfPatchModal($("#product"), data.product_id, data.product.name);
                     setSelect2IfPatchModal($("#globalchannel"), data.globalchannel_id, data.global_channel.name);
                     setSelect2IfPatchModal($("#sell_type"), data.sell_type, data.sell_type);
+
+                    // Set to Date according to value
+                    $('#release_date').val(data.release_date);
 
         })
 

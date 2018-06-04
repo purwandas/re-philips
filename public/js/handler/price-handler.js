@@ -32,6 +32,9 @@ var FormValidation = function () {
                         min: 1,
                         required: true,
                     },
+                    release_date:{
+                        required: true,
+                    },
 
                 },
                 messages:{

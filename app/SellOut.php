@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Filters\QueryFilters;
+use Carbon\Carbon;
 
 class SellOut extends Model
 {
@@ -53,4 +54,29 @@ class SellOut extends Model
     {
         return $filters->apply($query);
     }
+
+    /**
+     *
+     * Eager load attribute
+     *
+     **/
+
+    public function getWeekAttribute(){
+
+        return Carbon::parse($this->attributes['date'])->weekOfMonth;
+
+    }
+
+    // public function getChannelAttribute(){
+
+    //     return $this->store->subChannel;
+
+    // }
+
+    public function getAmountAttribute(){
+
+        return $this->sellOutDetails()->get()->sum('amount');
+
+    }
+
 }
