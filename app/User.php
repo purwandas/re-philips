@@ -163,6 +163,12 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Reports\HistoryEmployeeStore', 'user_id');
     }
+
+    public function userHistories()
+    {
+        return $this->hasMany('App\UserHistory', 'user_id');
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query
