@@ -15,6 +15,9 @@ use Carbon\Carbon;
 use App\SellOut;
 use App\SellOutDetail;
 use DB;
+use App\DmArea;
+use App\StoreHistory;
+use App\Store;
 
 class ProfileController extends Controller
 {
@@ -103,6 +106,10 @@ class ProfileController extends Controller
     }
 
     public function sellin(){
+
+        $history = Store::with('storeHistories')->where('id', 6111)->first();
+
+        return $history;
 
         // $data = SellOutDetail::limit(100)->get();
         // $a = 0;

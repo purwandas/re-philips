@@ -35,6 +35,11 @@ class User extends Authenticatable
      *
      */
 
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'id', 'user_id');
+    }
+
     public function role()
     {
         return $this->belongsTo('App\Role', 'role_id');
@@ -158,6 +163,12 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Reports\HistoryEmployeeStore', 'user_id');
     }
+
+    public function userHistories()
+    {
+        return $this->hasMany('App\UserHistory', 'user_id');
+    }
+
     /**
      * Filtering Berdasarakan Request User
      * @param $query

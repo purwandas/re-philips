@@ -9,6 +9,7 @@ use App\Filters\ProductFilters;
 use App\Traits\StringTrait;
 use DB;
 use App\Product;
+use App\ProductHistory;
 
 class ProductController extends Controller
 {
@@ -148,6 +149,17 @@ class ProductController extends Controller
             'variants' => 'required',
             'category_id' => 'required'
             ]);
+
+        /* CREATE HISTORY BEFORE UPDATE */
+
+        $productOld = Product::find($id);        
+        $history = $productOld;
+        $history['product_id'] = $id;
+
+        // return $history;
+
+        ProductHistory::create($history->toArray());
+
 
         $product = Product::find($id)->update($request->all());
 

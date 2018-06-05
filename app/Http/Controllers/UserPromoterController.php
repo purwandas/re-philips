@@ -28,6 +28,7 @@ use App\ProductKnowledgeRead;
 use App\Reports\HistoryEmployeeStore;
 use Carbon\Carbon;
 use DB;
+use App\UserHistory;
 
 class UserPromoterController extends Controller
 {
@@ -585,6 +586,14 @@ class UserPromoterController extends Controller
         }
 
         $requestNew['join_date'] = $request['join_date'];
+
+        /* CREATE HISTORY BEFORE UPDATE */
+
+        $userOld = User::find($id);        
+        $history = $userOld;
+        $history['user_id'] = $id;
+
+        UserHistory::create($history->toArray());
 
         $user->update($requestNew->all()); 
 

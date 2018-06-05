@@ -29,6 +29,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Facades\Datatables;
+use App\StoreHistory;
+use App\UserHistory;
 
 class UserController extends Controller
 {
@@ -555,6 +557,15 @@ class UserController extends Controller
                             }
                             if ( ($storesDedicate == '' || $storesDedicate == $newDedicate) && $status == false)
                             {
+                                /* CREATE HISTORY BEFORE UPDATE */
+
+                                $store = Store::where('id',$value->id)->first();
+                                $history = $store;
+                                $history['store_re_id'] = $store->store_id;
+                                $history['store_id'] = $store->id;
+
+                                StoreHistory::create($history->toArray());
+
                                 Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
                                 // $return .= ", NowYoueSeeMe #1 $storesDedicate -> $newDedicate";
@@ -565,11 +576,29 @@ class UserController extends Controller
                                 if ($newDedicate == 'DA' || $newDedicate == 'PC' || $newDedicate == 'HYBRID')
                                 {
                                     if ($value->dedicate == 'HYBRID') {
+                                        /* CREATE HISTORY BEFORE UPDATE */
+
+                                        $store = Store::where('id',$value->id)->first();
+                                        $history = $store;
+                                        $history['store_re_id'] = $store->store_id;
+                                        $history['store_id'] = $store->id;
+
+                                        StoreHistory::create($history->toArray());
+
                                         Store::where('id',$value->id)
                                         ->update(['user_id'=>$user->id,'dedicate'=>'HYBRID']);
                                         $status = true;
                                         // $return .= ", NowYoueSeeMe #2 $storesDedicate -> HYBRID";
                                     }else{
+                                        /* CREATE HISTORY BEFORE UPDATE */
+
+                                        $store = Store::where('id',$value->id)->first();
+                                        $history = $store;
+                                        $history['store_re_id'] = $store->store_id;
+                                        $history['store_id'] = $store->id;
+
+                                        StoreHistory::create($history->toArray());
+
                                         Store::where('id',$value->id)
                                         ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
                                         $status = true;
@@ -1148,6 +1177,16 @@ class UserController extends Controller
             $requestNew['join_date'] = $request['join_date'];
         }
 
+        /* CREATE HISTORY BEFORE UPDATE */
+
+        $userOld = User::find($id);        
+        $history = $userOld;
+        $history['user_id'] = $id;
+
+        UserHistory::create($history->toArray());
+
+        // -------------->
+
         $user->update($requestNew->all()); 
 
         /* Insert user relation */
@@ -1219,21 +1258,49 @@ class UserController extends Controller
 
                             if ( ($storesDedicate == '' || $storesDedicate == $newDedicate) && $status == false)
                             {
+                                /* CREATE HISTORY BEFORE UPDATE */
+
+                                $store = Store::where('id',$value->id)->first();
+                                $history = $store;
+                                $history['store_re_id'] = $store->store_id;
+                                $history['store_id'] = $store->id;
+
+                                StoreHistory::create($history->toArray());                
+
                                 Store::where('id',$value->id)
                                 ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
                                 $status = true;
-                                // return "NowYoueSeeMe #16";
+                                // return "NowYoueSeeMe #16";                                
                             }
                             if ( ($storesDedicate == 'DA' || $storesDedicate == 'PC' || $storesDedicate == 'HYBRID') && $status == false)
                             {
                                 if ($newDedicate == 'DA' || $newDedicate == 'PC' || $newDedicate == 'HYBRID')
                                 {
                                     if ($value->dedicate == 'HYBRID') {
+
+                                        /* CREATE HISTORY BEFORE UPDATE */
+
+                                        $store = Store::where('id',$value->id)->first();
+                                        $history = $store;
+                                        $history['store_re_id'] = $store->store_id;
+                                        $history['store_id'] = $store->id;
+
+                                        StoreHistory::create($history->toArray());
+
                                         Store::where('id',$value->id)
                                         ->update(['user_id'=>$user->id,'dedicate'=>'HYBRID']);
                                         $status = true;
                                         // return "NowYoueSeeMe #17 HYBRID";
                                     }else{
+                                        /* CREATE HISTORY BEFORE UPDATE */
+
+                                        $store = Store::where('id',$value->id)->first();
+                                        $history = $store;
+                                        $history['store_re_id'] = $store->store_id;
+                                        $history['store_id'] = $store->id;
+
+                                        StoreHistory::create($history->toArray());
+
                                         Store::where('id',$value->id)
                                         ->update(['user_id'=>$user->id,'dedicate'=>$newDedicate]);
                                         $status = true;
